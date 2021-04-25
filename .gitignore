@@ -1,2 +1,4 @@
 # Project exclude paths
-/op-samples/op-swagger-samples/target/
+.idea/
+target/
+*.iml
