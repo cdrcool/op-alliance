@@ -1,0 +1,12 @@
+server:
+  port: 8080
+
+jd:
+  account:
+    server-url: https://open-oauth.jd.com
+    username: vop质量部3
+    password: ceshimima123
+    app-key: 14516D62DF6A8BABE498ADC334966E6B
+    app-secret: 065b17aeee594e3389f07405e3303f62
+    redirect-uri: http://127.0.0.1/josAuth/callbackToken
+    rsa-key: KJNUQER&32mfo&merk24pidaf39+/3ivOvhbMyy6MbFTMjDGEFYsby3GxE/bCQl31PpatWUrbs4Y3nOsgw0dXcz7bYG+ir3JHpUq0yW2UtqvBiEbFH3OsAjbK0qqydgkgJ+40/OXV2EBYh0JHDVnVsQy/XaxL2i8gOkU63+SFOSXC5q1EWRRMLMC8vEU/AgMBAAECgYEAk8OxppFKKqtxEKgr2FnFyMdHbbCK/PQQMdSDXDrOBvToNWr6XLWPNYPQbqAfuWmA3W2jPlWo7RDIJJEfK0I955N+tlqulXrK9pfNk3YifwEZ76pdPuOvJMkcBuyShHetYkNTspqf1G27u56WzwkUX/uUhFxdiHFYZgzJEfiTnVECQQD+TbepFzPHHJaWrUJGk4p55Tj5ZfCEWFt1J9CWcJd9zi6hkymuG/i2WHdrFo8JaAqIBZWEvb7AIbohvCT+1Qx9AkEA4gIZ2HsLRMDw/BhjEEDaJJhDTOQAvzgIwYUNMrbbuZRJ7kYjdc4Cpw+75VE2KgqCwb3fdTapFW27cfY2YtbRawJBAKr+UQdmrY8t3uf0GkNgg9VQ102DSQWEcALHwc7WaFbUY7CLRpRnBIZ/19Ru98Dob2Rk9NOrzm5cf06dtvaPBPUCQQDG8MJ/ZA/PPWbjATRyIiPjAoR7MlfV+iT683tioMNY38cUDnk4QVbkZ10lxg6/gvEGSXRhYPQFAMp2zhuhdSZxAkBUE26o2zoyup/mqilFjfwIj5E4oEgKJAfxJfmpEkitOAT3osUozZmCtIWtu45mznzl4YPQ40p2eBDR/zTF2Fpn
