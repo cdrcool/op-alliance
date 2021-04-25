@@ -1,0 +1,8 @@
+server:
+  port: 8080
+
+swagger:
+  app-name: Swagger Examples
+  app-desc: Swagger Examples
+  app-version: 1.0
+  try-host: http://localhost:${server.port}
