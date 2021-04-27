@@ -27,22 +27,27 @@ public class JdAccountServiceImpl implements JdAccountService {
     }
 
     @Override
-    public void requestAccessToken() throws Exception {
-        String encodeUsername = URLEncoder.encode(jdAccountProperties.getUsername(), StandardCharsets.UTF_8.toString());
-        String md5Password = DigestUtils.md5Hex(jdAccountProperties.getPassword());
-        String ciphertextPassword = RsaCoderUtils.encryptByPrivateKey(md5Password, jdAccountProperties.getRsaKey());
-        String encodePassword = URLEncoder.encode(ciphertextPassword, StandardCharsets.UTF_8.toString());
-        String encodeRedirectUri = URLEncoder.encode(jdAccountProperties.getRedirectUri(), StandardCharsets.UTF_8.toString());
-        String codeUrl = jdAccountProperties.getServerUrl() + "/oauth2/authorizeForVOP?"
-                + "app_key=" + jdAccountProperties.getAppKey()
-                + "&redirect_uri=" + encodeRedirectUri
-                + "&username=" + encodeUsername
-                + "&password=" + encodePassword
-                + "&response_type=code"
-                + "&scope=snsapi_base";
+    public void requestAccessToken() {
+        try {
+            String encodeUsername = URLEncoder.encode(jdAccountProperties.getUsername(), StandardCharsets.UTF_8.toString());
+            String md5Password = DigestUtils.md5Hex(jdAccountProperties.getPassword());
+            String ciphertextPassword = RsaCoderUtils.encryptByPrivateKey(md5Password, jdAccountProperties.getRsaKey());
+            String encodePassword = URLEncoder.encode(ciphertextPassword, StandardCharsets.UTF_8.toString());
+            String encodeRedirectUri = URLEncoder.encode(jdAccountProperties.getRedirectUri(), StandardCharsets.UTF_8.toString());
 
-        String codeResp = restTemplate.getForObject(codeUrl, String.class);
-        log.info("获取京东token，授权码：{}", codeResp);
+            String codeUrl = jdAccountProperties.getServerUrl() + "/oauth2/authorizeForVOP?"
+                    + "app_key=" + jdAccountProperties.getAppKey()
+                    + "&redirect_uri=" + encodeRedirectUri
+                    + "&username=" + encodeUsername
+                    + "&password=" + encodePassword
+                    + "&response_type=code"
+                    + "&scope=snsapi_base";
+
+            String codeResp = restTemplate.getForObject(codeUrl, String.class);
+            log.info("请求京东token成功，授权码：{}", codeResp);
+        }catch (Exception e) {
+            log.error("请求京东token异常", e);
+        }
     }
 
     @Override
@@ -54,7 +59,7 @@ public class JdAccountServiceImpl implements JdAccountService {
                 + "&grant_type=authorization_code";
 
         JdTokenResponse response = restTemplate.getForObject(accessTokenUrl, JdTokenResponse.class);
-        log.info("获取京东token，token：{}", response);
+        log.info("请求京东token成功，token响应：{}", response);
     }
 
     @Override

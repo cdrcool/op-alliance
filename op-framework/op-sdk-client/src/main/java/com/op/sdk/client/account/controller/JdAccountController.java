@@ -26,19 +26,19 @@ public class JdAccountController {
         this.jdAccountService = jdAccountService;
     }
 
-    @ApiOperation(value = "请求token")
+    @ApiOperation(value = "请求京东token")
     @GetMapping("/requestAccessToken")
-    public void requestAccessToken() throws Exception {
+    public void requestAccessToken() {
          jdAccountService.requestAccessToken();
     }
 
-    @ApiOperation("获取token回调")
+    @ApiOperation("获取京东token回调")
     @GetMapping("/callbackToken")
     public void callbackToken(@RequestParam String code) {
          jdAccountService.callbackToken(code);
     }
 
-    @ApiOperation(value = "获取token")
+    @ApiOperation(value = "获取京东token")
     @GetMapping("/getAccessToken")
     public JdTokenResponse getAccessToken() {
         return jdAccountService.getAccessToken();

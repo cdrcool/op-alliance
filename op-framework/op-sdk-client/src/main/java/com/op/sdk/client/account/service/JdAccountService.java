@@ -10,21 +10,20 @@ import com.op.sdk.client.account.model.JdTokenResponse;
 public interface JdAccountService {
 
     /**
-     * 请求token
+     * 请求京东token
      *
-     * @throws Exception exception
      */
-    void requestAccessToken() throws Exception;
+    void requestAccessToken();
 
     /**
-     * 获取token回调
+     * 获取京东token回调
      *
      * @param code 授权码
      */
     void callbackToken(String code);
 
     /**
-     * 获取token
+     * 获取京东token
      *
      * @return 京东token响应
      */
