@@ -12,16 +12,16 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 @ConfigurationProperties(prefix = "jd.account")
-public class JdAccountProperties {
+public class JdAccountProperties implements Cloneable{
     /**
      * server url
      */
     private String serverUrl;
 
     /**
-     * 用户名
+     * 帐号名
      */
-    private String username;
+    private String account;
 
     /**
      * 密码
@@ -47,4 +47,13 @@ public class JdAccountProperties {
      * rsa私钥
      */
     private String rsaKey;
+
+    @Override
+    public JdAccountProperties clone() {
+        try {
+            return (JdAccountProperties) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException("Not support cloneable", e);
+        }
+    }
 }

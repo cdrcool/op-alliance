@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>op-swagger-samples</module>
+        <module>op-async-reqeust-samples</module>
     </modules>
 
     <properties>

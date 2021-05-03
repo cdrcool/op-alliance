@@ -14,7 +14,7 @@ import java.security.spec.X509EncodedKeySpec;
 /**
  * rsa 编码工具类
  *
- * @author chengdr01
+ * @author cdrcool
  */
 public final class RsaCoderUtils {
 

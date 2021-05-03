@@ -5,7 +5,7 @@ import lombok.Data;
 /**
  * 示例实体
  *
- * @author chengdr01
+ * @author cdrcool
  */
 @Data
 public class Example {

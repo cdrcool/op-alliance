@@ -1,4 +1,4 @@
-package com.op.sdk.client.account.model;
+package com.op.sdk.client.third.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
@@ -8,7 +8,7 @@ import lombok.Data;
 /**
  * 京东token响应
  *
- * @author chengdr01
+ * @author cdrcool
  */
 @ApiModel(description = "京东token响应")
 @Data

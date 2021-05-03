@@ -7,7 +7,7 @@ import lombok.Data;
 /**
  * Example VO
  *
- * @author chengdr01
+ * @author cdrcool
  */
 @ApiModel(description = "Example VO")
 @Data

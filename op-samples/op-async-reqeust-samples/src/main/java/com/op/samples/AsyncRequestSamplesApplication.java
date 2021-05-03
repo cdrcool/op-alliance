@@ -1,23 +1,19 @@
-package com.op.sdk.client;
+package com.op.samples;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * 应用启动类
  *
  * @author cdrcool
  */
-@EnableScheduling
 @EnableAsync
-@EnableFeignClients
 @SpringBootApplication
-public class SdkClientApplication {
+public class AsyncRequestSamplesApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SdkClientApplication.class, args);
+        SpringApplication.run(AsyncRequestSamplesApplication.class, args);
     }
 }

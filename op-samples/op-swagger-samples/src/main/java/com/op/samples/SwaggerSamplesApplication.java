@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * 应用启动类
  *
- * @author chengdr01
+ * @author cdrcool
  */
 @SpringBootApplication
 public class SwaggerSamplesApplication {

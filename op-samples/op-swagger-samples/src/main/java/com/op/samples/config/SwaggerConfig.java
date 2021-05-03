@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * Swagger 配置类
  *
- * @author chengdr01
+ * @author cdrcool
  */
 @EnableConfigurationProperties(SwaggerProperties.class)
 @Configuration

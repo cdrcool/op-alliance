@@ -7,7 +7,7 @@ import lombok.Data;
 /**
  * Example查询DTO
  *
- * @author chengdr01
+ * @author cdrcool
  */
 @ApiModel(description = "Example查询DTO")
 @Data
