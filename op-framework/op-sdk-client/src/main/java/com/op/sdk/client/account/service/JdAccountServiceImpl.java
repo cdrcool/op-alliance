@@ -2,6 +2,8 @@ package com.op.sdk.client.account.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.op.sdk.client.account.entity.CompanyInfo;
 import com.op.sdk.client.account.entity.JdAccount;
 import com.op.sdk.client.account.mapper.CompanyInfoMapper;
@@ -24,6 +26,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -35,6 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Service
 public class JdAccountServiceImpl implements JdAccountService {
+    private final ObjectMapper objectMapper = new ObjectMapper();
     private static final Map<String, JdTokenRequestInfo> STORE = new ConcurrentHashMap<>();
 
     private final RedisTemplate<String, Object> redisTemplate;
@@ -80,14 +84,19 @@ public class JdAccountServiceImpl implements JdAccountService {
             String encodePassword = URLEncoder.encode(ciphertextPassword, StandardCharsets.UTF_8.toString());
             String encodeRedirectUri = URLEncoder.encode(jdAccountProperties.getRedirectUri(), StandardCharsets.UTF_8.toString());
 
-            String code = jdTokenFeignClient.authorizeForVop(jdAccountProperties.getAppKey(),
+            String responseJson = jdTokenFeignClient.authorizeForVop(jdAccountProperties.getAppKey(),
                     encodeRedirectUri,
                     encodeUsername,
                     encodePassword,
                     "code",
                     "snsapi_base",
                     state);
-            log.info("根据京东帐号：{}获取到鉴权码：{}", jdAccount.getAccount(), code);
+
+            Map<String, Object> param = objectMapper.readValue(responseJson, new TypeReference<Map<String, Object>>() {
+            });
+            if (!Objects.equals(0, param.get("code"))) {
+                throw new RuntimeException("获取京东授权码失败，response:" + responseJson);
+            }
 
             JdTokenRequestInfo jdTokenRequestInfo = new JdTokenRequestInfo(state, jdAccount.getAccount());
             STORE.put(state, jdTokenRequestInfo);
@@ -98,6 +107,13 @@ public class JdAccountServiceImpl implements JdAccountService {
     }
 
     private JdAccount getJdAccount(String taxpayerId) {
+        if (!StringUtils.hasText(taxpayerId)) {
+            JdAccount jdAccount = new JdAccount();
+            jdAccount.setAccount(jdAccountProperties.getAccount());
+            jdAccount.setPassword(jdAccountProperties.getPassword());
+            return jdAccount;
+        }
+
         LambdaQueryWrapper<CompanyInfo> companyInfoWrapper = Wrappers.lambdaQuery();
         companyInfoWrapper.eq(CompanyInfo::getTaxpayerId, taxpayerId);
         CompanyInfo companyInfo = companyInfoMapper.selectOne(companyInfoWrapper);
@@ -213,6 +229,12 @@ public class JdAccountServiceImpl implements JdAccountService {
     public void refreshAllToken() {
         LambdaQueryWrapper<JdAccount> jdAccountWrapper = Wrappers.lambdaQuery();
         List<JdAccount> jdAccounts = jdAccountMapper.selectList(jdAccountWrapper);
-        jdAccounts.forEach(this::refreshToken);
+        jdAccounts.forEach(jdAccount -> {
+            try {
+                refreshToken(jdAccount);
+            } catch (Exception e) {
+                log.error("刷新京东token异常", e);
+            }
+        });
     }
 }

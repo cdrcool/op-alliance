@@ -26,9 +26,9 @@ public class JdAccountController {
     }
 
     @ApiOperation("异步请求京东token（未传递纳税人识别号，则刷新默认京东token）")
-    @GetMapping("/requestAccessToken")
+    @GetMapping("/request-access-token")
     public DeferredResult<String> requestAccessToken(@ApiParam("纳税人识别号") String taxpayerId,
-                                                     @ApiParam(value = "超时时间", defaultValue = "3s")
+                                                     @ApiParam(value = "超时时间（单位：秒）", defaultValue = "3")
                                                      @RequestParam(defaultValue = "3") Integer timeout) {
         DeferredResult<String> deferredResult = new DeferredResult<>(timeout.longValue() * 1000);
 
@@ -47,20 +47,20 @@ public class JdAccountController {
     }
 
     @ApiOperation("京东回调地址（调用请求京东token接口后，由京东回调该接口）")
-    @GetMapping("/callbackToken")
+    @GetMapping("/callback-token")
     public void callbackToken(@ApiParam("京东授权码") @RequestParam String code,
                               @ApiParam("京东回传state（需与传递给京东的保持一致）") @RequestParam String state) {
         jdAccountService.callbackToken(code, state);
     }
 
     @ApiOperation("刷新京东token（未传递纳税人识别号，则刷新默认京东token）")
-    @GetMapping("/refreshToken")
+    @GetMapping("/refresh-token")
     public String refreshToken(@ApiParam("纳税人识别号") String taxpayerId) {
         return jdAccountService.refreshToken(taxpayerId);
     }
 
     @ApiOperation("获取京东token（未传递纳税人识别号，则获取默认京东token）")
-    @GetMapping("/getAccessToken")
+    @GetMapping("/get-access-token")
     public DeferredResult<String> getAccessToken(@ApiParam("纳税人识别号") String taxpayerId) {
         DeferredResult<String> deferredResult = new DeferredResult<>();
         jdAccountService.getAccessToken(taxpayerId, deferredResult);

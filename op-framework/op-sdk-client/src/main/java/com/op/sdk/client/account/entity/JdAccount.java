@@ -1,5 +1,8 @@
 package com.op.sdk.client.account.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 /**
@@ -8,10 +11,12 @@ import lombok.Data;
  * @author cdrcool
  */
 @Data
+@TableName("sdk_jd_account")
 public class JdAccount {
     /**
      * 主键
      */
+    @TableId(type = IdType.ASSIGN_UUID)
     private String id;
 
     /**

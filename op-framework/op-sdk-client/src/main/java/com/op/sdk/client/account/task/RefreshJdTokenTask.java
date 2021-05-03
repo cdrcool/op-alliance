@@ -17,7 +17,7 @@ public class RefreshJdTokenTask {
         this.jdAccountService = jdAccountService;
     }
 
-    @Scheduled(cron = "${jd.biz.cron.token-refresh}")
+    @Scheduled(cron = "${jd.account.refresh-token-cron}")
     public void execute() {
         jdAccountService.refreshAllToken();
     }

@@ -1,5 +1,8 @@
 package com.op.sdk.client.account.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -9,10 +12,12 @@ import lombok.Data;
  * @author cdr_c
  */
 @Data
+@TableName("sdk_company_info")
 public class CompanyInfo {
     /**
      * 主键
      */
+    @TableId(type = IdType.ASSIGN_UUID)
     private String id;
 
     /**

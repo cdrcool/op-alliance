@@ -7,12 +7,12 @@ import org.springframework.stereotype.Component;
 /**
  * 京东帐号配置属性
  *
- * @author chengdr
+ * @author cdrcool
  */
 @Data
 @Component
 @ConfigurationProperties(prefix = "jd.account")
-public class JdAccountProperties implements Cloneable{
+public class JdAccountProperties {
     /**
      * server url
      */
@@ -48,12 +48,8 @@ public class JdAccountProperties implements Cloneable{
      */
     private String rsaKey;
 
-    @Override
-    public JdAccountProperties clone() {
-        try {
-            return (JdAccountProperties) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException("Not support cloneable", e);
-        }
-    }
+    /**
+     * 定时刷新token cron表达式
+     */
+    private String refreshTokenCron;
 }

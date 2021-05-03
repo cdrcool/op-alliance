@@ -20,6 +20,8 @@
 
         <spring-boot.version>2.4.4</spring-boot.version>
         <spring-cloud.version>2020.0.2</spring-cloud.version>
+        <mybatis-plus-boot-starter.version>3.4.2</mybatis-plus-boot-starter.version>
+        <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
     </properties>
 
     <dependencyManagement>
@@ -37,6 +39,16 @@
                 <version>${spring-cloud.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus-boot-starter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-boot-starter</artifactId>
+                <version>${springfox-boot-starter.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

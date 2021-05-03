@@ -1,5 +1,6 @@
 package com.op.sdk.client.third;
 
+import com.op.sdk.client.config.JdFeignConfig;
 import com.op.sdk.client.third.response.JdTokenResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  *
  * @author cdrcool
  */
-@FeignClient(name = "jd", url = "https://api.jd.com/routerjson", path = "/oauth2")
+@FeignClient(name = "jd", url = "${jd.account.auth-url}", path = "/oauth2", configuration = JdFeignConfig.class)
 public interface JdTokenFeignClient {
 
     /**
@@ -30,11 +31,11 @@ public interface JdTokenFeignClient {
     @GetMapping("/authorizeForVOP")
     String authorizeForVop(@RequestParam("app_key") String appKey,
                            @RequestParam("redirect_uri") String redirectUri,
-                           @RequestParam String username,
-                           @RequestParam String password,
-                           @RequestParam(value = "response_type") String responseType,
-                           @RequestParam String scope,
-                           @RequestParam String state);
+                           @RequestParam("username") String username,
+                           @RequestParam("password") String password,
+                           @RequestParam("response_type") String responseType,
+                           @RequestParam("scope") String scope,
+                           @RequestParam("state") String state);
 
 
     /**
@@ -50,7 +51,7 @@ public interface JdTokenFeignClient {
     JdTokenResponse accessToken(@RequestParam("app_key") String appKey,
                                 @RequestParam("app_secret") String appSecret,
                                 @RequestParam("grant_type") String grantType,
-                                @RequestParam String code);
+                                @RequestParam("code") String code);
 
     /**
      * token失效后, 可使用此接口刷新.
