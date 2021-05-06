@@ -23,7 +23,7 @@ public abstract class ThirdAccountController {
         this.thirdAccountService = thirdAccountService;
     }
 
-    @ApiOperation("异步请求第三方token（未传递纳税人识别号，则刷新默认第三方token）")
+    @ApiOperation("请求第三方token（未传递纳税人识别号，则请求默认第三方token）")
     @GetMapping("/request-access-token")
     public DeferredResult<String> requestAccessToken(@ApiParam("纳税人识别号") String taxpayerId,
                                                      @ApiParam(value = "超时时间（单位：秒）", defaultValue = "3")
@@ -55,9 +55,18 @@ public abstract class ThirdAccountController {
 
     @ApiOperation("获取第三方token（未传递纳税人识别号，则获取默认第三方token）")
     @GetMapping("/get-access-token")
-    public DeferredResult<String> getAccessToken(@ApiParam("纳税人识别号") String taxpayerId) {
-        DeferredResult<String> deferredResult = new DeferredResult<>();
+    public DeferredResult<String> getAccessToken(@ApiParam("纳税人识别号") String taxpayerId,
+                                                 @ApiParam(value = "超时时间（单位：秒）", defaultValue = "3")
+                                                 @RequestParam(defaultValue = "3") Integer timeout) {
+        DeferredResult<String> deferredResult = new DeferredResult<>(timeout.longValue() * 1000);
+
         thirdAccountService.getAccessToken(taxpayerId, deferredResult);
+
+        // 超时回调
+        deferredResult.onTimeout(() -> deferredResult.setErrorResult("请求第三方token超时"));
+        // 失败回调
+        deferredResult.onError(e -> deferredResult.setErrorResult("请求第三方token异常：" + e.getMessage()));
+
         return deferredResult;
     }
 }
