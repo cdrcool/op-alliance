@@ -1,14 +1,11 @@
 package com.op.sdk.client.account.controller;
 
 import com.op.sdk.client.account.service.ThirdAccountService;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
 /**
@@ -23,8 +20,8 @@ public abstract class ThirdAccountController {
         this.thirdAccountService = thirdAccountService;
     }
 
-    @ApiOperation("请求第三方token（未传递纳税人识别号，则请求默认第三方token）")
-    @GetMapping("/request-access-token")
+    @ApiOperation("请求第三方token（未传递纳税人识别号，则请求的默认第三方token）")
+    @PostMapping("/request-access-token")
     public DeferredResult<String> requestAccessToken(@ApiParam("纳税人识别号") String taxpayerId,
                                                      @ApiParam(value = "超时时间（单位：秒）", defaultValue = "3")
                                                      @RequestParam(defaultValue = "3") Integer timeout) {
@@ -47,14 +44,14 @@ public abstract class ThirdAccountController {
         thirdAccountService.callbackToken(code, state);
     }
 
-    @ApiOperation("刷新第三方token（未传递纳税人识别号，则刷新默认第三方token）")
-    @GetMapping("/refresh-token")
+    @ApiOperation("刷新第三方token（未传递纳税人识别号，则刷新默认的第三方token）")
+    @PostMapping("/refresh-token")
     public String refreshToken(@ApiParam("纳税人识别号") String taxpayerId) {
         return thirdAccountService.refreshToken(taxpayerId);
     }
 
-    @ApiOperation("获取第三方token（未传递纳税人识别号，则获取默认第三方token）")
-    @GetMapping("/get-access-token")
+    @ApiOperation("获取第三方token（未传递纳税人识别号，则获取默认的第三方token）")
+    @PostMapping("/get-access-token")
     public DeferredResult<String> getAccessToken(@ApiParam("纳税人识别号") String taxpayerId,
                                                  @ApiParam(value = "超时时间（单位：秒）", defaultValue = "3")
                                                  @RequestParam(defaultValue = "3") Integer timeout) {
@@ -63,10 +60,22 @@ public abstract class ThirdAccountController {
         thirdAccountService.getAccessToken(taxpayerId, deferredResult);
 
         // 超时回调
-        deferredResult.onTimeout(() -> deferredResult.setErrorResult("请求第三方token超时"));
+        deferredResult.onTimeout(() -> deferredResult.setErrorResult("获取第三方token超时"));
         // 失败回调
-        deferredResult.onError(e -> deferredResult.setErrorResult("请求第三方token异常：" + e.getMessage()));
+        deferredResult.onError(e -> deferredResult.setErrorResult("获取第三方token异常：" + e.getMessage()));
 
         return deferredResult;
+    }
+
+    @ApiOperation("初始化所有的第三方token")
+    @PostMapping("/init-all-token")
+    public void initAllToken() {
+        thirdAccountService.initAllToken();
+    }
+
+    @ApiOperation("刷新所有的第三方token")
+    @PostMapping("/refresh-all-token")
+    public void refreshAllToken() {
+        thirdAccountService.refreshAllToken();
     }
 }
