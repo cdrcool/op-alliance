@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  *
  * @author cdrcool
  */
-@FeignClient(name = "jd", url = "${jd.account.auth-url}", path = "/oauth2", configuration = JdFeignConfig.class)
+@FeignClient(name = "jd", url = "${sdk.accounts.jd.auth-url}", path = "/oauth2", configuration = JdFeignConfig.class)
 public interface JdTokenFeignClient {
 
     /**
@@ -54,8 +54,8 @@ public interface JdTokenFeignClient {
                                 @RequestParam("code") String code);
 
     /**
-     * token失效后, 可使用此接口刷新.
-     * token有效期24小时, 在1小时内重复刷新会返回相同token, 同一时间可能存在多个有效token.
+     * token失效后, 可使用此接口刷新
+     * token有效期24小时, 在1小时内重复刷新会返回相同token, 同一时间可能存在多个有效token
      *
      * @param appKey       应用key
      * @param appSecret    应用密钥

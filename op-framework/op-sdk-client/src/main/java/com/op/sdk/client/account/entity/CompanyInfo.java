@@ -59,4 +59,9 @@ public class CompanyInfo {
      * 京东帐号
      */
     private String jdAccount;
+
+    /**
+     * 苏宁帐号
+     */
+    private String snAccount;
 }

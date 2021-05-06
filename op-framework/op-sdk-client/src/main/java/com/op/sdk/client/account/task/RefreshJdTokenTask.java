@@ -1,8 +1,10 @@
 package com.op.sdk.client.account.task;
 
-import com.op.sdk.client.account.service.JdAccountService;
+import com.op.sdk.client.account.service.ThirdAccountService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
 
 /**
  * 刷新京东token定时任务
@@ -11,14 +13,14 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class RefreshJdTokenTask {
-    private final JdAccountService jdAccountService;
+    private final Map<String, ThirdAccountService> thirdAccountServices;
 
-    public RefreshJdTokenTask(JdAccountService jdAccountService) {
-        this.jdAccountService = jdAccountService;
+    public RefreshJdTokenTask(Map<String, ThirdAccountService> thirdAccountServices) {
+        this.thirdAccountServices = thirdAccountServices;
     }
 
-    @Scheduled(cron = "${jd.account.refresh-token-cron}")
+    @Scheduled(cron = "${sdk.accounts.jd.refresh-token-cron}")
     public void execute() {
-        jdAccountService.refreshAllToken();
+        thirdAccountServices.values().forEach(ThirdAccountService::refreshAllToken);
     }
 }

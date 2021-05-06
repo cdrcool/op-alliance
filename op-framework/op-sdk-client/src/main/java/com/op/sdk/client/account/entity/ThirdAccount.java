@@ -6,18 +6,25 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 /**
- * 京东帐号
+ * 第三方帐号
  *
  * @author cdrcool
  */
 @Data
-@TableName("sdk_jd_account")
-public class JdAccount {
+@TableName("sdk_third_account")
+public class ThirdAccount {
     /**
      * 主键
      */
     @TableId(type = IdType.ASSIGN_UUID)
     private String id;
+
+    /**
+     * 账号类型
+     *
+     * @see AccountType
+     */
+    private Integer accountType;
 
     /**
      * 帐号名
