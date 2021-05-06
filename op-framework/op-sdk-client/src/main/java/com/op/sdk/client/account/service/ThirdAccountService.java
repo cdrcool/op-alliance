@@ -82,6 +82,9 @@ public abstract class ThirdAccountService {
         TokenResponse response = getTokenResponse(code);
 
         TokenRequestInfo tokenRequestInfo = STORE.get(state);
+        if (tokenRequestInfo == null) {
+            throw new RuntimeException("未找到与state：{}对应的token请求信息：" + state);
+        }
         log.info("找到state：{}对应的京东帐号：{}", state, tokenRequestInfo.getAccount());
 
         // 查找京东帐号，并更新其对应的token响应
