@@ -182,7 +182,13 @@ public abstract class ThirdAccountService {
     public void initAllToken() {
         LambdaQueryWrapper<ThirdAccount> jdAccountWrapper = Wrappers.lambdaQuery();
         List<ThirdAccount> thirdAccounts = thirdAccountMapper.selectList(jdAccountWrapper);
-        thirdAccounts.forEach(thirdAccount -> requestAccessToken(thirdAccount, UUID.randomUUID().toString()));
+        thirdAccounts.forEach(thirdAccount -> {
+            try {
+                requestAccessToken(thirdAccount, UUID.randomUUID().toString())
+            } catch (Exception e) {
+                log.error("初始化第三方token异常，账号信息：{}", thirdAccount, e);
+            }
+        });
     }
 
     /**
@@ -195,7 +201,7 @@ public abstract class ThirdAccountService {
             try {
                 refreshToken(thirdAccount);
             } catch (Exception e) {
-                log.error("刷新京东token异常", e);
+                log.error("刷新第三方token异常，账号信息：{}", thirdAccount, e);
             }
         });
     }
