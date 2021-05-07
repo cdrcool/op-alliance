@@ -184,7 +184,7 @@ public abstract class ThirdAccountService {
         List<ThirdAccount> thirdAccounts = thirdAccountMapper.selectList(jdAccountWrapper);
         thirdAccounts.forEach(thirdAccount -> {
             try {
-                requestAccessToken(thirdAccount, UUID.randomUUID().toString())
+                requestAccessToken(thirdAccount, UUID.randomUUID().toString());
             } catch (Exception e) {
                 log.error("初始化第三方token异常，账号信息：{}", thirdAccount, e);
             }
