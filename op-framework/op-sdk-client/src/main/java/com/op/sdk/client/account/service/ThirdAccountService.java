@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 第三方帐号 Service
@@ -89,7 +90,7 @@ public abstract class ThirdAccountService {
         log.info("找到state：{}对应的第三方帐号：{}", state, tokenRequestInfo.getAccount());
 
         // 将第三方帐号及其对应的token存到redis缓存
-        redisTemplate.opsForValue().set(tokenRequestInfo.getAccount(), response.getAccessToken());
+        redisTemplate.opsForValue().set(tokenRequestInfo.getAccount(), response.getAccessToken(), response.getExpiresIn(), TimeUnit.SECONDS);
 
         // 查找第三方帐号，并更新其对应的token响应
         LambdaQueryWrapper<ThirdAccount> jdAccountWrapper = Wrappers.lambdaQuery();
@@ -100,8 +101,8 @@ public abstract class ThirdAccountService {
         }
         thirdAccount.setAccessToken(response.getAccessToken());
         thirdAccount.setRefreshToken(response.getRefreshToken());
-        thirdAccount.setAccessTokenExpiresAt(response.getTime() + response.getExpiresIn());
-        thirdAccount.setRefreshTokenExpiresAt(response.getTime() + response.getRefreshTokenExpires());
+        thirdAccount.setAccessTokenExpiresAt(response.getTime() + response.getExpiresIn() * 1000);
+        thirdAccount.setRefreshTokenExpiresAt(response.getTime() + response.getRefreshTokenExpires() * 1000);
         thirdAccountMapper.updateById(thirdAccount);
 
         DeferredResult<String> deferredResult = tokenRequestInfo.getDeferredResult();
@@ -132,13 +133,13 @@ public abstract class ThirdAccountService {
         TokenResponse response = getRefreshTokenResponse(thirdAccount);
 
         // 将第三方帐号及其对应的token存到redis缓存
-        redisTemplate.opsForValue().set(thirdAccount.getAccount(), response.getAccessToken());
+        redisTemplate.opsForValue().set(thirdAccount.getAccount(), response.getAccessToken(), response.getExpiresIn(), TimeUnit.SECONDS);
 
         // 更新第三方帐号对应的token响应
         thirdAccount.setAccessToken(response.getAccessToken());
         thirdAccount.setRefreshToken(response.getRefreshToken());
-        thirdAccount.setAccessTokenExpiresAt(response.getTime() + response.getExpiresIn());
-        thirdAccount.setRefreshTokenExpiresAt(response.getTime() + response.getRefreshTokenExpires());
+        thirdAccount.setAccessTokenExpiresAt(response.getTime() + response.getExpiresIn() * 1000);
+        thirdAccount.setRefreshTokenExpiresAt(response.getTime() + response.getRefreshTokenExpires() * 1000);
         thirdAccountMapper.updateById(thirdAccount);
 
         return response.getAccessToken();
