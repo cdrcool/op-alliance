@@ -130,6 +130,9 @@ public abstract class ThirdAccountService {
     public String refreshToken(ThirdAccount thirdAccount) {
         TokenResponse response = getRefreshTokenResponse(thirdAccount);
 
+        // 将京东帐号及其对应的token存到redis缓存
+        redisTemplate.opsForValue().set(thirdAccount.getAccount(), response.getAccessToken());
+
         // 更新京东帐号对应的token响应
         thirdAccount.setAccessToken(response.getAccessToken());
         thirdAccount.setRefreshToken(response.getRefreshToken());
