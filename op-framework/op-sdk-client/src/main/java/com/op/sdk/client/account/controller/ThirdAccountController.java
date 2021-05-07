@@ -39,8 +39,8 @@ public abstract class ThirdAccountController {
 
     @ApiOperation("第三方回调地址（调用请求第三方token接口后，由第三方回调该接口）")
     @GetMapping("/callback-token")
-    public void callbackToken(@ApiParam("第三方授权码") @RequestParam String code,
-                              @ApiParam("第三方回传state（需与传递给第三方的保持一致）") @RequestParam String state) {
+    public void callbackToken(@ApiParam("第三方返回的鉴权码") @RequestParam String code,
+                              @ApiParam("第三方回传的state（与传递给第三方的保持一致）") @RequestParam String state) {
         thirdAccountService.callbackToken(code, state);
     }
 
