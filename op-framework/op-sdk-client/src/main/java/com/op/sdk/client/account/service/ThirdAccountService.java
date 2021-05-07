@@ -87,6 +87,9 @@ public abstract class ThirdAccountService {
         }
         log.info("找到state：{}对应的京东帐号：{}", state, tokenRequestInfo.getAccount());
 
+        // 将京东帐号及其对应的token存到redis缓存
+        redisTemplate.opsForValue().set(tokenRequestInfo.getAccount(), response.getAccessToken());
+
         // 查找京东帐号，并更新其对应的token响应
         LambdaQueryWrapper<ThirdAccount> jdAccountWrapper = Wrappers.lambdaQuery();
         jdAccountWrapper.eq(ThirdAccount::getAccount, tokenRequestInfo.getAccount());
@@ -99,9 +102,6 @@ public abstract class ThirdAccountService {
         thirdAccount.setAccessTokenExpiresAt(response.getTime() + response.getExpiresIn());
         thirdAccount.setRefreshTokenExpiresAt(response.getTime() + response.getRefreshTokenExpires());
         thirdAccountMapper.updateById(thirdAccount);
-
-        // 将京东帐号及其对应的token存到redis缓存
-        redisTemplate.opsForValue().set(tokenRequestInfo.getAccount(), response.getAccessToken());
 
         DeferredResult<String> deferredResult = tokenRequestInfo.getDeferredResult();
         if (deferredResult != null) {
