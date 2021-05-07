@@ -44,4 +44,4 @@ sdk:
       app-secret: f7ed5ed813124c72a91fef3d25167afc
       redirect-uri: https://website-service-beta-polywuye.fdccloud.com/cl-enterprise/jd-actuator/account/callbackToken?o=polywuye
       rsa-key: MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAKG31sH6KJUPjBLEkLiVELXgR+TZcRwvAl/jqHYx4mlHya7eAdN0KbIKkN+FFZg3Wp9LWJnOKcsQHA3RX4vX2jkP2d1kpqI8BLLZMM6TR5cTniWy6VvWroOVLPlLBwt4cnAHyLAQfX/Cf3TnFZTn4ScIsNxIrhbPyJTA9a+MV2xnAgMBAAECgYAOmIQWj9h306Zlzz3smu+eKrbybbmqvIdvViHPQSNZMzR9xuXNSu+0dQWsVtujGGPieq9telEFVdfiW2JPQdUdKneotE1Wrm9fuGRbhwsxR6J4Je61tbRupI+rh89EWvDFpwdmdFoU2MPgBhXkT01bZnmweTfmSF/zEiQ9VgurGQJBAN1/baQosHZxYraS35s6DPVNVA5AJ3ylY0CfT3874HDKbkynxDO2qiyi8ihZsrIagUGJq7LLvyGe1hzBkC3ix4sCQQC66Jptb6mtbESW8xyRiQC2aWlHOdxut52J/YmeULjvdRWEuT7MFz1VbgbLHZehbV/NQGyTRW56FmEcHlUGCOoVAkBJAlG/hHH1+JXTHEJ8RfwzdxO3xsm9Oj6m9Fwd0jy+sNr+hWYUracWI3eyeS5/qmDkm15vBt2vVU26GMtPdKrVAkEAnxuVIiXVDkFFHi60GhvDVITlTvGteT6rSCVhOjjDRWypNcOv9nKuDoRMGioFwzBlRkdaZf/L7PgSEKqtfCaohQJBAMZlY2XBLQhX2944xOG+aZSvbvPPlyNbLHy3Qalos62sHZW969Z3mzHYHKqFpw7B5Lor6l+e4xMkb452xJnkWxU=
-    refresh-token-cron: 0 0 0 * * ?
+  refresh-token-cron: 0 0 0 * * ?

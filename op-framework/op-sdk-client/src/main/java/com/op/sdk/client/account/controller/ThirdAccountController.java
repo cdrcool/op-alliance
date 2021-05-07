@@ -1,5 +1,6 @@
 package com.op.sdk.client.account.controller;
 
+import com.op.sdk.client.account.exception.AccountException;
 import com.op.sdk.client.account.service.ThirdAccountService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -30,9 +31,13 @@ public abstract class ThirdAccountController {
         thirdAccountService.requestAccessToken(taxpayerId, deferredResult);
 
         // 超时回调
-        deferredResult.onTimeout(() -> deferredResult.setErrorResult("请求第三方token超时，请稍后重试"));
+        deferredResult.onTimeout(() -> {
+            throw new AccountException("请求第三方token超时，请稍后重试");
+        });
         // 失败回调
-        deferredResult.onError(e -> deferredResult.setErrorResult("请求第三方token异常：" + e.getMessage()));
+        deferredResult.onError(e -> {
+            throw new AccountException("请求第三方token异常：" + e.getMessage());
+        });
 
         return deferredResult;
     }
@@ -60,9 +65,13 @@ public abstract class ThirdAccountController {
         thirdAccountService.getAccessToken(taxpayerId, deferredResult);
 
         // 超时回调
-        deferredResult.onTimeout(() -> deferredResult.setErrorResult("获取第三方token超时，请稍后重试"));
+        deferredResult.onTimeout(() -> {
+            throw new AccountException("请求第三方token超时，请稍后重试");
+        });
         // 失败回调
-        deferredResult.onError(e -> deferredResult.setErrorResult("获取第三方token异常：" + e.getMessage()));
+        deferredResult.onError(e -> {
+            throw new AccountException("请求第三方token异常：" + e.getMessage());
+        });
 
         return deferredResult;
     }

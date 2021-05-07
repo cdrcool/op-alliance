@@ -1,6 +1,5 @@
 package com.op.sdk.client.config;
 
-import com.op.sdk.client.account.entity.AccountType;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -17,7 +16,15 @@ import java.util.Map;
 @Component
 @ConfigurationProperties(prefix = "sdk")
 public class SdkProperties {
-    private Map<AccountType, Account> accounts = new HashMap<>();
+    /**
+     * 第三方账号配置
+     */
+    private Map<String, Account> accounts = new HashMap<>();
+
+    /**
+     * 定时刷新token cron表达式
+     */
+    private String refreshTokenCron;
 
     /**
      * 账号配置属性
@@ -58,10 +65,5 @@ public class SdkProperties {
          * rsa私钥
          */
         private String rsaKey;
-
-        /**
-         * 定时刷新token cron表达式
-         */
-        private String refreshTokenCron;
     }
 }

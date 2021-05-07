@@ -21,7 +21,7 @@ public class ThirdTokenRefreshTask {
         this.thirdAccountServices = thirdAccountServices;
     }
 
-    @Scheduled(cron = "${sdk.accounts.refresh-token-cron}")
+    @Scheduled(cron = "${sdk.refresh-token-cron}")
     public void execute() {
         thirdAccountServices.values().forEach(thirdAccountService -> {
             try {

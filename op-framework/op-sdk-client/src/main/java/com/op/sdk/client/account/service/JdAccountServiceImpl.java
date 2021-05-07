@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.op.sdk.client.account.entity.AccountType;
 import com.op.sdk.client.account.entity.ThirdAccount;
+import com.op.sdk.client.account.exception.AccountException;
 import com.op.sdk.client.account.mapper.CompanyInfoMapper;
 import com.op.sdk.client.account.mapper.ThirdAccountMapper;
 import com.op.sdk.client.account.model.TokenResponse;
@@ -66,11 +67,11 @@ public class JdAccountServiceImpl extends ThirdAccountService {
             Map<String, Object> param = objectMapper.readValue(responseJson, new TypeReference<Map<String, Object>>() {
             });
             if (!Objects.equals(0, param.get("code"))) {
-                throw new RuntimeException("获取京东授权码失败，response:" + responseJson);
+                throw new AccountException("获取京东授权码失败，response:" + responseJson);
             }
         } catch (Exception e) {
             log.error("请求京东token异常", e);
-            throw new RuntimeException("请求京东token异常", e);
+            throw new AccountException("请求京东token异常", e);
         }
     }
 
