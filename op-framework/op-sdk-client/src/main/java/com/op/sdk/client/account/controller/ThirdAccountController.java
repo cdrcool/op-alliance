@@ -1,6 +1,6 @@
 package com.op.sdk.client.account.controller;
 
-import com.op.sdk.client.account.exception.AccountException;
+import com.op.sdk.client.account.exception.ThirdAccountException;
 import com.op.sdk.client.account.service.ThirdAccountService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -32,11 +32,11 @@ public abstract class ThirdAccountController {
 
         // 超时回调
         deferredResult.onTimeout(() -> {
-            throw new AccountException("请求第三方token超时，请稍后重试");
+            throw new ThirdAccountException("请求第三方token超时，请稍后重试");
         });
         // 失败回调
         deferredResult.onError(e -> {
-            throw new AccountException("请求第三方token异常：" + e.getMessage());
+            throw new ThirdAccountException("请求第三方token异常：" + e.getMessage());
         });
 
         return deferredResult;
@@ -66,11 +66,11 @@ public abstract class ThirdAccountController {
 
         // 超时回调
         deferredResult.onTimeout(() -> {
-            throw new AccountException("请求第三方token超时，请稍后重试");
+            throw new ThirdAccountException("请求第三方token超时，请稍后重试");
         });
         // 失败回调
         deferredResult.onError(e -> {
-            throw new AccountException("请求第三方token异常：" + e.getMessage());
+            throw new ThirdAccountException("请求第三方token异常：" + e.getMessage());
         });
 
         return deferredResult;

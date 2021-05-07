@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.op.sdk.client.account.entity.AccountType;
 import com.op.sdk.client.account.entity.CompanyInfo;
 import com.op.sdk.client.account.entity.ThirdAccount;
-import com.op.sdk.client.account.exception.AccountException;
+import com.op.sdk.client.account.exception.ThirdAccountException;
 import com.op.sdk.client.account.mapper.CompanyInfoMapper;
 import com.op.sdk.client.account.mapper.ThirdAccountMapper;
 import com.op.sdk.client.account.model.TokenRequestInfo;
@@ -84,7 +84,7 @@ public abstract class ThirdAccountService {
 
         TokenRequestInfo tokenRequestInfo = STORE.get(state);
         if (tokenRequestInfo == null) {
-            throw new AccountException("未找到与state：{}对应的token请求信息：" + state);
+            throw new ThirdAccountException("未找到与state：{}对应的token请求信息：" + state);
         }
         log.info("找到state：{}对应的第三方帐号：{}", state, tokenRequestInfo.getAccount());
 
@@ -96,7 +96,7 @@ public abstract class ThirdAccountService {
         jdAccountWrapper.eq(ThirdAccount::getAccount, tokenRequestInfo.getAccount());
         ThirdAccount thirdAccount = thirdAccountMapper.selectOne(jdAccountWrapper);
         if (thirdAccount == null) {
-            throw new AccountException("未找到第三方帐号：" + tokenRequestInfo.getAccount());
+            throw new ThirdAccountException("未找到第三方帐号：" + tokenRequestInfo.getAccount());
         }
         thirdAccount.setAccessToken(response.getAccessToken());
         thirdAccount.setRefreshToken(response.getRefreshToken());
@@ -214,7 +214,7 @@ public abstract class ThirdAccountService {
      */
     protected final SdkProperties.Account getAccountProperties() {
         return sdkProperties.getAccounts().computeIfAbsent(accountType().getValue(), (key) -> {
-            throw new AccountException("未配置" + accountType().getValue() + "账号的相关属性");
+            throw new ThirdAccountException("未配置" + accountType().getValue() + "账号的相关属性");
         });
     }
 
@@ -238,7 +238,7 @@ public abstract class ThirdAccountService {
         companyInfoWrapper.eq(CompanyInfo::getTaxpayerId, taxpayerId);
         CompanyInfo companyInfo = companyInfoMapper.selectOne(companyInfoWrapper);
         if (companyInfo == null) {
-            throw new AccountException("不存在纳税人为：" + taxpayerId + "的公司信息");
+            throw new ThirdAccountException("不存在纳税人为：" + taxpayerId + "的公司信息");
         }
 
 
@@ -251,7 +251,7 @@ public abstract class ThirdAccountService {
                 account = companyInfo.getSnAccount();
                 break;
             default:
-                throw new AccountException("不支持的账号类型：" + accountType().getValue());
+                throw new ThirdAccountException("不支持的账号类型：" + accountType().getValue());
         }
 
         LambdaQueryWrapper<ThirdAccount> thirdAccountWrapper = Wrappers.lambdaQuery();
@@ -259,7 +259,7 @@ public abstract class ThirdAccountService {
         thirdAccountWrapper.eq(ThirdAccount::getAccount, account);
         ThirdAccount thirdAccount = thirdAccountMapper.selectOne(thirdAccountWrapper);
         if (thirdAccount == null) {
-            throw new AccountException("不存在帐号名为：" + companyInfo.getJdAccount() + "的第三方帐号");
+            throw new ThirdAccountException("不存在帐号名为：" + companyInfo.getJdAccount() + "的第三方帐号");
         }
 
         log.info("找到纳税人识别号：{}对应的第三方帐号：{}", taxpayerId, thirdAccount.getAccount());
