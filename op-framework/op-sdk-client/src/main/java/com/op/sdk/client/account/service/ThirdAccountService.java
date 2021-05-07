@@ -86,17 +86,17 @@ public abstract class ThirdAccountService {
         if (tokenRequestInfo == null) {
             throw new AccountException("未找到与state：{}对应的token请求信息：" + state);
         }
-        log.info("找到state：{}对应的京东帐号：{}", state, tokenRequestInfo.getAccount());
+        log.info("找到state：{}对应的第三方帐号：{}", state, tokenRequestInfo.getAccount());
 
-        // 将京东帐号及其对应的token存到redis缓存
+        // 将第三方帐号及其对应的token存到redis缓存
         redisTemplate.opsForValue().set(tokenRequestInfo.getAccount(), response.getAccessToken());
 
-        // 查找京东帐号，并更新其对应的token响应
+        // 查找第三方帐号，并更新其对应的token响应
         LambdaQueryWrapper<ThirdAccount> jdAccountWrapper = Wrappers.lambdaQuery();
         jdAccountWrapper.eq(ThirdAccount::getAccount, tokenRequestInfo.getAccount());
         ThirdAccount thirdAccount = thirdAccountMapper.selectOne(jdAccountWrapper);
         if (thirdAccount == null) {
-            throw new AccountException("未找到京东帐号：" + tokenRequestInfo.getAccount());
+            throw new AccountException("未找到第三方帐号：" + tokenRequestInfo.getAccount());
         }
         thirdAccount.setAccessToken(response.getAccessToken());
         thirdAccount.setRefreshToken(response.getRefreshToken());
@@ -131,10 +131,10 @@ public abstract class ThirdAccountService {
     public String refreshToken(ThirdAccount thirdAccount) {
         TokenResponse response = getRefreshTokenResponse(thirdAccount);
 
-        // 将京东帐号及其对应的token存到redis缓存
+        // 将第三方帐号及其对应的token存到redis缓存
         redisTemplate.opsForValue().set(thirdAccount.getAccount(), response.getAccessToken());
 
-        // 更新京东帐号对应的token响应
+        // 更新第三方帐号对应的token响应
         thirdAccount.setAccessToken(response.getAccessToken());
         thirdAccount.setRefreshToken(response.getRefreshToken());
         thirdAccount.setAccessTokenExpiresAt(response.getTime() + response.getExpiresIn());
@@ -173,7 +173,7 @@ public abstract class ThirdAccountService {
             return;
         }
 
-        // 请求京东token
+        // 请求第三方token
         requestAccessToken(taxpayerId, deferredResult);
     }
 
