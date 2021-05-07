@@ -7,19 +7,19 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 /**
- * 刷新京东token定时任务
+ * 第三方token刷新定时任务
  *
  * @author cdrcool
  */
 @Component
-public class RefreshJdTokenTask {
+public class ThirdTokenRefreshTask {
     private final Map<String, ThirdAccountService> thirdAccountServices;
 
-    public RefreshJdTokenTask(Map<String, ThirdAccountService> thirdAccountServices) {
+    public ThirdTokenRefreshTask(Map<String, ThirdAccountService> thirdAccountServices) {
         this.thirdAccountServices = thirdAccountServices;
     }
 
-    @Scheduled(cron = "${sdk.accounts.jd.refresh-token-cron}")
+    @Scheduled(cron = "${sdk.accounts.refresh-token-cron}")
     public void execute() {
         thirdAccountServices.values().forEach(ThirdAccountService::refreshAllToken);
     }
