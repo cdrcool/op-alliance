@@ -30,7 +30,7 @@ public abstract class ThirdAccountController {
         thirdAccountService.requestAccessToken(taxpayerId, deferredResult);
 
         // 超时回调
-        deferredResult.onTimeout(() -> deferredResult.setErrorResult("请求第三方token超时"));
+        deferredResult.onTimeout(() -> deferredResult.setErrorResult("请求第三方token超时，请稍后重试"));
         // 失败回调
         deferredResult.onError(e -> deferredResult.setErrorResult("请求第三方token异常：" + e.getMessage()));
 
@@ -60,7 +60,7 @@ public abstract class ThirdAccountController {
         thirdAccountService.getAccessToken(taxpayerId, deferredResult);
 
         // 超时回调
-        deferredResult.onTimeout(() -> deferredResult.setErrorResult("获取第三方token超时"));
+        deferredResult.onTimeout(() -> deferredResult.setErrorResult("获取第三方token超时，请稍后重试"));
         // 失败回调
         deferredResult.onError(e -> deferredResult.setErrorResult("获取第三方token异常：" + e.getMessage()));
 
