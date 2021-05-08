@@ -1,0 +1,28 @@
+server:
+  port: 8090
+
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    # 确认消息成功发送到 exchange
+    publisher-confirm-type: simple
+    # 消息没有被路由到指定的 queue 时，将消息返回还是直接丢弃
+    publisher-returns: true
+    template:
+      # 消息没有被路由到指定的 queue 时，将消息返回还是直接丢弃，优先级高于 publisher-confirm-type
+      mandatory: true
+    listener:
+      simple:
+        acknowledge-mode: manual
+        # 开启消费者重新消费机制（发生异常时重新消费，默认关闭）
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 1000
+        # 消费端限流（默认值250）
+        prefetch: 250
+        # 消费者最小并发线程数（默认值1）
+        concurrency: 5
+        # 消费者最大并发线程数（默认值1）
+        max-concurrency: 10
