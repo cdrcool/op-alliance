@@ -100,6 +100,23 @@ public abstract class ThirdAccountService {
         if (thirdAccount == null) {
             throw new ThirdAccountException("未找到第三方帐号：" + tokenRequestInfo.getAccount());
         }
+        // 更新第三方账号对应的token信息
+        updateThirdAccount(thirdAccount, response);
+
+        DeferredResult<String> deferredResult = tokenRequestInfo.getDeferredResult();
+        if (deferredResult != null) {
+            // 将token设置到deferredResult里
+            deferredResult.setResult(response.getAccessToken());
+        }
+    }
+
+    /**
+     * 更新第三方账号对应的token信息
+     *
+     * @param thirdAccount 第三方账号
+     * @param response     第三方token响应
+     */
+    private void updateThirdAccount(ThirdAccount thirdAccount, TokenResponse response) {
         thirdAccount.setAccessToken(response.getAccessToken());
         thirdAccount.setRefreshToken(response.getRefreshToken());
         thirdAccount.setAccessTokenExpiresAt(response.getTime() + response.getExpiresIn() * 1000);
@@ -108,12 +125,6 @@ public abstract class ThirdAccountService {
             thirdAccount.setRefreshTokenExpiresAt(response.getTime() + response.getRefreshTokenExpires() * 1000);
         }
         thirdAccountMapper.updateById(thirdAccount);
-
-        DeferredResult<String> deferredResult = tokenRequestInfo.getDeferredResult();
-        if (deferredResult != null) {
-            // 将token设置到deferredResult里
-            deferredResult.setResult(response.getAccessToken());
-        }
     }
 
     /**
@@ -140,15 +151,8 @@ public abstract class ThirdAccountService {
         redisTemplate.opsForValue().set(thirdAccount.getAccount(), response.getAccessToken(),
                 System.currentTimeMillis() - (response.getTime() + response.getExpiresIn() * 1000), TimeUnit.MICROSECONDS);
 
-        // 更新第三方帐号对应的token响应
-        thirdAccount.setAccessToken(response.getAccessToken());
-        thirdAccount.setRefreshToken(response.getRefreshToken());
-        thirdAccount.setAccessTokenExpiresAt(response.getTime() + response.getExpiresIn() * 1000);
-        // 京东未返回刷新token过期时间
-        if (response.getRefreshTokenExpires() != null) {
-            thirdAccount.setRefreshTokenExpiresAt(response.getTime() + response.getRefreshTokenExpires() * 1000);
-        }
-        thirdAccountMapper.updateById(thirdAccount);
+        // 更新第三方账号对应的token信息
+        updateThirdAccount(thirdAccount, response);
 
         return response.getAccessToken();
     }
@@ -177,9 +181,16 @@ public abstract class ThirdAccountService {
         }
 
         // 如果数据据中有刷新令牌，且未过期，则通过刷新令牌获取访问令牌
-        if (StringUtils.hasText(thirdAccount.getRefreshToken()) && now.compareTo(thirdAccount.getRefreshTokenExpiresAt()) > 0) {
-            deferredResult.setResult(refreshToken(thirdAccount.getRefreshToken()));
-            return;
+        boolean doRefresh = StringUtils.hasText(thirdAccount.getRefreshToken()) &&
+                (thirdAccount.getRefreshTokenExpiresAt() == null || now.compareTo(thirdAccount.getRefreshTokenExpiresAt()) > 0);
+        if (doRefresh) {
+            try {
+                deferredResult.setResult(refreshToken(thirdAccount.getRefreshToken()));
+                return;
+            } catch (Exception e) {
+                log.error("刷新第三方token异常，第三方账号：{}，刷新token:{}",
+                        thirdAccount.getAccount(), thirdAccount.getRefreshToken(), e);
+            }
         }
 
         // 请求第三方token
