@@ -67,7 +67,7 @@ public class JdAccountServiceImpl extends ThirdAccountService {
             Map<String, Object> param = objectMapper.readValue(responseJson, new TypeReference<Map<String, Object>>() {
             });
             if (!Objects.equals(0, param.get("code"))) {
-                throw new ThirdAccountException("获取京东授权码失败，response:" + responseJson);
+                throw new ThirdAccountException("请求京东token失败，response:" + responseJson);
             }
         } catch (Exception e) {
             log.error("请求京东token异常", e);

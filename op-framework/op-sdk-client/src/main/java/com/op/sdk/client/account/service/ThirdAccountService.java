@@ -70,6 +70,8 @@ public abstract class ThirdAccountService {
         TokenRequestInfo tokenRequestInfo = new TokenRequestInfo(state, accountType(), thirdAccount.getAccount());
         // 保存当前请求的deferredResult，在token回调成功后对其setResult
         tokenRequestInfo.setDeferredResult(deferredResult);
+
+        log.info("保存state：{}对应的第三方帐号：{}", state, thirdAccount.getAccount());
         STORE.put(state, tokenRequestInfo);
     }
 
