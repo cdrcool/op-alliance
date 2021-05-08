@@ -112,6 +112,10 @@ public abstract class ThirdAccountService {
         }
     }
 
+    private String getAccessTokenKey(AccountType accountType, String account) {
+        return String.format("%s:%s", accountType.getValue(), account);
+    }
+
     /**
      * 更新第三方账号对应的token信息
      *

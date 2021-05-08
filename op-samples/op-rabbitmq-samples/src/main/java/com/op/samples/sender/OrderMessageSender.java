@@ -31,7 +31,7 @@ public class OrderMessageSender {
      */
     public void sendTtlMessage() {
         String correlationId = UUID.randomUUID().toString();
-        Message message = MessageBuilder
+        Message ttlMessage = MessageBuilder
                 .withBody("123456".getBytes(StandardCharsets.UTF_8))
                 // 设置消息过期时间（10s）
                 .andProperties(MessagePropertiesBuilder.newInstance().setExpiration("10000").build())
@@ -39,8 +39,26 @@ public class OrderMessageSender {
         rabbitTemplate.convertAndSend(
                 "order_create_ttl_exchange",
                 "order_create_ttl",
-                message,
+                ttlMessage,
                 new CorrelationData(correlationId));
-        log.info("发送订单ttl消息，消息id：{}，消息内容：{}，消息属性：{}", correlationId, new String(message.getBody()), message.getMessageProperties());
+        log.info("发送订单ttl消息，消息id：{}，消息内容：{}，消息属性：{}", correlationId, new String(ttlMessage.getBody()), ttlMessage.getMessageProperties());
+    }
+
+    /**
+     * 发送订单延迟消息（使用 rabbitmq_delayed_message_exchange 插件）
+     */
+    public void sendDelayMessage() {
+        String correlationId = UUID.randomUUID().toString();
+        Message delayMessage = MessageBuilder
+                .withBody("123456".getBytes(StandardCharsets.UTF_8))
+                // 设置消息延迟（10s）
+                .andProperties(MessagePropertiesBuilder.newInstance().setHeader("x-delay", 10000).build())
+                .build();
+        rabbitTemplate.convertAndSend(
+                "order_create_delay_exchange",
+                "order_create_delay",
+                delayMessage,
+                new CorrelationData(correlationId));
+        log.info("发送订单delay消息，消息id：{}，消息内容：{}，消息属性：{}", correlationId, new String(delayMessage.getBody()), delayMessage.getMessageProperties());
     }
 }

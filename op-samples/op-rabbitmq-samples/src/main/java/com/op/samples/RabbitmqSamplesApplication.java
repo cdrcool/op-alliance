@@ -24,6 +24,6 @@ public class RabbitmqSamplesApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        orderMessageSender.sendTtlMessage();
+        orderMessageSender.sendDelayMessage();
     }
 }
