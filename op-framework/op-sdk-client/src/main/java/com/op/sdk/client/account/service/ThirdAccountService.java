@@ -175,7 +175,7 @@ public abstract class ThirdAccountService {
             return;
         }
 
-        // 如果数据据中有访问令牌，且未过期，则返回数据据中的访问令牌
+        // 如果数据库中有访问令牌，且未过期，则返回数据据中的访问令牌
         Long now = System.currentTimeMillis();
         if (StringUtils.hasText(thirdAccount.getAccessToken()) && now.compareTo(thirdAccount.getAccessTokenExpiresAt()) > 0) {
             deferredResult.setResult(thirdAccount.getAccessToken());
