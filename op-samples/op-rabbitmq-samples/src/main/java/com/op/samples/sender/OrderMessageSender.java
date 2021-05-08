@@ -30,7 +30,7 @@ public class OrderMessageSender {
      * 由于队列的先进先出特性，死信队列不适合为不同消息设置不同的过期时间时
      */
     public void sendTtlMessage() {
-        String messageId = UUID.randomUUID().toString().replace("-", "");
+        String correlationId = UUID.randomUUID().toString();
         Message message = MessageBuilder
                 .withBody("123456".getBytes(StandardCharsets.UTF_8))
                 // 设置消息过期时间（10s）
@@ -40,7 +40,7 @@ public class OrderMessageSender {
                 "order_create_ttl_exchange",
                 "order_create_ttl",
                 message,
-                new CorrelationData(messageId));
-        log.info("发送订单ttl消息，消息id：{}，消息内容：{}", messageId, message);
+                new CorrelationData(correlationId));
+        log.info("发送订单ttl消息，消息id：{}，消息内容：{}，消息属性：{}", correlationId, new String(message.getBody()), message.getMessageProperties());
     }
 }

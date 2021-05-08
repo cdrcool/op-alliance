@@ -33,7 +33,7 @@ public class OrderMessageReceiver {
     ))
     public void onReceiveDeadLetterMessage(Message message, Channel channel, @Header("spring_returned_message_correlation") String correlationId,
                                            @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) throws IOException {
-        log.info("接收订单ttl消息，消息id：{}，消息内容：{}", correlationId, message);
+        log.info("接收订单ttl消息，消息id：{}，消息内容：{}，消息属性：{}", correlationId, new String(message.getBody()), message.getMessageProperties());
 
         channel.basicAck(deliveryTag, false);
     }
