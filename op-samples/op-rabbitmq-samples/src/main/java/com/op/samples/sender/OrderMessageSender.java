@@ -9,8 +9,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 /**
@@ -43,7 +41,6 @@ public class OrderMessageSender {
                 "order_create_ttl",
                 message,
                 new CorrelationData(messageId));
-        log.info("发送订单ttl消息，当前时间：{}，消息id：{}，消息内容：{}",
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")), messageId, message);
+        log.info("发送订单ttl消息，消息id：{}，消息内容：{}", messageId, message);
     }
 }

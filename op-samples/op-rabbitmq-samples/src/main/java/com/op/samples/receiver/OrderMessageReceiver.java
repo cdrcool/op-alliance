@@ -12,8 +12,6 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 /**
  * 订单消息接收类
@@ -35,8 +33,7 @@ public class OrderMessageReceiver {
     ))
     public void onReceiveDeadLetterMessage(Message message, Channel channel, @Header("spring_returned_message_correlation") String correlationId,
                                            @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) throws IOException {
-        log.info("接收订单ttl消息，当前时间：{}，消息id：{}，消息内容：{}",
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")), correlationId, message);
+        log.info("接收订单ttl消息，消息id：{}，消息内容：{}", correlationId, message);
 
         channel.basicAck(deliveryTag, false);
     }

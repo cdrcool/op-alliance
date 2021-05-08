@@ -34,7 +34,7 @@ public class RabbitTemplateConfig implements RabbitTemplate.ConfirmCallback, Rab
      */
     @Override
     public void confirm(CorrelationData correlationData, boolean ack, String cause) {
-        log.info("消息到达了exchange，消息id：{}, ack: {}, cause: {}", correlationData, ack, cause);
+        log.info("消息到达exchange，消息id：{}, ack: {}, cause: {}", correlationData, ack, cause);
     }
 
     /**
