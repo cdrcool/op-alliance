@@ -52,7 +52,7 @@ public abstract class ThirdAccountController {
     @ApiOperation("刷新第三方token（未传递纳税人识别号，则刷新默认的第三方token）")
     @PostMapping("/refresh-token")
     public String refreshToken(@ApiParam("纳税人识别号") String taxpayerId) {
-        return thirdAccountService.refreshToken(taxpayerId);
+        return thirdAccountService.refreshAccessToken(taxpayerId);
     }
 
     @ApiOperation("获取第三方token（未传递纳税人识别号，则获取默认的第三方token）")

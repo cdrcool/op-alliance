@@ -139,9 +139,9 @@ public abstract class ThirdAccountService {
      * @param taxpayerId 纳税人识别号
      * @return 第三方token
      */
-    public String refreshToken(String taxpayerId) {
+    public String refreshAccessToken(String taxpayerId) {
         ThirdAccount thirdAccount = getThirdAccount(taxpayerId);
-        return refreshToken(thirdAccount);
+        return refreshAccessToken(thirdAccount);
     }
 
     /**
@@ -150,7 +150,7 @@ public abstract class ThirdAccountService {
      * @param thirdAccount 第三方账号
      * @return 第三方token
      */
-    public String refreshToken(ThirdAccount thirdAccount) {
+    public String refreshAccessToken(ThirdAccount thirdAccount) {
         TokenResponse response = getRefreshTokenResponse(thirdAccount);
 
         // 将第三方帐号及其对应的token存到redis缓存
@@ -191,7 +191,7 @@ public abstract class ThirdAccountService {
                 (thirdAccount.getRefreshTokenExpiresAt() == null || now.compareTo(thirdAccount.getRefreshTokenExpiresAt()) > 0);
         if (doRefresh) {
             try {
-                deferredResult.setResult(refreshToken(thirdAccount.getRefreshToken()));
+                deferredResult.setResult(refreshAccessToken(thirdAccount.getRefreshToken()));
                 return;
             } catch (Exception e) {
                 log.error("刷新第三方token异常，第三方账号：{}，刷新token:{}",
@@ -226,7 +226,7 @@ public abstract class ThirdAccountService {
         List<ThirdAccount> thirdAccounts = thirdAccountMapper.selectList(jdAccountWrapper);
         thirdAccounts.forEach(thirdAccount -> {
             try {
-                refreshToken(thirdAccount);
+                refreshAccessToken(thirdAccount);
             } catch (Exception e) {
                 log.error("刷新第三方token异常，账号信息：{}", thirdAccount, e);
             }
