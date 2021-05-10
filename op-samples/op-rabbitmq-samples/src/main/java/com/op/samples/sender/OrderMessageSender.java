@@ -52,7 +52,7 @@ public class OrderMessageSender {
         Message delayMessage = MessageBuilder
                 .withBody("123456".getBytes(StandardCharsets.UTF_8))
                 // 设置消息延迟（10s）
-                .andProperties(MessagePropertiesBuilder.newInstance().setHeader("x-delay", 10000).build())
+                .andProperties(MessagePropertiesBuilder.newInstance().setHeader("x-delay", 50000).build())
                 .build();
         rabbitTemplate.convertAndSend(
                 "order_create_delay_exchange",
@@ -60,5 +60,19 @@ public class OrderMessageSender {
                 delayMessage,
                 new CorrelationData(correlationId));
         log.info("发送订单delay消息，消息id：{}，消息内容：{}，消息属性：{}", correlationId, new String(delayMessage.getBody()), delayMessage.getMessageProperties());
+
+
+        String correlationId2 = UUID.randomUUID().toString();
+        Message delayMessage2 = MessageBuilder
+                .withBody("abcdef".getBytes(StandardCharsets.UTF_8))
+                // 设置消息延迟（10s）
+                .andProperties(MessagePropertiesBuilder.newInstance().setHeader("x-delay", 10000).build())
+                .build();
+        rabbitTemplate.convertAndSend(
+                "order_create_delay_exchange",
+                "order_create_delay",
+                delayMessage2,
+                new CorrelationData(correlationId2));
+        log.info("发送订单delay消息，消息id：{}，消息内容：{}，消息属性：{}", correlationId2, new String(delayMessage2.getBody()), delayMessage2.getMessageProperties());
     }
 }
