@@ -2,6 +2,8 @@ package com.op.sdk.client.account.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.op.sdk.client.account.entity.AccountType;
 import com.op.sdk.client.account.entity.CompanyInfo;
 import com.op.sdk.client.account.entity.ThirdAccount;
@@ -18,6 +20,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -65,14 +68,14 @@ public abstract class ThirdAccountService {
     public void requestAccessToken(String taxpayerId, DeferredResult<String> deferredResult) {
         ThirdAccount thirdAccount = getThirdAccount(taxpayerId);
         String state = UUID.randomUUID().toString();
-        requestAccessToken(thirdAccount, state);
 
         TokenRequestInfo tokenRequestInfo = new TokenRequestInfo(state, accountType(), thirdAccount.getAccount());
         // 保存当前请求的deferredResult，在token回调成功后对其setResult
         tokenRequestInfo.setDeferredResult(deferredResult);
-
-        log.info("保存state：{}对应的第三方帐号：{}", state, thirdAccount.getAccount());
         STORE.put(state, tokenRequestInfo);
+        log.info("保存state：{}对应的第三方帐号：{}", state, thirdAccount.getAccount());
+
+        requestAccessToken(thirdAccount, state);
     }
 
     /**
