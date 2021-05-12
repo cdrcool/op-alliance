@@ -3,10 +3,8 @@ package com.op.sdk.client.account.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.op.sdk.client.account.entity.AccountType;
-import com.op.sdk.client.account.entity.CompanyInfo;
 import com.op.sdk.client.account.entity.ThirdAccount;
 import com.op.sdk.client.account.exception.ThirdAccountException;
-import com.op.sdk.client.account.mapper.CompanyInfoMapper;
 import com.op.sdk.client.account.mapper.ThirdAccountMapper;
 import com.op.sdk.client.account.model.TokenRequestInfo;
 import com.op.sdk.client.account.model.TokenResponse;
@@ -18,8 +16,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -35,16 +35,13 @@ public abstract class ThirdAccountService {
 
     private final SdkProperties sdkProperties;
     private final ThirdAccountMapper thirdAccountMapper;
-    private final CompanyInfoMapper companyInfoMapper;
     private final RedisTemplate<String, Object> redisTemplate;
 
     public ThirdAccountService(SdkProperties sdkProperties,
                                ThirdAccountMapper thirdAccountMapper,
-                               CompanyInfoMapper companyInfoMapper,
                                RedisTemplate<String, Object> redisTemplate) {
         this.sdkProperties = sdkProperties;
         this.thirdAccountMapper = thirdAccountMapper;
-        this.companyInfoMapper = companyInfoMapper;
         this.redisTemplate = redisTemplate;
     }
 
@@ -59,11 +56,11 @@ public abstract class ThirdAccountService {
     /**
      * 请求第三方token
      *
-     * @param taxpayerId     纳税人识别号
+     * @param account        第三方账号
      * @param deferredResult {@link DeferredResult}
      */
-    public void requestAccessToken(String taxpayerId, DeferredResult<String> deferredResult) {
-        ThirdAccount thirdAccount = getThirdAccount(taxpayerId);
+    public void requestAccessToken(String account, DeferredResult<String> deferredResult) {
+        ThirdAccount thirdAccount = getThirdAccount(account);
         String state = UUID.randomUUID().toString();
         requestAccessToken(thirdAccount, state);
 
@@ -92,7 +89,7 @@ public abstract class ThirdAccountService {
         log.info("找到state：{}对应的第三方帐号：{}", state, tokenRequestInfo.getAccount());
 
         // 将第三方帐号及其对应的token存到redis缓存
-        redisTemplate.opsForValue().set(tokenRequestInfo.getAccount(), response.getAccessToken(),
+        redisTemplate.opsForValue().set(getAccessTokenKey(tokenRequestInfo.getAccount()), response.getAccessToken(),
                 System.currentTimeMillis() - (response.getTime() + response.getExpiresIn() * 1000), TimeUnit.MICROSECONDS);
 
         // 查找第三方帐号，并更新其对应的token响应
@@ -112,8 +109,14 @@ public abstract class ThirdAccountService {
         }
     }
 
-    private String getAccessTokenKey(AccountType accountType, String account) {
-        return String.format("%s:%s", accountType.getValue(), account);
+    /**
+     * 获取第三方账号的access token的redis key
+     *
+     * @param account 第三方账号
+     * @return redis key
+     */
+    private String getAccessTokenKey(String account) {
+        return String.format("%s:%s", accountType().getValue(), account);
     }
 
     /**
@@ -123,24 +126,35 @@ public abstract class ThirdAccountService {
      * @param response     第三方token响应
      */
     private void updateThirdAccount(ThirdAccount thirdAccount, TokenResponse response) {
-        thirdAccount.setAccessToken(response.getAccessToken());
-        thirdAccount.setRefreshToken(response.getRefreshToken());
-        thirdAccount.setAccessTokenExpiresAt(response.getTime() + response.getExpiresIn() * 1000);
-        // 京东未返回刷新token过期时间
-        if (response.getRefreshTokenExpires() != null) {
-            thirdAccount.setRefreshTokenExpiresAt(response.getTime() + response.getRefreshTokenExpires() * 1000);
+        LocalDateTime now = LocalDateTime.now();
+
+        // 京东6小时后获取或刷新token才会返回新的token
+        if (!Objects.equals(thirdAccount.getAccessToken(), response.getAccessToken())) {
+            thirdAccount.setAccessToken(response.getAccessToken());
+            thirdAccount.setAccessTokenExpiresAt(response.getTime() + response.getExpiresIn() * 1000);
+            thirdAccount.setUpdateAccessTokenTime(now);
         }
+        // 京东6小时后获取或刷新token才会返回新的token
+        if (!Objects.equals(thirdAccount.getRefreshToken(), response.getRefreshToken())) {
+            thirdAccount.setRefreshToken(response.getRefreshToken());
+            // 京东未返回刷新token的过期时间
+            if (response.getRefreshTokenExpires() != null) {
+                thirdAccount.setRefreshTokenExpiresAt(response.getTime() + response.getRefreshTokenExpires() * 1000);
+            }
+            thirdAccount.setUpdateRefreshTokenTime(now);
+        }
+
         thirdAccountMapper.updateById(thirdAccount);
     }
 
     /**
      * 刷新第三方token
      *
-     * @param taxpayerId 纳税人识别号
+     * @param account 第三方账号
      * @return 第三方token
      */
-    public String refreshAccessToken(String taxpayerId) {
-        ThirdAccount thirdAccount = getThirdAccount(taxpayerId);
+    public String refreshAccessToken(String account) {
+        ThirdAccount thirdAccount = getThirdAccount(account);
         return refreshAccessToken(thirdAccount);
     }
 
@@ -154,7 +168,7 @@ public abstract class ThirdAccountService {
         TokenResponse response = getRefreshTokenResponse(thirdAccount);
 
         // 将第三方帐号及其对应的token存到redis缓存
-        redisTemplate.opsForValue().set(thirdAccount.getAccount(), response.getAccessToken(),
+        redisTemplate.opsForValue().set(getAccessTokenKey(thirdAccount.getAccount()), response.getAccessToken(),
                 System.currentTimeMillis() - (response.getTime() + response.getExpiresIn() * 1000), TimeUnit.MICROSECONDS);
 
         // 更新第三方账号对应的token信息
@@ -166,15 +180,16 @@ public abstract class ThirdAccountService {
     /**
      * 获取第三方token
      *
-     * @param taxpayerId     纳税人识别号
+     * @param account        第三方账号
      * @param deferredResult {@link DeferredResult}
      */
-    public void getAccessToken(String taxpayerId, DeferredResult<String> deferredResult) {
-        ThirdAccount thirdAccount = getThirdAccount(taxpayerId);
+    public void getAccessToken(String account, DeferredResult<String> deferredResult) {
+        ThirdAccount thirdAccount = getThirdAccount(account);
 
         // 如果缓存中有访问令牌，则返回缓存中的访问令牌
-        String token = (String) redisTemplate.opsForValue().get(thirdAccount.getAccount());
+        String token = (String) redisTemplate.opsForValue().get(getAccessTokenKey(thirdAccount.getAccount()));
         if (StringUtils.hasText(token)) {
+            log.info("从缓存中获取到access token：{}", token);
             deferredResult.setResult(token);
             return;
         }
@@ -182,6 +197,7 @@ public abstract class ThirdAccountService {
         // 如果数据库中有访问令牌，且未过期，则返回数据据中的访问令牌
         Long now = System.currentTimeMillis();
         if (StringUtils.hasText(thirdAccount.getAccessToken()) && now.compareTo(thirdAccount.getAccessTokenExpiresAt()) > 0) {
+            log.info("从缓存中获取到access token：{}", thirdAccount.getAccessToken());
             deferredResult.setResult(thirdAccount.getAccessToken());
             return;
         }
@@ -191,6 +207,7 @@ public abstract class ThirdAccountService {
                 (thirdAccount.getRefreshTokenExpiresAt() == null || now.compareTo(thirdAccount.getRefreshTokenExpiresAt()) > 0);
         if (doRefresh) {
             try {
+                log.info("从缓存中获取到refresh token：{}，执行刷新token操作", thirdAccount.getRefreshToken());
                 deferredResult.setResult(refreshAccessToken(thirdAccount.getRefreshToken()));
                 return;
             } catch (Exception e) {
@@ -200,7 +217,7 @@ public abstract class ThirdAccountService {
         }
 
         // 请求第三方token
-        requestAccessToken(taxpayerId, deferredResult);
+        requestAccessToken(account, deferredResult);
     }
 
     /**
@@ -247,48 +264,19 @@ public abstract class ThirdAccountService {
     /**
      * 获取第三方账号
      *
-     * @param taxpayerId 纳税人识别号
+     * @param account 第三方账号
      * @return 第三方账号
      */
-    protected final ThirdAccount getThirdAccount(String taxpayerId) {
-        if (!StringUtils.hasText(taxpayerId)) {
-            SdkProperties.Account account = getAccountProperties();
-
-            ThirdAccount thirdAccount = new ThirdAccount();
-            thirdAccount.setAccount(account.getAccount());
-            thirdAccount.setPassword(account.getPassword());
-            return thirdAccount;
-        }
-
-        LambdaQueryWrapper<CompanyInfo> companyInfoWrapper = Wrappers.lambdaQuery();
-        companyInfoWrapper.eq(CompanyInfo::getTaxpayerId, taxpayerId);
-        CompanyInfo companyInfo = companyInfoMapper.selectOne(companyInfoWrapper);
-        if (companyInfo == null) {
-            throw new ThirdAccountException("不存在纳税人为：" + taxpayerId + "的公司信息");
-        }
-
-
-        String account;
-        switch (accountType()) {
-            case JD:
-                account = companyInfo.getJdAccount();
-                break;
-            case SN:
-                account = companyInfo.getSnAccount();
-                break;
-            default:
-                throw new ThirdAccountException("不支持的账号类型：" + accountType().getValue());
-        }
-
+    protected final ThirdAccount getThirdAccount(String account) {
         LambdaQueryWrapper<ThirdAccount> thirdAccountWrapper = Wrappers.lambdaQuery();
         thirdAccountWrapper.eq(ThirdAccount::getAccountType, accountType().getValue());
         thirdAccountWrapper.eq(ThirdAccount::getAccount, account);
         ThirdAccount thirdAccount = thirdAccountMapper.selectOne(thirdAccountWrapper);
         if (thirdAccount == null) {
-            throw new ThirdAccountException("不存在帐号名为：" + companyInfo.getJdAccount() + "的第三方帐号");
+            throw new ThirdAccountException("不存在帐号名为：" + account + "的第三方帐号");
         }
 
-        log.info("找到纳税人识别号：{}对应的第三方帐号：{}", taxpayerId, thirdAccount.getAccount());
+        log.info("找到帐号名为：{}对应的第三方帐号：{}", account, thirdAccount.getAccount());
         return thirdAccount;
     }
 

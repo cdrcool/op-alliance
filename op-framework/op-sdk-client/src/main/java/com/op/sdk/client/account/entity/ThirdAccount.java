@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 /**
  * 第三方帐号
  *
@@ -55,4 +58,14 @@ public class ThirdAccount {
      * 刷新令牌过期时间
      */
     private Long refreshTokenExpiresAt;
+
+    /**
+     * 访问令牌更新时间
+     */
+    private LocalDateTime accessTokenUpdateTime;
+
+    /**
+     * 刷新令牌更新时间
+     */
+    private LocalDateTime refreshTokenUpdateTime;
 }

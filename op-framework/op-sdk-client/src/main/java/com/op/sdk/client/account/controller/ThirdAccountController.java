@@ -21,14 +21,14 @@ public abstract class ThirdAccountController {
         this.thirdAccountService = thirdAccountService;
     }
 
-    @ApiOperation("请求第三方token（未传递纳税人识别号，则请求的默认第三方token）")
+    @ApiOperation("请求第三方token（未传递第三方账号，则请求的默认账号的token）")
     @PostMapping("/request-access-token")
-    public DeferredResult<String> requestAccessToken(@ApiParam("纳税人识别号") String taxpayerId,
+    public DeferredResult<String> requestAccessToken(@ApiParam("第三方账号") String account,
                                                      @ApiParam(value = "超时时间（单位：秒）", defaultValue = "3")
                                                      @RequestParam(defaultValue = "3") Integer timeout) {
         DeferredResult<String> deferredResult = new DeferredResult<>(timeout.longValue() * 1000);
 
-        thirdAccountService.requestAccessToken(taxpayerId, deferredResult);
+        thirdAccountService.requestAccessToken(account, deferredResult);
 
         // 超时回调
         deferredResult.onTimeout(() -> {
@@ -49,20 +49,20 @@ public abstract class ThirdAccountController {
         thirdAccountService.callbackToken(code, state);
     }
 
-    @ApiOperation("刷新第三方token（未传递纳税人识别号，则刷新默认的第三方token）")
+    @ApiOperation("刷新第三方token（未传递第三方账号，则刷新默认账号的token）")
     @PostMapping("/refresh-token")
-    public String refreshToken(@ApiParam("纳税人识别号") String taxpayerId) {
+    public String refreshToken(@ApiParam("第三方账号") String taxpayerId) {
         return thirdAccountService.refreshAccessToken(taxpayerId);
     }
 
-    @ApiOperation("获取第三方token（未传递纳税人识别号，则获取默认的第三方token）")
+    @ApiOperation("获取第三方token（未传递第三方账号，则获取默认账号的token）")
     @PostMapping("/get-access-token")
-    public DeferredResult<String> getAccessToken(@ApiParam("纳税人识别号") String taxpayerId,
+    public DeferredResult<String> getAccessToken(@ApiParam("第三方账号") String account,
                                                  @ApiParam(value = "超时时间（单位：秒）", defaultValue = "3")
                                                  @RequestParam(defaultValue = "3") Integer timeout) {
         DeferredResult<String> deferredResult = new DeferredResult<>(timeout.longValue() * 1000);
 
-        thirdAccountService.getAccessToken(taxpayerId, deferredResult);
+        thirdAccountService.getAccessToken(account, deferredResult);
 
         // 超时回调
         deferredResult.onTimeout(() -> {

@@ -1,9 +1,7 @@
 package com.op.sdk.client.account.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.op.sdk.client.account.entity.AccountType;
 import com.op.sdk.client.account.entity.ThirdAccount;
-import com.op.sdk.client.account.mapper.CompanyInfoMapper;
 import com.op.sdk.client.account.mapper.ThirdAccountMapper;
 import com.op.sdk.client.account.model.TokenResponse;
 import com.op.sdk.client.config.SdkProperties;
@@ -22,9 +20,8 @@ public class SnAccountServiceImpl extends ThirdAccountService {
 
     public SnAccountServiceImpl(SdkProperties sdkProperties,
                                 ThirdAccountMapper thirdAccountMapper,
-                                CompanyInfoMapper companyInfoMapper,
                                 RedisTemplate<String, Object> redisTemplate) {
-        super(sdkProperties, thirdAccountMapper, companyInfoMapper, redisTemplate);
+        super(sdkProperties, thirdAccountMapper, redisTemplate);
     }
 
     @Override

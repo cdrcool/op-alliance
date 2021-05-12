@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.op.sdk.client.account.entity.AccountType;
 import com.op.sdk.client.account.entity.ThirdAccount;
 import com.op.sdk.client.account.exception.ThirdAccountException;
-import com.op.sdk.client.account.mapper.CompanyInfoMapper;
 import com.op.sdk.client.account.mapper.ThirdAccountMapper;
 import com.op.sdk.client.account.model.TokenResponse;
 import com.op.sdk.client.account.utils.RsaCoderUtils;
@@ -35,10 +34,9 @@ public class JdAccountServiceImpl extends ThirdAccountService {
 
     public JdAccountServiceImpl(SdkProperties sdkProperties,
                                 ThirdAccountMapper thirdAccountMapper,
-                                CompanyInfoMapper companyInfoMapper,
                                 JdTokenFeignClient jdTokenFeignClient,
                                 RedisTemplate<String, Object> redisTemplate) {
-        super(sdkProperties, thirdAccountMapper, companyInfoMapper, redisTemplate);
+        super(sdkProperties, thirdAccountMapper, redisTemplate);
         this.jdTokenFeignClient = jdTokenFeignClient;
     }
 
