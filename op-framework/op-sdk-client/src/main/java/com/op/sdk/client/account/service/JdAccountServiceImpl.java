@@ -87,7 +87,7 @@ public class JdAccountServiceImpl extends ThirdAccountService {
     protected TokenResponse getRefreshTokenResponse(ThirdAccount thirdAccount) {
         JdTokenResponse response = jdTokenFeignClient.refreshToken(getAccountProperties().getAppKey(),
                 getAccountProperties().getAppSecret(),
-                "authorization_code",
+                "refresh_token",
                 thirdAccount.getRefreshToken());
         log.info("刷新京东token成功，token响应：{}", response);
         return TokenResponse.build(response);
