@@ -62,14 +62,14 @@ public abstract class ThirdAccountService {
     public void requestAccessToken(String account, DeferredResult<String> deferredResult) {
         ThirdAccount thirdAccount = getThirdAccount(account);
         String state = UUID.randomUUID().toString();
-        requestAccessToken(thirdAccount, state);
 
         TokenRequestInfo tokenRequestInfo = new TokenRequestInfo(state, accountType(), thirdAccount.getAccount());
         // 保存当前请求的deferredResult，在token回调成功后对其setResult
         tokenRequestInfo.setDeferredResult(deferredResult);
-
-        log.info("保存state：{}对应的第三方帐号：{}", state, thirdAccount.getAccount());
         STORE.put(state, tokenRequestInfo);
+        log.info("保存state：{}对应的第三方帐号：{}", state, thirdAccount.getAccount());
+
+        requestAccessToken(thirdAccount, state);
     }
 
     /**
@@ -132,7 +132,7 @@ public abstract class ThirdAccountService {
         if (!Objects.equals(thirdAccount.getAccessToken(), response.getAccessToken())) {
             thirdAccount.setAccessToken(response.getAccessToken());
             thirdAccount.setAccessTokenExpiresAt(response.getTime() + response.getExpiresIn() * 1000);
-            thirdAccount.setUpdateAccessTokenTime(now);
+            thirdAccount.setAccessTokenUpdateTime(now);
         }
         // 京东6小时后获取或刷新token才会返回新的token
         if (!Objects.equals(thirdAccount.getRefreshToken(), response.getRefreshToken())) {
@@ -141,7 +141,7 @@ public abstract class ThirdAccountService {
             if (response.getRefreshTokenExpires() != null) {
                 thirdAccount.setRefreshTokenExpiresAt(response.getTime() + response.getRefreshTokenExpires() * 1000);
             }
-            thirdAccount.setUpdateRefreshTokenTime(now);
+            thirdAccount.setRefreshTokenUpdateTime(now);
         }
 
         thirdAccountMapper.updateById(thirdAccount);
