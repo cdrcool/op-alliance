@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>op-sdk-client-web</artifactId>
+    <artifactId>op-sdk-client-web-demo</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

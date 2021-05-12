@@ -13,7 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>op-boot-sdk-client-starter</module>
-        <module>op-sdk-client-web</module>
+        <module>op-sdk-client-web-demo</module>
     </modules>
 
     <properties>
