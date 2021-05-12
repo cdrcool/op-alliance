@@ -1,8 +1,6 @@
-package com.op.samples.config;
+package com.op.web.config;
 
-import io.swagger.annotations.Api;
 import io.swagger.models.auth.In;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.ReflectionUtils;
@@ -30,22 +28,17 @@ import java.util.List;
  * @author cdrcool
  */
 @EnableOpenApi
-@EnableConfigurationProperties(SwaggerProperties.class)
 @Configuration
 public class SwaggerConfig implements WebMvcConfigurer {
-    private final SwaggerProperties properties;
-
-    public SwaggerConfig(SwaggerProperties properties) {
-        this.properties = properties;
-    }
 
     /**
-     * 构建默认 Docket
+     * 全局 Docket
      */
-    private Docket defaultDocket() {
+    @Bean
+    public Docket docket() {
         return new Docket(DocumentationType.OAS_30).pathMapping("/")
                 // 设置是否开启 Swagger
-                .enable(properties.getEnable())
+                .enable(true)
                 // 设置 API 元信息
                 .apiInfo(apiInfo())
                 // 设置支持的通讯协议集合
@@ -60,39 +53,17 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 // 设置授权信息全局应用
                 .securityContexts(securityContexts())
                 // 设置接口调试地址
-                .host(properties.getTryHost());
-    }
-
-    /**
-     * Example Docket
-     */
-    @Bean
-    public Docket exampleDocket() {
-        Docket docket = defaultDocket();
-        docket.select()
-                .apis(RequestHandlerSelectors.withClassAnnotation(Api.class))
-                .paths(PathSelectors.ant("/example/**"))
-                .build()
-        .groupName("Example");
-        return docket;
-    }
-
-    /**
-     * 全局 Docket
-     */
-    @Bean
-    public Docket globalDocket() {
-        return defaultDocket().groupName("global");
+                .host("http://localhost:8080");
     }
 
     /**
      * 设置 API 元信息
      */
     private ApiInfo apiInfo() {
-        return new ApiInfoBuilder().title(properties.getAppName() + " Api Doc")
-                .description(properties.getAppDesc())
-                .version(properties.getAppVersion())
-                .contact(new Contact(properties.getContact().getName(), properties.getContact().getUrl(), properties.getContact().getEmail()))
+        return new ApiInfoBuilder().title("Third Sdk Api Doc")
+                .description("Third Sdk Api Doc")
+                .version("1.0")
+                .contact(new Contact("cdrcool", "http://www.cdrcool.github.io", "cdr_cool@163.com"))
                 .build();
     }
 

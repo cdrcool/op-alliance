@@ -4,7 +4,7 @@ import com.op.sdk.client.account.entity.AccountType;
 import com.op.sdk.client.account.entity.ThirdAccount;
 import com.op.sdk.client.account.mapper.ThirdAccountMapper;
 import com.op.sdk.client.account.model.TokenResponse;
-import com.op.sdk.client.config.SdkProperties;
+import com.op.sdk.client.SdkProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;

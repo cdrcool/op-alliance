@@ -8,7 +8,7 @@ import com.op.sdk.client.account.exception.ThirdAccountException;
 import com.op.sdk.client.account.mapper.ThirdAccountMapper;
 import com.op.sdk.client.account.model.TokenRequestInfo;
 import com.op.sdk.client.account.model.TokenResponse;
-import com.op.sdk.client.config.SdkProperties;
+import com.op.sdk.client.SdkProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
@@ -50,7 +50,7 @@ public abstract class ThirdAccountService {
      */
     @PostConstruct
     public void postConstruct() {
-        initAllToken();
+//        initAllToken();
     }
 
     /**
@@ -128,13 +128,13 @@ public abstract class ThirdAccountService {
     private void updateThirdAccount(ThirdAccount thirdAccount, TokenResponse response) {
         LocalDateTime now = LocalDateTime.now();
 
-        // 京东6小时后获取或刷新token才会返回新的token
+        // 京东8小时后获取或刷新token才会返回新的token
         if (!Objects.equals(thirdAccount.getAccessToken(), response.getAccessToken())) {
             thirdAccount.setAccessToken(response.getAccessToken());
             thirdAccount.setAccessTokenExpiresAt(response.getTime() + response.getExpiresIn() * 1000);
             thirdAccount.setAccessTokenUpdateTime(now);
         }
-        // 京东6小时后获取或刷新token才会返回新的token
+        // 京东8小时后获取或刷新token才会返回新的token
         if (!Objects.equals(thirdAccount.getRefreshToken(), response.getRefreshToken())) {
             thirdAccount.setRefreshToken(response.getRefreshToken());
             // 京东未返回刷新token的过期时间

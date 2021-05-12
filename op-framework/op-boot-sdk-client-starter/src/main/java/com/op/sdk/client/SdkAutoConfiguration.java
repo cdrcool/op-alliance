@@ -1,14 +1,15 @@
 package com.op.sdk.client;
 
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
- * 应用启动类
+ * sdk 自动装配类
  *
  * @author cdrcool
  */
@@ -16,10 +17,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableAsync
 @EnableFeignClients
 @MapperScan(basePackages = "com.op.sdk.client.account.mapper")
-@SpringBootApplication
-public class SdkClientApplication {
-
-    public static void main(String[] args) {
-        SpringApplication.run(SdkClientApplication.class, args);
-    }
+@EnableConfigurationProperties(SdkProperties.class)
+@ComponentScan
+@Configuration
+public class SdkAutoConfiguration {
 }

@@ -1,4 +1,4 @@
-package com.op.sdk.client.config;
+package com.op.sdk.client;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

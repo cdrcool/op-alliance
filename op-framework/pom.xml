@@ -12,7 +12,8 @@
     <artifactId>op-framework</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>op-sdk-client</module>
+        <module>op-boot-sdk-client-starter</module>
+        <module>op-sdk-client-web</module>
     </modules>
 
     <properties>

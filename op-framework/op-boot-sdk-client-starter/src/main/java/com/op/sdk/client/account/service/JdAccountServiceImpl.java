@@ -8,7 +8,7 @@ import com.op.sdk.client.account.exception.ThirdAccountException;
 import com.op.sdk.client.account.mapper.ThirdAccountMapper;
 import com.op.sdk.client.account.model.TokenResponse;
 import com.op.sdk.client.account.utils.RsaCoderUtils;
-import com.op.sdk.client.config.SdkProperties;
+import com.op.sdk.client.SdkProperties;
 import com.op.sdk.client.third.JdTokenFeignClient;
 import com.op.sdk.client.third.response.JdTokenResponse;
 import lombok.extern.slf4j.Slf4j;
