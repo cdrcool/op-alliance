@@ -52,7 +52,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 .protocols(new HashSet<>(Arrays.asList("https", "http")))
                 // 设置发布哪些接口文档
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.op"))
+                .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
                 .build()
                 // 设置授权信息
