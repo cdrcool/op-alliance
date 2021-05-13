@@ -9,7 +9,7 @@ import com.op.framework.boot.sdk.client.account.exception.ThirdAccountException;
 import com.op.framework.boot.sdk.client.account.mapper.ThirdAccountMapper;
 import com.op.framework.boot.sdk.client.account.model.TokenResponse;
 import com.op.framework.boot.sdk.client.SdkProperties;
-import com.op.framework.boot.sdk.client.third.JdTokenFeignClient;
+import com.op.framework.boot.sdk.client.third.feign.config.JdTokenFeignClient;
 import com.op.framework.boot.sdk.client.third.response.JdTokenResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;

@@ -2,13 +2,12 @@ package com.op.framework.boot.sdk.client;
 
 import com.op.framework.boot.sdk.client.account.controller.JdAccountController;
 import com.op.framework.boot.sdk.client.account.controller.SnAccountController;
-import com.op.framework.boot.sdk.client.account.controller.ThirdAccountController;
 import com.op.framework.boot.sdk.client.account.mapper.ThirdAccountMapper;
 import com.op.framework.boot.sdk.client.account.service.JdAccountServiceImpl;
 import com.op.framework.boot.sdk.client.account.service.SnAccountServiceImpl;
 import com.op.framework.boot.sdk.client.account.service.ThirdAccountService;
 import com.op.framework.boot.sdk.client.account.task.ThirdTokenRefreshTask;
-import com.op.framework.boot.sdk.client.third.JdTokenFeignClient;
+import com.op.framework.boot.sdk.client.third.feign.config.JdTokenFeignClient;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
