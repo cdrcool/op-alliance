@@ -73,7 +73,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 .apis(RequestHandlerSelectors.withClassAnnotation(Api.class))
                 .paths(PathSelectors.ant("/example/**"))
                 .build()
-        .groupName("Example");
+                .groupName("Example");
         return docket;
     }
 

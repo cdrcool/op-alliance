@@ -40,7 +40,7 @@ public class OrderMessageReceiver {
 
     @RabbitListener(queues = "order_create_delay_queue")
     public void onReceiveDelayMessage(Message message, Channel channel, @Header("spring_returned_message_correlation") String correlationId,
-                                           @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) throws IOException {
+                                      @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) throws IOException {
         log.info("接收订单delay消息，消息id：{}，消息内容：{}，消息属性：{}", correlationId, new String(message.getBody()), message.getMessageProperties());
 
         channel.basicAck(deliveryTag, false);

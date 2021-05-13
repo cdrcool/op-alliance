@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = "苏宁帐号")
 @RequestMapping("/sn-account")
 @RestController
-public class SnAccountController extends ThirdAccountController{
+public class SnAccountController extends ThirdAccountController {
 
     public SnAccountController(@Qualifier("snAccountServiceImpl") ThirdAccountService thirdAccountService) {
         super(thirdAccountService);

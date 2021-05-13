@@ -78,7 +78,7 @@ public class AsyncRequestController {
         deferredResult.onCompletion(() -> log.info("Finish!"));
 
         // 超时回调
-        deferredResult.onTimeout( () -> {
+        deferredResult.onTimeout(() -> {
             throw new RuntimeException("异步请求超时");
         });
 

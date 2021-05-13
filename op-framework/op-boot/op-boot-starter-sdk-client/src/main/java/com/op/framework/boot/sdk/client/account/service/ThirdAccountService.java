@@ -2,13 +2,13 @@ package com.op.framework.boot.sdk.client.account.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.op.framework.boot.sdk.client.SdkProperties;
 import com.op.framework.boot.sdk.client.account.entity.AccountType;
 import com.op.framework.boot.sdk.client.account.entity.ThirdAccount;
 import com.op.framework.boot.sdk.client.account.exception.ThirdAccountException;
 import com.op.framework.boot.sdk.client.account.mapper.ThirdAccountMapper;
 import com.op.framework.boot.sdk.client.account.model.TokenRequestInfo;
 import com.op.framework.boot.sdk.client.account.model.TokenResponse;
-import com.op.framework.boot.sdk.client.SdkProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
