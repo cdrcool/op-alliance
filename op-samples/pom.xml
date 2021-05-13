@@ -12,9 +12,9 @@
     <artifactId>op-samples</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>op-swagger-samples</module>
-        <module>op-async-reqeust-samples</module>
+        <module>op-async-request-samples</module>
         <module>op-rabbitmq-samples</module>
+        <module>op-swagger-samples</module>
     </modules>
 
     <properties>
