@@ -21,11 +21,6 @@ public abstract class ThirdAccountController {
         this.thirdAccountService = thirdAccountService;
     }
 
-    @GetMapping
-    public String xx() {
-        return "123";
-    }
-
     @ApiOperation("请求第三方token（未传递第三方账号，则请求的默认账号的token）")
     @PostMapping("/request-access-token")
     public DeferredResult<String> requestAccessToken(@ApiParam("第三方账号") String account,
@@ -55,7 +50,7 @@ public abstract class ThirdAccountController {
     }
 
     @ApiOperation("刷新第三方token（未传递第三方账号，则刷新默认账号的token）")
-    @PostMapping("/refresh-token")
+    @PostMapping("/refresh-access-token")
     public String refreshToken(@ApiParam("第三方账号") String taxpayerId) {
         return thirdAccountService.refreshAccessToken(taxpayerId);
     }
