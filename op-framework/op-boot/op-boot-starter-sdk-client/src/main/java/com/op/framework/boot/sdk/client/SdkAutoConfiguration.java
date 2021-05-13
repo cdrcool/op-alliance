@@ -50,22 +50,22 @@ public class SdkAutoConfiguration {
     }
 
     @Bean
-    public ThirdAccountController jdAccountController() {
+    public JdAccountController jdAccountController() {
         return new JdAccountController(jdAccountServiceImpl());
     }
 
     @Bean
-    public ThirdAccountService jdAccountServiceImpl() {
+    public JdAccountServiceImpl jdAccountServiceImpl() {
         return new JdAccountServiceImpl(sdkProperties, thirdAccountMapper, jdTokenFeignClient, redisTemplate);
     }
 
     @Bean
-    public ThirdAccountController snAccountController() {
+    public SnAccountController snAccountController() {
         return new SnAccountController(jdAccountServiceImpl());
     }
 
     @Bean
-    public ThirdAccountService snAccountServiceImpl() {
+    public SnAccountServiceImpl snAccountServiceImpl() {
         return new SnAccountServiceImpl(sdkProperties, thirdAccountMapper, redisTemplate);
     }
 

@@ -1,4 +1,4 @@
-package com.op.framework.boot.sdk.client.response;
+package com.op.web.framework.common.response;
 
 import java.lang.annotation.*;
 

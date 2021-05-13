@@ -84,7 +84,7 @@
         <dependency>
             <groupId>com.cdrcool.onepiece</groupId>
             <artifactId>op-boot-starter-sdk-client</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

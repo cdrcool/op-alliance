@@ -84,5 +84,11 @@
             <groupId>io.swagger</groupId>
             <artifactId>swagger-annotations</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.cdrcool.onepiece</groupId>
+            <artifactId>op-web-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>

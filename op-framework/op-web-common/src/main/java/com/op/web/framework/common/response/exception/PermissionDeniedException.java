@@ -1,6 +1,6 @@
-package com.op.framework.boot.sdk.client.response.exception;
+package com.op.web.framework.common.response.exception;
 
-import com.op.framework.boot.sdk.client.response.ResultCode;
+import com.op.web.framework.common.response.ResultCode;
 import lombok.Getter;
 
 /**

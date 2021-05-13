@@ -1,7 +1,7 @@
-package com.op.framework.boot.sdk.client.response;
+package com.op.web.framework.common.response;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.op.framework.boot.sdk.client.response.exception.BusinessException;
+import com.op.web.framework.common.response.exception.BusinessException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.internal.engine.path.PathImpl;
