@@ -64,7 +64,7 @@ public abstract class ThirdAccountService {
         ThirdAccount thirdAccount = getThirdAccount(account);
         String state = UUID.randomUUID().toString();
 
-        TokenRequestInfo tokenRequestInfo = new TokenRequestInfo(state, accountType(), thirdAccount.getAccount());
+        TokenRequestInfo tokenRequestInfo = new TokenRequestInfo(state, thirdAccount.getAccount());
         // 保存当前请求的deferredResult，在token回调成功后对其setResult
         tokenRequestInfo.setDeferredResult(deferredResult);
         STORE.put(state, tokenRequestInfo);
@@ -85,14 +85,15 @@ public abstract class ThirdAccountService {
 
         TokenRequestInfo tokenRequestInfo = STORE.get(state);
         if (tokenRequestInfo == null) {
-            throw new ThirdAccountException("未找到与state：{}对应的token请求信息：" + state);
+            throw new ThirdAccountException("未找到与state：" + state + "对应的token请求信息");
         }
         log.info("找到state：{}对应的第三方帐号：{}", state, tokenRequestInfo.getAccount());
 
         // 查找第三方帐号，并更新其对应的token响应
-        LambdaQueryWrapper<ThirdAccount> jdAccountWrapper = Wrappers.lambdaQuery();
-        jdAccountWrapper.eq(ThirdAccount::getAccount, tokenRequestInfo.getAccount());
-        ThirdAccount thirdAccount = thirdAccountMapper.selectOne(jdAccountWrapper);
+        LambdaQueryWrapper<ThirdAccount> thirdAccountWrapper = Wrappers.lambdaQuery();
+        thirdAccountWrapper.eq(ThirdAccount::getAccountType, accountType().getValue());
+        thirdAccountWrapper.eq(ThirdAccount::getAccount, tokenRequestInfo.getAccount());
+        ThirdAccount thirdAccount = thirdAccountMapper.selectOne(thirdAccountWrapper);
         if (thirdAccount == null) {
             throw new ThirdAccountException("未找到第三方帐号：" + tokenRequestInfo.getAccount());
         }
@@ -224,8 +225,9 @@ public abstract class ThirdAccountService {
      * 初始化所有的第三方token
      */
     public void initAllToken() {
-        LambdaQueryWrapper<ThirdAccount> jdAccountWrapper = Wrappers.lambdaQuery();
-        List<ThirdAccount> thirdAccounts = thirdAccountMapper.selectList(jdAccountWrapper);
+        LambdaQueryWrapper<ThirdAccount> thirdAccountWrapper = Wrappers.lambdaQuery();
+        thirdAccountWrapper.eq(ThirdAccount::getAccountType, accountType().getValue());
+        List<ThirdAccount> thirdAccounts = thirdAccountMapper.selectList(thirdAccountWrapper);
         thirdAccounts.forEach(thirdAccount -> {
             try {
                 requestAccessToken(thirdAccount, UUID.randomUUID().toString());
@@ -239,8 +241,9 @@ public abstract class ThirdAccountService {
      * 刷新所有的第三方token
      */
     public void refreshAllToken() {
-        LambdaQueryWrapper<ThirdAccount> jdAccountWrapper = Wrappers.lambdaQuery();
-        List<ThirdAccount> thirdAccounts = thirdAccountMapper.selectList(jdAccountWrapper);
+        LambdaQueryWrapper<ThirdAccount> thirdAccountWrapper = Wrappers.lambdaQuery();
+        thirdAccountWrapper.eq(ThirdAccount::getAccountType, accountType().getValue());
+        List<ThirdAccount> thirdAccounts = thirdAccountMapper.selectList(thirdAccountWrapper);
         thirdAccounts.forEach(thirdAccount -> {
             try {
                 refreshAccessToken(thirdAccount);
