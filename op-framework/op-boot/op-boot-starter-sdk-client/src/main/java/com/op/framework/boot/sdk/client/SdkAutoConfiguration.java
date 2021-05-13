@@ -54,13 +54,13 @@ public class SdkAutoConfiguration {
     }
 
     @Bean
-    public JdAccountServiceImpl jdAccountServiceImpl() {
-        return new JdAccountServiceImpl(sdkProperties, thirdAccountMapper, jdTokenFeignClient, redisTemplate);
+    public SnAccountController snAccountController() {
+        return new SnAccountController(jdAccountServiceImpl());
     }
 
     @Bean
-    public SnAccountController snAccountController() {
-        return new SnAccountController(jdAccountServiceImpl());
+    public JdAccountServiceImpl jdAccountServiceImpl() {
+        return new JdAccountServiceImpl(sdkProperties, thirdAccountMapper, jdTokenFeignClient, redisTemplate);
     }
 
     @Bean
