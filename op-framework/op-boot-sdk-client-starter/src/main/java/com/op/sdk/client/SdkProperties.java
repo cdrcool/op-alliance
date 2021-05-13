@@ -13,7 +13,6 @@ import java.util.Map;
  * @author cdrcool
  */
 @Data
-@Component
 @ConfigurationProperties(prefix = "sdk")
 public class SdkProperties {
     /**

@@ -1,6 +1,7 @@
 package com.op.web.config;
 
 import io.swagger.models.auth.In;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.ReflectionUtils;
@@ -28,8 +29,14 @@ import java.util.List;
  * @author cdrcool
  */
 @EnableOpenApi
+@EnableConfigurationProperties(SwaggerProperties.class)
 @Configuration
 public class SwaggerConfig implements WebMvcConfigurer {
+    private final SwaggerProperties properties;
+
+    public SwaggerConfig(SwaggerProperties properties) {
+        this.properties = properties;
+    }
 
     /**
      * 全局 Docket
@@ -38,14 +45,14 @@ public class SwaggerConfig implements WebMvcConfigurer {
     public Docket docket() {
         return new Docket(DocumentationType.OAS_30).pathMapping("/")
                 // 设置是否开启 Swagger
-                .enable(true)
+                .enable(properties.getEnable())
                 // 设置 API 元信息
                 .apiInfo(apiInfo())
                 // 设置支持的通讯协议集合
                 .protocols(new HashSet<>(Arrays.asList("https", "http")))
                 // 设置发布哪些接口文档
                 .select()
-                .apis(RequestHandlerSelectors.any())
+                .apis(RequestHandlerSelectors.basePackage("com.op"))
                 .paths(PathSelectors.any())
                 .build()
                 // 设置授权信息
@@ -53,17 +60,17 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 // 设置授权信息全局应用
                 .securityContexts(securityContexts())
                 // 设置接口调试地址
-                .host("http://localhost:8080");
+                .host(properties.getTryHost());
     }
 
     /**
      * 设置 API 元信息
      */
     private ApiInfo apiInfo() {
-        return new ApiInfoBuilder().title("Third Sdk Api Doc")
-                .description("Third Sdk Api Doc")
-                .version("1.0")
-                .contact(new Contact("cdrcool", "http://www.cdrcool.github.io", "cdr_cool@163.com"))
+        return new ApiInfoBuilder().title(properties.getAppName() + " Api Doc")
+                .description(properties.getAppDesc())
+                .version(properties.getAppVersion())
+                .contact(new Contact(properties.getContact().getName(), properties.getContact().getUrl(), properties.getContact().getEmail()))
                 .build();
     }
 

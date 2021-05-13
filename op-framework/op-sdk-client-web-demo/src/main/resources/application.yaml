@@ -33,6 +33,12 @@ spring:
         # 最大等待时间
         max-wait: -1
 
+swagger:
+  app-name: Sdk Client Web Demo
+  app-desc: Sdk Client Web Demo
+  app-version: 1.0
+  try-host: http://localhost:${server.port}
+
 sdk:
   accounts:
     jd:
