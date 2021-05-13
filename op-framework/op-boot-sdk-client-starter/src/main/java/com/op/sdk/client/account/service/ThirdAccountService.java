@@ -88,10 +88,6 @@ public abstract class ThirdAccountService {
         }
         log.info("找到state：{}对应的第三方帐号：{}", state, tokenRequestInfo.getAccount());
 
-        // 将第三方帐号及其对应的token存到redis缓存
-        redisTemplate.opsForValue().set(getAccessTokenKey(tokenRequestInfo.getAccount()), response.getAccessToken(),
-                System.currentTimeMillis() - (response.getTime() + response.getExpiresIn() * 1000), TimeUnit.MICROSECONDS);
-
         // 查找第三方帐号，并更新其对应的token响应
         LambdaQueryWrapper<ThirdAccount> jdAccountWrapper = Wrappers.lambdaQuery();
         jdAccountWrapper.eq(ThirdAccount::getAccount, tokenRequestInfo.getAccount());
@@ -100,7 +96,7 @@ public abstract class ThirdAccountService {
             throw new ThirdAccountException("未找到第三方帐号：" + tokenRequestInfo.getAccount());
         }
         // 更新第三方账号对应的token信息
-        updateThirdAccount(thirdAccount, response);
+        updateThirdAccountTokenInfo(thirdAccount, response);
 
         DeferredResult<String> deferredResult = tokenRequestInfo.getDeferredResult();
         if (deferredResult != null) {
@@ -125,7 +121,14 @@ public abstract class ThirdAccountService {
      * @param thirdAccount 第三方账号
      * @param response     第三方token响应
      */
-    private void updateThirdAccount(ThirdAccount thirdAccount, TokenResponse response) {
+    private void updateThirdAccountTokenInfo(ThirdAccount thirdAccount, TokenResponse response) {
+        // 京东8小时后获取或刷新token才会返回新的token
+        if (!Objects.equals(thirdAccount.getAccessToken(), response.getAccessToken())) {
+            // 将第三方帐号及其对应的token存到redis缓存
+            redisTemplate.opsForValue().set(getAccessTokenKey(thirdAccount.getAccount()), response.getAccessToken(),
+                    System.currentTimeMillis() - (response.getTime() + response.getExpiresIn() * 1000), TimeUnit.MICROSECONDS);
+        }
+
         LocalDateTime now = LocalDateTime.now();
 
         // 京东8小时后获取或刷新token才会返回新的token
@@ -167,12 +170,8 @@ public abstract class ThirdAccountService {
     public String refreshAccessToken(ThirdAccount thirdAccount) {
         TokenResponse response = getRefreshTokenResponse(thirdAccount);
 
-        // 将第三方帐号及其对应的token存到redis缓存
-        redisTemplate.opsForValue().set(getAccessTokenKey(thirdAccount.getAccount()), response.getAccessToken(),
-                System.currentTimeMillis() - (response.getTime() + response.getExpiresIn() * 1000), TimeUnit.MICROSECONDS);
-
         // 更新第三方账号对应的token信息
-        updateThirdAccount(thirdAccount, response);
+        updateThirdAccountTokenInfo(thirdAccount, response);
 
         return response.getAccessToken();
     }
@@ -197,7 +196,7 @@ public abstract class ThirdAccountService {
         // 如果数据库中有访问令牌，且未过期，则返回数据据中的访问令牌
         Long now = System.currentTimeMillis();
         if (StringUtils.hasText(thirdAccount.getAccessToken()) && now.compareTo(thirdAccount.getAccessTokenExpiresAt()) > 0) {
-            log.info("从缓存中获取到access token：{}", thirdAccount.getAccessToken());
+            log.info("从数据库中获取到access token：{}", thirdAccount.getAccessToken());
             deferredResult.setResult(thirdAccount.getAccessToken());
             return;
         }
@@ -207,7 +206,7 @@ public abstract class ThirdAccountService {
                 (thirdAccount.getRefreshTokenExpiresAt() == null || now.compareTo(thirdAccount.getRefreshTokenExpiresAt()) > 0);
         if (doRefresh) {
             try {
-                log.info("从缓存中获取到refresh token：{}，执行刷新token操作", thirdAccount.getRefreshToken());
+                log.info("从数据库中获取到refresh token：{}，执行刷新token操作", thirdAccount.getRefreshToken());
                 deferredResult.setResult(refreshAccessToken(thirdAccount.getRefreshToken()));
                 return;
             } catch (Exception e) {
