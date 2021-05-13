@@ -1,7 +1,7 @@
-package com.op.web.framework.common.response;
+package com.op.framework.web.common.api.response;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.op.web.framework.common.response.exception.BusinessException;
+import com.op.framework.web.common.api.response.exception.BusinessException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.internal.engine.path.PathImpl;

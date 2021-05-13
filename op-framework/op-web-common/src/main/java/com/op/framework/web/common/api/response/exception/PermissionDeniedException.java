@@ -1,6 +1,6 @@
-package com.op.web.framework.common.response.exception;
+package com.op.framework.web.common.api.response.exception;
 
-import com.op.web.framework.common.response.ResultCode;
+import com.op.framework.web.common.api.response.ResultCode;
 import lombok.Getter;
 
 /**

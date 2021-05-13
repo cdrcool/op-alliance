@@ -1,4 +1,4 @@
-package com.op.web.framework.common.response;
+package com.op.framework.web.common.api.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
