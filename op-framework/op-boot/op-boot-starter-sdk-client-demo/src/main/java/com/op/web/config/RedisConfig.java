@@ -1,4 +1,4 @@
-package com.op.framework.boot.sdk.client.config;
+package com.op.web.config;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
