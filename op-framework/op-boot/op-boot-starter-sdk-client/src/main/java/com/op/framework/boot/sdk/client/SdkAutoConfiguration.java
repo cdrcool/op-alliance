@@ -16,7 +16,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @EnableAsync
 @EnableFeignClients
-@MapperScan(basePackages = "com.op.sdk.client.account.mapper")
+@MapperScan(basePackages = "com.op.framework.boot.sdk.client.account.mapper")
 @EnableConfigurationProperties(SdkProperties.class)
 @ComponentScan
 @Configuration
