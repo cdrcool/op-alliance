@@ -3,13 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>op-framework</artifactId>
+        <artifactId>op-microservice</artifactId>
         <groupId>com.cdrcool.onepiece</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>op-sdk-client-web-demo</artifactId>
+    <artifactId>op-admin</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -34,19 +34,6 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.github.openfeign</groupId>
-            <artifactId>feign-httpclient</artifactId>
         </dependency>
 
         <dependency>
@@ -78,7 +65,7 @@
 
         <dependency>
             <groupId>com.cdrcool.onepiece</groupId>
-            <artifactId>op-boot-starter-sdk-client</artifactId>
+            <artifactId>op-web-common</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
