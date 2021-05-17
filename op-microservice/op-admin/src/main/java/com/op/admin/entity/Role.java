@@ -12,6 +12,11 @@ import lombok.EqualsAndHashCode;
 @Data
 public class Role extends BaseEntity {
     /**
+     * 主键
+     */
+    private Long id;
+
+    /**
      * 父角色id
      */
     private Long pid;

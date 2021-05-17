@@ -12,6 +12,11 @@ import lombok.EqualsAndHashCode;
 @Data
 public class Permission extends BaseEntity {
     /**
+     * 主键
+     */
+    private Long id;
+
+    /**
      * 父权限id
      */
     private Long pid;

@@ -12,6 +12,11 @@ import lombok.EqualsAndHashCode;
 @Data
 public class Menu extends BaseEntity {
     /**
+     * 主键
+     */
+    private Long id;
+
+    /**
      * 上级菜单id
      */
     private Long pid;

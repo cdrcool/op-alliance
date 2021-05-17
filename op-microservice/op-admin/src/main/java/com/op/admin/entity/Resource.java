@@ -1,37 +1,43 @@
 package com.op.admin.entity;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 /**
  * 资源
  *
  * @author cdrcool
  */
-@ApiModel("资源")
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class Resource extends BaseEntity {
-    @ApiModelProperty(value = "资源分类ID")
-    @NotNull
+    /**
+     * 主键
+     */
+    private Long id;
+
+    /**
+     * 所属资源分类ID
+     */
     private Long categoryId;
 
-    @ApiModelProperty(value = "资源名称")
-    @NotEmpty
+    /**
+     * 资源名称
+     */
     private String resourceName;
 
-    @ApiModelProperty(value = "资源URL")
-    @NotEmpty
+    /**
+     * 资源URL
+     */
     private String resourceUrl;
 
-    @ApiModelProperty(value = "描述")
-    private String description;
+    /**
+     * 资源描述
+     */
+    private String resourceDesc;
 
-    @ApiModelProperty(value = "编号")
-    private Integer indexNo;
+    /**
+     * 资源编号
+     */
+    private Integer resourceNo;
 }
