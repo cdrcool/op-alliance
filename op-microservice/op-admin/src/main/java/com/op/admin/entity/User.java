@@ -20,7 +20,7 @@ public class User extends BaseEntity {
     private Long id;
 
     /**
-     * 公司id
+     * 组织id
      */
     private Long orgId;
 

@@ -3,16 +3,16 @@ package com.op.admin.entity.relation;
 import lombok.Data;
 
 /**
- * 公司-角色关联
+ * 组织-角色关联
  *
  * @author cdrcool
  */
 @Data
-public class CompanyRoleRelation {
+public class OrganizationRoleRelation {
     /**
-     * 公司id
+     * 组织id
      */
-    private Long companyId;
+    private Long orgId;
 
     /**
      * 角色id
