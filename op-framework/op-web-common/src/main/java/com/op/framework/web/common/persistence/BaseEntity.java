@@ -1,4 +1,4 @@
-package com.op.admin.entity;
+package com.op.framework.web.common.persistence;
 
 import lombok.Data;
 

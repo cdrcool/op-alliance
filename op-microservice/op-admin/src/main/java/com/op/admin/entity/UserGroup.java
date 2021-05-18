@@ -1,5 +1,6 @@
 package com.op.admin.entity;
 
+import com.op.framework.web.common.persistence.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

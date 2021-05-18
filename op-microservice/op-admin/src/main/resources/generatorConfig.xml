@@ -19,7 +19,9 @@
                         userId="root" password="root"/>
 
         <!-- 生成Entity实体类文件位置 -->
-        <javaModelGenerator targetPackage="com.op.admin.entity" targetProject="src/main/java"/>
+        <javaModelGenerator targetPackage="com.op.admin.entity" targetProject="src/main/java">
+            <property name="rootClass" value="com.op.framework.web.common.persistence.BaseEntity"/>
+        </javaModelGenerator>
 
         <!-- 生成Mapper接口实体类文件位置 -->
         <javaClientGenerator targetPackage="com.op.admin.mapper" targetProject="src/main/java"/>
