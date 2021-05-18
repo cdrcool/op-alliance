@@ -33,6 +33,16 @@ spring:
         # 最大等待时间
         max-wait: -1
 
+management:
+  endpoints:
+    web:
+      exposure:
+        # 默认只暴露 health 和 info 两个端点
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+
 swagger:
   app-name: Sdk Client Web Demo
   app-desc: Sdk Client Web Demo

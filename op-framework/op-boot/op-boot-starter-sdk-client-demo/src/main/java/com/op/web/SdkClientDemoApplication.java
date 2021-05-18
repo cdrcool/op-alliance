@@ -9,9 +9,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author cdrcool
  */
 @SpringBootApplication
-public class WebApplication {
+public class SdkClientDemoApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(WebApplication.class, args);
+        SpringApplication.run(SdkClientDemoApplication.class, args);
     }
 }

@@ -50,7 +50,7 @@ public abstract class ThirdAccountService {
      */
     @PostConstruct
     public void postConstruct() {
-        initAllToken();
+//        initAllToken();
     }
 
     /**
