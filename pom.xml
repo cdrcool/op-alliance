@@ -27,6 +27,8 @@
         <mysql-connector.version>8.0.23</mysql-connector.version>
         <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
         <swagger-annotations.version>1.5.20</swagger-annotations.version>
+
+        <spring-boot-maven-plugin.version>2.4.4</spring-boot-maven-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -90,6 +92,11 @@
                             <version>8.0.23</version>
                         </dependency>
                     </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot-maven-plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>

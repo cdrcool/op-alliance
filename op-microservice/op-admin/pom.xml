@@ -98,6 +98,14 @@
                     <!-- 是否覆盖 -->
                     <overwrite>true</overwrite>
                 </configuration>
+                <dependencies>
+                    <!-- 保证BaseEntity能被MBG加载到，从而为所有生成的实体类指定基类 -->
+                    <dependency>
+                        <groupId>com.cdrcool.onepiece</groupId>
+                        <artifactId>op-web-common</artifactId>
+                        <version>${project.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>

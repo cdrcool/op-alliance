@@ -45,5 +45,5 @@ public class BaseEntity implements Serializable {
     /**
      * 租户id
      */
-    private Long tenantId;
+    private String tenantId;
 }
