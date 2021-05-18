@@ -50,8 +50,7 @@ public abstract class ThirdAccountService {
      */
     @PostConstruct
     public void postConstruct() {
-        log.info("init all token");
-//        initAllToken();
+        initAllToken();
     }
 
     /**
@@ -230,7 +229,7 @@ public abstract class ThirdAccountService {
         List<ThirdAccount> thirdAccounts = thirdAccountMapper.selectList(thirdAccountWrapper);
         thirdAccounts.forEach(thirdAccount -> {
             try {
-                requestAccessToken(thirdAccount, UUID.randomUUID().toString());
+                requestAccessToken(thirdAccount.getAccount(), null);
             } catch (Exception e) {
                 log.error("初始化第三方token异常，账号信息：{}", thirdAccount, e);
             }
@@ -249,6 +248,7 @@ public abstract class ThirdAccountService {
                 refreshAccessToken(thirdAccount);
             } catch (Exception e) {
                 log.error("刷新第三方token异常，账号信息：{}", thirdAccount, e);
+                requestAccessToken(thirdAccount.getAccount(), null);
             }
         });
     }
