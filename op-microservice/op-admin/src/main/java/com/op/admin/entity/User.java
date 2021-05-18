@@ -25,11 +25,6 @@ public class User extends BaseEntity {
     private Long orgId;
 
     /**
-     * 部门id
-     */
-    private Long deptId;
-
-    /**
      * 用户名
      */
     private String username;
@@ -65,7 +60,7 @@ public class User extends BaseEntity {
     private String email;
 
     /**
-     * 性别（0-未知；1-男；2-女）
+     * 性别（1-男；2-女）
      */
     private Integer gender;
 

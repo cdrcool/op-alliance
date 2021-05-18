@@ -22,12 +22,12 @@ public class UserGroup extends BaseEntity {
     private String groupName;
 
     /**
-     * 用户组编号
-     */
-    private Integer groupNo;
-
-    /**
      * 用户组描述
      */
     private String groupDesc;
+
+    /**
+     * 用户组编号
+     */
+    private Integer groupNo;
 }

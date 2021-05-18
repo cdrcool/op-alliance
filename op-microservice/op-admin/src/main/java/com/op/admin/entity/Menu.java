@@ -32,6 +32,16 @@ public class Menu extends BaseEntity {
     private String menuCode;
 
     /**
+     * 菜单图标
+     */
+    private String menuIcon;
+
+    /**
+     * 菜单路由
+     */
+    private String menuRouting;
+
+    /**
      * 菜单层级
      */
     private Integer menuLevel;
@@ -40,11 +50,6 @@ public class Menu extends BaseEntity {
      * 菜单编号
      */
     private Integer menuNo;
-
-    /**
-     * 菜单图标
-     */
-    private String menuIcon;
 
     /**
      * 是否隐藏

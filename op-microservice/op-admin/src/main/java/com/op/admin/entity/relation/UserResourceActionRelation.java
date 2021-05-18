@@ -3,19 +3,19 @@ package com.op.admin.entity.relation;
 import lombok.Data;
 
 /**
- * 用户-权限关联
+ * 用户-资源动作关联
  *
  * @author cdrcool
  */
 @Data
-public class UserPermissionRelation {
+public class UserResourceActionRelation {
     /**
      * 用户id
      */
     private Long userId;
 
     /**
-     * 权限id
+     * 资源动作id
      */
-    private Long permissionId;
+    private Long actionId;
 }

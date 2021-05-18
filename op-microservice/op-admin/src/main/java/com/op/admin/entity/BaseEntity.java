@@ -3,7 +3,7 @@ package com.op.admin.entity;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * 实体基类
@@ -30,7 +30,7 @@ public class BaseEntity implements Serializable {
     /**
      * 创建时间
      */
-    private LocalDate createTime;
+    private LocalDateTime createTime;
 
     /**
      * 最后修改人id
@@ -40,7 +40,7 @@ public class BaseEntity implements Serializable {
     /**
      * 最后修改时间
      */
-    private LocalDate lastModifyTime;
+    private LocalDateTime lastModifyTime;
 
     /**
      * 租户id

@@ -17,7 +17,7 @@ public class Resource extends BaseEntity {
     private Long id;
 
     /**
-     * 所属资源分类ID
+     * 所属资源分类id
      */
     private Long categoryId;
 
@@ -27,9 +27,9 @@ public class Resource extends BaseEntity {
     private String resourceName;
 
     /**
-     * 资源URL
+     * 资源路径
      */
-    private String resourceUrl;
+    private String resourcePath;
 
     /**
      * 资源描述

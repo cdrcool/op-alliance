@@ -33,6 +33,11 @@ spring:
         # 最大等待时间
         max-wait: -1
 
+mybatis:
+  configuration:
+    database-id: mysql
+    map-underscore-to-camel-case: true
+
 swagger:
   app-name: Sdk Client Web Demo
   app-desc: Sdk Client Web Demo
