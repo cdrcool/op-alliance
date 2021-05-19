@@ -1,4 +1,4 @@
-package com.op.framework.web.common.persistence;
+package com.op.framework.web.common.persistence.entity;
 
 import lombok.Data;
 
@@ -15,12 +15,12 @@ public abstract class BaseEntity implements Serializable {
     /**
      * 版本号
      */
-    private Integer version;
+    private Integer version = 0;
 
     /**
      * 是否已删除
      */
-    private Boolean deleted;
+    private Boolean deleted = false;
 
     /**
      * 创建人id

@@ -33,7 +33,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 /**
  * @author Mybatis Generator
- * @date 2021/05/19 11:34
+ * @date 2021/05/19 11:58
  */
 @Mapper
 public interface RoleMapper {

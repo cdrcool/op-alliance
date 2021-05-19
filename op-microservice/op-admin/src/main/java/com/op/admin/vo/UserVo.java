@@ -1,9 +1,11 @@
 package com.op.admin.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.op.framework.web.common.persistence.vo.BaseVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.Email;
 import java.time.LocalDate;
@@ -14,9 +16,10 @@ import java.time.LocalDateTime;
  *
  * @author chengdr01
  */
-@ApiModel(description = "用户 dto")
+@ApiModel(description = "用户 vo")
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class UserVo {
+public class UserVo extends BaseVo {
     @ApiModelProperty("用户id")
     private Integer id;
 

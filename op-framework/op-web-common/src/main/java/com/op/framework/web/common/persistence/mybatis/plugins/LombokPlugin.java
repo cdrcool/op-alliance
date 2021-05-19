@@ -27,13 +27,13 @@ public class LombokPlugin extends PluginAdapter {
     @Override
     public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
 //        topLevelClass.addImportedType("java.io.Serializable");
-        topLevelClass.addImportedType("lombok.AllArgsConstructor");
-        topLevelClass.addImportedType("lombok.Builder");
+//        topLevelClass.addImportedType("lombok.AllArgsConstructor");
+//        topLevelClass.addImportedType("lombok.Builder");
         topLevelClass.addImportedType("lombok.Data");
         topLevelClass.addImportedType("lombok.EqualsAndHashCode");
         topLevelClass.addImportedType("lombok.NoArgsConstructor");
-        topLevelClass.addAnnotation("@Builder");
-        topLevelClass.addAnnotation("@AllArgsConstructor");
+//        topLevelClass.addAnnotation("@Builder");
+//        topLevelClass.addAnnotation("@AllArgsConstructor");
         topLevelClass.addAnnotation("@NoArgsConstructor");
         topLevelClass.addAnnotation("@EqualsAndHashCode(callSuper = true)");
         topLevelClass.addAnnotation("@Data");

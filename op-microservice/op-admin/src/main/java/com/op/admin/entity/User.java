@@ -1,21 +1,17 @@
 package com.op.admin.entity;
 
-import com.op.framework.web.common.persistence.BaseEntity;
+import com.op.framework.web.common.persistence.entity.BaseEntity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import javax.annotation.Generated;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
  * @author Mybatis Generator
- * @date 2021/05/19 11:34
+ * @date 2021/05/19 11:58
  */
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Data

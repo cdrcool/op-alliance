@@ -27,7 +27,6 @@ public class UserChangePasswordDto {
     @NotEmpty
     private String newPassword;
 
-
     @ApiModelProperty(value = "新密码确认", required = true)
     @NotEmpty
     private String newPasswordConfirm;
