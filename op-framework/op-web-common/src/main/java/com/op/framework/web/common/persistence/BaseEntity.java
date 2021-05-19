@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  * @author cdrcool
  */
 @Data
-public class BaseEntity implements Serializable {
+public abstract class BaseEntity implements Serializable {
     /**
      * 版本号
      */
@@ -25,7 +25,7 @@ public class BaseEntity implements Serializable {
     /**
      * 创建人id
      */
-    private Long creatorId;
+    private Integer creatorId;
 
     /**
      * 创建时间
@@ -35,7 +35,7 @@ public class BaseEntity implements Serializable {
     /**
      * 最后修改人id
      */
-    private Long lastModifierId;
+    private Integer lastModifierId;
 
     /**
      * 最后修改时间

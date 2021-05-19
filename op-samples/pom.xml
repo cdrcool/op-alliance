@@ -15,6 +15,7 @@
         <module>op-async-request-samples</module>
         <module>op-rabbitmq-samples</module>
         <module>op-swagger-samples</module>
+        <module>op-mybatis-geneator-samples</module>
     </modules>
 
     <properties>

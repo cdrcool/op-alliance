@@ -2,14 +2,22 @@
         "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
         "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 <generatorConfiguration>
-    <context id="dsql" targetRuntime="MyBatis3DynamicSql">
-        <plugin type="com.op.framework.web.common.persistence.mybatis.plugins.LombokPlugin" />
+    <context id="dsql" targetRuntime="MyBatis3DynamicSql"><!-- 生成的Java文件的编码 -->
+        <!-- 生成的Java文件的编码 -->
+        <property name="javaFileEncoding" value="UTF-8"/>
+        <!-- 用于标记数据库对象名的符号，如ORACLE默认是双引号，MYSQL默认是`反引号 -->
+        <property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
 
+        <!-- 在生成Java和XML文件的过程中添加或修改内容 -->
+        <plugin type="com.op.framework.web.common.persistence.mybatis.plugins.LombokPlugin"/>
+
+        <!-- 生成的注释配置 -->
         <commentGenerator>
             <!-- 代码中是否不包含任何注释 -->
             <property name="suppressAllComments" value="true"/>
             <!-- 注释中是否不包含生成时间戳 -->
-            <property name="suppressDate" value="false" />
+            <property name="suppressDate" value="false"/>
             <!-- 生成的注释中是否包含来自db表的表和列的注释 -->
             <property name="addRemarkComments" value="false"/>
             <!-- 注释中包含生成时间戳时，时间戳的格式 -->
@@ -22,6 +30,12 @@
         characterEncoding=utf-8&amp;autoReconnect=true&amp;failOverReadOnly=false&amp;useSSL=true&amp;serverTimezone=Asia/Shanghai"
                         userId="root" password="root"/>
 
+        <!-- 类型解析器 -->
+        <javaTypeResolver>
+            <!-- 强制将数据库类型decimal或numberic解析为BigDecimal类型 -->
+            <property name="forceBigDecimals" value="true"/>
+        </javaTypeResolver>
+
         <!-- 生成Entity实体类文件位置 -->
         <javaModelGenerator targetPackage="com.op.admin.entity" targetProject="src/main/java">
             <!-- 为所有生成的实体类指定基类（要求基类能被MBG加载到，且字段名称类型相同，并有getter/setter方法） -->
@@ -31,19 +45,21 @@
         <!-- 生成Mapper接口实体类文件位置 -->
         <javaClientGenerator targetPackage="com.op.admin.mapper" targetProject="src/main/java"/>
 
-        <!-- 需要生成的实体类对应的表名，多个实体类复制多份该配置即可 -->
-        <table tableName="admin_user_group">
+        <!-- 需要生成的实体类对应的表名（允许使用SQL通配符，例如：demo_%），多个实体类复制多份该配置即可 -->
+        <table tableName="admin_%">
+            <!-- 返回自增主键（主键被赋值到原对象中，而不是作为返回值） -->
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+
             <!-- 去掉表名的 admin 前缀 -->
             <domainObjectRenamingRule searchString="^Admin" replaceString=""/>
 
-            <!-- 指定数据库字段对应的Java类型 -->
-            <columnOverride column="id" javaType="java.lang.Long"/>
+            <!-- 修改数据库字段对应的Java属性 -->
             <columnOverride column="deleted" javaType="java.lang.Boolean"/>
-            <columnOverride column="creator_id" javaType="java.lang.Long"/>
             <columnOverride column="create_time" javaType="java.time.LocalDateTime"/>
-            <columnOverride column="last_modifier_id" javaType="java.lang.Long"/>
             <columnOverride column="last_modify_time" javaType="java.time.LocalDateTime"/>
-            <columnOverride column="tenant_id" javaType="java.lang.String"/>
+
+            <columnOverride column="birthday" javaType="java.time.LocalDate"/>
+            <columnOverride column="last_login_time" javaType="java.time.LocalDateTime"/>
         </table>
     </context>
 </generatorConfiguration>
