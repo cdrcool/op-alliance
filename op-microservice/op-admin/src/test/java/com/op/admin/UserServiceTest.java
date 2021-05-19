@@ -25,6 +25,7 @@ public class UserServiceTest {
     @Test
     public void create() {
         UserCreateDto userCreateDto = new UserCreateDto();
+        userCreateDto.setOrgId(1);
         userCreateDto.setUsername("tom");
         userCreateDto.setUserNo(2);
         userService.create(userCreateDto);
