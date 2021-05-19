@@ -1,5 +1,6 @@
 package com.op.framework.web.common.api.response;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -81,6 +82,7 @@ public enum ResultCode {
     /**
      * 异常码
      */
+    @JsonValue
     final int code;
 
     /**
