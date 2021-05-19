@@ -9,6 +9,7 @@ import org.springframework.core.annotation.AnnotationUtils;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Properties;
 
@@ -28,18 +29,19 @@ public class AuditingInterceptor implements Interceptor {
         Object parameter = invocation.getArgs()[1];
         List<Field> fields = ReflectionUtils.getAllDeclaredFields(parameter.getClass());
 
-        LocalDate currentDate = LocalDate.now();
-        Long currentUserId = 1L;
+        Integer userId = 1;
+        LocalDateTime now = LocalDateTime.now();
+
         if (SqlCommandType.INSERT == sqlCommandType) {
             for (Field field : fields) {
                 if (AnnotationUtils.getAnnotation(field, CreatedBy.class) != null) {
                     field.setAccessible(true);
-                    field.set(parameter, currentUserId);
+                    field.set(parameter, userId);
                     field.setAccessible(false);
                 }
                 if (AnnotationUtils.getAnnotation(field, CreatedDate.class) != null) {
                     field.setAccessible(true);
-                    field.set(parameter, currentDate);
+                    field.set(parameter, now);
                     field.setAccessible(false);
                 }
             }
@@ -47,12 +49,12 @@ public class AuditingInterceptor implements Interceptor {
             for (Field field : fields) {
                 if (AnnotationUtils.getAnnotation(field, LastModifiedBy.class) != null) {
                     field.setAccessible(true);
-                    field.set(parameter, currentUserId);
+                    field.set(parameter, userId);
                     field.setAccessible(false);
                 }
                 if (AnnotationUtils.getAnnotation(field, LastModifiedDate.class) != null) {
                     field.setAccessible(true);
-                    field.set(parameter, currentDate);
+                    field.set(parameter, now);
                     field.setAccessible(false);
                 }
             }
