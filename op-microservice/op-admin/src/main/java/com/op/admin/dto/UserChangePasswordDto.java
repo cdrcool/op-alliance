@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 /**
  * 用户修改密码 dto
  *
- * @author chengdr01
+ * @author cdrcool
  */
 @ApiModel(description = "用户修改密码 dto")
 @Data

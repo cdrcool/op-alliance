@@ -7,7 +7,7 @@ import com.op.framework.boot.sdk.client.account.service.JdAccountServiceImpl;
 import com.op.framework.boot.sdk.client.account.service.SnAccountServiceImpl;
 import com.op.framework.boot.sdk.client.account.service.ThirdAccountService;
 import com.op.framework.boot.sdk.client.account.task.ThirdTokenRefreshTask;
-import com.op.framework.boot.sdk.client.third.feign.config.JdTokenFeignClient;
+import com.op.framework.boot.sdk.client.third.jd.feign.config.JdTokenFeignClient;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

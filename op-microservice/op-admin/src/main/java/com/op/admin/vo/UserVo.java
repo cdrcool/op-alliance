@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 /**
  * 用户 vo
  *
- * @author chengdr01
+ * @author cdrcool
  */
 @ApiModel(description = "用户 vo")
 @EqualsAndHashCode(callSuper = true)
