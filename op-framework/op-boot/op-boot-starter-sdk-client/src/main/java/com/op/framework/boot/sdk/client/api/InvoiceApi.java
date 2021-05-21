@@ -3,7 +3,8 @@ package com.op.framework.boot.sdk.client.api;
 import com.op.framework.boot.sdk.client.request.InvoiceApplySubmitRequest;
 import com.op.framework.boot.sdk.client.response.InvoiceDeliveryResponse;
 import com.op.framework.boot.sdk.client.response.InvoiceDetailResponse;
-import com.op.framework.boot.sdk.client.response.InvoiceLogisticsResponse;
+import com.op.framework.boot.sdk.client.response.InvoiceElectronicDetailResponse;
+import com.op.framework.boot.sdk.client.response.InvoiceOutlineResponse;
 
 import java.util.List;
 
@@ -31,6 +32,16 @@ public interface InvoiceApi {
     Boolean cancelInvoiceApply(String markId);
 
     /**
+     * 查询发票概要
+     * <p>
+     * 苏宁不支持电子票查询
+     *
+     * @param markId 申请单号
+     * @return 发票概要列表
+     */
+    List<InvoiceOutlineResponse> queryInvoiceOutline(String markId);
+
+    /**
      * 查询发票明细
      *
      * @param invoiceCode 发票代码
@@ -38,6 +49,15 @@ public interface InvoiceApi {
      * @return 发票明细
      */
     InvoiceDetailResponse queryInvoiceDetail(String invoiceCode, String invoiceId);
+
+    /**
+     * 查询电子发票明细
+     *
+     * @param orderId     订单号
+     * @param subOrderIds 子订单号
+     * @return 电子发票明细
+     */
+    List<InvoiceElectronicDetailResponse> queryElectronicInvoiceDetail(String orderId, List<String> subOrderIds);
 
     /**
      * 查询发票运单号
@@ -55,6 +75,5 @@ public interface InvoiceApi {
      * @return 发票物流信息列表
      */
     List<InvoiceDeliveryResponse> queryInvoiceDeliveryNo(String orderId, List<String> subOrderIds);
-
 
 }

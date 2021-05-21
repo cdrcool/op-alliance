@@ -1,8 +1,10 @@
 package com.op.framework.boot.sdk.client.api.impl;
 
 import com.jd.open.api.sdk.domain.vopfp.OperaInvoiceOpenProvider.response.submitInvoiceApply.OpenRpcResult;
+import com.jd.open.api.sdk.domain.vopfp.QueryInvoiceOpenProvider.response.queryElectronicInvoiceDetail.QueryElectronicInvoiceDetailOpenResp;
 import com.jd.open.api.sdk.domain.vopfp.QueryInvoiceOpenProvider.response.queryInvoiceDeliveryNo.InvoiceLogisticsInformationOpenResp;
 import com.jd.open.api.sdk.domain.vopfp.QueryInvoiceOpenProvider.response.queryInvoiceDetail.QueryInvoiceDetailOpenResp;
+import com.jd.open.api.sdk.domain.vopfp.QueryInvoiceOpenProvider.response.queryInvoiceOutline.InvoiceOutlineOpenResp;
 import com.jd.open.api.sdk.domain.vopfp.QueryInvoiceOpenProvider.response.queryInvoiceWaybill.InvoiceDeliveryOpenResp;
 import com.jd.open.api.sdk.request.vopfp.*;
 import com.jd.open.api.sdk.response.vopfp.*;
@@ -10,9 +12,7 @@ import com.op.framework.boot.sdk.client.api.InvoiceApi;
 import com.op.framework.boot.sdk.client.base.JdSdkClient;
 import com.op.framework.boot.sdk.client.exception.JdInvokeException;
 import com.op.framework.boot.sdk.client.request.InvoiceApplySubmitRequest;
-import com.op.framework.boot.sdk.client.response.InvoiceDeliveryResponse;
-import com.op.framework.boot.sdk.client.response.InvoiceDetailResponse;
-import com.op.framework.boot.sdk.client.response.InvoiceLogisticsResponse;
+import com.op.framework.boot.sdk.client.response.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -64,6 +64,56 @@ public class JdInvoiceApiImpl implements InvoiceApi {
     }
 
     @Override
+    public List<InvoiceOutlineResponse> queryInvoiceOutline(String markId) {
+        VopInvoiceQueryInvoiceOutlineRequest request = new VopInvoiceQueryInvoiceOutlineRequest();
+        request.setMarkId(markId);
+        VopInvoiceQueryInvoiceOutlineResponse response = jdSdkClient.execute(request);
+
+        com.jd.open.api.sdk.domain.vopfp.QueryInvoiceOpenProvider.response.queryInvoiceOutline.OpenRpcResult result = response.getOpenRpcResult();
+        if (!result.getSuccess()) {
+            log.error("查询京东发票概要失败，错误码：【{}】，错误消息【{}】", result.getResultCode(), result.getResultMessage());
+            throw new JdInvokeException(result.getResultCode(), "查询京东发票概要失败：" + result.getResultMessage());
+        }
+
+        List<InvoiceOutlineOpenResp> respList = result.getResult();
+        return respList.stream().map(InvoiceOutlineResponse::buildFrom).collect(Collectors.toList());
+    }
+
+    @Override
+    public InvoiceDetailResponse queryInvoiceDetail(String invoiceCode, String invoiceId) {
+        VopInvoiceQueryInvoiceDetailRequest request = new VopInvoiceQueryInvoiceDetailRequest();
+        request.setInvoiceCode(invoiceCode);
+        request.setInvoiceId(invoiceId);
+
+        VopInvoiceQueryInvoiceDetailResponse response = jdSdkClient.execute(request);
+        com.jd.open.api.sdk.domain.vopfp.QueryInvoiceOpenProvider.response.queryInvoiceDetail.OpenRpcResult result = response.getOpenRpcResult();
+        if (!result.getSuccess()) {
+            log.error("查询京东发票明细失败，错误码：【{}】，错误消息【{}】", result.getResultCode(), result.getResultMessage());
+            throw new JdInvokeException(result.getResultCode(), "查询京东发票明细失败：" + result.getResultMessage());
+        }
+
+        QueryInvoiceDetailOpenResp resp = result.getResult();
+        return InvoiceDetailResponse.buildFrom(resp);
+    }
+
+    @Override
+    public List<InvoiceElectronicDetailResponse> queryElectronicInvoiceDetail(String orderId, List<String> subOrderIds) {
+        VopInvoiceQueryElectronicInvoiceDetailRequest request = new VopInvoiceQueryElectronicInvoiceDetailRequest();
+        request.setJdOrderId(Long.valueOf(subOrderIds.get(0)));
+        request.setIvcType(3);
+        VopInvoiceQueryElectronicInvoiceDetailResponse response = jdSdkClient.execute(request);
+
+        com.jd.open.api.sdk.domain.vopfp.QueryInvoiceOpenProvider.response.queryElectronicInvoiceDetail.OpenRpcResult result = response.getOpenRpcResult();
+        if (!result.getSuccess()) {
+            log.error("查询京东电子发票明细失败，错误码：【{}】，错误消息【{}】", result.getResultCode(), result.getResultMessage());
+            throw new JdInvokeException(result.getResultCode(), "查询京东电子发票明细失败：" + result.getResultMessage());
+        }
+
+        QueryElectronicInvoiceDetailOpenResp resp = result.getResult();
+        return resp.getInvoiceActualBillICRespList().stream().map(InvoiceElectronicDetailResponse::buildFrom).collect(Collectors.toList());
+    }
+
+    @Override
     public List<InvoiceDeliveryResponse> queryInvoiceWaybillNo(String markId) {
         VopInvoiceQueryInvoiceWaybillRequest request = new VopInvoiceQueryInvoiceWaybillRequest();
         request.setMarkId(markId);
@@ -81,7 +131,7 @@ public class JdInvoiceApiImpl implements InvoiceApi {
 
     @Override
     public List<InvoiceDeliveryResponse> queryInvoiceDeliveryNo(String orderId, List<String> subOrderIds) {
-        String markId = queryInvoiceThirdApplyNo(orderId);
+        String markId = queryInvoiceThirdApplyNo(subOrderIds.get(0));
         List<InvoiceDeliveryResponse> deliveryResponses = queryInvoiceWaybillNo(markId);
 
         List<InvoiceLogisticsInformationOpenResp> respList = subOrderIds.stream().map(subOrderId -> {
@@ -121,22 +171,5 @@ public class JdInvoiceApiImpl implements InvoiceApi {
         }
 
         return result.getResult();
-    }
-
-    @Override
-    public InvoiceDetailResponse queryInvoiceDetail(String invoiceCode, String invoiceId) {
-        VopInvoiceQueryInvoiceDetailRequest request = new VopInvoiceQueryInvoiceDetailRequest();
-        request.setInvoiceCode(invoiceCode);
-        request.setInvoiceId(invoiceId);
-
-        VopInvoiceQueryInvoiceDetailResponse response = jdSdkClient.execute(request);
-        com.jd.open.api.sdk.domain.vopfp.QueryInvoiceOpenProvider.response.queryInvoiceDetail.OpenRpcResult result = response.getOpenRpcResult();
-        if (!result.getSuccess()) {
-            log.error("查询京东发票明细失败，错误码：【{}】，错误消息【{}】", result.getResultCode(), result.getResultMessage());
-            throw new JdInvokeException(result.getResultCode(), "查询京东发票明细失败：" + result.getResultMessage());
-        }
-
-        QueryInvoiceDetailOpenResp resp = result.getResult();
-        return InvoiceDetailResponse.buildFrom(resp);
     }
 }
