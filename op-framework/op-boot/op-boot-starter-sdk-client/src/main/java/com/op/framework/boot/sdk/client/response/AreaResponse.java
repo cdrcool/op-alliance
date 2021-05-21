@@ -26,11 +26,6 @@ public class AreaResponse {
      */
     private String areaCode;
 
-    /**
-     * 唯一运输区域代码
-     */
-    private String transportCode;
-
     public static AreaResponse buildFrom(AreaInfoBaseResp resp) {
         AreaResponse response = new AreaResponse();
         response.setAreaName(resp.getAreaName());
@@ -41,32 +36,28 @@ public class AreaResponse {
     public static AreaResponse buildFrom(ProvinceGetResponse.ResultInfo resultInfo) {
         AreaResponse response = new AreaResponse();
         response.setAreaName(resultInfo.getName());
-        response.setAreaCode(String.valueOf(resultInfo.getProvCode()));
-        response.setTransportCode(String.valueOf(resultInfo.getTransportCode()));
+        response.setAreaCode(String.valueOf(resultInfo.getTransportCode()));
         return response;
     }
 
     public static AreaResponse buildFrom(CityGetResponse.ResultInfo resultInfo) {
         AreaResponse response = new AreaResponse();
         response.setAreaName(resultInfo.getName());
-        response.setAreaCode(String.valueOf(resultInfo.getCityCode()));
-        response.setTransportCode(String.valueOf(resultInfo.getTransportCode()));
+        response.setAreaCode(String.valueOf(resultInfo.getTransportCode()));
         return response;
     }
 
     public static AreaResponse buildFrom(CountyGetResponse.ResultInfo resultInfo) {
         AreaResponse response = new AreaResponse();
         response.setAreaName(resultInfo.getName());
-        response.setAreaCode(String.valueOf(resultInfo.getDistrictCode()));
-        response.setTransportCode(String.valueOf(resultInfo.getTransportCode()));
+        response.setAreaCode(String.valueOf(resultInfo.getTransportCode()));
         return response;
     }
 
     public static AreaResponse buildFrom(TownGetResponse.ResultInfo resultInfo) {
         AreaResponse response = new AreaResponse();
         response.setAreaName(resultInfo.getName());
-        response.setAreaCode(String.valueOf(resultInfo.getTownCode()));
-        response.setTransportCode(String.valueOf(resultInfo.getTransportCode()));
+        response.setAreaCode(String.valueOf(resultInfo.getTransportCode()));
         return response;
     }
 }
