@@ -62,13 +62,13 @@ public class SdkAutoConfiguration {
     }
 
     @Bean
-    public SnAccountController snAccountController() {
-        return new SnAccountController(snAccountService());
+    public JdAccountServiceImpl jdAccountService() {
+        return new JdAccountServiceImpl(sdkProperties, thirdAccountMapper, jdTokenFeignClient, redisTemplate);
     }
 
     @Bean
-    public JdAccountServiceImpl jdAccountService() {
-        return new JdAccountServiceImpl(sdkProperties, thirdAccountMapper, jdTokenFeignClient, redisTemplate);
+    public SnAccountController snAccountController() {
+        return new SnAccountController(snAccountService());
     }
 
     @Bean
@@ -94,7 +94,7 @@ public class SdkAutoConfiguration {
 
     @Bean
     public JdSdkClient jdSdkClient() {
-        return new JdSdkClientAdapter(sdkProperties);
+        return new JdSdkClientAdapter(sdkProperties, jdAccountService());
     }
 
     @Bean
@@ -109,6 +109,6 @@ public class SdkAutoConfiguration {
 
     @Bean
     public SnSdkClient snSdkClient() {
-        return new SnSdkClientAdapter(sdkProperties);
+        return new SnSdkClientAdapter(sdkProperties, snAccountService());
     }
 }

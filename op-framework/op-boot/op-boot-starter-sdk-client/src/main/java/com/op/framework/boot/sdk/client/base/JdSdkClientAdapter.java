@@ -25,10 +25,11 @@ import java.util.Optional;
 @Component
 public class JdSdkClientAdapter implements JdSdkClient {
     private final SdkProperties sdkProperties;
-    private ThirdAccountService thirdAccountService;
+    private final ThirdAccountService thirdAccountService;
 
-    public JdSdkClientAdapter(SdkProperties sdkProperties) {
+    public JdSdkClientAdapter(SdkProperties sdkProperties, ThirdAccountService thirdAccountService) {
         this.sdkProperties = sdkProperties;
+        this.thirdAccountService = thirdAccountService;
     }
 
     @Override

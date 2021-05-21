@@ -24,10 +24,11 @@ import java.util.Optional;
 @Component
 public class SnSdkClientAdapter implements SnSdkClient {
     private final SdkProperties sdkProperties;
-    private ThirdAccountService thirdAccountService;
+    private final ThirdAccountService thirdAccountService;
 
-    public SnSdkClientAdapter(SdkProperties sdkProperties) {
+    public SnSdkClientAdapter(SdkProperties sdkProperties, ThirdAccountService thirdAccountService) {
         this.sdkProperties = sdkProperties;
+        this.thirdAccountService = thirdAccountService;
     }
 
     @Override
