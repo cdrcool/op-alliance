@@ -7,6 +7,14 @@ import com.op.framework.boot.sdk.client.account.service.JdAccountServiceImpl;
 import com.op.framework.boot.sdk.client.account.service.SnAccountServiceImpl;
 import com.op.framework.boot.sdk.client.account.service.ThirdAccountService;
 import com.op.framework.boot.sdk.client.account.task.ThirdTokenRefreshTask;
+import com.op.framework.boot.sdk.client.api.impl.JdAreaApiImpl;
+import com.op.framework.boot.sdk.client.api.impl.JdInvoiceApiImpl;
+import com.op.framework.boot.sdk.client.api.impl.SnAreaApiImpl;
+import com.op.framework.boot.sdk.client.api.impl.SnInvoiceApiImpl;
+import com.op.framework.boot.sdk.client.base.JdSdkClient;
+import com.op.framework.boot.sdk.client.base.JdSdkClientAdapter;
+import com.op.framework.boot.sdk.client.base.SnSdkClient;
+import com.op.framework.boot.sdk.client.base.SnSdkClientAdapter;
 import com.op.framework.boot.sdk.client.feign.JdTokenFeignClient;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -50,21 +58,21 @@ public class SdkAutoConfiguration {
 
     @Bean
     public JdAccountController jdAccountController() {
-        return new JdAccountController(jdAccountServiceImpl());
+        return new JdAccountController(jdAccountService());
     }
 
     @Bean
     public SnAccountController snAccountController() {
-        return new SnAccountController(jdAccountServiceImpl());
+        return new SnAccountController(snAccountService());
     }
 
     @Bean
-    public JdAccountServiceImpl jdAccountServiceImpl() {
+    public JdAccountServiceImpl jdAccountService() {
         return new JdAccountServiceImpl(sdkProperties, thirdAccountMapper, jdTokenFeignClient, redisTemplate);
     }
 
     @Bean
-    public SnAccountServiceImpl snAccountServiceImpl() {
+    public SnAccountServiceImpl snAccountService() {
         return new SnAccountServiceImpl(sdkProperties, thirdAccountMapper, redisTemplate);
     }
 
@@ -72,5 +80,35 @@ public class SdkAutoConfiguration {
     @Bean
     public ThirdTokenRefreshTask thirdTokenRefreshTask(Map<String, ThirdAccountService> thirdAccountServices) {
         return new ThirdTokenRefreshTask(thirdAccountServices);
+    }
+
+    @Bean
+    public JdAreaApiImpl jdAreaApi() {
+        return new JdAreaApiImpl(jdSdkClient());
+    }
+
+    @Bean
+    public JdInvoiceApiImpl jdInvoiceApi() {
+        return new JdInvoiceApiImpl(jdSdkClient());
+    }
+
+    @Bean
+    public JdSdkClient jdSdkClient() {
+        return new JdSdkClientAdapter(sdkProperties);
+    }
+
+    @Bean
+    public SnAreaApiImpl snAreaApi() {
+        return new SnAreaApiImpl(snSdkClient());
+    }
+
+    @Bean
+    public SnInvoiceApiImpl snInvoiceApi() {
+        return new SnInvoiceApiImpl(snSdkClient());
+    }
+
+    @Bean
+    public SnSdkClient snSdkClient() {
+        return new SnSdkClientAdapter(sdkProperties);
     }
 }

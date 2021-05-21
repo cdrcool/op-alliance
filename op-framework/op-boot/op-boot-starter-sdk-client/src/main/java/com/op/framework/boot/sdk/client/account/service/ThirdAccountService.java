@@ -3,12 +3,12 @@ package com.op.framework.boot.sdk.client.account.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.op.framework.boot.sdk.client.SdkProperties;
-import com.op.framework.boot.sdk.client.account.entity.AccountType;
 import com.op.framework.boot.sdk.client.account.entity.ThirdAccount;
 import com.op.framework.boot.sdk.client.account.exception.ThirdAccountException;
 import com.op.framework.boot.sdk.client.account.mapper.ThirdAccountMapper;
 import com.op.framework.boot.sdk.client.account.model.TokenRequestInfo;
 import com.op.framework.boot.sdk.client.account.model.TokenResponse;
+import com.op.framework.boot.sdk.client.base.AccountType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
@@ -183,23 +183,27 @@ public abstract class ThirdAccountService {
      * @param account        第三方账号
      * @param deferredResult {@link DeferredResult}
      */
-    public void getAccessToken(String account, DeferredResult<String> deferredResult) {
+    public String getAccessToken(String account, DeferredResult<String> deferredResult) {
         ThirdAccount thirdAccount = getThirdAccount(account);
 
         // 如果缓存中有访问令牌，则返回缓存中的访问令牌
         String token = (String) redisTemplate.opsForValue().get(getAccessTokenKey(thirdAccount.getAccount()));
         if (StringUtils.hasText(token)) {
             log.info("从缓存中获取到access token：{}", token);
-            deferredResult.setResult(token);
-            return;
+            if (deferredResult != null) {
+                deferredResult.setResult(token);
+            }
+            return token;
         }
 
         // 如果数据库中有访问令牌，且未过期，则返回数据据中的访问令牌
         Long now = System.currentTimeMillis();
         if (StringUtils.hasText(thirdAccount.getAccessToken()) && now.compareTo(thirdAccount.getAccessTokenExpiresAt()) > 0) {
             log.info("从数据库中获取到access token：{}", thirdAccount.getAccessToken());
-            deferredResult.setResult(thirdAccount.getAccessToken());
-            return;
+            if (deferredResult != null) {
+                deferredResult.setResult(thirdAccount.getAccessToken());
+            }
+            return thirdAccount.getAccessToken();
         }
 
         // 如果数据据中有刷新令牌，且未过期，则通过刷新令牌获取访问令牌
@@ -208,8 +212,11 @@ public abstract class ThirdAccountService {
         if (doRefresh) {
             try {
                 log.info("从数据库中获取到refresh token：{}，执行刷新token操作", thirdAccount.getRefreshToken());
-                deferredResult.setResult(refreshAccessToken(thirdAccount.getRefreshToken()));
-                return;
+                String newToken = refreshAccessToken(thirdAccount.getRefreshToken());
+                if (deferredResult != null) {
+                    deferredResult.setResult(newToken);
+                }
+                return newToken;
             } catch (Exception e) {
                 log.error("刷新第三方token异常，第三方账号：{}，刷新token:{}",
                         thirdAccount.getAccount(), thirdAccount.getRefreshToken(), e);
@@ -218,6 +225,8 @@ public abstract class ThirdAccountService {
 
         // 请求第三方token
         requestAccessToken(account, deferredResult);
+
+        return null;
     }
 
     /**

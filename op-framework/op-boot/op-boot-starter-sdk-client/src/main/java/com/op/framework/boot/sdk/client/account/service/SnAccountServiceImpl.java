@@ -1,10 +1,10 @@
 package com.op.framework.boot.sdk.client.account.service;
 
 import com.op.framework.boot.sdk.client.SdkProperties;
-import com.op.framework.boot.sdk.client.account.entity.AccountType;
 import com.op.framework.boot.sdk.client.account.entity.ThirdAccount;
 import com.op.framework.boot.sdk.client.account.mapper.ThirdAccountMapper;
 import com.op.framework.boot.sdk.client.account.model.TokenResponse;
+import com.op.framework.boot.sdk.client.base.AccountType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;

@@ -4,7 +4,6 @@ import com.github.pagehelper.Page;
 import com.op.admin.dto.UserChangePasswordDto;
 import com.op.admin.dto.UserCreateDto;
 import com.op.admin.dto.UserUpdateDto;
-import com.op.admin.entity.User;
 import com.op.admin.service.UserService;
 import com.op.admin.vo.UserVo;
 import io.swagger.annotations.Api;

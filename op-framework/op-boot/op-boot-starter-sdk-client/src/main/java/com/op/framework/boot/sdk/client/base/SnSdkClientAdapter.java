@@ -1,5 +1,8 @@
 package com.op.framework.boot.sdk.client.base;
 
+import com.op.framework.boot.sdk.client.SdkProperties;
+import com.op.framework.boot.sdk.client.account.exception.ThirdAccountException;
+import com.op.framework.boot.sdk.client.account.service.ThirdAccountService;
 import com.op.framework.boot.sdk.client.exception.JdInvokeException;
 import com.suning.api.DefaultSuningClient;
 import com.suning.api.SuningRequest;
@@ -7,6 +10,10 @@ import com.suning.api.SuningResponse;
 import com.suning.api.exception.SuningApiException;
 import com.suning.api.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+
+import java.util.Optional;
 
 /**
  * 苏宁 SDK Client 适配类
@@ -14,25 +21,41 @@ import lombok.extern.slf4j.Slf4j;
  * @author cdrcool
  */
 @Slf4j
+@Component
 public class SnSdkClientAdapter implements SnSdkClient {
-    private final DefaultSuningClient snClient;
+    private final SdkProperties sdkProperties;
+    private ThirdAccountService thirdAccountService;
 
-    public SnSdkClientAdapter(DefaultSuningClient snClient) {
-        this.snClient = snClient;
+    public SnSdkClientAdapter(SdkProperties sdkProperties) {
+        this.sdkProperties = sdkProperties;
     }
 
     @Override
-    public <T extends SuningResponse> T execute(SuningRequest<T> request) {
+    public <T extends SuningResponse> T execute(SnSdkRequest<T> suSdkRequest) {
+        String token = suSdkRequest.getToken();
+        SuningRequest<T> snRequest = suSdkRequest.getSnRequest();
+
         try {
-            T response = snClient.excute(request);
+            T response = getSnClient(token).excute(snRequest);
             log.info("调用苏宁接口【{}】成功，请求参数：【{}】，请求响应：【{}】",
-                    request.getAppMethod(), serializeRequest(request), serializeResponse(response));
+                    snRequest.getAppMethod(), serializeRequest(snRequest), serializeResponse(response));
             return response;
         } catch (Exception e) {
             log.error("调用苏宁接口【{}】失败，请求参数：【{}】，系统参数：【{}】",
-                    request.getAppMethod(), serializeRequest(request), request.getSysParams(), e);
-            throw new JdInvokeException(String.format("调用苏宁接口【%s】失败", request.getAppMethod()), e);
+                    snRequest.getAppMethod(), serializeRequest(snRequest), snRequest.getSysParams(), e);
+            throw new JdInvokeException(String.format("调用苏宁接口【%s】失败", snRequest.getAppMethod()), e);
         }
+    }
+
+    private DefaultSuningClient getSnClient(String token) {
+        SdkProperties.Account account = Optional.ofNullable(sdkProperties.getAccounts().get(AccountType.SN.getValue()))
+                .orElseThrow(() -> new ThirdAccountException("未找到苏宁账号配置"));
+
+        // 未传递token就取默认账号的token
+        if (!StringUtils.hasText(token)) {
+            token = thirdAccountService.getAccessToken(account.getAccount(), null);
+        }
+        return new DefaultSuningClient(account.getServerUrl(), token, account.getAppKey(), account.getAppSecret());
     }
 
     private <T extends SuningResponse> String serializeRequest(SuningRequest<T> request) {

@@ -1,4 +1,4 @@
-package com.op.framework.boot.sdk.client.account.entity;
+package com.op.framework.boot.sdk.client.base;
 
 import lombok.Getter;
 

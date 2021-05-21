@@ -6,9 +6,11 @@ import com.jd.open.api.sdk.request.vopdz.VopAddressQueryJdAreaIdListRequest;
 import com.jd.open.api.sdk.response.vopdz.VopAddressQueryJdAreaIdListResponse;
 import com.op.framework.boot.sdk.client.api.AreaApi;
 import com.op.framework.boot.sdk.client.base.JdSdkClient;
+import com.op.framework.boot.sdk.client.base.JdSdkRequest;
 import com.op.framework.boot.sdk.client.exception.JdInvokeException;
 import com.op.framework.boot.sdk.client.response.AreaResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
  * @author cdrcool
  */
 @Slf4j
+@Service
 public class JdAreaApiImpl implements AreaApi {
     private final JdSdkClient jdSdkClient;
 
@@ -52,7 +55,7 @@ public class JdAreaApiImpl implements AreaApi {
         request.setJdAreaId(Long.parseLong(areaCode));
         request.setAreaLevel(areaLevel);
 
-        VopAddressQueryJdAreaIdListResponse response = jdSdkClient.execute(request);
+        VopAddressQueryJdAreaIdListResponse response = jdSdkClient.execute(new JdSdkRequest<>(request));
         OpenRpcResult result = response.getOpenRpcResult();
         if (!result.getSuccess()) {
             log.error("查询京东四级地址id列表失败，错误码：【{}】，错误消息：【{}】", result.getResultCode(), result.getResultMessage());

@@ -18,62 +18,69 @@ public interface InvoiceApi {
     /**
      * 提交发票申请
      *
+     * @param token                     访问令牌
      * @param invoiceApplySubmitRequest 发票申请提交对象
      * @return 是否成功
      */
-    boolean submitInvoiceApply(InvoiceApplySubmitRequest invoiceApplySubmitRequest);
+    boolean submitInvoiceApply(String token, InvoiceApplySubmitRequest invoiceApplySubmitRequest);
 
     /**
      * 取消发票申请
      *
+     * @param token  访问令牌
      * @param markId 申请单号
      * @return 是否成功
      */
-    Boolean cancelInvoiceApply(String markId);
+    Boolean cancelInvoiceApply(String token, String markId);
 
     /**
      * 查询发票概要
      * <p>
      * 苏宁不支持电子票查询
      *
+     * @param token  访问令牌
      * @param markId 申请单号
      * @return 发票概要列表
      */
-    List<InvoiceOutlineResponse> queryInvoiceOutline(String markId);
+    List<InvoiceOutlineResponse> queryInvoiceOutline(String token, String markId);
 
     /**
      * 查询发票明细
      *
+     * @param token       访问令牌
      * @param invoiceCode 发票代码
      * @param invoiceId   发票号码
      * @return 发票明细
      */
-    InvoiceDetailResponse queryInvoiceDetail(String invoiceCode, String invoiceId);
+    InvoiceDetailResponse queryInvoiceDetail(String token, String invoiceCode, String invoiceId);
 
     /**
      * 查询电子发票明细
      *
+     * @param token       访问令牌
      * @param orderId     订单号
      * @param subOrderIds 子订单号
      * @return 电子发票明细
      */
-    List<InvoiceElectronicDetailResponse> queryElectronicInvoiceDetail(String orderId, List<String> subOrderIds);
+    List<InvoiceElectronicDetailResponse> queryElectronicInvoiceDetail(String token, String orderId, List<String> subOrderIds);
 
     /**
      * 查询发票运单号
      *
+     * @param token  访问令牌
      * @param markId 申请单号
      * @return 发票运单号列表
      */
-    List<InvoiceDeliveryResponse> queryInvoiceWaybillNo(String markId);
+    List<InvoiceDeliveryResponse> queryInvoiceWaybillNo(String token, String markId);
 
     /**
      * 查询发票物流信息
      *
+     * @param token       访问令牌
      * @param orderId     订单号
      * @param subOrderIds 子订单号
      * @return 发票物流信息列表
      */
-    List<InvoiceDeliveryResponse> queryInvoiceDeliveryNo(String orderId, List<String> subOrderIds);
+    List<InvoiceDeliveryResponse> queryInvoiceDeliveryNo(String token, String orderId, List<String> subOrderIds);
 
 }

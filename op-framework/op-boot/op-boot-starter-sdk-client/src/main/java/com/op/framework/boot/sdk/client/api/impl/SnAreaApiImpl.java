@@ -2,11 +2,13 @@ package com.op.framework.boot.sdk.client.api.impl;
 
 import com.op.framework.boot.sdk.client.api.AreaApi;
 import com.op.framework.boot.sdk.client.base.SnSdkClient;
+import com.op.framework.boot.sdk.client.base.SnSdkRequest;
 import com.op.framework.boot.sdk.client.exception.SnInvokeException;
 import com.op.framework.boot.sdk.client.response.AreaResponse;
 import com.suning.api.SuningResponse;
 import com.suning.api.entity.govbus.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
  * @author cdrcool
  */
 @Slf4j
+@Service
 public class SnAreaApiImpl implements AreaApi {
     private final SnSdkClient snSdkClient;
 
@@ -29,7 +32,7 @@ public class SnAreaApiImpl implements AreaApi {
     public List<AreaResponse> getProvinces() {
         ProvinceGetRequest request = new ProvinceGetRequest();
 
-        ProvinceGetResponse response = snSdkClient.execute(request);
+        ProvinceGetResponse response = snSdkClient.execute(new SnSdkRequest<>(request));
         SuningResponse.SnError snError = response.getSnerror();
         if (snError != null) {
             log.error("获取苏宁一级地址接口失败，错误码：【{}】，错误消息：【{}】", snError.getErrorCode(), snError.getErrorMsg());
@@ -46,7 +49,7 @@ public class SnAreaApiImpl implements AreaApi {
         CityGetRequest request = new CityGetRequest();
         request.setTransportCode(provinceCode);
 
-        CityGetResponse response = snSdkClient.execute(request);
+        CityGetResponse response = snSdkClient.execute(new SnSdkRequest<>(request));
         SuningResponse.SnError snError = response.getSnerror();
         if (snError != null) {
             log.error("获取苏宁二级地址接口失败，错误码：【{}】，错误消息：【{}】", snError.getErrorCode(), snError.getErrorMsg());
@@ -63,7 +66,7 @@ public class SnAreaApiImpl implements AreaApi {
         CountyGetRequest request = new CountyGetRequest();
         request.setTransportCode(cityCode);
 
-        CountyGetResponse response = snSdkClient.execute(request);
+        CountyGetResponse response = snSdkClient.execute(new SnSdkRequest<>(request));
 
         SuningResponse.SnError snError = response.getSnerror();
         if (snError != null) {
@@ -81,7 +84,7 @@ public class SnAreaApiImpl implements AreaApi {
         TownGetRequest request = new TownGetRequest();
         request.setTransportCode(areaCode);
 
-        TownGetResponse response = snSdkClient.execute(request);
+        TownGetResponse response = snSdkClient.execute(new SnSdkRequest<>(request));
 
         TownGetResponse.SnError snError = response.getSnerror();
         if (snError != null) {

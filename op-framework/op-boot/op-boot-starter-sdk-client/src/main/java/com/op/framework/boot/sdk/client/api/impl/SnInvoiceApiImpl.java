@@ -2,6 +2,7 @@ package com.op.framework.boot.sdk.client.api.impl;
 
 import com.op.framework.boot.sdk.client.api.InvoiceApi;
 import com.op.framework.boot.sdk.client.base.SnSdkClient;
+import com.op.framework.boot.sdk.client.base.SnSdkRequest;
 import com.op.framework.boot.sdk.client.exception.SnInvokeException;
 import com.op.framework.boot.sdk.client.request.InvoiceApplySubmitRequest;
 import com.op.framework.boot.sdk.client.response.InvoiceDeliveryResponse;
@@ -11,6 +12,7 @@ import com.op.framework.boot.sdk.client.response.InvoiceOutlineResponse;
 import com.suning.api.SuningResponse;
 import com.suning.api.entity.govbus.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
  * @author cdrcool
  */
 @Slf4j
+@Service
 public class SnInvoiceApiImpl implements InvoiceApi {
     private final SnSdkClient snSdkClient;
 
@@ -29,10 +32,10 @@ public class SnInvoiceApiImpl implements InvoiceApi {
     }
 
     @Override
-    public boolean submitInvoiceApply(InvoiceApplySubmitRequest invoiceApplySubmitRequest) {
+    public boolean submitInvoiceApply(String token, InvoiceApplySubmitRequest invoiceApplySubmitRequest) {
         InvoicesupplementConfirmRequest request = invoiceApplySubmitRequest.toSnInvoiceApplySubmitRequest();
 
-        InvoicesupplementConfirmResponse response = snSdkClient.execute(request);
+        InvoicesupplementConfirmResponse response = snSdkClient.execute(new SnSdkRequest<>(token, request));
         SuningResponse.SnError snError = response.getSnerror();
         if (snError != null) {
             log.error("提交苏宁发票申请失败，错误码：【{}】，错误消息：【{}】", snError.getErrorCode(), snError.getErrorMsg());
@@ -50,13 +53,13 @@ public class SnInvoiceApiImpl implements InvoiceApi {
     }
 
     @Override
-    public Boolean cancelInvoiceApply(String markId) {
+    public Boolean cancelInvoiceApply(String token, String markId) {
         InvoicebatchDeleteRequest.BatchInfos batchInfos = new InvoicebatchDeleteRequest.BatchInfos();
         batchInfos.setBatchNo(markId);
         InvoicebatchDeleteRequest request = new InvoicebatchDeleteRequest();
         request.setBatchInfos(Collections.singletonList(batchInfos));
 
-        InvoicebatchDeleteResponse response = snSdkClient.execute(request);
+        InvoicebatchDeleteResponse response = snSdkClient.execute(new SnSdkRequest<>(token, request));
         SuningResponse.SnError snError = response.getSnerror();
         if (snError != null) {
             log.error("取消京东发票申请失败，错误码：【{}】，错误消息【{}】", snError.getErrorCode(), snError.getErrorMsg());
@@ -77,13 +80,13 @@ public class SnInvoiceApiImpl implements InvoiceApi {
     }
 
     @Override
-    public List<InvoiceOutlineResponse> queryInvoiceOutline(String markId) {
+    public List<InvoiceOutlineResponse> queryInvoiceOutline(String token, String markId) {
         GetmarkidinvoiceQueryRequest request = new GetmarkidinvoiceQueryRequest();
         request.setMarkId(markId);
         request.setCurrentPage("1");
         request.setPageNumber("100");
 
-        GetmarkidinvoiceQueryResponse response = snSdkClient.execute(request);
+        GetmarkidinvoiceQueryResponse response = snSdkClient.execute(new SnSdkRequest<>(token, request));
         SuningResponse.SnError snError = response.getSnerror();
         if (snError != null) {
             log.error("查询苏宁发票概要失败，错误码：【{}】，错误消息【{}】", snError.getErrorCode(), snError.getErrorMsg());
@@ -100,12 +103,12 @@ public class SnInvoiceApiImpl implements InvoiceApi {
     }
 
     @Override
-    public InvoiceDetailResponse queryInvoiceDetail(String invoiceCode, String invoiceId) {
+    public InvoiceDetailResponse queryInvoiceDetail(String token, String invoiceCode, String invoiceId) {
         GetinvoicesurfaceinfoQueryRequest request = new GetinvoicesurfaceinfoQueryRequest();
         request.setInvoiceCode(invoiceCode);
         request.setInvoiceId(invoiceId);
 
-        GetinvoicesurfaceinfoQueryResponse response = snSdkClient.execute(request);
+        GetinvoicesurfaceinfoQueryResponse response = snSdkClient.execute(new SnSdkRequest<>(token, request));
         SuningResponse.SnError snError = response.getSnerror();
         if (snError != null) {
             log.error("查询苏宁发票明细失败，错误码：【{}】，错误消息【{}】", snError.getErrorCode(), snError.getErrorMsg());
@@ -118,7 +121,7 @@ public class SnInvoiceApiImpl implements InvoiceApi {
     }
 
     @Override
-    public List<InvoiceElectronicDetailResponse> queryElectronicInvoiceDetail(String orderId, List<String> subOrderIds) {
+    public List<InvoiceElectronicDetailResponse> queryElectronicInvoiceDetail(String token, String orderId, List<String> subOrderIds) {
         EleinvoiceGetRequest request = new EleinvoiceGetRequest();
         request.setOrderId(orderId);
         request.setOrderItems(subOrderIds.stream().map(subOrderId -> {
@@ -128,7 +131,7 @@ public class SnInvoiceApiImpl implements InvoiceApi {
             return orderItems;
         }).collect(Collectors.toList()));
 
-        EleinvoiceGetResponse response = snSdkClient.execute(request);
+        EleinvoiceGetResponse response = snSdkClient.execute(new SnSdkRequest<>(token, request));
         SuningResponse.SnError snError = response.getSnerror();
         if (snError != null) {
             log.error("查询苏宁电子发票明细失败，错误码：【{}】，错误消息【{}】", snError.getErrorCode(), snError.getErrorMsg());
@@ -141,12 +144,12 @@ public class SnInvoiceApiImpl implements InvoiceApi {
     }
 
     @Override
-    public List<InvoiceDeliveryResponse> queryInvoiceWaybillNo(String markId) {
+    public List<InvoiceDeliveryResponse> queryInvoiceWaybillNo(String token, String markId) {
         InvoicelogistGetRequest request = new InvoicelogistGetRequest();
         request.setType("1");
         request.setParameter(markId);
 
-        InvoicelogistGetResponse response = snSdkClient.execute(request);
+        InvoicelogistGetResponse response = snSdkClient.execute(new SnSdkRequest<>(token, request));
         SuningResponse.SnError snError = response.getSnerror();
         if (snError != null) {
             log.error("查询苏宁发票物流信息失败，错误码：【{}】，错误消息【{}】", snError.getErrorCode(), snError.getErrorMsg());
@@ -164,7 +167,7 @@ public class SnInvoiceApiImpl implements InvoiceApi {
     }
 
     @Override
-    public List<InvoiceDeliveryResponse> queryInvoiceDeliveryNo(String orderId, List<String> subOrderIds) {
+    public List<InvoiceDeliveryResponse> queryInvoiceDeliveryNo(String token, String orderId, List<String> subOrderIds) {
         LogistdetailGetRequest request = new LogistdetailGetRequest();
         request.setOrderId(orderId);
         request.setOrderItemIds(subOrderIds.stream().map(subOrderId -> {
@@ -173,7 +176,7 @@ public class SnInvoiceApiImpl implements InvoiceApi {
             return orderItemIds;
         }).collect(Collectors.toList()));
 
-        LogistdetailGetResponse response = snSdkClient.execute(request);
+        LogistdetailGetResponse response = snSdkClient.execute(new SnSdkRequest<>(token, request));
         SuningResponse.SnError snError = response.getSnerror();
         if (snError != null) {
             log.error("根据订单号查询苏宁发票物流信息失败，错误码：【{}】，错误消息【{}】", snError.getErrorCode(), snError.getErrorMsg());

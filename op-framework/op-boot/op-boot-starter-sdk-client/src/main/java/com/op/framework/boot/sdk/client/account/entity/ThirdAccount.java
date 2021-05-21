@@ -3,6 +3,7 @@ package com.op.framework.boot.sdk.client.account.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.op.framework.boot.sdk.client.base.AccountType;
 import lombok.Data;
 
 import java.time.LocalDateTime;
