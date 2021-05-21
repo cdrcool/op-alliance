@@ -1,7 +1,7 @@
 package com.op.framework.boot.sdk.client.account.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.op.framework.boot.sdk.client.third.jd.response.JdTokenResponse;
+import com.op.framework.boot.sdk.client.response.JdTokenResponse;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

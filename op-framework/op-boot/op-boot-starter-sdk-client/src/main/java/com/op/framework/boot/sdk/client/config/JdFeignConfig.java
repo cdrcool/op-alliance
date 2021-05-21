@@ -1,9 +1,9 @@
-package com.op.framework.boot.sdk.client.third.jd.feign.config;
+package com.op.framework.boot.sdk.client.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.op.framework.boot.sdk.client.third.jd.response.JdTokenResponse;
+import com.op.framework.boot.sdk.client.response.JdTokenResponse;
 import feign.*;
 import feign.codec.Decoder;
 import feign.codec.Encoder;

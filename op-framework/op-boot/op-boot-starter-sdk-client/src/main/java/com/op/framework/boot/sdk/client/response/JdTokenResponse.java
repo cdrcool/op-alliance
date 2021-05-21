@@ -1,4 +1,4 @@
-package com.op.framework.boot.sdk.client.third.jd.response;
+package com.op.framework.boot.sdk.client.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
