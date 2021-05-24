@@ -1,6 +1,6 @@
 package com.op.framework.boot.sdk.client.feign;
 
-import com.op.framework.boot.sdk.client.config.JdFeignConfig;
+import com.op.framework.boot.sdk.client.config.JdAuthFeignConfig;
 import com.op.framework.boot.sdk.client.response.JdTokenResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * 京东 feign client
+ * 京东授权 Feign Client
  *
  * @author cdrcool
  */
-@FeignClient(name = "jd", url = "${sdk.accounts.jd.auth-url}", path = "/oauth2", configuration = JdFeignConfig.class)
-public interface JdTokenFeignClient {
+@FeignClient(name = "jd", contextId = "jd-auth", url = "${sdk.accounts.jd.auth-url}", path = "/oauth2", configuration = JdAuthFeignConfig.class)
+public interface JdAuthClientFeign {
 
     /**
      * 该接口用于校验客户端登录参数，并提供用于换取 token 的鉴权码

@@ -19,12 +19,12 @@ import java.util.Objects;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
- * 京东Feign配置类
+ * 京东授权 Feign 配置类
  *
  * @author cdrcool
  */
 @Slf4j
-public class JdFeignConfig {
+public class JdAuthFeignConfig {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
