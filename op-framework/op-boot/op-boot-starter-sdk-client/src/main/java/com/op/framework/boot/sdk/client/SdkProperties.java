@@ -25,6 +25,11 @@ public class SdkProperties {
     private String refreshTokenCron;
 
     /**
+     * 请求方式（sdk | feign）
+     */
+    private String requestType = "sdk";
+
+    /**
      * 账号配置属性
      */
     @Data
