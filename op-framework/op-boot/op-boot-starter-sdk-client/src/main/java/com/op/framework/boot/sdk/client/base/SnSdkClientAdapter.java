@@ -10,6 +10,8 @@ import com.suning.api.SuningResponse;
 import com.suning.api.exception.SuningApiException;
 import com.suning.api.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -31,6 +33,12 @@ public class SnSdkClientAdapter implements SnSdkClient {
         this.thirdAccountService = thirdAccountService;
     }
 
+    /**
+     * 增加重试机制
+     * 默认发生任何异常时重试，最大重试3次
+     * 设置重试间隔为1s
+     */
+    @Retryable(backoff = @Backoff(delay = 1000, multiplier = 0, maxDelay = 5000L))
     @Override
     public <T extends SuningResponse> T execute(SnSdkRequest<T> suSdkRequest) {
         String token = suSdkRequest.getToken();

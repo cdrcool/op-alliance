@@ -10,6 +10,8 @@ import com.op.framework.boot.sdk.client.account.exception.ThirdAccountException;
 import com.op.framework.boot.sdk.client.account.service.ThirdAccountService;
 import com.op.framework.boot.sdk.client.exception.JdInvokeException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -32,6 +34,12 @@ public class JdSdkClientAdapter implements JdSdkClient {
         this.thirdAccountService = thirdAccountService;
     }
 
+    /**
+     * 增加重试机制
+     * 默认发生任何异常时重试，最大重试3次
+     * 设置重试间隔为1s
+     */
+    @Retryable(backoff = @Backoff(delay = 1000, multiplier = 0, maxDelay = 5000L))
     @Override
     public <T extends AbstractResponse> T execute(JdSdkRequest<T> jdSdkRequest) {
         String token = jdSdkRequest.getToken();
