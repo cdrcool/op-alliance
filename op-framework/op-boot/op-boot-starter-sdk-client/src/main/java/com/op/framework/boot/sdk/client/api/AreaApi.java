@@ -20,8 +20,6 @@ public interface AreaApi {
 
     /**
      * 获取二级地址列表
-     * <p>
-     * 注意：苏宁不是传递省编码，而是省运输代码
      *
      * @param provinceCode 省编码
      * @return 二级地址列表
@@ -30,8 +28,6 @@ public interface AreaApi {
 
     /**
      * 获取三级地址列表
-     * <p>
-     * 注意：苏宁不是传递市编码，而是市运输代码
      *
      * @param cityCode 市编码
      * @return 三级地址列表
@@ -40,8 +36,6 @@ public interface AreaApi {
 
     /**
      * 获取四级地址列表
-     * <p>
-     * 注意：苏宁不是传递区编码，而是区运输代码
      *
      * @param countyCode 区编码
      * @return 四级地址列表
@@ -50,8 +44,6 @@ public interface AreaApi {
 
     /**
      * 获取区域列表
-     * <p>
-     * 注意：苏宁不是传递区域编码，而是区域运输代码
      *
      * @param areaCode  区域编码
      * @param areaLevel 区域级别
