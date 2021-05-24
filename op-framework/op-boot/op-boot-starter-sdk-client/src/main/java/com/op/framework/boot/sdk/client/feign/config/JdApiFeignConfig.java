@@ -1,4 +1,4 @@
-package com.op.framework.boot.sdk.client.config;
+package com.op.framework.boot.sdk.client.feign.config;
 
 import com.jd.open.api.sdk.JdException;
 import com.jd.open.api.sdk.internal.parser.Parser;

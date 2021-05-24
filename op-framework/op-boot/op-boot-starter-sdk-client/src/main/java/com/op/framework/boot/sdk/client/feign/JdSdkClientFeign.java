@@ -3,7 +3,7 @@ package com.op.framework.boot.sdk.client.feign;
 import com.jd.open.api.sdk.response.AbstractResponse;
 import com.op.framework.boot.sdk.client.base.JdSdkClient;
 import com.op.framework.boot.sdk.client.base.JdSdkRequest;
-import com.op.framework.boot.sdk.client.config.JdApiFeignConfig;
+import com.op.framework.boot.sdk.client.feign.config.JdApiFeignConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 

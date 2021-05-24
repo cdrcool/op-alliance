@@ -1,4 +1,4 @@
-package com.op.framework.boot.sdk.client.config;
+package com.op.framework.boot.sdk.client.feign.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;

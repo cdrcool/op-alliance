@@ -1,6 +1,6 @@
 package com.op.framework.boot.sdk.client.feign;
 
-import com.op.framework.boot.sdk.client.config.JdAuthFeignConfig;
+import com.op.framework.boot.sdk.client.feign.config.JdAuthFeignConfig;
 import com.op.framework.boot.sdk.client.response.JdTokenResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
