@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author cdrcool
  */
 @FeignClient(name = "jd", contextId = "jd-auth", url = "${sdk.accounts.jd.auth-url}", path = "/oauth2", configuration = JdAuthFeignConfig.class)
-public interface JdAuthClientFeign {
+public interface JdAuthFeignClient {
 
     /**
      * 该接口用于校验客户端登录参数，并提供用于换取 token 的鉴权码

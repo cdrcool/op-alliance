@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
  * @author chengdr01
  */
 @FeignClient(name = "jd", contextId = "jd-api", url = "${sdk.accounts.jd.auth-url}", configuration = JdApiFeignConfig.class)
-public interface JdSdkClientFeign extends JdSdkClient {
+public interface JdSdkFeignClient extends JdSdkClient {
 
     /**
      * 执行请求

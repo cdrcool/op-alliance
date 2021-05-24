@@ -15,8 +15,8 @@ import com.op.framework.boot.sdk.client.base.JdSdkClient;
 import com.op.framework.boot.sdk.client.base.JdSdkClientAdapter;
 import com.op.framework.boot.sdk.client.base.SnSdkClient;
 import com.op.framework.boot.sdk.client.base.SnSdkClientAdapter;
-import com.op.framework.boot.sdk.client.feign.JdAuthClientFeign;
-import com.op.framework.boot.sdk.client.feign.JdSdkClientFeign;
+import com.op.framework.boot.sdk.client.feign.JdAuthFeignClient;
+import com.op.framework.boot.sdk.client.feign.JdSdkFeignClient;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -45,19 +45,19 @@ import java.util.Map;
 public class SdkAutoConfiguration {
     private final SdkProperties sdkProperties;
     private final ThirdAccountMapper thirdAccountMapper;
-    private final JdAuthClientFeign jdAuthClientFeign;
-    private final JdSdkClientFeign jdSdkClientFeign;
+    private final JdAuthFeignClient jdAuthFeignClient;
+    private final JdSdkFeignClient jdSdkFeignClient;
     private final RedisTemplate<String, Object> redisTemplate;
 
     public SdkAutoConfiguration(SdkProperties sdkProperties,
                                 ThirdAccountMapper thirdAccountMapper,
-                                JdAuthClientFeign jdAuthClientFeign,
-                                JdSdkClientFeign jdSdkClientFeign,
+                                JdAuthFeignClient jdAuthFeignClient,
+                                JdSdkFeignClient jdSdkFeignClient,
                                 RedisTemplate<String, Object> redisTemplate) {
         this.sdkProperties = sdkProperties;
         this.thirdAccountMapper = thirdAccountMapper;
-        this.jdAuthClientFeign = jdAuthClientFeign;
-        this.jdSdkClientFeign = jdSdkClientFeign;
+        this.jdAuthFeignClient = jdAuthFeignClient;
+        this.jdSdkFeignClient = jdSdkFeignClient;
         this.redisTemplate = redisTemplate;
     }
 
@@ -68,7 +68,7 @@ public class SdkAutoConfiguration {
 
     @Bean
     public JdAccountServiceImpl jdAccountService() {
-        return new JdAccountServiceImpl(sdkProperties, thirdAccountMapper, jdAuthClientFeign, redisTemplate);
+        return new JdAccountServiceImpl(sdkProperties, thirdAccountMapper, jdAuthFeignClient, redisTemplate);
     }
 
     @Bean
@@ -100,7 +100,7 @@ public class SdkAutoConfiguration {
     @Bean
     public JdSdkClient jdSdkClient() {
         String requestType = sdkProperties.getRequestType();
-        return "feign".equals(requestType) ? jdSdkClientFeign : new JdSdkClientAdapter(sdkProperties, jdAccountService());
+        return "feign".equals(requestType) ? jdSdkFeignClient : new JdSdkClientAdapter(sdkProperties, jdAccountService());
     }
 
     @Bean

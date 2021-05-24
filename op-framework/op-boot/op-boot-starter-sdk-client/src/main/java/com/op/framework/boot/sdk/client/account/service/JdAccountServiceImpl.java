@@ -9,7 +9,7 @@ import com.op.framework.boot.sdk.client.account.mapper.ThirdAccountMapper;
 import com.op.framework.boot.sdk.client.account.model.TokenResponse;
 import com.op.framework.boot.sdk.client.account.utils.RsaCoderUtils;
 import com.op.framework.boot.sdk.client.base.AccountType;
-import com.op.framework.boot.sdk.client.feign.JdAuthClientFeign;
+import com.op.framework.boot.sdk.client.feign.JdAuthFeignClient;
 import com.op.framework.boot.sdk.client.response.JdTokenResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -30,14 +30,14 @@ import java.util.Objects;
 @Service
 public class JdAccountServiceImpl extends ThirdAccountService {
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final JdAuthClientFeign jdAuthClientFeign;
+    private final JdAuthFeignClient jdAuthFeignClient;
 
     public JdAccountServiceImpl(SdkProperties sdkProperties,
                                 ThirdAccountMapper thirdAccountMapper,
-                                JdAuthClientFeign jdAuthClientFeign,
+                                JdAuthFeignClient jdAuthFeignClient,
                                 RedisTemplate<String, Object> redisTemplate) {
         super(sdkProperties, thirdAccountMapper, redisTemplate);
-        this.jdAuthClientFeign = jdAuthClientFeign;
+        this.jdAuthFeignClient = jdAuthFeignClient;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class JdAccountServiceImpl extends ThirdAccountService {
             String encodePassword = URLEncoder.encode(ciphertextPassword, StandardCharsets.UTF_8.toString());
             String encodeRedirectUri = URLEncoder.encode(getAccountProperties().getRedirectUri(), StandardCharsets.UTF_8.toString());
 
-            String responseJson = jdAuthClientFeign.authorizeForVop(getAccountProperties().getAppKey(),
+            String responseJson = jdAuthFeignClient.authorizeForVop(getAccountProperties().getAppKey(),
                     encodeRedirectUri,
                     encodeUsername,
                     encodePassword,
@@ -75,7 +75,7 @@ public class JdAccountServiceImpl extends ThirdAccountService {
 
     @Override
     protected TokenResponse getTokenResponse(String code) {
-        JdTokenResponse response = jdAuthClientFeign.accessToken(getAccountProperties().getAppKey(),
+        JdTokenResponse response = jdAuthFeignClient.accessToken(getAccountProperties().getAppKey(),
                 getAccountProperties().getAppSecret(),
                 "authorization_code",
                 code);
@@ -85,7 +85,7 @@ public class JdAccountServiceImpl extends ThirdAccountService {
 
     @Override
     protected TokenResponse getRefreshTokenResponse(ThirdAccount thirdAccount) {
-        JdTokenResponse response = jdAuthClientFeign.refreshToken(getAccountProperties().getAppKey(),
+        JdTokenResponse response = jdAuthFeignClient.refreshToken(getAccountProperties().getAppKey(),
                 getAccountProperties().getAppSecret(),
                 "refresh_token",
                 thirdAccount.getRefreshToken());
