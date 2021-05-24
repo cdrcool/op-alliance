@@ -18,6 +18,7 @@ import com.op.framework.boot.sdk.client.base.SnSdkClientAdapter;
 import com.op.framework.boot.sdk.client.feign.JdAuthFeignClient;
 import com.op.framework.boot.sdk.client.feign.JdSdkFeignClient;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -45,19 +46,15 @@ import java.util.Map;
 public class SdkAutoConfiguration {
     private final SdkProperties sdkProperties;
     private final ThirdAccountMapper thirdAccountMapper;
-    private final JdAuthFeignClient jdAuthFeignClient;
-    private final JdSdkFeignClient jdSdkFeignClient;
     private final RedisTemplate<String, Object> redisTemplate;
+    private  JdAuthFeignClient jdAuthFeignClient;
+    private  JdSdkFeignClient jdSdkFeignClient;
 
     public SdkAutoConfiguration(SdkProperties sdkProperties,
                                 ThirdAccountMapper thirdAccountMapper,
-                                JdAuthFeignClient jdAuthFeignClient,
-                                JdSdkFeignClient jdSdkFeignClient,
                                 RedisTemplate<String, Object> redisTemplate) {
         this.sdkProperties = sdkProperties;
         this.thirdAccountMapper = thirdAccountMapper;
-        this.jdAuthFeignClient = jdAuthFeignClient;
-        this.jdSdkFeignClient = jdSdkFeignClient;
         this.redisTemplate = redisTemplate;
     }
 
@@ -116,5 +113,15 @@ public class SdkAutoConfiguration {
     @Bean
     public SnSdkClient snSdkClient() {
         return new SnSdkClientAdapter(sdkProperties, snAccountService());
+    }
+
+    @Autowired
+    public void setJdAuthFeignClient(JdAuthFeignClient jdAuthFeignClient) {
+        this.jdAuthFeignClient = jdAuthFeignClient;
+    }
+
+    @Autowired
+    public void setJdSdkFeignClient(JdSdkFeignClient jdSdkFeignClient) {
+        this.jdSdkFeignClient = jdSdkFeignClient;
     }
 }

@@ -7,7 +7,7 @@ import lombok.Data;
 /**
  * 京东 SDK 请求对象
  *
- * @author chengdr01
+ * @author cdrcool
  */
 @Data
 public class JdSdkRequest<T extends AbstractResponse> {

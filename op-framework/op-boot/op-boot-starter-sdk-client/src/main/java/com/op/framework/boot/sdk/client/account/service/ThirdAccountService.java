@@ -198,7 +198,7 @@ public abstract class ThirdAccountService {
 
         // 如果数据库中有访问令牌，且未过期，则返回数据据中的访问令牌
         Long now = System.currentTimeMillis();
-        if (StringUtils.hasText(thirdAccount.getAccessToken()) && now.compareTo(thirdAccount.getAccessTokenExpiresAt()) > 0) {
+        if (StringUtils.hasText(thirdAccount.getAccessToken()) && now.compareTo(thirdAccount.getAccessTokenExpiresAt()) < 0) {
             log.info("从数据库中获取到access token：{}", thirdAccount.getAccessToken());
             if (deferredResult != null) {
                 deferredResult.setResult(thirdAccount.getAccessToken());
@@ -208,7 +208,7 @@ public abstract class ThirdAccountService {
 
         // 如果数据据中有刷新令牌，且未过期，则通过刷新令牌获取访问令牌
         boolean doRefresh = StringUtils.hasText(thirdAccount.getRefreshToken()) &&
-                (thirdAccount.getRefreshTokenExpiresAt() == null || now.compareTo(thirdAccount.getRefreshTokenExpiresAt()) > 0);
+                (thirdAccount.getRefreshTokenExpiresAt() == null || now.compareTo(thirdAccount.getRefreshTokenExpiresAt()) < 0);
         if (doRefresh) {
             try {
                 log.info("从数据库中获取到refresh token：{}，执行刷新token操作", thirdAccount.getRefreshToken());

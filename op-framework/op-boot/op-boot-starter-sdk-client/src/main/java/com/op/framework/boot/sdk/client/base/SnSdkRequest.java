@@ -7,7 +7,7 @@ import lombok.Data;
 /**
  * 苏宁 SDK 请求对象
  *
- * @author chengdr01
+ * @author cdrcool
  */
 @Data
 public class SnSdkRequest<T extends SuningResponse> {

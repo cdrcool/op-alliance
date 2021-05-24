@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 /**
  * 京东 Feign Client
  *
- * @author chengdr01
+ * @author cdrcool
  */
 @FeignClient(name = "jd", contextId = "jd-api", url = "${sdk.accounts.jd.auth-url}", configuration = JdApiFeignConfig.class)
 public interface JdSdkFeignClient extends JdSdkClient {

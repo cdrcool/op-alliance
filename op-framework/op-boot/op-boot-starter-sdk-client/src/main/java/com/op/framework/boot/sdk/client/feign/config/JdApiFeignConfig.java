@@ -19,6 +19,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -49,7 +50,7 @@ public class JdApiFeignConfig {
     private final SdkProperties sdkProperties;
     private final ThirdAccountService thirdAccountService;
 
-    public JdApiFeignConfig(SdkProperties sdkProperties, ThirdAccountService thirdAccountService) {
+    public JdApiFeignConfig(SdkProperties sdkProperties, @Qualifier("jdAccountService") ThirdAccountService thirdAccountService) {
         this.sdkProperties = sdkProperties;
         this.thirdAccountService = thirdAccountService;
     }

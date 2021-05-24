@@ -1,6 +1,6 @@
 package com.op.framework.boot.sdk.client.feign;
 
-import com.op.framework.boot.sdk.client.feign.config.JdAuthFeignConfig;
+import com.op.framework.boot.sdk.client.feign.config.JdApiFeignConfig;
 import com.op.framework.boot.sdk.client.response.JdTokenResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  *
  * @author cdrcool
  */
-@FeignClient(name = "jd", contextId = "jd-auth", url = "${sdk.accounts.jd.auth-url}", path = "/oauth2", configuration = JdAuthFeignConfig.class)
+@FeignClient(name = "jd", contextId = "jd-auth", url = "${sdk.accounts.jd.auth-url}", path = "/oauth2", configuration = JdApiFeignConfig.class)
 public interface JdAuthFeignClient {
 
     /**

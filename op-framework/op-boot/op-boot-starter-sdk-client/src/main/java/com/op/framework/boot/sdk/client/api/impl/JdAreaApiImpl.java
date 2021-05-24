@@ -12,7 +12,9 @@ import com.op.framework.boot.sdk.client.response.AreaResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -63,7 +65,7 @@ public class JdAreaApiImpl implements AreaApi {
         }
 
         QueryJdAreaIdListOpenResp areaIdListOpenResp = result.getResult();
-        return areaIdListOpenResp.getAreaInfoList().stream()
+        return Optional.ofNullable(areaIdListOpenResp.getAreaInfoList()).orElse(new ArrayList<>()).stream()
                 .map(AreaResponse::buildFrom).collect(Collectors.toList());
     }
 }

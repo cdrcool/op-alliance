@@ -27,7 +27,7 @@ public class ThirdAccount {
      *
      * @see AccountType
      */
-    private Integer accountType;
+    private String accountType;
 
     /**
      * 帐号名
