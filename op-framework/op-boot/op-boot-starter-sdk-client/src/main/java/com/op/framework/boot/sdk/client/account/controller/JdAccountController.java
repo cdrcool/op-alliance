@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class JdAccountController extends ThirdAccountController {
 
-    public JdAccountController(@Qualifier("jdAccountServiceImpl") ThirdAccountService thirdAccountService) {
+    public JdAccountController(@Qualifier("jdAccountService") ThirdAccountService thirdAccountService) {
         super(thirdAccountService);
     }
 }

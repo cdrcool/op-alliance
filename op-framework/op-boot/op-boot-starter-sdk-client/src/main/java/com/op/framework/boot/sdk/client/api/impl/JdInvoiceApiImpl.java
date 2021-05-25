@@ -12,7 +12,7 @@ import com.op.framework.boot.sdk.client.api.InvoiceApi;
 import com.op.framework.boot.sdk.client.base.JdSdkClient;
 import com.op.framework.boot.sdk.client.base.JdSdkRequest;
 import com.op.framework.boot.sdk.client.exception.JdInvokeException;
-import com.op.framework.boot.sdk.client.request.InvoiceApplySubmitRequest;
+import com.op.framework.boot.sdk.client.request.*;
 import com.op.framework.boot.sdk.client.response.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -52,9 +52,9 @@ public class JdInvoiceApiImpl implements InvoiceApi {
     }
 
     @Override
-    public Boolean cancelInvoiceApply(String token, String markId) {
+    public Boolean cancelInvoiceApply(String token, InvoiceApplyCancelRequest invoiceApplyCancelRequest) {
         VopInvoiceCancelInvoiceApplyRequest request = new VopInvoiceCancelInvoiceApplyRequest();
-        request.setMarkId(markId);
+        request.setMarkId(invoiceApplyCancelRequest.getMarkId());
 
         VopInvoiceCancelInvoiceApplyResponse response = jdSdkClient.execute(new JdSdkRequest<>(token, request));
         com.jd.open.api.sdk.domain.vopfp.OperaInvoiceOpenProvider.response.cancelInvoiceApply.OpenRpcResult result = response.getOpenRpcResult();
@@ -67,9 +67,9 @@ public class JdInvoiceApiImpl implements InvoiceApi {
     }
 
     @Override
-    public List<InvoiceOutlineResponse> queryInvoiceOutline(String token, String markId) {
+    public List<InvoiceOutlineResponse> queryInvoiceOutline(String token, InvoiceOutlineRequest invoiceOutlineRequest) {
         VopInvoiceQueryInvoiceOutlineRequest request = new VopInvoiceQueryInvoiceOutlineRequest();
-        request.setMarkId(markId);
+        request.setMarkId(invoiceOutlineRequest.getMarkId());
         VopInvoiceQueryInvoiceOutlineResponse response = jdSdkClient.execute(new JdSdkRequest<>(token, request));
 
         com.jd.open.api.sdk.domain.vopfp.QueryInvoiceOpenProvider.response.queryInvoiceOutline.OpenRpcResult result = response.getOpenRpcResult();
@@ -83,10 +83,10 @@ public class JdInvoiceApiImpl implements InvoiceApi {
     }
 
     @Override
-    public InvoiceDetailResponse queryInvoiceDetail(String token, String invoiceCode, String invoiceId) {
+    public InvoiceDetailResponse queryInvoiceDetail(String token, InvoiceDetailRequest invoiceDetailRequest) {
         VopInvoiceQueryInvoiceDetailRequest request = new VopInvoiceQueryInvoiceDetailRequest();
-        request.setInvoiceCode(invoiceCode);
-        request.setInvoiceId(invoiceId);
+        request.setInvoiceId(invoiceDetailRequest.getInvoiceId());
+        request.setInvoiceCode(invoiceDetailRequest.getInvoiceCode());
 
         VopInvoiceQueryInvoiceDetailResponse response = jdSdkClient.execute(new JdSdkRequest<>(token, request));
         com.jd.open.api.sdk.domain.vopfp.QueryInvoiceOpenProvider.response.queryInvoiceDetail.OpenRpcResult result = response.getOpenRpcResult();
@@ -100,9 +100,9 @@ public class JdInvoiceApiImpl implements InvoiceApi {
     }
 
     @Override
-    public List<InvoiceElectronicDetailResponse> queryElectronicInvoiceDetail(String token, String orderId, List<String> subOrderIds) {
+    public List<InvoiceElectronicDetailResponse> queryElectronicInvoiceDetail(String token, InvoiceElectronicDetailRequest invoiceElectronicDetailRequest) {
         VopInvoiceQueryElectronicInvoiceDetailRequest request = new VopInvoiceQueryElectronicInvoiceDetailRequest();
-        request.setJdOrderId(Long.valueOf(subOrderIds.get(0)));
+        request.setJdOrderId(Long.valueOf(invoiceElectronicDetailRequest.getSubOrderIds().get(0)));
         request.setIvcType(3);
         VopInvoiceQueryElectronicInvoiceDetailResponse response = jdSdkClient.execute(new JdSdkRequest<>(token, request));
 
@@ -117,9 +117,9 @@ public class JdInvoiceApiImpl implements InvoiceApi {
     }
 
     @Override
-    public List<InvoiceDeliveryResponse> queryInvoiceWaybillNo(String token, String markId) {
+    public List<InvoiceWaybillNoResponse> queryInvoiceWaybillNo(String token, InvoiceWaybillNoRequest invoiceWaybillNoRequest) {
         VopInvoiceQueryInvoiceWaybillRequest request = new VopInvoiceQueryInvoiceWaybillRequest();
-        request.setMarkId(markId);
+        request.setMarkId(invoiceWaybillNoRequest.getMarkId());
 
         VopInvoiceQueryInvoiceWaybillResponse response = jdSdkClient.execute(new JdSdkRequest<>(token, request));
         com.jd.open.api.sdk.domain.vopfp.QueryInvoiceOpenProvider.response.queryInvoiceWaybill.OpenRpcResult result = response.getOpenRpcResult();
@@ -129,15 +129,17 @@ public class JdInvoiceApiImpl implements InvoiceApi {
         }
 
         List<InvoiceDeliveryOpenResp> respList = result.getResult();
-        return respList.stream().map(InvoiceDeliveryResponse::buildFrom).collect(Collectors.toList());
+        return respList.stream().map(InvoiceWaybillNoResponse::buildFrom).collect(Collectors.toList());
     }
 
     @Override
-    public List<InvoiceDeliveryResponse> queryInvoiceDeliveryNo(String token, String orderId, List<String> subOrderIds) {
-        String markId = queryInvoiceThirdApplyNo(token, subOrderIds.get(0));
-        List<InvoiceDeliveryResponse> deliveryResponses = queryInvoiceWaybillNo(token, markId);
+    public List<InvoiceDeliveryResponse> queryInvoiceDeliveryNo(String token, InvoiceDeliveryRequest invoiceDeliveryRequest) {
+        String markId = queryInvoiceThirdApplyNo(token, invoiceDeliveryRequest.getSubOrderIds().get(0));
+        InvoiceWaybillNoRequest invoiceWaybillNoRequest = new InvoiceWaybillNoRequest();
+        invoiceWaybillNoRequest.setMarkId(markId);
+        List<InvoiceWaybillNoResponse> waybillNoResponses = queryInvoiceWaybillNo(token, invoiceWaybillNoRequest);
 
-        List<InvoiceLogisticsInformationOpenResp> respList = subOrderIds.stream().map(subOrderId -> {
+        List<InvoiceLogisticsInformationOpenResp> respList = invoiceDeliveryRequest.getSubOrderIds().stream().map(subOrderId -> {
             VopInvoiceQueryInvoiceDeliveryNoRequest request = new VopInvoiceQueryInvoiceDeliveryNoRequest();
             request.setJdOrderId(subOrderId);
 
@@ -154,12 +156,19 @@ public class JdInvoiceApiImpl implements InvoiceApi {
         Map<String, List<InvoiceLogisticsInformationOpenResp>> respListMap =
                 respList.stream().collect(Collectors.groupingBy(InvoiceLogisticsInformationOpenResp::getWaybillCode));
 
-        deliveryResponses.forEach(deliveryResponse -> {
-            List<InvoiceLogisticsInformationOpenResp> respListItem = respListMap.getOrDefault(deliveryResponse.getDeliveryId(), new ArrayList<>());
-            deliveryResponse.setDetails(respListItem.stream().map(InvoiceLogisticsResponse::buildFrom).collect(Collectors.toList()));
-        });
+        return waybillNoResponses.stream().map(response -> {
+            InvoiceDeliveryResponse deliveryResponse = new InvoiceDeliveryResponse();
+            deliveryResponse.setPostCompany(response.getPostCompany());
+            deliveryResponse.setDeliveryId(response.getDeliveryId());
+            deliveryResponse.setPostTime(response.getPostTime());
+            deliveryResponse.setIvcPostId(response.getIvcPostId());
+            deliveryResponse.setState(response.getState());
 
-        return deliveryResponses;
+            List<InvoiceLogisticsInformationOpenResp> respListItem = respListMap.getOrDefault(response.getDeliveryId(), new ArrayList<>());
+            deliveryResponse.setDetails(respListItem.stream().map(InvoiceLogisticsResponse::buildFrom).collect(Collectors.toList()));
+
+            return deliveryResponse;
+        }).collect(Collectors.toList());
     }
 
     private String queryInvoiceThirdApplyNo(String token, String orderId) {

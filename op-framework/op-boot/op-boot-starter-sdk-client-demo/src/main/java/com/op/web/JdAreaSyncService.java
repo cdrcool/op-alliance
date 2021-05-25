@@ -63,7 +63,7 @@ public class JdAreaSyncService {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         String insertSql = "INSERT INTO cl_area (parent_id, `level`, area_name, jingdong_code) VALUES (?, ?, ?, ?)";
-        writer.write(insertSql + "; areaName=" + areaName + ", areaCode=" + areaCode + "parentId" + parentId + ", areaLevel=" + areaLevel );
+        writer.write(insertSql + "; areaName=" + areaName + ", areaCode=" + areaCode + "parentId" + parentId + ", areaLevel=" + areaLevel);
         writer.newLine();
         int num = jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS);

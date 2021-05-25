@@ -49,8 +49,8 @@ public class SdkAutoConfiguration {
     private final SdkProperties sdkProperties;
     private final ThirdAccountMapper thirdAccountMapper;
     private final RedisTemplate<String, Object> redisTemplate;
-    private  JdAuthFeignClient jdAuthFeignClient;
-    private  JdSdkFeignClient jdSdkFeignClient;
+    private JdAuthFeignClient jdAuthFeignClient;
+    private JdSdkFeignClient jdSdkFeignClient;
 
     public SdkAutoConfiguration(SdkProperties sdkProperties,
                                 ThirdAccountMapper thirdAccountMapper,

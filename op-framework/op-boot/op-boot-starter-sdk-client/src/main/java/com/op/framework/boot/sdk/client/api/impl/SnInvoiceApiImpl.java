@@ -4,11 +4,8 @@ import com.op.framework.boot.sdk.client.api.InvoiceApi;
 import com.op.framework.boot.sdk.client.base.SnSdkClient;
 import com.op.framework.boot.sdk.client.base.SnSdkRequest;
 import com.op.framework.boot.sdk.client.exception.SnInvokeException;
-import com.op.framework.boot.sdk.client.request.InvoiceApplySubmitRequest;
-import com.op.framework.boot.sdk.client.response.InvoiceDeliveryResponse;
-import com.op.framework.boot.sdk.client.response.InvoiceDetailResponse;
-import com.op.framework.boot.sdk.client.response.InvoiceElectronicDetailResponse;
-import com.op.framework.boot.sdk.client.response.InvoiceOutlineResponse;
+import com.op.framework.boot.sdk.client.request.*;
+import com.op.framework.boot.sdk.client.response.*;
 import com.suning.api.SuningResponse;
 import com.suning.api.entity.govbus.*;
 import lombok.extern.slf4j.Slf4j;
@@ -53,9 +50,9 @@ public class SnInvoiceApiImpl implements InvoiceApi {
     }
 
     @Override
-    public Boolean cancelInvoiceApply(String token, String markId) {
+    public Boolean cancelInvoiceApply(String token, InvoiceApplyCancelRequest invoiceApplyCancelRequest) {
         InvoicebatchDeleteRequest.BatchInfos batchInfos = new InvoicebatchDeleteRequest.BatchInfos();
-        batchInfos.setBatchNo(markId);
+        batchInfos.setBatchNo(invoiceApplyCancelRequest.getMarkId());
         InvoicebatchDeleteRequest request = new InvoicebatchDeleteRequest();
         request.setBatchInfos(Collections.singletonList(batchInfos));
 
@@ -69,7 +66,7 @@ public class SnInvoiceApiImpl implements InvoiceApi {
         InvoicebatchDeleteResponse.SnBody snBody = response.getSnbody();
         InvoicebatchDeleteResponse.DeleteInvoicebatch deleteInvoicebatch = snBody.getDeleteInvoicebatch();
         Optional<InvoicebatchDeleteResponse.FailBatchInfos> optional = Optional.ofNullable(deleteInvoicebatch.getFailBatchInfos())
-                .orElse(new ArrayList<>()).stream().filter(item -> markId.equals(item.getBatchNo())).findAny();
+                .orElse(new ArrayList<>()).stream().filter(item -> invoiceApplyCancelRequest.getMarkId().equals(item.getBatchNo())).findAny();
         if (optional.isPresent()) {
             InvoicebatchDeleteResponse.FailBatchInfos failBatchInfos = optional.get();
             log.error("取消京东发票申请失败，错误码：【{}】，错误消息【{}】", failBatchInfos.getErrCode(), failBatchInfos.getErrMessage());
@@ -80,9 +77,9 @@ public class SnInvoiceApiImpl implements InvoiceApi {
     }
 
     @Override
-    public List<InvoiceOutlineResponse> queryInvoiceOutline(String token, String markId) {
+    public List<InvoiceOutlineResponse> queryInvoiceOutline(String token, InvoiceOutlineRequest invoiceOutlineRequest) {
         GetmarkidinvoiceQueryRequest request = new GetmarkidinvoiceQueryRequest();
-        request.setMarkId(markId);
+        request.setMarkId(invoiceOutlineRequest.getMarkId());
         request.setCurrentPage("1");
         request.setPageNumber("100");
 
@@ -103,10 +100,10 @@ public class SnInvoiceApiImpl implements InvoiceApi {
     }
 
     @Override
-    public InvoiceDetailResponse queryInvoiceDetail(String token, String invoiceCode, String invoiceId) {
+    public InvoiceDetailResponse queryInvoiceDetail(String token, InvoiceDetailRequest invoiceDetailRequest) {
         GetinvoicesurfaceinfoQueryRequest request = new GetinvoicesurfaceinfoQueryRequest();
-        request.setInvoiceCode(invoiceCode);
-        request.setInvoiceId(invoiceId);
+        request.setInvoiceId(invoiceDetailRequest.getInvoiceId());
+        request.setInvoiceCode(invoiceDetailRequest.getInvoiceCode());
 
         GetinvoicesurfaceinfoQueryResponse response = snSdkClient.execute(new SnSdkRequest<>(token, request));
         SuningResponse.SnError snError = response.getSnerror();
@@ -121,10 +118,10 @@ public class SnInvoiceApiImpl implements InvoiceApi {
     }
 
     @Override
-    public List<InvoiceElectronicDetailResponse> queryElectronicInvoiceDetail(String token, String orderId, List<String> subOrderIds) {
+    public List<InvoiceElectronicDetailResponse> queryElectronicInvoiceDetail(String token, InvoiceElectronicDetailRequest invoiceElectronicDetailRequest) {
         EleinvoiceGetRequest request = new EleinvoiceGetRequest();
-        request.setOrderId(orderId);
-        request.setOrderItems(subOrderIds.stream().map(subOrderId -> {
+        request.setOrderId(invoiceElectronicDetailRequest.getOrderId());
+        request.setOrderItems(invoiceElectronicDetailRequest.getSubOrderIds().stream().map(subOrderId -> {
             EleinvoiceGetRequest.OrderItems orderItems = new EleinvoiceGetRequest.OrderItems();
             orderItems.setOrderItemId(subOrderId);
 
@@ -144,10 +141,10 @@ public class SnInvoiceApiImpl implements InvoiceApi {
     }
 
     @Override
-    public List<InvoiceDeliveryResponse> queryInvoiceWaybillNo(String token, String markId) {
+    public List<InvoiceWaybillNoResponse> queryInvoiceWaybillNo(String token, InvoiceWaybillNoRequest invoiceWaybillNoRequest) {
         InvoicelogistGetRequest request = new InvoicelogistGetRequest();
         request.setType("1");
-        request.setParameter(markId);
+        request.setParameter(invoiceWaybillNoRequest.getMarkId());
 
         InvoicelogistGetResponse response = snSdkClient.execute(new SnSdkRequest<>(token, request));
         SuningResponse.SnError snError = response.getSnerror();
@@ -163,14 +160,14 @@ public class SnInvoiceApiImpl implements InvoiceApi {
             throw new SnInvokeException("提交苏宁发票申请失败");
         }
 
-        return getInvoicelogist.getLogistics().stream().map(InvoiceDeliveryResponse::buildFrom).collect(Collectors.toList());
+        return getInvoicelogist.getLogistics().stream().map(InvoiceWaybillNoResponse::buildFrom).collect(Collectors.toList());
     }
 
     @Override
-    public List<InvoiceDeliveryResponse> queryInvoiceDeliveryNo(String token, String orderId, List<String> subOrderIds) {
+    public List<InvoiceDeliveryResponse> queryInvoiceDeliveryNo(String token, InvoiceDeliveryRequest invoiceDeliveryRequest) {
         LogistdetailGetRequest request = new LogistdetailGetRequest();
-        request.setOrderId(orderId);
-        request.setOrderItemIds(subOrderIds.stream().map(subOrderId -> {
+        request.setOrderId(invoiceDeliveryRequest.getOrderId());
+        request.setOrderItemIds(invoiceDeliveryRequest.getSubOrderIds().stream().map(subOrderId -> {
             LogistdetailGetRequest.OrderItemIds orderItemIds = new LogistdetailGetRequest.OrderItemIds();
             orderItemIds.setOrderItemId(subOrderId);
             return orderItemIds;
