@@ -3,6 +3,7 @@ package com.op.framework.boot.sdk.client.feign.config;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.op.framework.boot.sdk.client.exception.JdInvokeException;
 import com.op.framework.boot.sdk.client.response.JdTokenResponse;
 import feign.*;
 import feign.codec.Decoder;
@@ -42,7 +43,7 @@ public class JdAuthFeignConfig {
                             value = objectMapper.writeValueAsString(value);
                         } catch (JsonProcessingException e) {
                             log.error("序列化请求参数：{}异常", key);
-                            throw new RuntimeException("序列化请求参数：" + key + "异常");
+                            throw new JdInvokeException("序列化请求参数：" + key + "异常");
                         }
                     }
                     template.query(key, value.toString());
@@ -70,7 +71,7 @@ public class JdAuthFeignConfig {
                 JdTokenResponse jdTokenResponse = objectMapper.readValue(responseJson, JdTokenResponse.class);
                 if (!Objects.equals(jdTokenResponse.getCode(), 0)) {
                     log.error("请求京东接口：{}失败，返回码：{}", response.request().url(), jdTokenResponse.getCode());
-                    throw new RuntimeException("请求京东接口：" + response.request().url() + "失败，返回码：" + jdTokenResponse.getCode());
+                    throw new JdInvokeException("请求京东接口：" + response.request().url() + "失败，返回码：" + jdTokenResponse.getCode());
                 }
                 return jdTokenResponse;
             }
