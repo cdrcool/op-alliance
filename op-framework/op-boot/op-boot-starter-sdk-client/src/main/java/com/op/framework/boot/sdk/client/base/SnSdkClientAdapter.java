@@ -3,7 +3,7 @@ package com.op.framework.boot.sdk.client.base;
 import com.op.framework.boot.sdk.client.SdkProperties;
 import com.op.framework.boot.sdk.client.account.exception.ThirdAccountException;
 import com.op.framework.boot.sdk.client.account.service.ThirdAccountService;
-import com.op.framework.boot.sdk.client.exception.JdInvokeException;
+import com.op.framework.boot.sdk.client.exception.SnInvokeException;
 import com.suning.api.DefaultSuningClient;
 import com.suning.api.SuningRequest;
 import com.suning.api.SuningResponse;
@@ -52,7 +52,7 @@ public class SnSdkClientAdapter implements SnSdkClient {
         } catch (Exception e) {
             log.error("调用苏宁接口【{}】失败，请求参数：【{}】，系统参数：【{}】",
                     snRequest.getAppMethod(), serializeRequest(snRequest), snRequest.getSysParams(), e);
-            throw new JdInvokeException(String.format("调用苏宁接口【%s】失败", snRequest.getAppMethod()), e);
+            throw new SnInvokeException(String.format("调用苏宁接口【%s】失败", snRequest.getAppMethod()), e);
         }
     }
 
