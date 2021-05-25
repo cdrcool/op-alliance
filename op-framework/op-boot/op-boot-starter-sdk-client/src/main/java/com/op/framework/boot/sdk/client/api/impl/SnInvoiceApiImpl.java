@@ -59,8 +59,8 @@ public class SnInvoiceApiImpl implements InvoiceApi {
         InvoicebatchDeleteResponse response = snSdkClient.execute(new SnSdkRequest<>(token, request));
         SuningResponse.SnError snError = response.getSnerror();
         if (snError != null) {
-            log.error("取消京东发票申请失败，错误码：【{}】，错误消息【{}】", snError.getErrorCode(), snError.getErrorMsg());
-            throw new SnInvokeException(snError.getErrorCode(), "取消京东发票申请失败：" + snError.getErrorMsg());
+            log.error("取消苏宁发票申请失败，错误码：【{}】，错误消息【{}】", snError.getErrorCode(), snError.getErrorMsg());
+            throw new SnInvokeException(snError.getErrorCode(), "取消苏宁发票申请失败：" + snError.getErrorMsg());
         }
 
         InvoicebatchDeleteResponse.SnBody snBody = response.getSnbody();
@@ -69,8 +69,8 @@ public class SnInvoiceApiImpl implements InvoiceApi {
                 .orElse(new ArrayList<>()).stream().filter(item -> invoiceApplyCancelRequest.getMarkId().equals(item.getBatchNo())).findAny();
         if (optional.isPresent()) {
             InvoicebatchDeleteResponse.FailBatchInfos failBatchInfos = optional.get();
-            log.error("取消京东发票申请失败，错误码：【{}】，错误消息【{}】", failBatchInfos.getErrCode(), failBatchInfos.getErrMessage());
-            throw new SnInvokeException(failBatchInfos.getErrCode(), "取消京东发票申请失败：" + failBatchInfos.getErrMessage());
+            log.error("取消苏宁发票申请失败，错误码：【{}】，错误消息【{}】", failBatchInfos.getErrCode(), failBatchInfos.getErrMessage());
+            throw new SnInvokeException(failBatchInfos.getErrCode(), "取消苏宁发票申请失败：" + failBatchInfos.getErrMessage());
         }
 
         return true;
