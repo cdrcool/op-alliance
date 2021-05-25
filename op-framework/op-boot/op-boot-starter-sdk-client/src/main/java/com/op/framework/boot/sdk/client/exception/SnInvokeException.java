@@ -3,7 +3,7 @@ package com.op.framework.boot.sdk.client.exception;
 import lombok.Getter;
 
 /**
- * 京东接口调用异常
+ * 苏宁接口调用异常
  *
  * @author cdrcool
  */
