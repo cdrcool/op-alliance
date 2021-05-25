@@ -26,6 +26,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -37,6 +38,7 @@ import java.util.Map;
  * @author cdrcool
  */
 @ConditionalOnBean({RedisTemplate.class})
+@EnableRetry
 @EnableAsync
 @EnableScheduling
 @EnableFeignClients(basePackages = "com.op.framework.boot.sdk.client.feign")
