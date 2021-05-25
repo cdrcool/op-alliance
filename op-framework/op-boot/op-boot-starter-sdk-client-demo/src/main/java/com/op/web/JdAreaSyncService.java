@@ -105,7 +105,7 @@ public class JdAreaSyncService {
                 map.forEach((k, v) -> {
                     long id;
                     if (!dataMap.containsKey(k)) {
-                        id = insert(v, k, parentId, areaLevel + 1, writer);
+                        id = insert(v, k, parentId, areaLevel, writer);
                     } else {
                         Map<String, Object> data = dataMap.get(k);
                         if (!v.equals(data.get("area_name"))) {
