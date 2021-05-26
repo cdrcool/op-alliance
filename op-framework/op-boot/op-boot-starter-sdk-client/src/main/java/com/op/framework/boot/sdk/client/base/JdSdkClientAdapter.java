@@ -58,15 +58,15 @@ public class JdSdkClientAdapter implements JdSdkClient {
     }
 
     private JdClient getJdClient(String token) {
-        SdkProperties.Account account = Optional.ofNullable(sdkProperties.getAccounts().get(ThirdSdkType.JD.getValue()))
+        SdkProperties.ThirdProperties thirdProperties = Optional.ofNullable(sdkProperties.getAccounts().get(ThirdSdkType.JD.getValue()))
                 .orElseThrow(() -> new ThirdAccountException("未找到京东账号配置"));
 
         // 未传递token就取默认账号的token
         if (!StringUtils.hasText(token)) {
-            token = thirdAccountService.getAccessToken(account.getAccount(), null);
+            token = thirdAccountService.getAccessToken(thirdProperties.getAccount(), null);
         }
 
-        return new DefaultJdClient(account.getServerUrl(), token, account.getAppKey(), account.getAppSecret());
+        return new DefaultJdClient(thirdProperties.getServerUrl(), token, thirdProperties.getAppKey(), thirdProperties.getAppSecret());
     }
 
     private <T extends AbstractResponse> String serializeRequest(JdRequest<T> jdRequest) {

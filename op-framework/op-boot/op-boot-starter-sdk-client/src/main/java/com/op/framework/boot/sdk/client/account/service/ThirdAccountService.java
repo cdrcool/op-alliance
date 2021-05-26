@@ -267,7 +267,7 @@ public abstract class ThirdAccountService {
      *
      * @return 第三方账号配置属性
      */
-    protected final SdkProperties.Account getAccountProperties() {
+    protected final SdkProperties.ThirdProperties getThirdProperties() {
         return sdkProperties.getAccounts().computeIfAbsent(accountType().getValue(), (key) -> {
             throw new ThirdAccountException("未配置" + accountType().getValue() + "账号的相关属性");
         });

@@ -57,14 +57,14 @@ public class SnSdkClientAdapter implements SnSdkClient {
     }
 
     private DefaultSuningClient getSnClient(String token) {
-        SdkProperties.Account account = Optional.ofNullable(sdkProperties.getAccounts().get(ThirdSdkType.SN.getValue()))
+        SdkProperties.ThirdProperties thirdProperties = Optional.ofNullable(sdkProperties.getAccounts().get(ThirdSdkType.SN.getValue()))
                 .orElseThrow(() -> new ThirdAccountException("未找到苏宁账号配置"));
 
         // 未传递token就取默认账号的token
         if (!StringUtils.hasText(token)) {
-            token = thirdAccountService.getAccessToken(account.getAccount(), null);
+            token = thirdAccountService.getAccessToken(thirdProperties.getAccount(), null);
         }
-        return new DefaultSuningClient(account.getServerUrl(), token, account.getAppKey(), account.getAppSecret());
+        return new DefaultSuningClient(thirdProperties.getServerUrl(), token, thirdProperties.getAppKey(), thirdProperties.getAppSecret());
     }
 
     private <T extends SuningResponse> String serializeRequest(SuningRequest<T> request) {

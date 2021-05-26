@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * sdk配置属性
+ * SDK 配置属性
  *
  * @author cdrcool
  */
@@ -15,25 +15,15 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "sdk")
 public class SdkProperties {
     /**
-     * 第三方账号配置
+     * 第三方配置属性 Map
      */
-    private Map<String, Account> accounts = new HashMap<>();
+    private Map<String, ThirdProperties> accounts = new HashMap<>();
 
     /**
-     * 定时刷新token cron表达式
-     */
-    private String refreshTokenCron;
-
-    /**
-     * 请求方式（sdk | feign）
-     */
-    private String requestType = "sdk";
-
-    /**
-     * 账号配置属性
+     * 第三方配置属性
      */
     @Data
-    public static class Account {
+    public static class ThirdProperties {
         /**
          * server url
          */
@@ -68,5 +58,15 @@ public class SdkProperties {
          * rsa私钥
          */
         private String rsaKey;
+
+        /**
+         * 定时任务 Cron 表达式
+         */
+        private Map<String, String> cron;
+
+        /**
+         * 请求方式（sdk | feign）
+         */
+        private String requestType = "sdk";
     }
 }

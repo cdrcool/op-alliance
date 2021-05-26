@@ -62,11 +62,11 @@ public class JdApiFeignConfig {
             String token = jdSdkRequest.getToken();
             JdRequest<? extends AbstractResponse> jdRequest = jdSdkRequest.getJdRequest();
 
-            SdkProperties.Account account = Optional.ofNullable(sdkProperties.getAccounts().get(ThirdSdkType.JD.getValue()))
+            SdkProperties.ThirdProperties thirdProperties = Optional.ofNullable(sdkProperties.getAccounts().get(ThirdSdkType.JD.getValue()))
                     .orElseThrow(() -> new ThirdAccountException("未找到京东账号配置"));
 
             if (!StringUtils.hasText(token)) {
-                token = thirdAccountService.getAccessToken(account.getAccount(), null);
+                token = thirdAccountService.getAccessToken(thirdProperties.getAccount(), null);
             }
 
             Map<String, String> sysParams = jdRequest.getSysParams();
@@ -76,7 +76,7 @@ public class JdApiFeignConfig {
             params.put("method", jdRequest.getApiMethod());
             params.put("timestamp", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")));
 
-            params.put("app_key", account.getAppKey());
+            params.put("app_key", thirdProperties.getAppKey());
             params.put("access_token", token);
 
             String appJsonParams;
@@ -99,9 +99,9 @@ public class JdApiFeignConfig {
                 throw new JdInvokeException("序列化请求参数 other 异常", e);
             }
 
-            String paramsStr = account.getAppSecret() +
+            String paramsStr = thirdProperties.getAppSecret() +
                     params.entrySet().stream().map(entry -> entry.getKey() + entry.getValue()).collect(Collectors.joining()) +
-                    account.getAppSecret();
+                    thirdProperties.getAppSecret();
             String sign = DigestUtils.md5Hex(paramsStr.getBytes(StandardCharsets.UTF_8)).toUpperCase();
             params.put("sign", sign);
 

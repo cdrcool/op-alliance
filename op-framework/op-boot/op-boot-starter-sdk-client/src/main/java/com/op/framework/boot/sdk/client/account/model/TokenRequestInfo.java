@@ -13,7 +13,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 @Data
 public class TokenRequestInfo {
     /**
-     * 由client使用的不透明参数，用于请求阶段和回调阶段之间的状态保持
+     * 由 client 使用的不透明参数，用于请求阶段和回调阶段之间的状态保持
      */
     private String state;
 
