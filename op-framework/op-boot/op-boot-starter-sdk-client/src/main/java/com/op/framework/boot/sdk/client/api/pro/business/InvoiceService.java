@@ -10,7 +10,9 @@ import com.op.framework.boot.sdk.client.base.ThirdSdkType;
 import com.op.framework.boot.sdk.client.request.InvoiceApplySubmitRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -50,6 +52,10 @@ public class InvoiceService {
         sdkRequest.setActionName(ActionNameConstants.INVOICE_APPLY_SUBMIT);
         sdkRequest.setBillId(String.valueOf(orderId));
         sdkRequest.setToken(getToken(orderId));
+
+        Map<String, Object> otherParams = new HashMap<>(1);
+        otherParams.put("supplyOrderIds", supplyOrderIds);
+        sdkRequest.setOtherParams(otherParams);
 
         InvoiceApplySubmitResponse response = sdkClient.execute(sdkRequest);
     }

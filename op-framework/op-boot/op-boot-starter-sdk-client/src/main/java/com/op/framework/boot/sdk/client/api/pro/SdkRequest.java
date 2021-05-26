@@ -4,6 +4,8 @@ import com.op.framework.boot.sdk.client.api.pro.response.BaseSdkResponse;
 import com.op.framework.boot.sdk.client.base.ThirdSdkType;
 import lombok.Data;
 
+import java.util.Map;
+
 /**
  * SDK 请求对象
  *
@@ -30,4 +32,9 @@ public class SdkRequest<T extends BaseSdkResponse> {
      * 访问令牌
      */
     private String token;
+
+    /**
+     * 其他参数
+     */
+    private Map<String, Object> otherParams;
 }
