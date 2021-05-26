@@ -14,6 +14,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+/**
+ * 第三方 API 工厂
+ *
+ * @author cdrcool
+ */
 @Component
 public class ThirdApiFactory {
     private final Map<String, AreaApi> areaApiMap;
@@ -25,6 +30,12 @@ public class ThirdApiFactory {
         this.invoiceApiMap = invoiceApiMap;
     }
 
+    /**
+     * 获取区域 API
+     *
+     * @param thirdType 第三方 SDK 类型
+     * @return 区域 API
+     */
     public AreaApi getAreaApi(String thirdType) {
         ThirdSdkType thirdSdkType = ThirdSdkType.getByValue(thirdType);
         switch (thirdSdkType) {
@@ -37,6 +48,12 @@ public class ThirdApiFactory {
         }
     }
 
+    /**
+     * 获取发票 API
+     *
+     * @param thirdType 第三方 SDK 类型
+     * @return 发票 API
+     */
     public InvoiceApi getInvoiceApi(String thirdType) {
         ThirdSdkType thirdSdkType = ThirdSdkType.getByValue(thirdType);
         switch (thirdSdkType) {
