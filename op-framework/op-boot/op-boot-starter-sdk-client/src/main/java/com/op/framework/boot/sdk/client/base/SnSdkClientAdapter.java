@@ -57,7 +57,7 @@ public class SnSdkClientAdapter implements SnSdkClient {
     }
 
     private DefaultSuningClient getSnClient(String token) {
-        SdkProperties.Account account = Optional.ofNullable(sdkProperties.getAccounts().get(AccountType.SN.getValue()))
+        SdkProperties.Account account = Optional.ofNullable(sdkProperties.getAccounts().get(ThirdSdkType.SN.getValue()))
                 .orElseThrow(() -> new ThirdAccountException("未找到苏宁账号配置"));
 
         // 未传递token就取默认账号的token

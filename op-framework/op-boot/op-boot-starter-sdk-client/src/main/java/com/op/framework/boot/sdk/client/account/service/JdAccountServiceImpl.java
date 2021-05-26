@@ -8,7 +8,7 @@ import com.op.framework.boot.sdk.client.account.exception.ThirdAccountException;
 import com.op.framework.boot.sdk.client.account.mapper.ThirdAccountMapper;
 import com.op.framework.boot.sdk.client.account.model.TokenResponse;
 import com.op.framework.boot.sdk.client.account.utils.RsaCoderUtils;
-import com.op.framework.boot.sdk.client.base.AccountType;
+import com.op.framework.boot.sdk.client.base.ThirdSdkType;
 import com.op.framework.boot.sdk.client.feign.JdAuthFeignClient;
 import com.op.framework.boot.sdk.client.response.JdTokenResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -41,8 +41,8 @@ public class JdAccountServiceImpl extends ThirdAccountService {
     }
 
     @Override
-    protected AccountType accountType() {
-        return AccountType.JD;
+    protected ThirdSdkType accountType() {
+        return ThirdSdkType.JD;
     }
 
     @Override

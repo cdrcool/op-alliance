@@ -3,7 +3,7 @@ package com.op.framework.boot.sdk.client.account.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.op.framework.boot.sdk.client.base.AccountType;
+import com.op.framework.boot.sdk.client.base.ThirdSdkType;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -25,7 +25,7 @@ public class ThirdAccount {
     /**
      * 账号类型
      *
-     * @see AccountType
+     * @see ThirdSdkType
      */
     private String accountType;
 

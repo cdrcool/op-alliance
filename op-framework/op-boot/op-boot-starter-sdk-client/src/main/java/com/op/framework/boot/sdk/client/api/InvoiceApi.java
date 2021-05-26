@@ -19,7 +19,7 @@ public interface InvoiceApi {
      * @param invoiceApplySubmitRequest 发票申请提交对象
      * @return 是否成功
      */
-    boolean submitInvoiceApply(String token, InvoiceApplySubmitRequest invoiceApplySubmitRequest);
+    Boolean submitInvoiceApply(String token, InvoiceApplySubmitRequest invoiceApplySubmitRequest);
 
     /**
      * 取消发票申请

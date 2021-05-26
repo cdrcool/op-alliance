@@ -8,7 +8,7 @@ import com.jd.open.api.sdk.response.AbstractResponse;
 import com.op.framework.boot.sdk.client.SdkProperties;
 import com.op.framework.boot.sdk.client.account.exception.ThirdAccountException;
 import com.op.framework.boot.sdk.client.account.service.ThirdAccountService;
-import com.op.framework.boot.sdk.client.base.AccountType;
+import com.op.framework.boot.sdk.client.base.ThirdSdkType;
 import com.op.framework.boot.sdk.client.base.JdSdkRequest;
 import com.op.framework.boot.sdk.client.exception.JdInvokeException;
 import feign.*;
@@ -62,7 +62,7 @@ public class JdApiFeignConfig {
             String token = jdSdkRequest.getToken();
             JdRequest<? extends AbstractResponse> jdRequest = jdSdkRequest.getJdRequest();
 
-            SdkProperties.Account account = Optional.ofNullable(sdkProperties.getAccounts().get(AccountType.JD.getValue()))
+            SdkProperties.Account account = Optional.ofNullable(sdkProperties.getAccounts().get(ThirdSdkType.JD.getValue()))
                     .orElseThrow(() -> new ThirdAccountException("未找到京东账号配置"));
 
             if (!StringUtils.hasText(token)) {

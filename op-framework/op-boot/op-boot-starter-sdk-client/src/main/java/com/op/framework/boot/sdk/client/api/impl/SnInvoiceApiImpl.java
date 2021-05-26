@@ -29,7 +29,7 @@ public class SnInvoiceApiImpl implements InvoiceApi {
     }
 
     @Override
-    public boolean submitInvoiceApply(String token, InvoiceApplySubmitRequest invoiceApplySubmitRequest) {
+    public Boolean submitInvoiceApply(String token, InvoiceApplySubmitRequest invoiceApplySubmitRequest) {
         InvoicesupplementConfirmRequest request = invoiceApplySubmitRequest.toSnInvoiceApplySubmitRequest();
 
         InvoicesupplementConfirmResponse response = snSdkClient.execute(new SnSdkRequest<>(token, request));

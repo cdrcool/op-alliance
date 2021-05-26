@@ -4,7 +4,7 @@ import com.op.framework.boot.sdk.client.SdkProperties;
 import com.op.framework.boot.sdk.client.account.entity.ThirdAccount;
 import com.op.framework.boot.sdk.client.account.mapper.ThirdAccountMapper;
 import com.op.framework.boot.sdk.client.account.model.TokenResponse;
-import com.op.framework.boot.sdk.client.base.AccountType;
+import com.op.framework.boot.sdk.client.base.ThirdSdkType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -25,8 +25,8 @@ public class SnAccountServiceImpl extends ThirdAccountService {
     }
 
     @Override
-    protected AccountType accountType() {
-        return AccountType.SN;
+    protected ThirdSdkType accountType() {
+        return ThirdSdkType.SN;
     }
 
     @Override

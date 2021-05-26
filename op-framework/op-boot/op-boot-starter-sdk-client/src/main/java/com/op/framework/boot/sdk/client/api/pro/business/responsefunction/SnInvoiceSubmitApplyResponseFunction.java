@@ -1,6 +1,7 @@
-package com.op.framework.boot.sdk.client.api.pro.sn;
+package com.op.framework.boot.sdk.client.api.pro.business.responsefunction;
 
-import com.op.framework.boot.sdk.client.api.pro.InvoiceApplySubmitResponse;
+import com.op.framework.boot.sdk.client.api.pro.response.InvoiceApplySubmitResponse;
+import com.op.framework.boot.sdk.client.api.pro.function.SnResponseFunction;
 import com.suning.api.entity.govbus.InvoicesupplementConfirmResponse;
 
 /**

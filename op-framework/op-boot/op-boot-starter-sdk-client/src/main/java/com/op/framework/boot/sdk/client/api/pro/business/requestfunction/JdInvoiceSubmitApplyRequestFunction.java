@@ -1,9 +1,10 @@
-package com.op.framework.boot.sdk.client.api.pro.jd;
+package com.op.framework.boot.sdk.client.api.pro.business.requestfunction;
 
 import com.jd.open.api.sdk.request.JdRequest;
 import com.jd.open.api.sdk.response.vopfp.VopInvoiceSubmitInvoiceApplyResponse;
-import com.op.framework.boot.sdk.client.api.pro.InvoiceApplySubmitResponse;
+import com.op.framework.boot.sdk.client.api.pro.response.InvoiceApplySubmitResponse;
 import com.op.framework.boot.sdk.client.api.pro.SdkRequest;
+import com.op.framework.boot.sdk.client.api.pro.function.JdRequestFunction;
 
 /**
  * 京东发票申请提交请求对象 Function

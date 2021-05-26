@@ -1,4 +1,4 @@
-package com.op.framework.boot.sdk.client.api.pro;
+package com.op.framework.boot.sdk.client.api.pro.response;
 
 /**
  * 发票申请取消响应

@@ -38,7 +38,7 @@ public class JdInvoiceApiImpl implements InvoiceApi {
     }
 
     @Override
-    public boolean submitInvoiceApply(String token, InvoiceApplySubmitRequest invoiceApplySubmitRequest) {
+    public Boolean submitInvoiceApply(String token, InvoiceApplySubmitRequest invoiceApplySubmitRequest) {
         VopInvoiceSubmitInvoiceApplyRequest request = invoiceApplySubmitRequest.toJdInvoiceApplySubmitRequest();
 
         VopInvoiceSubmitInvoiceApplyResponse response = jdSdkClient.execute(new JdSdkRequest<>(token, request));

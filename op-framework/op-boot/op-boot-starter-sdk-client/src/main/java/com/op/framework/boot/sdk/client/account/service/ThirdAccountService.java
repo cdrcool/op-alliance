@@ -8,7 +8,7 @@ import com.op.framework.boot.sdk.client.account.exception.ThirdAccountException;
 import com.op.framework.boot.sdk.client.account.mapper.ThirdAccountMapper;
 import com.op.framework.boot.sdk.client.account.model.TokenRequestInfo;
 import com.op.framework.boot.sdk.client.account.model.TokenResponse;
-import com.op.framework.boot.sdk.client.base.AccountType;
+import com.op.framework.boot.sdk.client.base.ThirdSdkType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
@@ -297,7 +297,7 @@ public abstract class ThirdAccountService {
      *
      * @return 第三方账号类型
      */
-    protected abstract AccountType accountType();
+    protected abstract ThirdSdkType accountType();
 
     /**
      * 请求第三方token

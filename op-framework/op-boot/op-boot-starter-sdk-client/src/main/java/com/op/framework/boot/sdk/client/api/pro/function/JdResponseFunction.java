@@ -1,7 +1,7 @@
-package com.op.framework.boot.sdk.client.api.pro.jd;
+package com.op.framework.boot.sdk.client.api.pro.function;
 
 import com.jd.open.api.sdk.response.AbstractResponse;
-import com.op.framework.boot.sdk.client.api.pro.BaseSdkResponse;
+import com.op.framework.boot.sdk.client.api.pro.response.BaseSdkResponse;
 
 import java.util.function.Function;
 

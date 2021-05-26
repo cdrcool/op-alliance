@@ -1,6 +1,6 @@
-package com.op.framework.boot.sdk.client.api.pro.sn;
+package com.op.framework.boot.sdk.client.api.pro.function;
 
-import com.op.framework.boot.sdk.client.api.pro.BaseSdkResponse;
+import com.op.framework.boot.sdk.client.api.pro.response.BaseSdkResponse;
 import com.suning.api.SuningResponse;
 
 import java.util.function.Function;

@@ -58,7 +58,7 @@ public class JdSdkClientAdapter implements JdSdkClient {
     }
 
     private JdClient getJdClient(String token) {
-        SdkProperties.Account account = Optional.ofNullable(sdkProperties.getAccounts().get(AccountType.JD.getValue()))
+        SdkProperties.Account account = Optional.ofNullable(sdkProperties.getAccounts().get(ThirdSdkType.JD.getValue()))
                 .orElseThrow(() -> new ThirdAccountException("未找到京东账号配置"));
 
         // 未传递token就取默认账号的token
