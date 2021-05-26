@@ -1,11 +1,5 @@
 package com.op.framework.boot.sdk.client.api.factrory;
 
-/**
- * 第三方 API 接口工厂
- *
- * @author chengdr01
- */
-
 import com.op.framework.boot.sdk.client.api.AreaApi;
 import com.op.framework.boot.sdk.client.api.InvoiceApi;
 import com.op.framework.boot.sdk.client.base.ThirdSdkType;
@@ -15,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 /**
- * 第三方 API 工厂
+ * 第三方 API 接口工厂
  *
  * @author cdrcool
  */
