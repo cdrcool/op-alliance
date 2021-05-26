@@ -10,6 +10,7 @@ import com.suning.api.SuningResponse;
 import com.suning.api.exception.SuningApiException;
 import com.suning.api.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
@@ -28,7 +29,7 @@ public class SnSdkClientAdapter implements SnSdkClient {
     private final SdkProperties sdkProperties;
     private final ThirdAccountService thirdAccountService;
 
-    public SnSdkClientAdapter(SdkProperties sdkProperties, ThirdAccountService thirdAccountService) {
+    public SnSdkClientAdapter(SdkProperties sdkProperties, @Qualifier("snAccountServiceImpl") ThirdAccountService thirdAccountService) {
         this.sdkProperties = sdkProperties;
         this.thirdAccountService = thirdAccountService;
     }
@@ -57,7 +58,7 @@ public class SnSdkClientAdapter implements SnSdkClient {
     }
 
     private DefaultSuningClient getSnClient(String token) {
-        SdkProperties.ThirdProperties thirdProperties = Optional.ofNullable(sdkProperties.getAccounts().get(ThirdSdkType.SN.getValue()))
+        SdkProperties.ThirdProperties thirdProperties = Optional.ofNullable(sdkProperties.getThird().get(ThirdSdkType.SN.getValue()))
                 .orElseThrow(() -> new ThirdAccountException("未找到苏宁账号配置"));
 
         // 未传递token就取默认账号的token

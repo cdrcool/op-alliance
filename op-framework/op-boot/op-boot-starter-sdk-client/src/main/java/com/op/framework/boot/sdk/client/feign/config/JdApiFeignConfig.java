@@ -62,7 +62,7 @@ public class JdApiFeignConfig {
             String token = jdSdkRequest.getToken();
             JdRequest<? extends AbstractResponse> jdRequest = jdSdkRequest.getJdRequest();
 
-            SdkProperties.ThirdProperties thirdProperties = Optional.ofNullable(sdkProperties.getAccounts().get(ThirdSdkType.JD.getValue()))
+            SdkProperties.ThirdProperties thirdProperties = Optional.ofNullable(sdkProperties.getThird().get(ThirdSdkType.JD.getValue()))
                     .orElseThrow(() -> new ThirdAccountException("未找到京东账号配置"));
 
             if (!StringUtils.hasText(token)) {

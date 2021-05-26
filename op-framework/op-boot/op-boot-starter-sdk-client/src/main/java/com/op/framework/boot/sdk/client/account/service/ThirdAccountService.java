@@ -7,7 +7,7 @@ import com.op.framework.boot.sdk.client.account.entity.ThirdAccount;
 import com.op.framework.boot.sdk.client.account.exception.ThirdAccountException;
 import com.op.framework.boot.sdk.client.account.mapper.ThirdAccountMapper;
 import com.op.framework.boot.sdk.client.account.model.TokenRequestInfo;
-import com.op.framework.boot.sdk.client.account.model.TokenResponse;
+import com.op.framework.boot.sdk.client.account.model.ThirdTokenResponse;
 import com.op.framework.boot.sdk.client.base.ThirdSdkType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -80,7 +80,7 @@ public abstract class ThirdAccountService {
      */
     @Async
     public void callbackToken(String code, String state) {
-        TokenResponse response = getTokenResponse(code);
+        ThirdTokenResponse response = getTokenResponse(code);
 
         TokenRequestInfo tokenRequestInfo = STORE.get(state);
         if (tokenRequestInfo == null) {
@@ -122,7 +122,7 @@ public abstract class ThirdAccountService {
      * @param thirdAccount 第三方账号
      * @param response     第三方token响应
      */
-    private void updateThirdAccountTokenInfo(ThirdAccount thirdAccount, TokenResponse response) {
+    private void updateThirdAccountTokenInfo(ThirdAccount thirdAccount, ThirdTokenResponse response) {
         // 京东8小时后获取或刷新token才会返回新的token
         if (!Objects.equals(thirdAccount.getAccessToken(), response.getAccessToken())) {
             // 将第三方帐号及其对应的token存到redis缓存
@@ -169,7 +169,7 @@ public abstract class ThirdAccountService {
      * @return 第三方token
      */
     public String refreshAccessToken(ThirdAccount thirdAccount) {
-        TokenResponse response = getRefreshTokenResponse(thirdAccount);
+        ThirdTokenResponse response = getRefreshTokenResponse(thirdAccount);
 
         // 更新第三方账号对应的token信息
         updateThirdAccountTokenInfo(thirdAccount, response);
@@ -268,7 +268,7 @@ public abstract class ThirdAccountService {
      * @return 第三方账号配置属性
      */
     protected final SdkProperties.ThirdProperties getThirdProperties() {
-        return sdkProperties.getAccounts().computeIfAbsent(accountType().getValue(), (key) -> {
+        return sdkProperties.getThird().computeIfAbsent(accountType().getValue(), (key) -> {
             throw new ThirdAccountException("未配置" + accountType().getValue() + "账号的相关属性");
         });
     }
@@ -313,7 +313,7 @@ public abstract class ThirdAccountService {
      * @param code 授权码
      * @return 第三方token响应
      */
-    protected abstract TokenResponse getTokenResponse(String code);
+    protected abstract ThirdTokenResponse getTokenResponse(String code);
 
     /**
      * 获取刷新token响应
@@ -321,5 +321,5 @@ public abstract class ThirdAccountService {
      * @param thirdAccount 第三方账号
      * @return 第三方token响应
      */
-    protected abstract TokenResponse getRefreshTokenResponse(ThirdAccount thirdAccount);
+    protected abstract ThirdTokenResponse getRefreshTokenResponse(ThirdAccount thirdAccount);
 }

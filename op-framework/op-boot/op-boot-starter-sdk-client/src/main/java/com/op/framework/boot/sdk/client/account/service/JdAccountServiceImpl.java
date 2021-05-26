@@ -6,7 +6,7 @@ import com.op.framework.boot.sdk.client.SdkProperties;
 import com.op.framework.boot.sdk.client.account.entity.ThirdAccount;
 import com.op.framework.boot.sdk.client.account.exception.ThirdAccountException;
 import com.op.framework.boot.sdk.client.account.mapper.ThirdAccountMapper;
-import com.op.framework.boot.sdk.client.account.model.TokenResponse;
+import com.op.framework.boot.sdk.client.account.model.ThirdTokenResponse;
 import com.op.framework.boot.sdk.client.account.utils.RsaCoderUtils;
 import com.op.framework.boot.sdk.client.base.ThirdSdkType;
 import com.op.framework.boot.sdk.client.feign.JdAuthFeignClient;
@@ -74,22 +74,24 @@ public class JdAccountServiceImpl extends ThirdAccountService {
     }
 
     @Override
-    protected TokenResponse getTokenResponse(String code) {
+    protected ThirdTokenResponse getTokenResponse(String code) {
         JdTokenResponse response = jdAuthFeignClient.accessToken(getThirdProperties().getAppKey(),
                 getThirdProperties().getAppSecret(),
                 "authorization_code",
                 code);
         log.info("根据鉴权码：{}到获取京东token响应：{}", code, response);
-        return TokenResponse.build(response);
+
+        return ThirdTokenResponse.buildFrom(response);
     }
 
     @Override
-    protected TokenResponse getRefreshTokenResponse(ThirdAccount thirdAccount) {
+    protected ThirdTokenResponse getRefreshTokenResponse(ThirdAccount thirdAccount) {
         JdTokenResponse response = jdAuthFeignClient.refreshToken(getThirdProperties().getAppKey(),
                 getThirdProperties().getAppSecret(),
                 "refresh_token",
                 thirdAccount.getRefreshToken());
         log.info("刷新京东token成功，token响应：{}", response);
-        return TokenResponse.build(response);
+
+        return ThirdTokenResponse.buildFrom(response);
     }
 }

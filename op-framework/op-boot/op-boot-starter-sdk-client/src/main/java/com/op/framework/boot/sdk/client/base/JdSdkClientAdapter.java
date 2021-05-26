@@ -10,6 +10,7 @@ import com.op.framework.boot.sdk.client.account.exception.ThirdAccountException;
 import com.op.framework.boot.sdk.client.account.service.ThirdAccountService;
 import com.op.framework.boot.sdk.client.exception.JdInvokeException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
@@ -29,7 +30,7 @@ public class JdSdkClientAdapter implements JdSdkClient {
     private final SdkProperties sdkProperties;
     private final ThirdAccountService thirdAccountService;
 
-    public JdSdkClientAdapter(SdkProperties sdkProperties, ThirdAccountService thirdAccountService) {
+    public JdSdkClientAdapter(SdkProperties sdkProperties, @Qualifier("jdAccountServiceImpl") ThirdAccountService thirdAccountService) {
         this.sdkProperties = sdkProperties;
         this.thirdAccountService = thirdAccountService;
     }
@@ -58,7 +59,7 @@ public class JdSdkClientAdapter implements JdSdkClient {
     }
 
     private JdClient getJdClient(String token) {
-        SdkProperties.ThirdProperties thirdProperties = Optional.ofNullable(sdkProperties.getAccounts().get(ThirdSdkType.JD.getValue()))
+        SdkProperties.ThirdProperties thirdProperties = Optional.ofNullable(sdkProperties.getThird().get(ThirdSdkType.JD.getValue()))
                 .orElseThrow(() -> new ThirdAccountException("未找到京东账号配置"));
 
         // 未传递token就取默认账号的token

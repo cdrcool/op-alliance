@@ -3,16 +3,16 @@ package com.op.framework.boot.sdk.client.response;
 import lombok.Data;
 
 /**
- * 京东 Token 响应
+ * 苏宁 Token 响应
  *
  * @author chengdr01
  */
 @Data
-public class JdTokenResponse {
+public class SnTokenResponse {
     /**
-     * 业务id
+     * 令牌类型
      */
-    private String uid;
+    private String tokenType;
 
     /**
      * 访问令牌
@@ -37,10 +37,26 @@ public class JdTokenResponse {
     /**
      * 刷新令牌过期时间，单位：秒
      */
-    private Long refreshTokenExpires;
+    private Long reExpiresIn;
 
     /**
-     * 返回码
+     * 用户名
+     * 便于将访问令牌与用户名进行绑定
      */
-    private Integer code;
+    private String suningUserName;
+
+    /**
+     * 用户会员编码
+     */
+    private String custnum;
+
+    /**
+     * 用户类型
+     */
+    private String module;
+
+    /**
+     * 商家编码
+     */
+    private String vendorCode;
 }
