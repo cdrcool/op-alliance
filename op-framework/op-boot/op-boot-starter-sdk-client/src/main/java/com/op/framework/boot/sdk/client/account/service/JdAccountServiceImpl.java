@@ -50,11 +50,11 @@ public class JdAccountServiceImpl extends ThirdAccountService {
         try {
             String encodeUsername = URLEncoder.encode(thirdAccount.getAccount(), StandardCharsets.UTF_8.toString());
             String md5Password = DigestUtils.md5Hex(thirdAccount.getPassword());
-            String ciphertextPassword = RsaCoderUtils.encryptByPrivateKey(md5Password, getAccountProperties().getRsaKey());
+            String ciphertextPassword = RsaCoderUtils.encryptByPrivateKey(md5Password, getThirdProperties().getRsaKey());
             String encodePassword = URLEncoder.encode(ciphertextPassword, StandardCharsets.UTF_8.toString());
-            String encodeRedirectUri = URLEncoder.encode(getAccountProperties().getRedirectUri(), StandardCharsets.UTF_8.toString());
+            String encodeRedirectUri = URLEncoder.encode(getThirdProperties().getRedirectUri(), StandardCharsets.UTF_8.toString());
 
-            String responseJson = jdAuthFeignClient.authorizeForVop(getAccountProperties().getAppKey(),
+            String responseJson = jdAuthFeignClient.authorizeForVop(getThirdProperties().getAppKey(),
                     encodeRedirectUri,
                     encodeUsername,
                     encodePassword,
@@ -75,8 +75,8 @@ public class JdAccountServiceImpl extends ThirdAccountService {
 
     @Override
     protected TokenResponse getTokenResponse(String code) {
-        JdTokenResponse response = jdAuthFeignClient.accessToken(getAccountProperties().getAppKey(),
-                getAccountProperties().getAppSecret(),
+        JdTokenResponse response = jdAuthFeignClient.accessToken(getThirdProperties().getAppKey(),
+                getThirdProperties().getAppSecret(),
                 "authorization_code",
                 code);
         log.info("根据鉴权码：{}到获取京东token响应：{}", code, response);
@@ -85,8 +85,8 @@ public class JdAccountServiceImpl extends ThirdAccountService {
 
     @Override
     protected TokenResponse getRefreshTokenResponse(ThirdAccount thirdAccount) {
-        JdTokenResponse response = jdAuthFeignClient.refreshToken(getAccountProperties().getAppKey(),
-                getAccountProperties().getAppSecret(),
+        JdTokenResponse response = jdAuthFeignClient.refreshToken(getThirdProperties().getAppKey(),
+                getThirdProperties().getAppSecret(),
                 "refresh_token",
                 thirdAccount.getRefreshToken());
         log.info("刷新京东token成功，token响应：{}", response);
