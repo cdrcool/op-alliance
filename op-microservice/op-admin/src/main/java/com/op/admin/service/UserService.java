@@ -18,8 +18,9 @@ public interface UserService {
      * 创建用户
      *
      * @param userCreateDto 用户创建 dto
+     * @return 初始密码
      */
-    void create(UserCreateDto userCreateDto);
+    String create(UserCreateDto userCreateDto);
 
     /**
      * 修改用户密码
