@@ -12,8 +12,6 @@
     <artifactId>op-boot</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>op-boot-starter-sdk-client</module>
-        <module>op-boot-starter-sdk-client-demo</module>
     </modules>
 
     <properties>

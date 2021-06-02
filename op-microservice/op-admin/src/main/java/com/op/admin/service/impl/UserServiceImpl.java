@@ -9,6 +9,7 @@ import com.op.admin.entity.User;
 import com.op.admin.mapper.UserMapper;
 import com.op.admin.mapping.UserMapping;
 import com.op.admin.service.UserService;
+import com.op.admin.utils.PasswordGenerator;
 import com.op.admin.vo.UserVo;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.mybatis.dynamic.sql.SortSpecification;
@@ -35,9 +36,13 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void create(UserCreateDto userCreateDto) {
+    public String create(UserCreateDto userCreateDto) {
         User user = userMapping.toUser(userCreateDto);
+        // 新建用户随机生成6位数密码
+        String password = PasswordGenerator.generate(6);
+        user.setPassword(password);
         userMapper.insert(user);
+        return password;
     }
 
     @Transactional(rollbackFor = Exception.class)
