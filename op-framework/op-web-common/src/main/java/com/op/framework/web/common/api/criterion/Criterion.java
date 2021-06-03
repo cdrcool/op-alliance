@@ -14,7 +14,9 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 @ApiModel(description = "查询条件接口")
 @JsonSubTypes(value = {
         @JsonSubTypes.Type(value = SimpleCriterion.class, name = "simple"),
-        @JsonSubTypes.Type(value = LogicCriterion.class, name = "logic")
+        @JsonSubTypes.Type(value = LogicCriterion.class, name = "logic"),
+        @JsonSubTypes.Type(value = BatchCriterion.class, name = "batch"),
+        @JsonSubTypes.Type(value = MapCriterion.class, name = "map")
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
 public interface Criterion {
