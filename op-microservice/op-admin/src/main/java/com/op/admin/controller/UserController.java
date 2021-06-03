@@ -1,11 +1,11 @@
 package com.op.admin.controller;
 
 import com.github.pagehelper.Page;
-import com.op.admin.dto.UserChangePasswordDto;
-import com.op.admin.dto.UserCreateDto;
-import com.op.admin.dto.UserUpdateDto;
+import com.op.admin.dto.UserChangePasswordDTO;
+import com.op.admin.dto.UserCreateDTO;
+import com.op.admin.dto.UserUpdateDTO;
 import com.op.admin.service.UserService;
-import com.op.admin.vo.UserVo;
+import com.op.admin.vo.UserVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Pageable;
@@ -32,19 +32,19 @@ public class UserController {
 
     @ApiOperation("创建用户")
     @PostMapping("create")
-    public String create(@Valid @RequestBody UserCreateDto userCreateDto) {
+    public String create(@Valid @RequestBody UserCreateDTO userCreateDto) {
         return userService.create(userCreateDto);
     }
 
     @ApiOperation("修改用户密码")
     @PostMapping("changePassword")
-    public void changePassword(@Valid @RequestBody UserChangePasswordDto userChangePasswordDto) {
+    public void changePassword(@Valid @RequestBody UserChangePasswordDTO userChangePasswordDto) {
         userService.changePassword(userChangePasswordDto);
     }
 
     @ApiOperation("修改用户资料")
     @PostMapping("update")
-    public void update(@Valid @RequestBody UserUpdateDto userUpdateDto) {
+    public void update(@Valid @RequestBody UserUpdateDTO userUpdateDto) {
         userService.update(userUpdateDto);
     }
 
@@ -56,13 +56,13 @@ public class UserController {
 
     @ApiOperation("查看用户详情")
     @GetMapping("get")
-    public UserVo get(@RequestParam Integer id) {
+    public UserVO get(@RequestParam Integer id) {
         return userService.findById(id);
     }
 
     @ApiOperation("分页查询用户")
     @PostMapping("page")
-    public Page<UserVo> queryPage(@PageableDefault(sort = "createTime", direction = Sort.Direction.ASC) Pageable pageable) {
+    public Page<UserVO> queryPage(@PageableDefault(sort = "createTime", direction = Sort.Direction.ASC) Pageable pageable) {
         return userService.queryPage(pageable);
     }
 }

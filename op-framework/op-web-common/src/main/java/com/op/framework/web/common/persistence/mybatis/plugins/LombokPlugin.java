@@ -1,5 +1,6 @@
 package com.op.framework.web.common.persistence.mybatis.plugins;
 
+import org.apache.commons.lang3.StringUtils;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
@@ -7,7 +8,6 @@ import org.mybatis.generator.api.dom.java.Field;
 import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
-import org.springframework.util.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -53,7 +53,7 @@ public class LombokPlugin extends PluginAdapter {
         field.getJavaDocLines().clear();
 
         String remark = introspectedColumn.getRemarks();
-        if (StringUtils.hasText(remark)) {
+        if (StringUtils.isNotBlank(remark)) {
             field.addJavaDocLine("/**");
             field.addJavaDocLine(" * " + remark);
             field.addJavaDocLine(" */");

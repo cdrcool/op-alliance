@@ -1,10 +1,10 @@
 package com.op.admin.service;
 
 import com.github.pagehelper.Page;
-import com.op.admin.dto.UserChangePasswordDto;
-import com.op.admin.dto.UserCreateDto;
-import com.op.admin.dto.UserUpdateDto;
-import com.op.admin.vo.UserVo;
+import com.op.admin.dto.UserChangePasswordDTO;
+import com.op.admin.dto.UserCreateDTO;
+import com.op.admin.dto.UserUpdateDTO;
+import com.op.admin.vo.UserVO;
 import org.springframework.data.domain.Pageable;
 
 /**
@@ -20,21 +20,21 @@ public interface UserService {
      * @param userCreateDto 用户创建 dto
      * @return 初始密码
      */
-    String create(UserCreateDto userCreateDto);
+    String create(UserCreateDTO userCreateDto);
 
     /**
      * 修改用户密码
      *
      * @param changePasswordDto 用户修改密码 dto
      */
-    void changePassword(UserChangePasswordDto changePasswordDto);
+    void changePassword(UserChangePasswordDTO changePasswordDto);
 
     /**
      * 修改用户资料
      *
      * @param userUpdateDto 用户更新 dto
      */
-    void update(UserUpdateDto userUpdateDto);
+    void update(UserUpdateDTO userUpdateDto);
 
     /**
      * 删除用户
@@ -49,7 +49,7 @@ public interface UserService {
      * @param id 用户id
      * @return 用户 vo
      */
-    UserVo findById(Integer id);
+    UserVO findById(Integer id);
 
     /**
      * 分页查询用户
@@ -57,5 +57,5 @@ public interface UserService {
      * @param pageable 分页对象
      * @return 用户 vo 分页列表
      */
-    Page<UserVo> queryPage(Pageable pageable);
+    Page<UserVO> queryPage(Pageable pageable);
 }

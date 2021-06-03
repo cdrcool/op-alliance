@@ -8,13 +8,13 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 /**
- * 用户创建 dto
+ * 用户创建 DTO
  *
  * @author cdrcool
  */
-@ApiModel(description = "用户创建 dto")
+@ApiModel(description = "用户创建 DTO")
 @Data
-public class UserCreateDto {
+public class UserCreateDTO {
     @ApiModelProperty(value = "组织id", required = true)
     @NotNull
     private Integer orgId;

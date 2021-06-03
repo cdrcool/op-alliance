@@ -1,33 +1,32 @@
-package com.op.admin.dto;
+package com.op.admin.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.op.framework.web.common.persistence.vo.BaseVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
- * 用户更新 dto
+ * 用户 VO
  *
  * @author cdrcool
  */
-@ApiModel(description = "用户更新 dto")
+@ApiModel(description = "用户 VO")
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class UserUpdateDto {
-    @ApiModelProperty(value = "用户id", required = true)
-    @NotNull
+public class UserVO extends BaseVo {
+    @ApiModelProperty("用户id")
     private Integer id;
 
-    @ApiModelProperty(value = "组织id", required = true)
-    @NotNull
+    @ApiModelProperty("组织id")
     private Integer orgId;
 
-    @ApiModelProperty(value = "用户名", required = true)
-    @NotEmpty
+    @ApiModelProperty("用户名")
     private String username;
 
     @ApiModelProperty("昵称")
@@ -58,4 +57,8 @@ public class UserUpdateDto {
 
     @ApiModelProperty("用户编号")
     private Integer userNo;
+
+    @ApiModelProperty("最后登录时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private LocalDateTime lastLoginTime;
 }
