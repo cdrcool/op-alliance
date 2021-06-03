@@ -5,15 +5,16 @@ import com.op.admin.dto.UserChangePasswordDTO;
 import com.op.admin.dto.UserCreateDTO;
 import com.op.admin.dto.UserUpdateDTO;
 import com.op.admin.entity.User;
+import com.op.admin.mapper.UserDynamicSqlSupport;
 import com.op.admin.mapper.UserMapper;
 import com.op.admin.mapping.UserMapping;
 import com.op.admin.service.UserService;
 import com.op.admin.utils.BCryptPasswordEncoder;
 import com.op.admin.utils.PasswordGenerator;
 import com.op.admin.vo.UserVO;
+import com.op.framework.web.common.api.criterion.Criterion;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.mybatis.dynamic.sql.SortSpecification;
-import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.SimpleSortSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -95,7 +96,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public Page<UserVO> queryPage(Pageable pageable) {
+    public Page<UserVO> queryPage(Pageable pageable, Criterion criterion) {
         SortSpecification[] specifications = pageable.getSort().stream()
                 .map(order -> {
                     SortSpecification specification = SimpleSortSpecification.of(order.getProperty());
@@ -104,8 +105,10 @@ public class UserServiceImpl implements UserService {
                     }
                     return specification;
                 }).toArray(SortSpecification[]::new);
+
+
         com.github.pagehelper.Page<UserVO> result = PageHelper.startPage(pageable.getPageNumber(), pageable.getPageSize()).doSelectPage(() ->
-                userMapping.toUserVoList(userMapper.select(SelectDSLCompleter.allRowsOrderedBy(specifications))));
+                userMapping.toUserVoList(userMapper.selectMany(criterion.toSelectStatementProvider(UserDynamicSqlSupport.user))));
 
         return new PageImpl<>(result.getResult(), pageable, result.getTotal());
     }

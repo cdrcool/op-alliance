@@ -62,6 +62,6 @@ public class UserServiceTest {
     @Test
     public void queryPage() {
         Pageable pageable = PageRequest.of(1, 10, Sort.by(Sort.Order.desc(UserDynamicSqlSupport.id.name())));
-        Page<UserVO> page = userService.queryPage(pageable);
+        Page<UserVO> page = userService.queryPage(pageable, null);
     }
 }
