@@ -1,6 +1,5 @@
 package com.op.admin.service.impl;
 
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.op.admin.dto.UserChangePasswordDTO;
 import com.op.admin.dto.UserCreateDTO;
@@ -16,6 +15,8 @@ import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.SimpleSortSpecification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -103,7 +104,9 @@ public class UserServiceImpl implements UserService {
                     }
                     return specification;
                 }).toArray(SortSpecification[]::new);
-        return PageHelper.startPage(pageable.getPageNumber(), pageable.getPageSize()).doSelectPage(() ->
+        com.github.pagehelper.Page<UserVO> result = PageHelper.startPage(pageable.getPageNumber(), pageable.getPageSize()).doSelectPage(() ->
                 userMapping.toUserVoList(userMapper.select(SelectDSLCompleter.allRowsOrderedBy(specifications))));
+
+        return new PageImpl<>(result.getResult(), pageable, result.getTotal());
     }
 }

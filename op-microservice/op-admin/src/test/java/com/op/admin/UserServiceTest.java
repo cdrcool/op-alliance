@@ -1,6 +1,5 @@
 package com.op.admin;
 
-import com.github.pagehelper.Page;
 import com.op.admin.dto.UserChangePasswordDTO;
 import com.op.admin.dto.UserCreateDTO;
 import com.op.admin.dto.UserUpdateDTO;
@@ -10,6 +9,7 @@ import com.op.admin.vo.UserVO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
