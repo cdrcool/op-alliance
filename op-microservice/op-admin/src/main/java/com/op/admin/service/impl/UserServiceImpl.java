@@ -85,12 +85,14 @@ public class UserServiceImpl implements UserService {
         userMapper.deleteByPrimaryKey(id);
     }
 
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public UserVO findById(Integer id) {
         User user = userMapper.selectByPrimaryKey(id).orElse(new User());
         return userMapping.toUserVo(user);
     }
 
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public Page<UserVO> queryPage(Pageable pageable) {
         SortSpecification[] specifications = pageable.getSort().stream()

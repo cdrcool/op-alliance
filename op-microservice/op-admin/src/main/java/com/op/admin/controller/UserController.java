@@ -62,7 +62,7 @@ public class UserController {
 
     @ApiOperation("分页查询用户")
     @PostMapping("page")
-    public Page<UserVO> queryPage(@PageableDefault(sort = "createTime", direction = Sort.Direction.ASC) Pageable pageable) {
+    public Page<UserVO> queryPage(@PageableDefault(sort = "userNo", direction = Sort.Direction.ASC) Pageable pageable) {
         return userService.queryPage(pageable);
     }
 }
