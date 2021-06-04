@@ -2,10 +2,10 @@ package com.op.admin.controller;
 
 import com.op.admin.dto.UserChangePasswordDTO;
 import com.op.admin.dto.UserCreateDTO;
+import com.op.admin.dto.UserListQueryDTO;
 import com.op.admin.dto.UserUpdateDTO;
 import com.op.admin.service.UserService;
 import com.op.admin.vo.UserVO;
-import com.op.framework.web.common.api.criterion.Criterion;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Page;
@@ -64,7 +64,7 @@ public class UserController {
     @ApiOperation("分页查询用户")
     @PostMapping("page")
     public Page<UserVO> queryPage(@PageableDefault(sort = "userNo", direction = Sort.Direction.ASC) Pageable pageable,
-                                  @RequestBody Criterion criterion) {
-        return userService.queryPage(pageable, criterion);
+                                  @RequestBody UserListQueryDTO queryDTO) {
+        return userService.queryPage(pageable, queryDTO);
     }
 }

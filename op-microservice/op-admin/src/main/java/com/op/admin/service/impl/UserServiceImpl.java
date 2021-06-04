@@ -3,6 +3,7 @@ package com.op.admin.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.op.admin.dto.UserChangePasswordDTO;
 import com.op.admin.dto.UserCreateDTO;
+import com.op.admin.dto.UserListQueryDTO;
 import com.op.admin.dto.UserUpdateDTO;
 import com.op.admin.entity.User;
 import com.op.admin.mapper.UserDynamicSqlSupport;
@@ -12,15 +13,18 @@ import com.op.admin.service.UserService;
 import com.op.admin.utils.BCryptPasswordEncoder;
 import com.op.admin.utils.PasswordGenerator;
 import com.op.admin.vo.UserVO;
-import com.op.framework.web.common.api.criterion.Criterion;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.mybatis.dynamic.sql.SortSpecification;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SimpleSortSpecification;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 /**
  * 用户 Service Impl
@@ -96,7 +100,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public Page<UserVO> queryPage(Pageable pageable, Criterion criterion) {
+    public Page<UserVO> queryPage(Pageable pageable, UserListQueryDTO queryDTO) {
         SortSpecification[] specifications = pageable.getSort().stream()
                 .map(order -> {
                     SortSpecification specification = SimpleSortSpecification.of(order.getProperty());
@@ -106,9 +110,21 @@ public class UserServiceImpl implements UserService {
                     return specification;
                 }).toArray(SortSpecification[]::new);
 
+        SelectStatementProvider selectStatementProvider = select(UserMapper.selectList)
+                .from(UserDynamicSqlSupport.user)
+                .where(UserDynamicSqlSupport.orgId, isEqualTo(queryDTO.getOrgId()))
+                .and(UserDynamicSqlSupport.gender, isEqualTo(queryDTO.getGender()))
+                .and(UserDynamicSqlSupport.status, isIn(queryDTO.getStatus()))
+                .and(UserDynamicSqlSupport.username, isLike(queryDTO.getSearchText()),
+                        or(UserDynamicSqlSupport.nickname, isLike(queryDTO.getSearchText())),
+                        or(UserDynamicSqlSupport.phone, isLike(queryDTO.getSearchText())),
+                        or(UserDynamicSqlSupport.email, isLike(queryDTO.getSearchText())))
+                .orderBy(specifications)
+                .limit(pageable.getPageSize()).offset(pageable.getOffset())
+                .build().render(RenderingStrategies.MYBATIS3);
 
         com.github.pagehelper.Page<UserVO> result = PageHelper.startPage(pageable.getPageNumber(), pageable.getPageSize()).doSelectPage(() ->
-                userMapping.toUserVoList(userMapper.selectMany(criterion.toSelectStatementProvider(UserDynamicSqlSupport.user))));
+                userMapping.toUserVoList(userMapper.selectMany(selectStatementProvider)));
 
         return new PageImpl<>(result.getResult(), pageable, result.getTotal());
     }

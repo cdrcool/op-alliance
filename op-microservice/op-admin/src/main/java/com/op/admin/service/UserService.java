@@ -2,9 +2,9 @@ package com.op.admin.service;
 
 import com.op.admin.dto.UserChangePasswordDTO;
 import com.op.admin.dto.UserCreateDTO;
+import com.op.admin.dto.UserListQueryDTO;
 import com.op.admin.dto.UserUpdateDTO;
 import com.op.admin.vo.UserVO;
-import com.op.framework.web.common.api.criterion.Criterion;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -56,8 +56,8 @@ public interface UserService {
      * 分页查询用户
      *
      * @param pageable 分页对象
-     * @param criterion 查询条件
+     * @param queryDTO 查询对象
      * @return 用户 vo 分页列表
      */
-    Page<UserVO> queryPage(Pageable pageable, Criterion criterion);
+    Page<UserVO> queryPage(Pageable pageable, UserListQueryDTO queryDTO);
 }
