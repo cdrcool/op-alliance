@@ -38,6 +38,10 @@ mybatis:
     database-id: mysql
     map-underscore-to-camel-case: true
 
+logging:
+  level:
+    root: debug
+
 swagger:
   app-name: Sdk Client Web Demo
   app-desc: Sdk Client Web Demo
