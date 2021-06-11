@@ -1,5 +1,6 @@
 package com.op.admin;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  * @author cdrcool
  */
+@Slf4j
 @SpringBootApplication
 public class AdminApplication implements CommandLineRunner {
 
@@ -18,5 +20,6 @@ public class AdminApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        log.error("xxx");
     }
 }
