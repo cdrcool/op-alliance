@@ -8,7 +8,6 @@ import com.op.admin.service.UserService;
 import com.op.admin.vo.UserVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -23,7 +22,6 @@ import javax.validation.Valid;
  * @author cdrcool
  */
 @Api(tags = "用户管理")
-@Slf4j
 @RequestMapping("user")
 @RestController
 public class UserController {
@@ -60,7 +58,6 @@ public class UserController {
     @ApiOperation("查看用户详情")
     @GetMapping("get")
     public UserVO get(@RequestParam Integer id) {
-        log.info("xxx");
         return userService.findById(id);
     }
 
