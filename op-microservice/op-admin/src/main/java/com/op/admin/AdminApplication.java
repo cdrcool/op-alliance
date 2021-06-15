@@ -1,6 +1,5 @@
 package com.op.admin;
 
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -10,17 +9,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author cdrcool
  */
 @SpringBootApplication
-public class AdminApplication implements CommandLineRunner {
+public class AdminApplication {
 
     public static void main(String[] args) {
-        try {
-            SpringApplication.run(AdminApplication.class, args);
-        } catch (Exception e) {
-
-        }
-    }
-
-    @Override
-    public void run(String... args) throws Exception {
+        SpringApplication.run(AdminApplication.class, args);
     }
 }
