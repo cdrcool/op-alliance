@@ -36,6 +36,7 @@
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
         <swagger-annotations.version>1.5.20</swagger-annotations.version>
+        <spring-boot-admin.version>2.4.1</spring-boot-admin.version>
 
         <spring-boot-maven-plugin.version>2.4.4</spring-boot-maven-plugin.version>
         <mybatis-generator-maven-plugin.version>1.4.0</mybatis-generator-maven-plugin.version>
@@ -132,6 +133,18 @@
                 <artifactId>swagger-annotations</artifactId>
                 <version>${swagger-annotations.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>de.codecentric</groupId>
+                <artifactId>spring-boot-admin-starter-server</artifactId>
+                <version>${spring-boot-admin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.codecentric</groupId>
+                <artifactId>spring-boot-admin-starter-client</artifactId>
+                <version>${spring-boot-admin.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

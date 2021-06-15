@@ -13,7 +13,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class AdminApplication implements CommandLineRunner {
 
     public static void main(String[] args) {
-        SpringApplication.run(AdminApplication.class, args);
+        try {
+            SpringApplication.run(AdminApplication.class, args);
+        } catch (Exception e) {
+
+        }
     }
 
     @Override
