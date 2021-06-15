@@ -27,7 +27,7 @@
         </Console>
 
         <!-- append="false"：每次清空文件重新输入日志，可用于测试-->
-        <File name="File" fileName="${logFilePath}/${appName}-test.log" append="false">
+        <File name="File" fileName="${sys:user.home}/${logFilePath}/${appName}-test.log" append="false">
             <PatternLayout pattern="${filePattern}"/>
         </File>
 
@@ -38,11 +38,11 @@
         </SMTP>-->
 
         <!-- 使用 .gz 扩展名，log4j 将自动压缩日志文件 -->
-        <RollingFile name="RollingFile" fileName="${logFilePath}/${appName}.log"
+        <RollingFile name="RollingFile" fileName="${sys:user.home}/${logFilePath}/${appName}.log"
                      filePattern="${logFilePath}/$${date:yyyy-MM}/${appName}-%d{yyyy-MM-dd}-%i.log.gz">
             <!-- ThresholdFilter：日志输出过滤 -->
             <!-- level="info"：日志级别；onMatch="ACCEPT"：级别在 info 之上则接受；onMismatch="DENY"：级别在 info 之下则拒绝 -->
-            <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+<!--            <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>-->
             <PatternLayout pattern="${rollingFilePattern}"/>
 
             <!-- Policies：日志滚动策略-->
@@ -72,7 +72,7 @@
         </RollingFile>
     </Appenders>
 
-    <!-- 只有定义了 Loggers 并引入了 appender，appender 才会生效 -->
+    <!-- 只有定义了 Loggers 并引入了 Appender，Appender 才会生效 -->
     <Loggers>
         <!--Logger 节点用来单独指定日志的形式，name 为包路径，比如要为 com.op.admin 包下所有日志指定为 DEBUG 级别 -->
         <Logger name="com.op.admin" level="${logLevel}"/>

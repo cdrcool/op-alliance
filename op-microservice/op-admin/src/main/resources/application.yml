@@ -2,6 +2,12 @@ server:
   port: 8080
 
 spring:
+  application:
+    name: op-admin
+  boot:
+    admin:
+      client:
+        url: http://localhost:8081
   datasource:
     initialization-mode: never
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -32,19 +38,22 @@ spring:
         min-idle: 0
         # 最大等待时间
         max-wait: -1
-  boot:
-    admin:
-      client:
-        url: http://localhost:8081
-        instance:
-          serviceUrl: http://localhost:8080
-          name: admin
 
 management:
   endpoints:
     web:
       exposure:
         include: "*"
+  endpoint:
+    health:
+      show-details: always
+    logfile:
+      enabled: true
+
+logging:
+  file:
+    path: logs
+    name: ${user.home}/logs/admin.log
 
 mybatis:
   configuration:
