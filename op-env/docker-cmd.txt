@@ -42,3 +42,25 @@ docker run -d `
     -e "discovery.type=single-node" `
     elasticsearch
 --------------------------------------------------
+
+prometheus
+--------------------------------------------------
+docker run -d `
+    --network op_net `
+    --hostname prometheus `
+    --name prometheus `
+    -p 9090:9090 `
+    -v prometheus.yml:/etc/prometheus/prometheus.yml `
+    prom/prometheus `
+    --config.file=/etc/prometheus/prometheus.yml
+--------------------------------------------------
+
+grafana
+--------------------------------------------------
+docker run -d `
+    --network op_net `
+    --hostname grafana `
+    --name grafana `
+    -p 3000:3000 `
+    grafana/grafana
+--------------------------------------------------
