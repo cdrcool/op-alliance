@@ -1,6 +1,6 @@
 scrape_configs:
   # 可随意指定
-  - job_name: 'spring'
+  - job_name: 'application'
     # 多久采集一次数据
     scrape_interval: 15s
     # 采集时的超时时间
