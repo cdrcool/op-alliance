@@ -76,3 +76,13 @@ docker run -d `
     prom/mysqld-exporter
 --------------------------------------------------
 
+redis_exporter
+--------------------------------------------------
+docker run -d `
+    --network op_net `
+    --hostname redis_exporter `
+    --hostname redis_exporter `
+    -p 9121:9121 `
+    oliver006/redis_exporter `
+    --redis.addr redis://host.docker.internal:6379
+--------------------------------------------------
