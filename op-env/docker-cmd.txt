@@ -50,7 +50,7 @@ docker run -d `
     --hostname prometheus `
     --name prometheus `
     -p 9090:9090 `
-    -v prometheus.yml:/etc/prometheus/prometheus.yml `
+    -v /d/Workspace/IdeaProjects/onepiece/op-alliance/op-env:/etc/prometheus `
     prom/prometheus `
     --config.file=/etc/prometheus/prometheus.yml
 --------------------------------------------------

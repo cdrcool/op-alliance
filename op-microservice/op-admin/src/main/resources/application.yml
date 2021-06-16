@@ -49,6 +49,9 @@ management:
       show-details: always
     logfile:
       enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
 
 logging:
   file:
