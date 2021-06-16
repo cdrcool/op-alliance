@@ -64,3 +64,15 @@ docker run -d `
     -p 3000:3000 `
     grafana/grafana
 --------------------------------------------------
+
+mysqld-exporter
+--------------------------------------------------
+docker run -d `
+    --network op_net `
+    --hostname mysqld-exporter `
+    --hostname mysqld-exporter `
+    -p 9104:9104 `
+    -e DATA_SOURCE_NAME="root:root@(host.docker.internal:3306)/" `
+    prom/mysqld-exporter
+--------------------------------------------------
+
