@@ -31,7 +31,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @ApiOperation("创建用户")
+    @ApiOperation("创建用户（返回新建用户的密码）")
     @PostMapping("create")
     public String create(@Valid @RequestBody UserCreateDTO userCreateDto) {
         return userService.create(userCreateDto);
