@@ -27,7 +27,7 @@ public class RoleSaveDTO {
     @ApiModelProperty(value = "角色描述", required = true)
     private String roleDesc;
 
-    @ApiModelProperty(value = "启用状态（0-禁用；1-启用）", required = true)
+    @ApiModelProperty(value = "启用状态（0-禁用；1-启用）", allowableValues = "0, 1", required = true)
     private Integer status;
 
     @ApiModelProperty("角色编号")

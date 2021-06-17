@@ -18,11 +18,11 @@ public class ResourceCategoryVO extends BaseVo {
     @ApiModelProperty("资源分类id")
     private Integer id;
 
-    @ApiModelProperty("上级分类id")
-    private Integer pid;
-
     @ApiModelProperty("分类名称")
     private String categoryName;
+
+    @ApiModelProperty("服务名称")
+    private String serverName;
 
     @ApiModelProperty("分类编号")
     private Integer categoryNo;

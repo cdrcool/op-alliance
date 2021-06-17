@@ -1,16 +1,20 @@
 package com.op.admin.entity;
 
 import com.op.framework.web.common.persistence.entity.BaseEntity;
+import java.time.LocalDateTime;
+import javax.annotation.Generated;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.annotation.Generated;
-
 /**
  * @author Mybatis Generator
- * @date 2021/05/19 11:58
+ * @date 2021/06/17 05:16
  */
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -26,6 +30,12 @@ public class Menu extends BaseEntity {
      */
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Integer pid;
+
+    /**
+     * 上级菜单ids
+     */
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String parentIds;
 
     /**
      * 菜单名称
@@ -49,7 +59,7 @@ public class Menu extends BaseEntity {
      * 菜单路由
      */
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String menuRouting;
+    private String menuRoute;
 
     /**
      * 菜单层级
@@ -64,8 +74,56 @@ public class Menu extends BaseEntity {
     private Integer menuNo;
 
     /**
+     * 是否目录
+     */
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private Boolean isDirectory;
+
+    /**
      * 是否隐藏
      */
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Boolean hidden;
+    private Boolean isHidden;
+
+    /**
+     * 版本号
+     */
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private Integer version;
+
+    /**
+     * 是否逻辑删除
+     */
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private Boolean deleted;
+
+    /**
+     * 创建人id
+     */
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private Integer creatorId;
+
+    /**
+     * 创建时间
+     */
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private LocalDateTime createTime;
+
+    /**
+     * 最后修改人id
+     */
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private Integer lastModifierId;
+
+    /**
+     * 最后修改时间
+     */
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private LocalDateTime lastModifyTime;
+
+    /**
+     * 租户id
+     */
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String tenantId;
 }

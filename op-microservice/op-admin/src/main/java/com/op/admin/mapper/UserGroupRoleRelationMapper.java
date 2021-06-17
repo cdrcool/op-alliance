@@ -1,7 +1,19 @@
 package com.op.admin.mapper;
 
+import static com.op.admin.mapper.UserGroupRoleRelationDynamicSqlSupport.*;
+
 import com.op.admin.entity.UserGroupRoleRelation;
-import org.apache.ibatis.annotations.*;
+import java.util.List;
+import java.util.Optional;
+import javax.annotation.Generated;
+import org.apache.ibatis.annotations.DeleteProvider;
+import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.ResultMap;
+import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.UpdateProvider;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.delete.DeleteDSLCompleter;
@@ -17,15 +29,9 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
-import javax.annotation.Generated;
-import java.util.List;
-import java.util.Optional;
-
-import static com.op.admin.mapper.UserGroupRoleRelationDynamicSqlSupport.*;
-
 /**
  * @author Mybatis Generator
- * @date 2021/05/19 11:58
+ * @date 2021/06/17 05:16
  */
 @Mapper
 public interface UserGroupRoleRelationMapper {
@@ -33,39 +39,39 @@ public interface UserGroupRoleRelationMapper {
     BasicColumn[] selectList = BasicColumn.columnList(groupId, roleId, version, deleted, creatorId, createTime, lastModifierId, lastModifyTime, tenantId);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    @SelectProvider(type = SqlProviderAdapter.class, method = "select")
+    @SelectProvider(type=SqlProviderAdapter.class, method="select")
     long count(SelectStatementProvider selectStatement);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    @DeleteProvider(type = SqlProviderAdapter.class, method = "delete")
+    @DeleteProvider(type=SqlProviderAdapter.class, method="delete")
     int delete(DeleteStatementProvider deleteStatement);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    @InsertProvider(type = SqlProviderAdapter.class, method = "insert")
+    @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     int insert(InsertStatementProvider<UserGroupRoleRelation> insertStatement);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    @SelectProvider(type = SqlProviderAdapter.class, method = "select")
+    @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @ResultMap("UserGroupRoleRelationResult")
     Optional<UserGroupRoleRelation> selectOne(SelectStatementProvider selectStatement);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    @SelectProvider(type = SqlProviderAdapter.class, method = "select")
-    @Results(id = "UserGroupRoleRelationResult", value = {
-            @Result(column = "group_id", property = "groupId", jdbcType = JdbcType.INTEGER),
-            @Result(column = "role_id", property = "roleId", jdbcType = JdbcType.INTEGER),
-            @Result(column = "version", property = "version", jdbcType = JdbcType.INTEGER),
-            @Result(column = "deleted", property = "deleted", jdbcType = JdbcType.BIT),
-            @Result(column = "creator_id", property = "creatorId", jdbcType = JdbcType.INTEGER),
-            @Result(column = "create_time", property = "createTime", jdbcType = JdbcType.TIMESTAMP),
-            @Result(column = "last_modifier_id", property = "lastModifierId", jdbcType = JdbcType.INTEGER),
-            @Result(column = "last_modify_time", property = "lastModifyTime", jdbcType = JdbcType.TIMESTAMP),
-            @Result(column = "tenant_id", property = "tenantId", jdbcType = JdbcType.VARCHAR)
+    @SelectProvider(type=SqlProviderAdapter.class, method="select")
+    @Results(id="UserGroupRoleRelationResult", value = {
+        @Result(column="group_id", property="groupId", jdbcType=JdbcType.INTEGER),
+        @Result(column="role_id", property="roleId", jdbcType=JdbcType.INTEGER),
+        @Result(column="version", property="version", jdbcType=JdbcType.INTEGER),
+        @Result(column="deleted", property="deleted", jdbcType=JdbcType.BIT),
+        @Result(column="creator_id", property="creatorId", jdbcType=JdbcType.INTEGER),
+        @Result(column="create_time", property="createTime", jdbcType=JdbcType.TIMESTAMP),
+        @Result(column="last_modifier_id", property="lastModifierId", jdbcType=JdbcType.INTEGER),
+        @Result(column="last_modify_time", property="lastModifyTime", jdbcType=JdbcType.TIMESTAMP),
+        @Result(column="tenant_id", property="tenantId", jdbcType=JdbcType.VARCHAR)
     })
     List<UserGroupRoleRelation> selectMany(SelectStatementProvider selectStatement);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    @UpdateProvider(type = SqlProviderAdapter.class, method = "update")
+    @UpdateProvider(type=SqlProviderAdapter.class, method="update")
     int update(UpdateStatementProvider updateStatement);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -81,30 +87,30 @@ public interface UserGroupRoleRelationMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int insert(UserGroupRoleRelation record) {
         return MyBatis3Utils.insert(this::insert, record, userGroupRoleRelation, c ->
-                c.map(groupId).toProperty("groupId")
-                        .map(roleId).toProperty("roleId")
-                        .map(version).toProperty("version")
-                        .map(deleted).toProperty("deleted")
-                        .map(creatorId).toProperty("creatorId")
-                        .map(createTime).toProperty("createTime")
-                        .map(lastModifierId).toProperty("lastModifierId")
-                        .map(lastModifyTime).toProperty("lastModifyTime")
-                        .map(tenantId).toProperty("tenantId")
+            c.map(groupId).toProperty("groupId")
+            .map(roleId).toProperty("roleId")
+            .map(version).toProperty("version")
+            .map(deleted).toProperty("deleted")
+            .map(creatorId).toProperty("creatorId")
+            .map(createTime).toProperty("createTime")
+            .map(lastModifierId).toProperty("lastModifierId")
+            .map(lastModifyTime).toProperty("lastModifyTime")
+            .map(tenantId).toProperty("tenantId")
         );
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int insertSelective(UserGroupRoleRelation record) {
         return MyBatis3Utils.insert(this::insert, record, userGroupRoleRelation, c ->
-                c.map(groupId).toPropertyWhenPresent("groupId", record::getGroupId)
-                        .map(roleId).toPropertyWhenPresent("roleId", record::getRoleId)
-                        .map(version).toPropertyWhenPresent("version", record::getVersion)
-                        .map(deleted).toPropertyWhenPresent("deleted", record::getDeleted)
-                        .map(creatorId).toPropertyWhenPresent("creatorId", record::getCreatorId)
-                        .map(createTime).toPropertyWhenPresent("createTime", record::getCreateTime)
-                        .map(lastModifierId).toPropertyWhenPresent("lastModifierId", record::getLastModifierId)
-                        .map(lastModifyTime).toPropertyWhenPresent("lastModifyTime", record::getLastModifyTime)
-                        .map(tenantId).toPropertyWhenPresent("tenantId", record::getTenantId)
+            c.map(groupId).toPropertyWhenPresent("groupId", record::getGroupId)
+            .map(roleId).toPropertyWhenPresent("roleId", record::getRoleId)
+            .map(version).toPropertyWhenPresent("version", record::getVersion)
+            .map(deleted).toPropertyWhenPresent("deleted", record::getDeleted)
+            .map(creatorId).toPropertyWhenPresent("creatorId", record::getCreatorId)
+            .map(createTime).toPropertyWhenPresent("createTime", record::getCreateTime)
+            .map(lastModifierId).toPropertyWhenPresent("lastModifierId", record::getLastModifierId)
+            .map(lastModifyTime).toPropertyWhenPresent("lastModifyTime", record::getLastModifyTime)
+            .map(tenantId).toPropertyWhenPresent("tenantId", record::getTenantId)
         );
     }
 

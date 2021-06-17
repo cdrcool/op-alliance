@@ -6,6 +6,8 @@ import com.op.admin.vo.ResourceVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 /**
  * 资源 Service
  *
@@ -14,19 +16,11 @@ import org.springframework.data.domain.Pageable;
 public interface ResourceService {
 
     /**
-     * 创建资源
-     *
-     * @param saveDTO 资源保存 dto
-     * @return 初始密码
-     */
-    String create(ResourceSaveDTO saveDTO);
-
-    /**
-     * 修改资源
+     * 保存资源
      *
      * @param saveDTO 资源保存 dto
      */
-    void update(ResourceSaveDTO saveDTO);
+    void save(ResourceSaveDTO saveDTO);
 
     /**
      * 删除资源
@@ -34,6 +28,13 @@ public interface ResourceService {
      * @param id 资源id
      */
     void deleteById(Integer id);
+
+    /**
+     * 删除资源分类下所有的资源
+     *
+     * @param categoryId 资源分类 id
+     */
+    void deleteByCategoryId(Integer categoryId);
 
     /**
      * 查找资源

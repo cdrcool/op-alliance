@@ -31,7 +31,7 @@ public interface UserService {
     void changePassword(UserChangePasswordDTO changePasswordDto);
 
     /**
-     * 修改用户资料
+     * 更新用户
      *
      * @param userUpdateDto 用户更新 dto
      */
@@ -60,4 +60,12 @@ public interface UserService {
      * @return 用户 vo 分页列表
      */
     Page<UserVO> queryPage(Pageable pageable, UserListQueryDTO queryDTO);
+
+    /**
+     * 启用/禁用用户
+     *
+     * @param id     用户id
+     * @param enable 启用 or 禁用
+     */
+    void enableDisable(Integer id, boolean enable);
 }

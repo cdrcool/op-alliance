@@ -1,11 +1,10 @@
 package com.op.admin.mapper;
 
-import org.mybatis.dynamic.sql.SqlColumn;
-import org.mybatis.dynamic.sql.SqlTable;
-
-import javax.annotation.Generated;
 import java.sql.JDBCType;
 import java.time.LocalDateTime;
+import javax.annotation.Generated;
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
 
 public final class MenuDynamicSqlSupport {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -18,6 +17,9 @@ public final class MenuDynamicSqlSupport {
     public static final SqlColumn<Integer> pid = menu.pid;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<String> parentIds = menu.parentIds;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> menuName = menu.menuName;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -27,7 +29,7 @@ public final class MenuDynamicSqlSupport {
     public static final SqlColumn<String> menuIcon = menu.menuIcon;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<String> menuRouting = menu.menuRouting;
+    public static final SqlColumn<String> menuRoute = menu.menuRoute;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Integer> menuLevel = menu.menuLevel;
@@ -36,7 +38,10 @@ public final class MenuDynamicSqlSupport {
     public static final SqlColumn<Integer> menuNo = menu.menuNo;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<Boolean> hidden = menu.hidden;
+    public static final SqlColumn<Boolean> isDirectory = menu.isDirectory;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<Boolean> isHidden = menu.isHidden;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Integer> version = menu.version;
@@ -65,19 +70,23 @@ public final class MenuDynamicSqlSupport {
 
         public final SqlColumn<Integer> pid = column("pid", JDBCType.INTEGER);
 
+        public final SqlColumn<String> parentIds = column("parent_ids", JDBCType.VARCHAR);
+
         public final SqlColumn<String> menuName = column("menu_name", JDBCType.VARCHAR);
 
         public final SqlColumn<String> menuCode = column("menu_code", JDBCType.VARCHAR);
 
         public final SqlColumn<String> menuIcon = column("menu_icon", JDBCType.VARCHAR);
 
-        public final SqlColumn<String> menuRouting = column("menu_routing", JDBCType.VARCHAR);
+        public final SqlColumn<String> menuRoute = column("menu_route", JDBCType.VARCHAR);
 
         public final SqlColumn<Integer> menuLevel = column("menu_level", JDBCType.INTEGER);
 
         public final SqlColumn<Integer> menuNo = column("menu_no", JDBCType.INTEGER);
 
-        public final SqlColumn<Boolean> hidden = column("hidden", JDBCType.BIT);
+        public final SqlColumn<Boolean> isDirectory = column("is_directory", JDBCType.BIT);
+
+        public final SqlColumn<Boolean> isHidden = column("is_hidden", JDBCType.BIT);
 
         public final SqlColumn<Integer> version = column("version", JDBCType.INTEGER);
 

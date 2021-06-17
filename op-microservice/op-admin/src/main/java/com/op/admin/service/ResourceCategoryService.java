@@ -14,19 +14,11 @@ import org.springframework.data.domain.Pageable;
 public interface ResourceCategoryService {
 
     /**
-     * 创建资源分类
-     *
-     * @param saveDTO 资源分类保存 dto
-     * @return 初始密码
-     */
-    String create(ResourceCategorySaveDTO saveDTO);
-
-    /**
-     * 修改资源分类
+     * 保存资源分类
      *
      * @param saveDTO 资源分类保存 dto
      */
-    void update(ResourceCategorySaveDTO saveDTO);
+    void save(ResourceCategorySaveDTO saveDTO);
 
     /**
      * 删除资源分类

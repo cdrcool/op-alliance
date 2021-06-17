@@ -101,8 +101,8 @@ DROP TABLE IF EXISTS `admin_resource_category`;
 CREATE TABLE `admin_resource_category`
 (
     `id`               int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
-    `pid`              int NULL DEFAULT NULL COMMENT '上级分类id',
     `category_name`    varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '分类名称',
+    `server_name`      varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '服务名称',
     `category_no`      int NULL DEFAULT NULL COMMENT '分类编号',
     `version`          int NULL DEFAULT NULL COMMENT '版本号',
     `deleted`          tinyint(1) NULL DEFAULT NULL COMMENT '是否逻辑删除',
@@ -166,13 +166,15 @@ CREATE TABLE `admin_menu`
 (
     `id`               int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
     `pid`              int NULL DEFAULT NULL COMMENT '上级菜单id',
+    `parent_ids`       varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '上级菜单ids',
     `menu_name`        varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '菜单名称',
     `menu_code`        varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '菜单编码',
     `menu_icon`        varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '菜单图标',
-    `menu_routing`     varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '菜单路由',
+    `menu_route`       varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '菜单路由',
     `menu_level`       int NULL DEFAULT NULL COMMENT '菜单层级',
     `menu_no`          int NULL DEFAULT NULL COMMENT '菜单编号',
-    `hidden`           tinyint(1) NULL DEFAULT NULL COMMENT '是否隐藏',
+    `is_directory`     tinyint(1) NULL DEFAULT NULL COMMENT '是否目录',
+    `is_hidden`        tinyint(1) NULL DEFAULT NULL COMMENT '是否隐藏',
     `version`          int NULL DEFAULT NULL COMMENT '版本号',
     `deleted`          tinyint(1) NULL DEFAULT NULL COMMENT '是否逻辑删除',
     `creator_id`       int NULL DEFAULT NULL COMMENT '创建人id',

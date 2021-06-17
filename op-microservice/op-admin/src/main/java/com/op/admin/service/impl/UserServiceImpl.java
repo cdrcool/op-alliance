@@ -15,9 +15,11 @@ import com.op.admin.utils.PasswordGenerator;
 import com.op.admin.vo.UserVO;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.mybatis.dynamic.sql.SortSpecification;
+import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SimpleSortSpecification;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -48,8 +50,8 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public String create(UserCreateDTO userCreateDto) {
-        User user = userMapping.toUser(userCreateDto);
+    public String create(UserCreateDTO createDTO) {
+        User user = userMapping.toUser(createDTO);
 
         // 新建用户随机生成6位数密码
         String password = PasswordGenerator.generate(6);
@@ -78,10 +80,10 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void update(UserUpdateDTO userUpdateDto) {
-        Integer id = userUpdateDto.getId();
+    public void update(UserUpdateDTO updateDTO) {
+        Integer id = updateDTO.getId();
         User user = userMapper.selectByPrimaryKey(id).orElseThrow(() -> new BusinessException("找不到用户，用户id：" + id));
-        userMapping.update(userUpdateDto, user);
+        userMapping.update(updateDTO, user);
         userMapper.updateByPrimaryKey(user);
     }
 
@@ -112,20 +114,32 @@ public class UserServiceImpl implements UserService {
 
         SelectStatementProvider selectStatementProvider = select(UserMapper.selectList)
                 .from(UserDynamicSqlSupport.user)
-                .where(UserDynamicSqlSupport.orgId, isEqualTo(queryDTO.getOrgId()))
-                .and(UserDynamicSqlSupport.gender, isEqualTo(queryDTO.getGender()))
-                .and(UserDynamicSqlSupport.status, isIn(queryDTO.getStatus()))
-                .and(UserDynamicSqlSupport.username, isLike(queryDTO.getSearchText()),
-                        or(UserDynamicSqlSupport.nickname, isLike(queryDTO.getSearchText())),
-                        or(UserDynamicSqlSupport.phone, isLike(queryDTO.getSearchText())),
-                        or(UserDynamicSqlSupport.email, isLike(queryDTO.getSearchText())))
+                .where(UserDynamicSqlSupport.orgId, isEqualToWhenPresent(queryDTO.getOrgId()))
+                .and(UserDynamicSqlSupport.gender, isEqualToWhenPresent(queryDTO.getGender()))
+                .and(UserDynamicSqlSupport.status, isInWhenPresent(queryDTO.getStatus()))
+                .and(UserDynamicSqlSupport.username, isLikeWhenPresent(queryDTO.getSearchText()),
+                        or(UserDynamicSqlSupport.nickname, isLikeWhenPresent(queryDTO.getSearchText())),
+                        or(UserDynamicSqlSupport.phone, isLikeWhenPresent(queryDTO.getSearchText())),
+                        or(UserDynamicSqlSupport.email, isLikeWhenPresent(queryDTO.getSearchText())))
                 .orderBy(specifications)
                 .limit(pageable.getPageSize()).offset(pageable.getOffset())
                 .build().render(RenderingStrategies.MYBATIS3);
 
         com.github.pagehelper.Page<UserVO> result = PageHelper.startPage(pageable.getPageNumber(), pageable.getPageSize()).doSelectPage(() ->
-                userMapping.toUserVoList(userMapper.selectMany(selectStatementProvider)));
+                userMapping.toUserVOList(userMapper.selectMany(selectStatementProvider)));
 
         return new PageImpl<>(result.getResult(), pageable, result.getTotal());
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void enableDisable(Integer id, boolean enable) {
+        UpdateStatementProvider updateStatement = SqlBuilder.update(UserDynamicSqlSupport.user)
+                .set(UserDynamicSqlSupport.status).equalTo(enable ? 1 : 0)
+                .where(UserDynamicSqlSupport.id, isEqualTo(id))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        userMapper.update(updateStatement);
     }
 }

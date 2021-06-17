@@ -1,11 +1,10 @@
 package com.op.admin.mapper;
 
-import org.mybatis.dynamic.sql.SqlColumn;
-import org.mybatis.dynamic.sql.SqlTable;
-
-import javax.annotation.Generated;
 import java.sql.JDBCType;
 import java.time.LocalDateTime;
+import javax.annotation.Generated;
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
 
 public final class ResourceCategoryDynamicSqlSupport {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -15,10 +14,10 @@ public final class ResourceCategoryDynamicSqlSupport {
     public static final SqlColumn<Integer> id = resourceCategory.id;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<Integer> pid = resourceCategory.pid;
+    public static final SqlColumn<String> categoryName = resourceCategory.categoryName;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<String> categoryName = resourceCategory.categoryName;
+    public static final SqlColumn<String> serverName = resourceCategory.serverName;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Integer> categoryNo = resourceCategory.categoryNo;
@@ -48,9 +47,9 @@ public final class ResourceCategoryDynamicSqlSupport {
     public static final class ResourceCategory extends SqlTable {
         public final SqlColumn<Integer> id = column("id", JDBCType.INTEGER);
 
-        public final SqlColumn<Integer> pid = column("pid", JDBCType.INTEGER);
-
         public final SqlColumn<String> categoryName = column("category_name", JDBCType.VARCHAR);
+
+        public final SqlColumn<String> serverName = column("server_name", JDBCType.VARCHAR);
 
         public final SqlColumn<Integer> categoryNo = column("category_no", JDBCType.INTEGER);
 

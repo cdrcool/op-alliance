@@ -2,9 +2,12 @@ package com.op.admin.service;
 
 import com.op.admin.dto.RoleListQueryDTO;
 import com.op.admin.dto.RoleSaveDTO;
+import com.op.admin.vo.RoleTreeVO;
 import com.op.admin.vo.RoleVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 /**
  * 角色 Service
@@ -14,19 +17,11 @@ import org.springframework.data.domain.Pageable;
 public interface RoleService {
 
     /**
-     * 创建角色
-     *
-     * @param saveDTO 角色保存 dto
-     * @return 初始密码
-     */
-    String create(RoleSaveDTO saveDTO);
-
-    /**
-     * 修改角色
+     * 保存角色
      *
      * @param saveDTO 角色保存 dto
      */
-    void update(RoleSaveDTO saveDTO);
+    void save(RoleSaveDTO saveDTO);
 
     /**
      * 删除角色
@@ -44,11 +39,18 @@ public interface RoleService {
     RoleVO findById(Integer id);
 
     /**
-     * 分页查询角色
+     * 分页查询角色树列表
      *
      * @param pageable 分页对象
      * @param queryDTO 查询对象
-     * @return 角色 vo 分页列表
+     * @return 角色树 vo 分页列表
      */
-    Page<RoleVO> queryPage(Pageable pageable, RoleListQueryDTO queryDTO);
+    Page<RoleTreeVO> queryPage(Pageable pageable, RoleListQueryDTO queryDTO);
+
+    /**
+     * 启用/禁用角色
+     *
+     * @param id 角色id
+     */
+    void enableDisable(Integer id);
 }

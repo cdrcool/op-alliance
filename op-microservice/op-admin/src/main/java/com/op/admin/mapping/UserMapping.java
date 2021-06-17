@@ -21,10 +21,10 @@ public interface UserMapping {
     /**
      * 用户创建 dto -> 用户
      *
-     * @param userCreateDto 用户创建 dto
+     * @param createDTO 用户创建 dto
      * @return 用户
      */
-    User toUser(UserCreateDTO userCreateDto);
+    User toUser(UserCreateDTO createDTO);
 
     /**
      * 根据用户修改密码 dto 更新用户
@@ -37,10 +37,10 @@ public interface UserMapping {
     /**
      * 根据用户更新 dto 更新用户
      *
-     * @param userUpdateDto 用户更新 dto
+     * @param updateDTO 用户更新 dto
      * @param user          用户
      */
-    void update(UserUpdateDTO userUpdateDto, @MappingTarget User user);
+    void update(UserUpdateDTO updateDTO, @MappingTarget User user);
 
     /**
      * 用户 -> 用户 vo
@@ -56,5 +56,5 @@ public interface UserMapping {
      * @param users 用户列表
      * @return 用户 vo 列表
      */
-    List<UserVO> toUserVoList(List<User> users);
+    List<UserVO> toUserVOList(List<User> users);
 }

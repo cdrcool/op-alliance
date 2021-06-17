@@ -53,9 +53,6 @@ public class UserUpdateDTO {
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private LocalDate birthday;
 
-    @ApiModelProperty("帐号状态（0-禁用；1-启用；2-过期；3-锁定；4-密码过期）")
-    private Integer status;
-
     @ApiModelProperty("用户编号")
     private Integer userNo;
 }

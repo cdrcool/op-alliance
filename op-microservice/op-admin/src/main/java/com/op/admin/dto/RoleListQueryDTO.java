@@ -12,12 +12,6 @@ import lombok.Data;
 @ApiModel(description = "角色列表查询 DTO")
 @Data
 public class RoleListQueryDTO {
-    @ApiModelProperty("角色名称")
-    private String roleName;
-
-    @ApiModelProperty("角色编码")
-    private String roleCode;
-
     @ApiModelProperty(value = "启用状态（0-禁用；1-启用）", allowableValues = "0, 1")
     private Integer status;
 
