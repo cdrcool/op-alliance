@@ -51,7 +51,7 @@ public class ResourceServiceImpl implements ResourceService {
             resourceMapper.insert(resource);
         } else {
             Integer id = saveDTO.getId();
-            Resource resource = resourceMapper.selectByPrimaryKey(id).orElseThrow(() -> new BusinessException("找不到资源分类，资源分类id：" + id));
+            Resource resource = resourceMapper.selectByPrimaryKey(id).orElseThrow(() -> new BusinessException("找不到资源，资源id：" + id));
             resourceMapping.update(saveDTO, resource);
             resourceMapper.updateByPrimaryKey(resource);
         }
@@ -100,8 +100,9 @@ public class ResourceServiceImpl implements ResourceService {
                 .limit(pageable.getPageSize()).offset(pageable.getOffset())
                 .build().render(RenderingStrategies.MYBATIS3);
 
-        com.github.pagehelper.Page<ResourceVO> result = PageHelper.startPage(pageable.getPageNumber(), pageable.getPageSize()).doSelectPage(() ->
-                resourceMapping.toResourceVOList(resourceMapper.selectMany(selectStatementProvider)));
+        com.github.pagehelper.Page<ResourceVO> result = PageHelper
+                .startPage(pageable.getPageNumber(), pageable.getPageSize())
+                .doSelectPage(() -> resourceMapping.toResourceVOList(resourceMapper.selectMany(selectStatementProvider)));
 
         return new PageImpl<>(result.getResult(), pageable, result.getTotal());
     }

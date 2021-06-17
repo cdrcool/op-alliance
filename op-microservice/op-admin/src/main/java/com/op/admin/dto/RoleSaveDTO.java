@@ -15,9 +15,6 @@ public class RoleSaveDTO {
     @ApiModelProperty("角色id")
     private Integer id;
 
-    @ApiModelProperty("父角色id")
-    private Integer pid;
-
     @ApiModelProperty(value = "角色名称", required = true)
     private String roleName;
 

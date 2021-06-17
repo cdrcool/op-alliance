@@ -90,8 +90,9 @@ public class ResourceCategoryServiceImpl implements ResourceCategoryService {
                 .limit(pageable.getPageSize()).offset(pageable.getOffset())
                 .build().render(RenderingStrategies.MYBATIS3);
 
-        com.github.pagehelper.Page<ResourceCategoryVO> result = PageHelper.startPage(pageable.getPageNumber(), pageable.getPageSize()).doSelectPage(() ->
-                resourceCategoryMapping.toResourceCategoryVOList(resourceCategoryMapper.selectMany(selectStatementProvider)));
+        com.github.pagehelper.Page<ResourceCategoryVO> result = PageHelper
+                .startPage(pageable.getPageNumber(), pageable.getPageSize())
+                .doSelectPage(() -> resourceCategoryMapping.toResourceCategoryVOList(resourceCategoryMapper.selectMany(selectStatementProvider)));
 
         return new PageImpl<>(result.getResult(), pageable, result.getTotal());
     }

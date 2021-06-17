@@ -12,17 +12,18 @@ import com.op.admin.vo.RoleTreeVO;
 import com.op.admin.vo.RoleVO;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.mybatis.dynamic.sql.SortSpecification;
+import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SimpleSortSpecification;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.mybatis.dynamic.sql.SqlBuilder.isLikeWhenPresent;
-import static org.mybatis.dynamic.sql.SqlBuilder.select;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 /**
  * 角色 Service Impl
@@ -31,39 +32,39 @@ import static org.mybatis.dynamic.sql.SqlBuilder.select;
  */
 @Service
 public class RoleServiceImpl implements RoleService {
-    private final RoleMapper resourceMapper;
-    private final RoleMapping resourceMapping;
+    private final RoleMapper roleMapper;
+    private final RoleMapping roleMapping;
 
-    public RoleServiceImpl(RoleMapper resourceMapper, RoleMapping resourceMapping) {
-        this.resourceMapper = resourceMapper;
-        this.resourceMapping = resourceMapping;
+    public RoleServiceImpl(RoleMapper roleMapper, RoleMapping roleMapping) {
+        this.roleMapper = roleMapper;
+        this.roleMapping = roleMapping;
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void save(RoleSaveDTO saveDTO) {
         if (saveDTO.getId() == null) {
-            Role resource = resourceMapping.toRole(saveDTO);
-            resourceMapper.insert(resource);
+            Role resource = roleMapping.toRole(saveDTO);
+            roleMapper.insert(resource);
         } else {
             Integer id = saveDTO.getId();
-            Role resource = resourceMapper.selectByPrimaryKey(id).orElseThrow(() -> new BusinessException("找不到角色，角色id：" + id));
-            resourceMapping.update(saveDTO, resource);
-            resourceMapper.updateByPrimaryKey(resource);
+            Role resource = roleMapper.selectByPrimaryKey(id).orElseThrow(() -> new BusinessException("找不到角色，角色id：" + id));
+            roleMapping.update(saveDTO, resource);
+            roleMapper.updateByPrimaryKey(resource);
         }
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteById(Integer id) {
-        resourceMapper.deleteByPrimaryKey(id);
+        roleMapper.deleteByPrimaryKey(id);
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public RoleVO findById(Integer id) {
-        Role resource = resourceMapper.selectByPrimaryKey(id).orElse(new Role());
-        return resourceMapping.toRoleVO(resource);
+        Role resource = roleMapper.selectByPrimaryKey(id).orElse(new Role());
+        return roleMapping.toRoleVO(resource);
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -86,14 +87,21 @@ public class RoleServiceImpl implements RoleService {
                 .limit(pageable.getPageSize()).offset(pageable.getOffset())
                 .build().render(RenderingStrategies.MYBATIS3);
 
-        com.github.pagehelper.Page<RoleTreeVO> result = PageHelper.startPage(pageable.getPageNumber(), pageable.getPageSize()).doSelectPage(() ->
-                resourceMapping.toRoleVOList(resourceMapper.selectMany(selectStatementProvider)));
+        com.github.pagehelper.Page<RoleTreeVO> result = PageHelper
+                .startPage(pageable.getPageNumber(), pageable.getPageSize())
+                .doSelectPage(() -> roleMapping.toRoleVOList(roleMapper.selectMany(selectStatementProvider)));
 
         return new PageImpl<>(result.getResult(), pageable, result.getTotal());
     }
 
     @Override
-    public void enableDisable(Integer id) {
+    public void enableDisable(Integer id, boolean enable) {
+        UpdateStatementProvider updateStatement = SqlBuilder.update(RoleDynamicSqlSupport.role)
+                .set(RoleDynamicSqlSupport.status).equalTo(enable ? 1 : 0)
+                .where(RoleDynamicSqlSupport.id, isEqualTo(id))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
 
+        roleMapper.update(updateStatement);
     }
 }

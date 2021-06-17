@@ -57,7 +57,6 @@ DROP TABLE IF EXISTS `admin_role`;
 CREATE TABLE `admin_role`
 (
     `id`               int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
-    `pid`              int NULL DEFAULT NULL COMMENT '父角色id',
     `role_name`        varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '角色名称',
     `role_code`        varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '角色编码',
     `role_desc`        varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '角色描述',

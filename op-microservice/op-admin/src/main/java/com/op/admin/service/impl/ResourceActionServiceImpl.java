@@ -94,8 +94,9 @@ public class ResourceActionServiceImpl implements ResourceActionService {
                 .limit(pageable.getPageSize()).offset(pageable.getOffset())
                 .build().render(RenderingStrategies.MYBATIS3);
 
-        com.github.pagehelper.Page<ResourceActionVO> result = PageHelper.startPage(pageable.getPageNumber(), pageable.getPageSize()).doSelectPage(() ->
-                resourceActionMapping.toResourceActionVOList(resourceActionMapper.selectMany(selectStatementProvider)));
+        com.github.pagehelper.Page<ResourceActionVO> result = PageHelper
+                .startPage(pageable.getPageNumber(), pageable.getPageSize())
+                .doSelectPage(() -> resourceActionMapping.toResourceActionVOList(resourceActionMapper.selectMany(selectStatementProvider)));
 
         return new PageImpl<>(result.getResult(), pageable, result.getTotal());
     }

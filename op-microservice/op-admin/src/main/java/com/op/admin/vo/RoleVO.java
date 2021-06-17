@@ -18,9 +18,6 @@ public class RoleVO extends BaseVo {
     @ApiModelProperty("角色id")
     private Integer id;
 
-    @ApiModelProperty("父角色id")
-    private Integer pid;
-
     @ApiModelProperty("角色名称")
     private String roleName;
 

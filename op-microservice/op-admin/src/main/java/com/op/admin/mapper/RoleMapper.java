@@ -33,12 +33,12 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 /**
  * @author Mybatis Generator
- * @date 2021/06/17 05:16
+ * @date 2021/06/17 11:26
  */
 @Mapper
 public interface RoleMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(id, pid, roleName, roleCode, roleDesc, status, roleNo, userCount, version, deleted, creatorId, createTime, lastModifierId, lastModifyTime, tenantId);
+    BasicColumn[] selectList = BasicColumn.columnList(id, roleName, roleCode, roleDesc, status, roleNo, userCount, version, deleted, creatorId, createTime, lastModifierId, lastModifyTime, tenantId);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -62,7 +62,6 @@ public interface RoleMapper {
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results(id="RoleResult", value = {
         @Result(column="id", property="id", jdbcType=JdbcType.INTEGER, id=true),
-        @Result(column="pid", property="pid", jdbcType=JdbcType.INTEGER),
         @Result(column="role_name", property="roleName", jdbcType=JdbcType.VARCHAR),
         @Result(column="role_code", property="roleCode", jdbcType=JdbcType.VARCHAR),
         @Result(column="role_desc", property="roleDesc", jdbcType=JdbcType.VARCHAR),
@@ -103,8 +102,7 @@ public interface RoleMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int insert(Role record) {
         return MyBatis3Utils.insert(this::insert, record, role, c ->
-            c.map(pid).toProperty("pid")
-            .map(roleName).toProperty("roleName")
+            c.map(roleName).toProperty("roleName")
             .map(roleCode).toProperty("roleCode")
             .map(roleDesc).toProperty("roleDesc")
             .map(status).toProperty("status")
@@ -123,8 +121,7 @@ public interface RoleMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int insertSelective(Role record) {
         return MyBatis3Utils.insert(this::insert, record, role, c ->
-            c.map(pid).toPropertyWhenPresent("pid", record::getPid)
-            .map(roleName).toPropertyWhenPresent("roleName", record::getRoleName)
+            c.map(roleName).toPropertyWhenPresent("roleName", record::getRoleName)
             .map(roleCode).toPropertyWhenPresent("roleCode", record::getRoleCode)
             .map(roleDesc).toPropertyWhenPresent("roleDesc", record::getRoleDesc)
             .map(status).toPropertyWhenPresent("status", record::getStatus)
@@ -169,8 +166,7 @@ public interface RoleMapper {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     static UpdateDSL<UpdateModel> updateAllColumns(Role record, UpdateDSL<UpdateModel> dsl) {
-        return dsl.set(pid).equalTo(record::getPid)
-                .set(roleName).equalTo(record::getRoleName)
+        return dsl.set(roleName).equalTo(record::getRoleName)
                 .set(roleCode).equalTo(record::getRoleCode)
                 .set(roleDesc).equalTo(record::getRoleDesc)
                 .set(status).equalTo(record::getStatus)
@@ -187,8 +183,7 @@ public interface RoleMapper {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     static UpdateDSL<UpdateModel> updateSelectiveColumns(Role record, UpdateDSL<UpdateModel> dsl) {
-        return dsl.set(pid).equalToWhenPresent(record::getPid)
-                .set(roleName).equalToWhenPresent(record::getRoleName)
+        return dsl.set(roleName).equalToWhenPresent(record::getRoleName)
                 .set(roleCode).equalToWhenPresent(record::getRoleCode)
                 .set(roleDesc).equalToWhenPresent(record::getRoleDesc)
                 .set(status).equalToWhenPresent(record::getStatus)
@@ -206,8 +201,7 @@ public interface RoleMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int updateByPrimaryKey(Role record) {
         return update(c ->
-            c.set(pid).equalTo(record::getPid)
-            .set(roleName).equalTo(record::getRoleName)
+            c.set(roleName).equalTo(record::getRoleName)
             .set(roleCode).equalTo(record::getRoleCode)
             .set(roleDesc).equalTo(record::getRoleDesc)
             .set(status).equalTo(record::getStatus)
@@ -227,8 +221,7 @@ public interface RoleMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int updateByPrimaryKeySelective(Role record) {
         return update(c ->
-            c.set(pid).equalToWhenPresent(record::getPid)
-            .set(roleName).equalToWhenPresent(record::getRoleName)
+            c.set(roleName).equalToWhenPresent(record::getRoleName)
             .set(roleCode).equalToWhenPresent(record::getRoleCode)
             .set(roleDesc).equalToWhenPresent(record::getRoleDesc)
             .set(status).equalToWhenPresent(record::getStatus)
