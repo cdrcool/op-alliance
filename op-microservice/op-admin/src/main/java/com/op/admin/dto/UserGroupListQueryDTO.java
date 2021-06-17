@@ -11,7 +11,7 @@ import lombok.Data;
  */
 @ApiModel(description = "用户组列表查询 DTO")
 @Data
-public class UserGroupQueryDTO {
+public class UserGroupListQueryDTO {
     @ApiModelProperty("用户组名称")
     private String groupName;
 

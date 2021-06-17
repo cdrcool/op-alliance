@@ -1,6 +1,6 @@
 package com.op.admin.service;
 
-import com.op.admin.dto.UserGroupQueryDTO;
+import com.op.admin.dto.UserGroupListQueryDTO;
 import com.op.admin.dto.UserGroupSaveDTO;
 import com.op.admin.vo.UserGroupVO;
 import org.springframework.data.domain.Page;
@@ -42,5 +42,5 @@ public interface UserGroupService {
      * @param queryDTO 查询对象
      * @return 用户组 vo 分页列表
      */
-    Page<UserGroupVO> queryPage(Pageable pageable, UserGroupQueryDTO queryDTO);
+    Page<UserGroupVO> queryPage(Pageable pageable, UserGroupListQueryDTO queryDTO);
 }

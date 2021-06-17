@@ -8,7 +8,6 @@ import com.op.admin.mapper.RoleDynamicSqlSupport;
 import com.op.admin.mapper.RoleMapper;
 import com.op.admin.mapping.RoleMapping;
 import com.op.admin.service.RoleService;
-import com.op.admin.vo.RoleTreeVO;
 import com.op.admin.vo.RoleVO;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.mybatis.dynamic.sql.SortSpecification;
@@ -69,7 +68,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public Page<RoleTreeVO> queryPage(Pageable pageable, RoleListQueryDTO queryDTO) {
+    public Page<RoleVO> queryPage(Pageable pageable, RoleListQueryDTO queryDTO) {
         SortSpecification[] specifications = pageable.getSort().stream()
                 .map(order -> {
                     SortSpecification specification = SimpleSortSpecification.of(order.getProperty());
@@ -87,7 +86,7 @@ public class RoleServiceImpl implements RoleService {
                 .limit(pageable.getPageSize()).offset(pageable.getOffset())
                 .build().render(RenderingStrategies.MYBATIS3);
 
-        com.github.pagehelper.Page<RoleTreeVO> result = PageHelper
+        com.github.pagehelper.Page<RoleVO> result = PageHelper
                 .startPage(pageable.getPageNumber(), pageable.getPageSize())
                 .doSelectPage(() -> roleMapping.toRoleVOList(roleMapper.selectMany(selectStatementProvider)));
 

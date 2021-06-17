@@ -39,13 +39,13 @@ public interface RoleService {
     RoleVO findById(Integer id);
 
     /**
-     * 分页查询角色树列表
+     * 分页查询角色列表
      *
      * @param pageable 分页对象
      * @param queryDTO 查询对象
-     * @return 角色树 vo 分页列表
+     * @return 角色 vo 分页列表
      */
-    Page<RoleTreeVO> queryPage(Pageable pageable, RoleListQueryDTO queryDTO);
+    Page<RoleVO> queryPage(Pageable pageable, RoleListQueryDTO queryDTO);
 
     /**
      * 启用/禁用角色
