@@ -5,11 +5,11 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * 组织树查询 DTO
+ * 组织列表查询 DTO
  *
  * @author cdrcool
  */
-@ApiModel(description = "组织树查询 DTO")
+@ApiModel(description = "组织列表查询 DTO")
 @Data
 public class OrganizationListQueryDTO {
     @ApiModelProperty(value = "组织名称", required = true)

@@ -53,5 +53,5 @@ public interface RoleService {
      * @param id 角色id
      * @param enable 启用 or 禁用
      */
-    void enableDisable(Integer id, boolean enable);
+    void changeEnabled(Integer id, boolean enable);
 }

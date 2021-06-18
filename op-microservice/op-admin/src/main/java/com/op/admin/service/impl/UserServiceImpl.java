@@ -134,7 +134,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void enableDisable(Integer id, boolean enable) {
+    public void changeEnabled(Integer id, boolean enable) {
         UpdateStatementProvider updateStatement = SqlBuilder.update(UserDynamicSqlSupport.user)
                 .set(UserDynamicSqlSupport.status).equalTo(enable ? 1 : 0)
                 .where(UserDynamicSqlSupport.id, isEqualTo(id))

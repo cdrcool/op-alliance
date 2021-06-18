@@ -94,7 +94,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public void enableDisable(Integer id, boolean enable) {
+    public void changeEnabled(Integer id, boolean enable) {
         UpdateStatementProvider updateStatement = SqlBuilder.update(RoleDynamicSqlSupport.role)
                 .set(RoleDynamicSqlSupport.status).equalTo(enable ? 1 : 0)
                 .where(RoleDynamicSqlSupport.id, isEqualTo(id))

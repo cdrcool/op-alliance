@@ -1,5 +1,6 @@
 package com.op.admin.service.impl;
 
+import com.op.admin.dto.MenuListQueryDTO;
 import com.op.admin.dto.MenuSaveDTO;
 import com.op.admin.entity.Menu;
 import com.op.admin.mapper.MenuDynamicSqlSupport;
@@ -90,7 +91,7 @@ public class MenuServiceImpl implements MenuService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<MenuTreeVO> queryTreeList() {
+    public List<MenuTreeVO> queryTreeList(MenuListQueryDTO queryDTO) {
         List<Menu> menus = menuMapper.select(SelectDSLCompleter.allRows());
         return TreeUtils.buildTree(menus, menuMapping::toMenuTreeVO, MenuTreeVO::getPid, MenuTreeVO::getId,
                 (menu, children) -> menu.setChildren(children.stream().sorted(Comparator.comparing(MenuTreeVO::getMenuNo)).collect(Collectors.toList())), -1);

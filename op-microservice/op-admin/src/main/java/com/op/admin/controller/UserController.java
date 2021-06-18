@@ -33,20 +33,20 @@ public class UserController {
 
     @ApiOperation("创建用户（返回新建用户的密码）")
     @PostMapping("create")
-    public String create(@Valid @RequestBody UserCreateDTO userCreateDto) {
-        return userService.create(userCreateDto);
+    public String create(@Valid @RequestBody UserCreateDTO createDTO) {
+        return userService.create(createDTO);
     }
 
     @ApiOperation("修改用户密码")
     @PostMapping("changePassword")
-    public void changePassword(@Valid @RequestBody UserChangePasswordDTO userChangePasswordDto) {
-        userService.changePassword(userChangePasswordDto);
+    public void changePassword(@Valid @RequestBody UserChangePasswordDTO changePasswordDTO) {
+        userService.changePassword(changePasswordDTO);
     }
 
     @ApiOperation("修改用户资料")
     @PostMapping("update")
-    public void update(@Valid @RequestBody UserUpdateDTO userUpdateDto) {
-        userService.update(userUpdateDto);
+    public void update(@Valid @RequestBody UserUpdateDTO updateDTO) {
+        userService.update(updateDTO);
     }
 
     @ApiOperation("删除用户")
@@ -64,7 +64,13 @@ public class UserController {
     @ApiOperation("分页查询用户")
     @PostMapping("page")
     public Page<UserVO> queryPage(@PageableDefault(sort = "userNo", direction = Sort.Direction.ASC) Pageable pageable,
-                                  @RequestBody UserListQueryDTO queryDTO) {
+                                  @Valid @RequestBody UserListQueryDTO queryDTO) {
         return userService.queryPage(pageable, queryDTO);
+    }
+
+    @ApiOperation("启用/禁用用户")
+    @PostMapping("changeEnabled")
+    public void changeEnabled(@RequestParam Integer id, @RequestParam boolean enable) {
+        userService.changeEnabled(id, enable);
     }
 }

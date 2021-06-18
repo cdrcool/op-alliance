@@ -18,10 +18,10 @@ public interface UserService {
     /**
      * 创建用户
      *
-     * @param userCreateDto 用户创建 dto
+     * @param createDTO 用户创建 dto
      * @return 初始密码
      */
-    String create(UserCreateDTO userCreateDto);
+    String create(UserCreateDTO createDTO);
 
     /**
      * 修改用户密码
@@ -33,9 +33,9 @@ public interface UserService {
     /**
      * 更新用户
      *
-     * @param userUpdateDto 用户更新 dto
+     * @param updateDTO 用户更新 dto
      */
-    void update(UserUpdateDTO userUpdateDto);
+    void update(UserUpdateDTO updateDTO);
 
     /**
      * 删除用户
@@ -67,5 +67,5 @@ public interface UserService {
      * @param id     用户id
      * @param enable 启用 or 禁用
      */
-    void enableDisable(Integer id, boolean enable);
+    void changeEnabled(Integer id, boolean enable);
 }

@@ -1,5 +1,6 @@
 package com.op.admin.service;
 
+import com.op.admin.dto.MenuListQueryDTO;
 import com.op.admin.dto.MenuSaveDTO;
 import com.op.admin.vo.MenuTreeVO;
 import com.op.admin.vo.MenuVO;
@@ -38,9 +39,10 @@ public interface MenuService {
     /**
      * 查询菜单树列表
      *
+     * @param queryDTO 查询对象
      * @return 菜单树 vo 列表
      */
-    List<MenuTreeVO> queryTreeList();
+    List<MenuTreeVO> queryTreeList(MenuListQueryDTO queryDTO);
 
     /**
      * 显示/隐藏菜单
