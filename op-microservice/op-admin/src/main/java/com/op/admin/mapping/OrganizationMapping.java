@@ -1,7 +1,10 @@
 package com.op.admin.mapping;
 
 import com.op.admin.dto.OrganizationSaveDTO;
+import com.op.admin.entity.Menu;
 import com.op.admin.entity.Organization;
+import com.op.admin.vo.MenuTreeVO;
+import com.op.admin.vo.OrganizationTreeVO;
 import com.op.admin.vo.OrganizationVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -47,4 +50,12 @@ public interface OrganizationMapping {
      * @return 组织 vo 列表
      */
     List<OrganizationVO> toOrganizationVOList(List<Organization> organizations);
+
+    /**
+     * 组织 -> 组织树 vo
+     *
+     * @param organization 组织
+     * @return 组织树 vo
+     */
+    OrganizationTreeVO toOrganizationTreeVO(Organization organization);
 }

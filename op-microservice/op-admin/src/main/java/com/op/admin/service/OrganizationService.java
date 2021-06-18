@@ -42,5 +42,5 @@ public interface OrganizationService {
      * @param queryDTO 查询对象
      * @return 组织树 vo
      */
-    OrganizationTreeVO queryTreeList(OrganizationListQueryDTO queryDTO);
+    OrganizationTreeVO queryTree(OrganizationListQueryDTO queryDTO);
 }

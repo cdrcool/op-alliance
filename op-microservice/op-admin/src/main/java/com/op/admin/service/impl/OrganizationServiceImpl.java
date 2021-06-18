@@ -2,15 +2,24 @@ package com.op.admin.service.impl;
 
 import com.op.admin.dto.OrganizationListQueryDTO;
 import com.op.admin.dto.OrganizationSaveDTO;
+import com.op.admin.entity.Menu;
 import com.op.admin.entity.Organization;
 import com.op.admin.mapper.OrganizationMapper;
 import com.op.admin.mapping.OrganizationMapping;
 import com.op.admin.service.OrganizationService;
+import com.op.admin.utils.TreeUtils;
+import com.op.admin.vo.MenuTreeVO;
 import com.op.admin.vo.OrganizationTreeVO;
 import com.op.admin.vo.OrganizationVO;
 import com.op.framework.web.common.api.response.exception.BusinessException;
+import org.apache.commons.collections4.CollectionUtils;
+import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 组织 Service Impl
@@ -56,7 +65,10 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public OrganizationTreeVO queryTreeList(OrganizationListQueryDTO queryDTO) {
-        return null;
+    public OrganizationTreeVO queryTree(OrganizationListQueryDTO queryDTO) {
+        List<Organization> organizations = organizationMapper.select(SelectDSLCompleter.allRows());
+        List<OrganizationTreeVO> organizationTreeVOList = TreeUtils.buildTree(organizations, organizationMapping::toOrganizationTreeVO, OrganizationTreeVO::getPid, OrganizationTreeVO::getId,
+                (menu, children) -> menu.setChildren(children.stream().sorted(Comparator.comparing(OrganizationTreeVO::getOrgCode)).collect(Collectors.toList())), -1);
+        return organizationTreeVOList.get(0);
     }
 }
