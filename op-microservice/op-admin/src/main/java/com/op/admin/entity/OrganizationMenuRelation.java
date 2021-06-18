@@ -13,16 +13,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class RoleResourceActionRelation extends BaseEntity {
+public class OrganizationMenuRelation extends BaseEntity {
     /**
-     * 角色id
+     * 组织id
      */
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Integer roleId;
+    private Integer orgId;
 
     /**
-     * 资源动作id
+     * 菜单id
      */
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Integer actionId;
+    private Integer menuId;
 }

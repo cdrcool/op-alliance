@@ -1,5 +1,6 @@
 package com.op.admin.controller;
 
+import com.op.admin.dto.MenuAssignDTO;
 import com.op.admin.dto.ResourceAssignDTO;
 import com.op.admin.dto.RolePageQueryDTO;
 import com.op.admin.dto.RoleSaveDTO;
@@ -65,5 +66,11 @@ public class RoleController {
     @PostMapping("assignResources")
     public void assignResources(@Valid @RequestBody ResourceAssignDTO resourceAssignDTO){
         roleService.assignResources(resourceAssignDTO.getId(), resourceAssignDTO.getResourceIds());
+    }
+
+    @ApiOperation("分配菜单")
+    @PostMapping("assignMenus")
+    public void assignMenus(@Valid @RequestBody MenuAssignDTO menuAssignDTO){
+        roleService.assignMenus(menuAssignDTO.getId(), menuAssignDTO.getMenuIds());
     }
 }

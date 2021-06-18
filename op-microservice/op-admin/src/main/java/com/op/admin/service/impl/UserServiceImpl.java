@@ -6,6 +6,7 @@ import com.op.admin.dto.UserCreateDTO;
 import com.op.admin.dto.UserPageQueryDTO;
 import com.op.admin.dto.UserUpdateDTO;
 import com.op.admin.entity.User;
+import com.op.admin.entity.UserMenuRelation;
 import com.op.admin.entity.UserResourceActionRelation;
 import com.op.admin.entity.UserRoleRelation;
 import com.op.admin.mapper.*;
@@ -50,14 +51,17 @@ public class UserServiceImpl implements UserService {
     private final UserMapping userMapping;
     private final UserRoleRelationMapper userRoleRelationMapper;
     private final UserResourceActionRelationMapper userResourceActionRelationMapper;
+    private final UserMenuRelationMapper userMenuRelationMapper;
 
     public UserServiceImpl(UserMapper userMapper, UserMapping userMapping,
                            UserRoleRelationMapper userRoleRelationMapper,
-                           UserResourceActionRelationMapper userResourceActionRelationMapper) {
+                           UserResourceActionRelationMapper userResourceActionRelationMapper,
+                           UserMenuRelationMapper userMenuRelationMapper) {
         this.userMapper = userMapper;
         this.userMapping = userMapping;
         this.userRoleRelationMapper = userRoleRelationMapper;
         this.userResourceActionRelationMapper = userResourceActionRelationMapper;
+        this.userMenuRelationMapper = userMenuRelationMapper;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -236,6 +240,40 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void assignMenus(Integer id, List<Integer> menuIds) {
+        // 获取已建立关联的菜单ids
+        SelectStatementProvider selectStatementProvider = select(UserMenuRelationDynamicSqlSupport.menuId)
+                .from(UserMenuRelationDynamicSqlSupport.userMenuRelation)
+                .where(UserMenuRelationDynamicSqlSupport.userId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        List<Integer> preMenuIds = userMenuRelationMapper.selectMany(selectStatementProvider).stream()
+                .map(UserMenuRelation::getMenuId).collect(Collectors.toList());
 
+        // 获取要新建关联的菜单ids
+        List<Integer> toAddMenuIds = menuIds.stream()
+                .filter(menuId -> !preMenuIds.contains(menuId)).collect(Collectors.toList());
+
+        // 获取要删除关联的菜单ids
+        List<Integer> toDelMenuIds = preMenuIds.stream()
+                .filter(menuId -> !menuIds.contains(menuId)).collect(Collectors.toList());
+
+        // 插入要新建的角色-菜单关联
+        List<UserMenuRelation> relations = toAddMenuIds.stream()
+                .map(menuId -> {
+                    UserMenuRelation relation = new UserMenuRelation();
+                    relation.setUserId(id);
+                    relation.setMenuId(menuId);
+
+                    return relation;
+                }).collect(Collectors.toList());
+        relations.forEach(userMenuRelationMapper::insert);
+
+        // 删除要删除的角色-菜单关联
+        if (!CollectionUtils.isEmpty(toDelMenuIds)) {
+            DeleteStatementProvider deleteStatementProvider = deleteFrom(UserMenuRelationDynamicSqlSupport.userMenuRelation)
+                    .where(UserMenuRelationDynamicSqlSupport.userId, isEqualTo(id))
+                    .and(UserMenuRelationDynamicSqlSupport.menuId, isIn(toDelMenuIds))
+                    .build().render(RenderingStrategies.MYBATIS3);
+            userMenuRelationMapper.delete(deleteStatementProvider);
+        }
     }
 }

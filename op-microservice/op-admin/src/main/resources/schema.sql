@@ -327,3 +327,75 @@ CREATE TABLE `admin_user_group_resource_action_relation`
     `tenant_id`        varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
     UNIQUE INDEX `group_id_action_id_index`(`group_id`, `action_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户组-资源动作关联' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for admin_organization_menu_action_relation
+-- ----------------------------
+DROP TABLE IF EXISTS `admin_organization_menu_relation`;
+CREATE TABLE `admin_organization_menu_relation`
+(
+    `org_id`           int NULL DEFAULT NULL COMMENT '组织id',
+    `menu_id`        int NULL DEFAULT NULL COMMENT '菜单id',
+    `version`          int NULL DEFAULT NULL COMMENT '版本号',
+    `deleted`          tinyint(1) NULL DEFAULT NULL COMMENT '是否逻辑删除',
+    `creator_id`       int NULL DEFAULT NULL COMMENT '创建人id',
+    `create_time`      datetime NULL DEFAULT NULL COMMENT '创建时间',
+    `last_modifier_id` int NULL DEFAULT NULL COMMENT '最后修改人id',
+    `last_modify_time` datetime NULL DEFAULT NULL COMMENT '最后修改时间',
+    `tenant_id`        varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
+    UNIQUE INDEX `org_id_menu_id_index`(`org_id`, `menu_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '组织-菜单关联' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for admin_user_menu_relation
+-- ----------------------------
+DROP TABLE IF EXISTS `admin_user_menu_relation`;
+CREATE TABLE `admin_user_menu_relation`
+(
+    `user_id`          int NULL DEFAULT NULL COMMENT '用户id',
+    `menu_id`        int NULL DEFAULT NULL COMMENT '菜单id',
+    `version`          int NULL DEFAULT NULL COMMENT '版本号',
+    `deleted`          tinyint(1) NULL DEFAULT NULL COMMENT '是否逻辑删除',
+    `creator_id`       int NULL DEFAULT NULL COMMENT '创建人id',
+    `create_time`      datetime NULL DEFAULT NULL COMMENT '创建时间',
+    `last_modifier_id` int NULL DEFAULT NULL COMMENT '最后修改人id',
+    `last_modify_time` datetime NULL DEFAULT NULL COMMENT '最后修改时间',
+    `tenant_id`        varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
+    UNIQUE INDEX `user_id_menu_id_index`(`user_id`, `menu_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户-菜单关联' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for admin_role_menu_relation
+-- ----------------------------
+DROP TABLE IF EXISTS `admin_role_menu_relation`;
+CREATE TABLE `admin_role_menu_relation`
+(
+    `role_id`          int         DEFAULT NULL COMMENT '角色id',
+    `menu_id`        int         DEFAULT NULL COMMENT '菜单id',
+    `version`          int         DEFAULT NULL COMMENT '版本号',
+    `deleted`          tinyint(1) DEFAULT NULL COMMENT '是否逻辑删除',
+    `creator_id`       int         DEFAULT NULL COMMENT '创建人id',
+    `create_time`      datetime    DEFAULT NULL COMMENT '创建时间',
+    `last_modifier_id` int         DEFAULT NULL COMMENT '最后修改人id',
+    `last_modify_time` datetime    DEFAULT NULL COMMENT '最后修改时间',
+    `tenant_id`        varchar(10) DEFAULT NULL COMMENT '租户id',
+    UNIQUE KEY `role_id_menu_id_index` (`role_id`,`menu_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='角色-菜单关联' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for admin_user_group_menu_relation
+-- ----------------------------
+DROP TABLE IF EXISTS `admin_user_group_menu_relation`;
+CREATE TABLE `admin_user_group_menu_relation`
+(
+    `group_id`         int NULL DEFAULT NULL COMMENT '用户组id',
+    `menu_id`        int NULL DEFAULT NULL COMMENT '菜单id',
+    `version`          int NULL DEFAULT NULL COMMENT '版本号',
+    `deleted`          tinyint(1) NULL DEFAULT NULL COMMENT '是否逻辑删除',
+    `creator_id`       int NULL DEFAULT NULL COMMENT '创建人id',
+    `create_time`      datetime NULL DEFAULT NULL COMMENT '创建时间',
+    `last_modifier_id` int NULL DEFAULT NULL COMMENT '最后修改人id',
+    `last_modify_time` datetime NULL DEFAULT NULL COMMENT '最后修改时间',
+    `tenant_id`        varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
+    UNIQUE INDEX `group_id_menu_id_index`(`group_id`, `menu_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户组-菜单关联' ROW_FORMAT = Dynamic;

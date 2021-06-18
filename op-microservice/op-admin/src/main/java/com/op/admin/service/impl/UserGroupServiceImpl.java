@@ -3,8 +3,8 @@ package com.op.admin.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.op.admin.dto.UserGroupPageQueryDTO;
 import com.op.admin.dto.UserGroupSaveDTO;
-import com.op.admin.entity.OrganizationRoleRelation;
 import com.op.admin.entity.UserGroup;
+import com.op.admin.entity.UserGroupMenuRelation;
 import com.op.admin.entity.UserGroupResourceActionRelation;
 import com.op.admin.entity.UserGroupRoleRelation;
 import com.op.admin.mapper.*;
@@ -40,14 +40,17 @@ public class UserGroupServiceImpl implements UserGroupService {
     private final UserGroupMapping userGroupMapping;
     private final UserGroupRoleRelationMapper userGroupRoleRelationMapper;
     private final UserGroupResourceActionRelationMapper userGroupResourceActionRelationMapper;
+    private final UserGroupMenuRelationMapper userGroupMenuRelationMapper;
 
     public UserGroupServiceImpl(UserGroupMapper userGroupMapper, UserGroupMapping userGroupMapping,
                                 UserGroupRoleRelationMapper userGroupRoleRelationMapper,
-                                UserGroupResourceActionRelationMapper userGroupResourceActionRelationMapper) {
+                                UserGroupResourceActionRelationMapper userGroupResourceActionRelationMapper,
+                                UserGroupMenuRelationMapper userGroupMenuRelationMapper) {
         this.userGroupMapper = userGroupMapper;
         this.userGroupMapping = userGroupMapping;
         this.userGroupRoleRelationMapper = userGroupRoleRelationMapper;
         this.userGroupResourceActionRelationMapper = userGroupResourceActionRelationMapper;
+        this.userGroupMenuRelationMapper = userGroupMenuRelationMapper;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -183,6 +186,40 @@ public class UserGroupServiceImpl implements UserGroupService {
 
     @Override
     public void assignMenus(Integer id, List<Integer> menuIds) {
+        // 获取已建立关联的菜单ids
+        SelectStatementProvider selectStatementProvider = select(UserGroupMenuRelationDynamicSqlSupport.menuId)
+                .from(UserGroupMenuRelationDynamicSqlSupport.userGroupMenuRelation)
+                .where(UserGroupMenuRelationDynamicSqlSupport.groupId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        List<Integer> preMenuIds = userGroupMenuRelationMapper.selectMany(selectStatementProvider).stream()
+                .map(UserGroupMenuRelation::getMenuId).collect(Collectors.toList());
 
+        // 获取要新建关联的菜单ids
+        List<Integer> toAddMenuIds = menuIds.stream()
+                .filter(menuId -> !preMenuIds.contains(menuId)).collect(Collectors.toList());
+
+        // 获取要删除关联的菜单ids
+        List<Integer> toDelMenuIds = preMenuIds.stream()
+                .filter(menuId -> !menuIds.contains(menuId)).collect(Collectors.toList());
+
+        // 插入要新建的用户组-菜单关联
+        List<UserGroupMenuRelation> relations = toAddMenuIds.stream()
+                .map(menuId -> {
+                    UserGroupMenuRelation relation = new UserGroupMenuRelation();
+                    relation.setGroupId(id);
+                    relation.setMenuId(menuId);
+
+                    return relation;
+                }).collect(Collectors.toList());
+        relations.forEach(userGroupMenuRelationMapper::insert);
+
+        // 删除要删除的用户组-菜单关联
+        if (!CollectionUtils.isEmpty(toDelMenuIds)) {
+            DeleteStatementProvider deleteStatementProvider = deleteFrom(UserGroupMenuRelationDynamicSqlSupport.userGroupMenuRelation)
+                    .where(UserGroupMenuRelationDynamicSqlSupport.groupId, isEqualTo(id))
+                    .and(UserGroupMenuRelationDynamicSqlSupport.menuId, isIn(toDelMenuIds))
+                    .build().render(RenderingStrategies.MYBATIS3);
+            userGroupMenuRelationMapper.delete(deleteStatementProvider);
+        }
     }
 }

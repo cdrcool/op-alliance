@@ -67,4 +67,10 @@ public class OrganizationController {
     public void assignResources(@Valid @RequestBody ResourceAssignDTO resourceAssignDTO){
         organizationService.assignRoles(resourceAssignDTO.getId(), resourceAssignDTO.getResourceIds());
     }
+
+    @ApiOperation("分配菜单")
+    @PostMapping("assignMenus")
+    public void assignMenus(@Valid @RequestBody MenuAssignDTO menuAssignDTO){
+        organizationService.assignMenus(menuAssignDTO.getId(), menuAssignDTO.getMenuIds());
+    }
 }

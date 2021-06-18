@@ -82,4 +82,10 @@ public class UserController {
     public void assignResources(@Valid @RequestBody ResourceAssignDTO resourceAssignDTO){
         userService.assignRoles(resourceAssignDTO.getId(), resourceAssignDTO.getResourceIds());
     }
+
+    @ApiOperation("分配菜单")
+    @PostMapping("assignMenus")
+    public void assignMenus(@Valid @RequestBody MenuAssignDTO menuAssignDTO){
+        userService.assignMenus(menuAssignDTO.getId(), menuAssignDTO.getMenuIds());
+    }
 }

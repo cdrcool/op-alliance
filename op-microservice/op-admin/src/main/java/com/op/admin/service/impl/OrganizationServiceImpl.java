@@ -3,9 +3,7 @@ package com.op.admin.service.impl;
 import com.op.admin.dto.OrganizationListQueryDTO;
 import com.op.admin.dto.OrganizationSaveDTO;
 import com.op.admin.dto.OrganizationTreeQueryDTO;
-import com.op.admin.entity.Organization;
-import com.op.admin.entity.OrganizationResourceActionRelation;
-import com.op.admin.entity.OrganizationRoleRelation;
+import com.op.admin.entity.*;
 import com.op.admin.mapper.*;
 import com.op.admin.mapping.OrganizationMapping;
 import com.op.admin.service.OrganizationService;
@@ -38,14 +36,17 @@ public class OrganizationServiceImpl implements OrganizationService {
     private final OrganizationMapping organizationMapping;
     private final OrganizationRoleRelationMapper organizationRoleRelationMapper;
     private final OrganizationResourceActionRelationMapper organizationResourceActionRelationMapper;
+    private final OrganizationMenuRelationMapper organizationMenuRelationMapper;
 
     public OrganizationServiceImpl(OrganizationMapper organizationMapper, OrganizationMapping organizationMapping,
                                    OrganizationRoleRelationMapper organizationRoleRelationMapper,
-                                   OrganizationResourceActionRelationMapper organizationResourceActionRelationMapper) {
+                                   OrganizationResourceActionRelationMapper organizationResourceActionRelationMapper,
+                                   OrganizationMenuRelationMapper organizationMenuRelationMapper) {
         this.organizationMapper = organizationMapper;
         this.organizationMapping = organizationMapping;
         this.organizationRoleRelationMapper = organizationRoleRelationMapper;
         this.organizationResourceActionRelationMapper = organizationResourceActionRelationMapper;
+        this.organizationMenuRelationMapper = organizationMenuRelationMapper;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -215,6 +216,40 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     public void assignMenus(Integer id, List<Integer> menuIds) {
+        // 获取已建立关联的菜单ids
+        SelectStatementProvider selectStatementProvider = select(OrganizationMenuRelationDynamicSqlSupport.menuId)
+                .from(OrganizationMenuRelationDynamicSqlSupport.organizationMenuRelation)
+                .where(OrganizationMenuRelationDynamicSqlSupport.orgId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        List<Integer> preMenuIds = organizationMenuRelationMapper.selectMany(selectStatementProvider).stream()
+                .map(OrganizationMenuRelation::getMenuId).collect(Collectors.toList());
 
+        // 获取要新建关联的菜单ids
+        List<Integer> toAddMenuIds = menuIds.stream()
+                .filter(menuId -> !preMenuIds.contains(menuId)).collect(Collectors.toList());
+
+        // 获取要删除关联的菜单ids
+        List<Integer> toDelMenuIds = preMenuIds.stream()
+                .filter(menuId -> !menuIds.contains(menuId)).collect(Collectors.toList());
+
+        // 插入要新建的角色-菜单关联
+        List<OrganizationMenuRelation> relations = toAddMenuIds.stream()
+                .map(menuId -> {
+                    OrganizationMenuRelation relation = new OrganizationMenuRelation();
+                    relation.setOrgId(id);
+                    relation.setMenuId(menuId);
+
+                    return relation;
+                }).collect(Collectors.toList());
+        relations.forEach(organizationMenuRelationMapper::insert);
+
+        // 删除要删除的角色-菜单关联
+        if (!CollectionUtils.isEmpty(toDelMenuIds)) {
+            DeleteStatementProvider deleteStatementProvider = deleteFrom(OrganizationMenuRelationDynamicSqlSupport.organizationMenuRelation)
+                    .where(OrganizationMenuRelationDynamicSqlSupport.orgId, isEqualTo(id))
+                    .and(OrganizationMenuRelationDynamicSqlSupport.menuId, isIn(toDelMenuIds))
+                    .build().render(RenderingStrategies.MYBATIS3);
+            organizationMenuRelationMapper.delete(deleteStatementProvider);
+        }
     }
 }

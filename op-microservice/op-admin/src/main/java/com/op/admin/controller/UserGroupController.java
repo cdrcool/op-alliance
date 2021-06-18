@@ -1,9 +1,6 @@
 package com.op.admin.controller;
 
-import com.op.admin.dto.ResourceAssignDTO;
-import com.op.admin.dto.RoleAssignDTO;
-import com.op.admin.dto.UserGroupPageQueryDTO;
-import com.op.admin.dto.UserGroupSaveDTO;
+import com.op.admin.dto.*;
 import com.op.admin.service.UserGroupService;
 import com.op.admin.vo.UserGroupVO;
 import io.swagger.annotations.Api;
@@ -15,7 +12,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 /**
  * 用户组 Controller
@@ -65,13 +61,13 @@ public class UserGroupController {
 
     @ApiOperation("分配资源")
     @PostMapping("assignResources")
-    public void assignResources(@Valid @RequestBody ResourceAssignDTO resourceAssignDTO){
+    public void assignResources(@Valid @RequestBody ResourceAssignDTO resourceAssignDTO) {
         userGroupService.assignRoles(resourceAssignDTO.getId(), resourceAssignDTO.getResourceIds());
     }
 
     @ApiOperation("分配菜单")
     @PostMapping("assignMenus")
-    public void assignMenus(Integer id, List<Integer> menuIds){
-
+    public void assignMenus(@Valid @RequestBody MenuAssignDTO menuAssignDTO) {
+        userGroupService.assignMenus(menuAssignDTO.getId(), menuAssignDTO.getMenuIds());
     }
 }
