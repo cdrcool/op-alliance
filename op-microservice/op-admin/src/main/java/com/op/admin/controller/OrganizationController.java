@@ -1,7 +1,6 @@
 package com.op.admin.controller;
 
-import com.op.admin.dto.OrganizationListQueryDTO;
-import com.op.admin.dto.OrganizationSaveDTO;
+import com.op.admin.dto.*;
 import com.op.admin.service.OrganizationService;
 import com.op.admin.vo.OrganizationTreeVO;
 import com.op.admin.vo.OrganizationVO;
@@ -10,6 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 组织 Controller
@@ -46,7 +46,25 @@ public class OrganizationController {
 
     @ApiOperation("查询组织树")
     @PostMapping("queryTree")
-    public OrganizationTreeVO queryTree(@Valid @RequestBody OrganizationListQueryDTO queryDTO) {
+    public OrganizationTreeVO queryTree(@Valid @RequestBody OrganizationTreeQueryDTO queryDTO) {
         return organizationService.queryTree(queryDTO);
+    }
+
+    @ApiOperation("查询组织列表")
+    @PostMapping("queryList")
+    public List<OrganizationVO> queryList(@Valid @RequestBody OrganizationListQueryDTO queryDTO) {
+        return organizationService.queryList(queryDTO);
+    }
+
+    @ApiOperation("分配角色")
+    @PostMapping("assignRoles")
+    public void assignRoles(@Valid @RequestBody RoleAssignDTO roleAssignDTO) {
+        organizationService.assignRoles(roleAssignDTO.getId(), roleAssignDTO.getRoleIds());
+    }
+
+    @ApiOperation("分配资源")
+    @PostMapping("assignResources")
+    public void assignResources(@Valid @RequestBody ResourceAssignDTO resourceAssignDTO){
+        organizationService.assignRoles(resourceAssignDTO.getId(), resourceAssignDTO.getResourceIds());
     }
 }

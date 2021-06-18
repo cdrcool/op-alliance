@@ -1,6 +1,6 @@
 package com.op.admin.controller;
 
-import com.op.admin.dto.ResourceCategoryListQueryDTO;
+import com.op.admin.dto.ResourceCategoryPageQueryDTO;
 import com.op.admin.dto.ResourceCategorySaveDTO;
 import com.op.admin.service.ResourceCategoryService;
 import com.op.admin.vo.ResourceCategoryVO;
@@ -50,7 +50,7 @@ public class ResourceCategoryController {
     @ApiOperation("分页查询资源分类")
     @PostMapping("page")
     public Page<ResourceCategoryVO> queryPage(@PageableDefault(sort = "categoryNo", direction = Sort.Direction.ASC) Pageable pageable,
-                                      @Valid @RequestBody ResourceCategoryListQueryDTO queryDTO) {
+                                      @Valid @RequestBody ResourceCategoryPageQueryDTO queryDTO) {
         return resourceCategoryService.queryPage(pageable, queryDTO);
     }
 }

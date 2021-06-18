@@ -1,6 +1,8 @@
 package com.op.admin.controller;
 
-import com.op.admin.dto.UserGroupListQueryDTO;
+import com.op.admin.dto.ResourceAssignDTO;
+import com.op.admin.dto.RoleAssignDTO;
+import com.op.admin.dto.UserGroupPageQueryDTO;
 import com.op.admin.dto.UserGroupSaveDTO;
 import com.op.admin.service.UserGroupService;
 import com.op.admin.vo.UserGroupVO;
@@ -13,6 +15,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 用户组 Controller
@@ -50,7 +53,25 @@ public class UserGroupController {
     @ApiOperation("分页查询用户组")
     @PostMapping("page")
     public Page<UserGroupVO> queryPage(@PageableDefault(sort = "groupNo", direction = Sort.Direction.ASC) Pageable pageable,
-                                       @Valid @RequestBody UserGroupListQueryDTO queryDTO) {
+                                       @Valid @RequestBody UserGroupPageQueryDTO queryDTO) {
         return userGroupService.queryPage(pageable, queryDTO);
+    }
+
+    @ApiOperation("分配角色")
+    @PostMapping("assignRoles")
+    public void assignRoles(@Valid @RequestBody RoleAssignDTO roleAssignDTO) {
+        userGroupService.assignRoles(roleAssignDTO.getId(), roleAssignDTO.getRoleIds());
+    }
+
+    @ApiOperation("分配资源")
+    @PostMapping("assignResources")
+    public void assignResources(@Valid @RequestBody ResourceAssignDTO resourceAssignDTO){
+        userGroupService.assignRoles(resourceAssignDTO.getId(), resourceAssignDTO.getResourceIds());
+    }
+
+    @ApiOperation("分配菜单")
+    @PostMapping("assignMenus")
+    public void assignMenus(Integer id, List<Integer> menuIds){
+
     }
 }

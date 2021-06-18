@@ -5,13 +5,13 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * 资源分类列表查询 DTO
+ * 资源分类分页查询 DTO
  *
  * @author cdrcool
  */
-@ApiModel(description = "资源分类列表查询 DTO")
+@ApiModel(description = "资源分类分页查询 DTO")
 @Data
-public class ResourceCategoryListQueryDTO {
+public class ResourceCategoryPageQueryDTO {
     @ApiModelProperty("搜索文本（根据分类名称或服务名称查询）")
     private String searchText;
 }

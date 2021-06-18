@@ -1,8 +1,7 @@
 package com.op.admin.service;
 
-import com.op.admin.dto.RoleListQueryDTO;
+import com.op.admin.dto.RolePageQueryDTO;
 import com.op.admin.dto.RoleSaveDTO;
-import com.op.admin.vo.RoleTreeVO;
 import com.op.admin.vo.RoleVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,7 +44,7 @@ public interface RoleService {
      * @param queryDTO 查询对象
      * @return 角色 vo 分页列表
      */
-    Page<RoleVO> queryPage(Pageable pageable, RoleListQueryDTO queryDTO);
+    Page<RoleVO> queryPage(Pageable pageable, RolePageQueryDTO queryDTO);
 
     /**
      * 启用/禁用角色
@@ -54,4 +53,20 @@ public interface RoleService {
      * @param enable 启用 or 禁用
      */
     void changeEnabled(Integer id, boolean enable);
+
+    /**
+     * 分配资源
+
+     * @param id 角色id
+     * @param resourceActionIds 资源动作 ids
+     */
+    void assignResources(Integer id, List<Integer> resourceActionIds);
+
+    /**
+     * 分配菜单
+     *
+     * @param id 角色id
+     * @param menuIds 菜单 ids
+     */
+    void assignMenus(Integer id, List<Integer> menuIds);
 }

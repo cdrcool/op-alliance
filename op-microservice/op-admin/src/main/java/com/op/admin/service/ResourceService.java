@@ -1,12 +1,10 @@
 package com.op.admin.service;
 
-import com.op.admin.dto.ResourceListQueryDTO;
+import com.op.admin.dto.ResourcePageQueryDTO;
 import com.op.admin.dto.ResourceSaveDTO;
 import com.op.admin.vo.ResourceVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
 
 /**
  * 资源 Service
@@ -51,5 +49,5 @@ public interface ResourceService {
      * @param queryDTO 查询对象
      * @return 资源 vo 分页列表
      */
-    Page<ResourceVO> queryPage(Pageable pageable, ResourceListQueryDTO queryDTO);
+    Page<ResourceVO> queryPage(Pageable pageable, ResourcePageQueryDTO queryDTO);
 }

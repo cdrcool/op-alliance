@@ -1,10 +1,12 @@
 package com.op.admin.service;
 
-import com.op.admin.dto.UserGroupListQueryDTO;
+import com.op.admin.dto.UserGroupPageQueryDTO;
 import com.op.admin.dto.UserGroupSaveDTO;
 import com.op.admin.vo.UserGroupVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 /**
  * 用户组 Service
@@ -42,5 +44,29 @@ public interface UserGroupService {
      * @param queryDTO 查询对象
      * @return 用户组 vo 分页列表
      */
-    Page<UserGroupVO> queryPage(Pageable pageable, UserGroupListQueryDTO queryDTO);
+    Page<UserGroupVO> queryPage(Pageable pageable, UserGroupPageQueryDTO queryDTO);
+
+    /**
+     * 分配角色
+     *
+     * @param id 用户组id
+     * @param roleIds 角色 ids
+     */
+    void assignRoles(Integer id, List<Integer> roleIds);
+
+    /**
+     * 分配资源
+     *
+     * @param id 用户组id
+     * @param resourceActionIds 资源动作 ids
+     */
+    void assignResources(Integer id, List<Integer> resourceActionIds);
+
+    /**
+     * 分配菜单
+     *
+     * @param id 用户组id
+     * @param menuIds 菜单 ids
+     */
+    void assignMenus(Integer id, List<Integer> menuIds);
 }

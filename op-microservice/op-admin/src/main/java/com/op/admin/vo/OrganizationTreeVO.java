@@ -32,7 +32,7 @@ public class OrganizationTreeVO extends BaseVo {
     @ApiModelProperty("组织编码链（从根组织到当前组织的编码链，用于快速查询）")
     private String orgCodeLink;
 
-    @ApiModelProperty("组织类型")
+    @ApiModelProperty("组织类型（1-集团；2-公司；3-分公司；4-项目部；5-部门）")
     private Integer orgType;
 
     @ApiModelProperty("下级组织列表")

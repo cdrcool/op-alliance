@@ -3,7 +3,11 @@ package com.op.admin.service.impl;
 import com.op.admin.dto.MenuListQueryDTO;
 import com.op.admin.dto.MenuSaveDTO;
 import com.op.admin.entity.Menu;
+import com.op.admin.entity.Organization;
 import com.op.admin.mapper.MenuDynamicSqlSupport;
+import com.op.admin.mapper.MenuMapper;
+import com.op.admin.mapper.OrganizationDynamicSqlSupport;
+import com.op.admin.mapper.OrganizationMapper;
 import com.op.admin.mapper.extend.MenuMapperExtend;
 import com.op.admin.mapping.MenuMapping;
 import com.op.admin.service.MenuService;
@@ -15,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +28,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 /**
  * 菜单 Service Impl
@@ -60,15 +65,16 @@ public class MenuServiceImpl implements MenuService {
      * 设置菜单 pid、parentIds、menuLevel 等属性
      *
      * @param menu 菜单
-     * @param pid  上级菜单id
+     * @param pid  父菜单id
      */
     private void setMenuProps(Menu menu, Integer pid) {
         if (pid == null) {
             menu.setPid(-1);
             menu.setParentIds("");
             menu.setMenuLevel(1);
-        } else {
-            Menu pMenu = menuMapper.selectByPrimaryKey(pid).orElseThrow(() -> new BusinessException("找不到父菜单，父菜单id：" + pid));
+        } else if (!pid.equals(menu.getPid())) {
+            Menu pMenu = menuMapper.selectByPrimaryKey(pid)
+                    .orElseThrow(() -> new BusinessException("找不到父菜单，父菜单id：" + pid));
             String parentIds = pMenu.getParentIds();
             parentIds = StringUtils.isNoneBlank(parentIds) ? parentIds + "," + pid : String.valueOf(pid);
             menu.setParentIds(parentIds);
@@ -91,10 +97,24 @@ public class MenuServiceImpl implements MenuService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<MenuTreeVO> queryTreeList(MenuListQueryDTO queryDTO) {
+    public List<MenuTreeVO> queryTreeList() {
         List<Menu> menus = menuMapper.select(SelectDSLCompleter.allRows());
         return TreeUtils.buildTree(menus, menuMapping::toMenuTreeVO, MenuTreeVO::getPid, MenuTreeVO::getId,
                 (menu, children) -> menu.setChildren(children.stream().sorted(Comparator.comparing(MenuTreeVO::getMenuNo)).collect(Collectors.toList())), -1);
+    }
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public List<MenuVO> queryList(MenuListQueryDTO queryDTO) {
+        SelectStatementProvider selectStatementProvider = select(MenuMapper.selectList)
+                .from(MenuDynamicSqlSupport.menu)
+                .where(MenuDynamicSqlSupport.menuName, isLikeWhenPresent(queryDTO.getSearchText()),
+                        or(MenuDynamicSqlSupport.menuCode, isLikeWhenPresent(queryDTO.getSearchText())),
+                        or(MenuDynamicSqlSupport.menuRoute, isLikeWhenPresent(queryDTO.getSearchText())))
+                .build().render(RenderingStrategies.MYBATIS3);
+        List<Menu> menus = menuMapper.selectMany(selectStatementProvider);
+
+        return menuMapping.toMenuVOList(menus);
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)

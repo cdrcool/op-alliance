@@ -3,19 +3,22 @@ package com.op.admin.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.op.admin.dto.UserChangePasswordDTO;
 import com.op.admin.dto.UserCreateDTO;
-import com.op.admin.dto.UserListQueryDTO;
+import com.op.admin.dto.UserPageQueryDTO;
 import com.op.admin.dto.UserUpdateDTO;
 import com.op.admin.entity.User;
-import com.op.admin.mapper.UserDynamicSqlSupport;
-import com.op.admin.mapper.UserMapper;
+import com.op.admin.entity.UserResourceActionRelation;
+import com.op.admin.entity.UserRoleRelation;
+import com.op.admin.mapper.*;
 import com.op.admin.mapping.UserMapping;
 import com.op.admin.service.UserService;
 import com.op.admin.utils.BCryptPasswordEncoder;
 import com.op.admin.utils.PasswordGenerator;
 import com.op.admin.vo.UserVO;
 import com.op.framework.web.common.api.response.exception.BusinessException;
+import org.apache.commons.collections4.CollectionUtils;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlBuilder;
+import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SimpleSortSpecification;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -25,6 +28,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
@@ -42,10 +48,16 @@ public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
     private final UserMapping userMapping;
+    private final UserRoleRelationMapper userRoleRelationMapper;
+    private final UserResourceActionRelationMapper userResourceActionRelationMapper;
 
-    public UserServiceImpl(UserMapper userMapper, UserMapping userMapping) {
+    public UserServiceImpl(UserMapper userMapper, UserMapping userMapping,
+                           UserRoleRelationMapper userRoleRelationMapper,
+                           UserResourceActionRelationMapper userResourceActionRelationMapper) {
         this.userMapper = userMapper;
         this.userMapping = userMapping;
+        this.userRoleRelationMapper = userRoleRelationMapper;
+        this.userResourceActionRelationMapper = userResourceActionRelationMapper;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -102,7 +114,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public Page<UserVO> queryPage(Pageable pageable, UserListQueryDTO queryDTO) {
+    public Page<UserVO> queryPage(Pageable pageable, UserPageQueryDTO queryDTO) {
         SortSpecification[] specifications = pageable.getSort().stream()
                 .map(order -> {
                     SortSpecification specification = SimpleSortSpecification.of(order.getProperty());
@@ -142,5 +154,88 @@ public class UserServiceImpl implements UserService {
                 .render(RenderingStrategies.MYBATIS3);
 
         userMapper.update(updateStatement);
+    }
+
+    @Override
+    public void assignRoles(Integer id, List<Integer> roleIds) {
+        // 获取已建立关联的角色ids
+        SelectStatementProvider selectStatementProvider = select(UserRoleRelationDynamicSqlSupport.roleId)
+                .from(UserRoleRelationDynamicSqlSupport.userRoleRelation)
+                .where(UserRoleRelationDynamicSqlSupport.userId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        List<Integer> preRoleIds = userRoleRelationMapper.selectMany(selectStatementProvider).stream()
+                .map(UserRoleRelation::getRoleId).collect(Collectors.toList());
+
+        // 获取要新建关联的角色ids
+        List<Integer> toAddRoleIds = roleIds.stream()
+                .filter(roleId -> !preRoleIds.contains(roleId)).collect(Collectors.toList());
+
+        // 获取要删除关联的角色ids
+        List<Integer> toDelRoleIds = preRoleIds.stream()
+                .filter(actionId -> !roleIds.contains(actionId)).collect(Collectors.toList());
+
+        // 插入要新建的用户-角色关联
+        List<UserRoleRelation> relations = toAddRoleIds.stream()
+                .map(roleId -> {
+                    UserRoleRelation relation = new UserRoleRelation();
+                    relation.setUserId(id);
+                    relation.setRoleId(roleId);
+
+                    return relation;
+                }).collect(Collectors.toList());
+        relations.forEach(userRoleRelationMapper::insert);
+
+        // 删除要删除的用户-角色关联
+        if (!CollectionUtils.isEmpty(toDelRoleIds)) {
+            DeleteStatementProvider deleteStatementProvider = deleteFrom(UserRoleRelationDynamicSqlSupport.userRoleRelation)
+                    .where(UserRoleRelationDynamicSqlSupport.userId, isEqualTo(id))
+                    .and(UserRoleRelationDynamicSqlSupport.roleId, isIn(toDelRoleIds))
+                    .build().render(RenderingStrategies.MYBATIS3);
+            userRoleRelationMapper.delete(deleteStatementProvider);
+        }
+    }
+
+    @Override
+    public void assignResources(Integer id, List<Integer> resourceActionIds) {
+        // 获取已建立关联的资源动作ids
+        SelectStatementProvider selectStatementProvider = select(UserResourceActionRelationDynamicSqlSupport.actionId)
+                .from(UserResourceActionRelationDynamicSqlSupport.userResourceActionRelation)
+                .where(UserResourceActionRelationDynamicSqlSupport.userId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        List<Integer> preActionIds = userResourceActionRelationMapper.selectMany(selectStatementProvider).stream()
+                .map(UserResourceActionRelation::getActionId).collect(Collectors.toList());
+
+        // 获取要新建关联的资源动作ids
+        List<Integer> toAddActionIds = resourceActionIds.stream()
+                .filter(actionId -> !preActionIds.contains(actionId)).collect(Collectors.toList());
+
+        // 获取要删除关联的资源动作ids
+        List<Integer> toDelActionIds = preActionIds.stream()
+                .filter(actionId -> !resourceActionIds.contains(actionId)).collect(Collectors.toList());
+
+        // 插入要新建的用户-资源动作关联
+        List<UserResourceActionRelation> relations = toAddActionIds.stream()
+                .map(actionId -> {
+                    UserResourceActionRelation relation = new UserResourceActionRelation();
+                    relation.setUserId(id);
+                    relation.setActionId(actionId);
+
+                    return relation;
+                }).collect(Collectors.toList());
+        relations.forEach(userResourceActionRelationMapper::insert);
+
+        // 删除要删除的用户-资源动作关联
+        if (!CollectionUtils.isEmpty(toDelActionIds)) {
+            DeleteStatementProvider deleteStatementProvider = deleteFrom(UserResourceActionRelationDynamicSqlSupport.userResourceActionRelation)
+                    .where(UserResourceActionRelationDynamicSqlSupport.userId, isEqualTo(id))
+                    .and(UserResourceActionRelationDynamicSqlSupport.actionId, isIn(toDelActionIds))
+                    .build().render(RenderingStrategies.MYBATIS3);
+            userResourceActionRelationMapper.delete(deleteStatementProvider);
+        }
+    }
+
+    @Override
+    public void assignMenus(Integer id, List<Integer> menuIds) {
+
     }
 }

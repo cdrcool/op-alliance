@@ -5,16 +5,13 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * 组织列表查询 DTO
+ * 组织树查询 DTO
  *
  * @author cdrcool
  */
-@ApiModel(description = "组织列表查询 DTO")
+@ApiModel(description = "组织树查询 DTO")
 @Data
-public class OrganizationListQueryDTO {
+public class OrganizationTreeQueryDTO {
     @ApiModelProperty("上级组织id")
     private Integer pid;
-
-    @ApiModelProperty("搜索文本（根据组织名称或组织编码查询）")
-    private String searchText;
 }

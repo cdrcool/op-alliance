@@ -1,7 +1,7 @@
 package com.op.admin.service.impl;
 
 import com.github.pagehelper.PageHelper;
-import com.op.admin.dto.ResourceCategoryListQueryDTO;
+import com.op.admin.dto.ResourceCategoryPageQueryDTO;
 import com.op.admin.dto.ResourceCategorySaveDTO;
 import com.op.admin.entity.ResourceCategory;
 import com.op.admin.mapper.ResourceCategoryDynamicSqlSupport;
@@ -21,8 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.mybatis.dynamic.sql.SqlBuilder.isLikeWhenPresent;
-import static org.mybatis.dynamic.sql.SqlBuilder.select;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 /**
  * 资源分类 Service Impl
@@ -72,7 +71,7 @@ public class ResourceCategoryServiceImpl implements ResourceCategoryService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public Page<ResourceCategoryVO> queryPage(Pageable pageable, ResourceCategoryListQueryDTO queryDTO) {
+    public Page<ResourceCategoryVO> queryPage(Pageable pageable, ResourceCategoryPageQueryDTO queryDTO) {
         SortSpecification[] specifications = pageable.getSort().stream()
                 .map(order -> {
                     SortSpecification specification = SimpleSortSpecification.of(order.getProperty());
@@ -84,8 +83,8 @@ public class ResourceCategoryServiceImpl implements ResourceCategoryService {
 
         SelectStatementProvider selectStatementProvider = select(ResourceCategoryMapper.selectList)
                 .from(ResourceCategoryDynamicSqlSupport.resourceCategory)
-                .where(ResourceCategoryDynamicSqlSupport.categoryName, isLikeWhenPresent(queryDTO.getSearchText()))
-                .or(ResourceCategoryDynamicSqlSupport.serverName, isLikeWhenPresent(queryDTO.getSearchText()))
+                .where(ResourceCategoryDynamicSqlSupport.categoryName, isLikeWhenPresent(queryDTO.getSearchText()),
+                        or(ResourceCategoryDynamicSqlSupport.serverName, isLikeWhenPresent(queryDTO.getSearchText())))
                 .orderBy(specifications)
                 .limit(pageable.getPageSize()).offset(pageable.getOffset())
                 .build().render(RenderingStrategies.MYBATIS3);

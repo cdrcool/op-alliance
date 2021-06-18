@@ -39,10 +39,17 @@ public interface MenuService {
     /**
      * 查询菜单树列表
      *
-     * @param queryDTO 查询对象
      * @return 菜单树 vo 列表
      */
-    List<MenuTreeVO> queryTreeList(MenuListQueryDTO queryDTO);
+    List<MenuTreeVO> queryTreeList();
+
+    /**
+     * 查询菜单列表
+     *
+     * @param queryDTO 查询对象
+     * @return 菜单 vo 列表
+     */
+    List<MenuVO> queryList(MenuListQueryDTO queryDTO);
 
     /**
      * 显示/隐藏菜单

@@ -45,7 +45,7 @@ public class Organization extends BaseEntity {
     private String orgCodeLink;
 
     /**
-     * 组织类型（1-集团；2-公司；3-部门）
+     * 组织类型（1-集团；2-公司；3-分公司；4-项目部；5-部门）
      */
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Integer orgType;

@@ -1,9 +1,6 @@
 package com.op.admin.controller;
 
-import com.op.admin.dto.UserChangePasswordDTO;
-import com.op.admin.dto.UserCreateDTO;
-import com.op.admin.dto.UserListQueryDTO;
-import com.op.admin.dto.UserUpdateDTO;
+import com.op.admin.dto.*;
 import com.op.admin.service.UserService;
 import com.op.admin.vo.UserVO;
 import io.swagger.annotations.Api;
@@ -64,7 +61,7 @@ public class UserController {
     @ApiOperation("分页查询用户")
     @PostMapping("page")
     public Page<UserVO> queryPage(@PageableDefault(sort = "userNo", direction = Sort.Direction.ASC) Pageable pageable,
-                                  @Valid @RequestBody UserListQueryDTO queryDTO) {
+                                  @Valid @RequestBody UserPageQueryDTO queryDTO) {
         return userService.queryPage(pageable, queryDTO);
     }
 
@@ -72,5 +69,17 @@ public class UserController {
     @PostMapping("changeEnabled")
     public void changeEnabled(@RequestParam Integer id, @RequestParam boolean enable) {
         userService.changeEnabled(id, enable);
+    }
+
+    @ApiOperation("分配角色")
+    @PostMapping("assignRoles")
+    public void assignRoles(@Valid @RequestBody RoleAssignDTO roleAssignDTO) {
+        userService.assignRoles(roleAssignDTO.getId(), roleAssignDTO.getRoleIds());
+    }
+
+    @ApiOperation("分配资源")
+    @PostMapping("assignResources")
+    public void assignResources(@Valid @RequestBody ResourceAssignDTO resourceAssignDTO){
+        userService.assignRoles(resourceAssignDTO.getId(), resourceAssignDTO.getResourceIds());
     }
 }

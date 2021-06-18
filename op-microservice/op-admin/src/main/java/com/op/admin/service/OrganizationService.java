@@ -1,6 +1,7 @@
 package com.op.admin.service;
 
 import com.op.admin.dto.OrganizationListQueryDTO;
+import com.op.admin.dto.OrganizationTreeQueryDTO;
 import com.op.admin.dto.OrganizationSaveDTO;
 import com.op.admin.vo.OrganizationTreeVO;
 import com.op.admin.vo.OrganizationVO;
@@ -42,5 +43,37 @@ public interface OrganizationService {
      * @param queryDTO 查询对象
      * @return 组织树 vo
      */
-    OrganizationTreeVO queryTree(OrganizationListQueryDTO queryDTO);
+    OrganizationTreeVO queryTree(OrganizationTreeQueryDTO queryDTO);
+
+    /**
+     * 查询组织列表
+     *
+     * @param queryDTO 查询对象
+     * @return 组织 vo 列表
+     */
+    List<OrganizationVO> queryList(OrganizationListQueryDTO queryDTO);
+
+    /**
+     * 分配角色
+     *
+     * @param id 组织id
+     * @param roleIds 角色 ids
+     */
+    void assignRoles(Integer id, List<Integer> roleIds);
+
+    /**
+     * 分配资源
+     *
+     * @param id 组织id
+     * @param resourceActionIds 资源动作 ids
+     */
+    void assignResources(Integer id, List<Integer> resourceActionIds);
+
+    /**
+     * 分配菜单
+     *
+     * @param id 组织id
+     * @param menuIds 菜单 ids
+     */
+    void assignMenus(Integer id, List<Integer> menuIds);
 }

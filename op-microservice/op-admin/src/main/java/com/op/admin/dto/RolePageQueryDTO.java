@@ -5,13 +5,13 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * 角色列表查询 DTO
+ * 角色分页查询 DTO
  *
  * @author cdrcool
  */
-@ApiModel(description = "角色列表查询 DTO")
+@ApiModel(description = "角色分页查询 DTO")
 @Data
-public class RoleListQueryDTO {
+public class RolePageQueryDTO {
     @ApiModelProperty(value = "启用状态（0-禁用；1-启用）", allowableValues = "0, 1")
     private Integer status;
 

@@ -9,7 +9,7 @@ CREATE TABLE `admin_organization`
     `org_name`         varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '组织名称',
     `org_code`         varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '组织编码',
     `org_code_link`    varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '组织编码链（从根组织到当前组织的编码链，用于快速查询）',
-    `org_type`         int NULL DEFAULT NULL COMMENT '组织类型（1-集团；2-公司；3-部门）',
+    `org_type`         int NULL DEFAULT NULL COMMENT '组织类型（1-集团；2-公司；3-分公司；4-项目部；5-部门）',
     `version`          int NULL DEFAULT NULL COMMENT '版本号',
     `deleted`          tinyint(1) NULL DEFAULT NULL COMMENT '是否逻辑删除',
     `creator_id`       int NULL DEFAULT NULL COMMENT '创建人id',

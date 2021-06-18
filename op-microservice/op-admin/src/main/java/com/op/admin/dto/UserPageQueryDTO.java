@@ -7,13 +7,13 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * 用户列表查询 DTO
+ * 用户分页查询 DTO
  *
  * @author cdrcool
  */
-@ApiModel(description = "用户列表查询 DTO")
+@ApiModel(description = "用户分页查询 DTO")
 @Data
-public class UserListQueryDTO {
+public class UserPageQueryDTO {
     @ApiModelProperty("组织id")
     private Integer orgId;
 

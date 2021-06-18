@@ -1,6 +1,7 @@
 package com.op.admin.controller;
 
-import com.op.admin.dto.RoleListQueryDTO;
+import com.op.admin.dto.ResourceAssignDTO;
+import com.op.admin.dto.RolePageQueryDTO;
 import com.op.admin.dto.RoleSaveDTO;
 import com.op.admin.service.RoleService;
 import com.op.admin.vo.RoleVO;
@@ -50,7 +51,7 @@ public class RoleController {
     @ApiOperation("分页查询角色")
     @PostMapping("page")
     public Page<RoleVO> queryPage(@PageableDefault(sort = "roleNo", direction = Sort.Direction.ASC) Pageable pageable,
-                                       @Valid @RequestBody RoleListQueryDTO queryDTO) {
+                                       @Valid @RequestBody RolePageQueryDTO queryDTO) {
         return roleService.queryPage(pageable, queryDTO);
     }
 
@@ -58,5 +59,11 @@ public class RoleController {
     @PostMapping("changeEnabled")
     public void changeEnabled(@RequestParam Integer id, @RequestParam boolean enable) {
         roleService.changeEnabled(id, enable);
+    }
+
+    @ApiOperation("分配资源")
+    @PostMapping("assignResources")
+    public void assignResources(@Valid @RequestBody ResourceAssignDTO resourceAssignDTO){
+        roleService.assignResources(resourceAssignDTO.getId(), resourceAssignDTO.getResourceIds());
     }
 }

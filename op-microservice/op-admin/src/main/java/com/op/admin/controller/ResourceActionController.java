@@ -1,6 +1,6 @@
 package com.op.admin.controller;
 
-import com.op.admin.dto.ResourceActionListQueryDTO;
+import com.op.admin.dto.ResourceActionPageQueryDTO;
 import com.op.admin.dto.ResourceActionSaveDTO;
 import com.op.admin.service.ResourceActionService;
 import com.op.admin.vo.ResourceActionVO;
@@ -50,7 +50,7 @@ public class ResourceActionController {
     @ApiOperation("分页查询资源动作")
     @PostMapping("page")
     public Page<ResourceActionVO> queryPage(@PageableDefault(sort = "actionNo", direction = Sort.Direction.ASC) Pageable pageable,
-                                      @Valid @RequestBody ResourceActionListQueryDTO queryDTO) {
+                                      @Valid @RequestBody ResourceActionPageQueryDTO queryDTO) {
         return resourceActionService.queryPage(pageable, queryDTO);
     }
 }

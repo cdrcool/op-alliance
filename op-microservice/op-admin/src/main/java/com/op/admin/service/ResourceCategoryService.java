@@ -1,6 +1,6 @@
 package com.op.admin.service;
 
-import com.op.admin.dto.ResourceCategoryListQueryDTO;
+import com.op.admin.dto.ResourceCategoryPageQueryDTO;
 import com.op.admin.dto.ResourceCategorySaveDTO;
 import com.op.admin.vo.ResourceCategoryVO;
 import org.springframework.data.domain.Page;
@@ -42,5 +42,5 @@ public interface ResourceCategoryService {
      * @param queryDTO 查询对象
      * @return 资源分类 vo 分页列表
      */
-    Page<ResourceCategoryVO> queryPage(Pageable pageable, ResourceCategoryListQueryDTO queryDTO);
+    Page<ResourceCategoryVO> queryPage(Pageable pageable, ResourceCategoryPageQueryDTO queryDTO);
 }

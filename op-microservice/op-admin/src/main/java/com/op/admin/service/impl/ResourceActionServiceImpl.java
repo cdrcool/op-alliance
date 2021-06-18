@@ -1,7 +1,7 @@
 package com.op.admin.service.impl;
 
 import com.github.pagehelper.PageHelper;
-import com.op.admin.dto.ResourceActionListQueryDTO;
+import com.op.admin.dto.ResourceActionPageQueryDTO;
 import com.op.admin.dto.ResourceActionSaveDTO;
 import com.op.admin.entity.ResourceAction;
 import com.op.admin.mapper.ResourceActionDynamicSqlSupport;
@@ -42,13 +42,13 @@ public class ResourceActionServiceImpl implements ResourceActionService {
     @Override
     public void save(ResourceActionSaveDTO saveDTO) {
         if (saveDTO.getId() == null) {
-            ResourceAction resource = resourceActionMapping.toResourceAction(saveDTO);
-            resourceActionMapper.insert(resource);
+            ResourceAction resourceAction = resourceActionMapping.toResourceAction(saveDTO);
+            resourceActionMapper.insert(resourceAction);
         } else {
             Integer id = saveDTO.getId();
-            ResourceAction resource = resourceActionMapper.selectByPrimaryKey(id).orElseThrow(() -> new BusinessException("找不到资源动作，资源动作id：" + id));
-            resourceActionMapping.update(saveDTO, resource);
-            resourceActionMapper.updateByPrimaryKey(resource);
+            ResourceAction resourceAction = resourceActionMapper.selectByPrimaryKey(id).orElseThrow(() -> new BusinessException("找不到资源动作，资源动作id：" + id));
+            resourceActionMapping.update(saveDTO, resourceAction);
+            resourceActionMapper.updateByPrimaryKey(resourceAction);
         }
     }
 
@@ -76,7 +76,7 @@ public class ResourceActionServiceImpl implements ResourceActionService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public Page<ResourceActionVO> queryPage(Pageable pageable, ResourceActionListQueryDTO queryDTO) {
+    public Page<ResourceActionVO> queryPage(Pageable pageable, ResourceActionPageQueryDTO queryDTO) {
         SortSpecification[] specifications = pageable.getSort().stream()
                 .map(order -> {
                     SortSpecification specification = SimpleSortSpecification.of(order.getProperty());
@@ -88,8 +88,8 @@ public class ResourceActionServiceImpl implements ResourceActionService {
 
         SelectStatementProvider selectStatementProvider = select(ResourceActionMapper.selectList)
                 .from(ResourceActionDynamicSqlSupport.resourceAction)
-                .where(ResourceActionDynamicSqlSupport.actionName, isLikeWhenPresent(queryDTO.getSearchText()))
-                .or(ResourceActionDynamicSqlSupport.actionPath, isLikeWhenPresent(queryDTO.getSearchText()))
+                .where(ResourceActionDynamicSqlSupport.actionName, isLikeWhenPresent(queryDTO.getSearchText()),
+                        or(ResourceActionDynamicSqlSupport.actionPath, isLikeWhenPresent(queryDTO.getSearchText())))
                 .orderBy(specifications)
                 .limit(pageable.getPageSize()).offset(pageable.getOffset())
                 .build().render(RenderingStrategies.MYBATIS3);

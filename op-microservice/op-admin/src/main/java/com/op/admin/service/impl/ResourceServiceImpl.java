@@ -1,10 +1,9 @@
 package com.op.admin.service.impl;
 
 import com.github.pagehelper.PageHelper;
-import com.op.admin.dto.ResourceListQueryDTO;
+import com.op.admin.dto.ResourcePageQueryDTO;
 import com.op.admin.dto.ResourceSaveDTO;
 import com.op.admin.entity.Resource;
-import com.op.admin.entity.ResourceAction;
 import com.op.admin.mapper.ResourceDynamicSqlSupport;
 import com.op.admin.mapper.ResourceMapper;
 import com.op.admin.mapping.ResourceMapping;
@@ -82,7 +81,7 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public Page<ResourceVO> queryPage(Pageable pageable, ResourceListQueryDTO queryDTO) {
+    public Page<ResourceVO> queryPage(Pageable pageable, ResourcePageQueryDTO queryDTO) {
         SortSpecification[] specifications = pageable.getSort().stream()
                 .map(order -> {
                     SortSpecification specification = SimpleSortSpecification.of(order.getProperty());
@@ -94,8 +93,8 @@ public class ResourceServiceImpl implements ResourceService {
 
         SelectStatementProvider selectStatementProvider = select(ResourceMapper.selectList)
                 .from(ResourceDynamicSqlSupport.resource)
-                .where(ResourceDynamicSqlSupport.resourceName, isLikeWhenPresent(queryDTO.getSearchText()))
-                .or(ResourceDynamicSqlSupport.resourcePath, isLikeWhenPresent(queryDTO.getSearchText()))
+                .where(ResourceDynamicSqlSupport.resourceName, isLikeWhenPresent(queryDTO.getSearchText()),
+                        or(ResourceDynamicSqlSupport.resourcePath, isLikeWhenPresent(queryDTO.getSearchText())))
                 .orderBy(specifications)
                 .limit(pageable.getPageSize()).offset(pageable.getOffset())
                 .build().render(RenderingStrategies.MYBATIS3);

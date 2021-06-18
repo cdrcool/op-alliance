@@ -5,13 +5,13 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * 用户组列表查询 DTO
+ * 用户组分页查询 DTO
  *
  * @author cdrcool
  */
-@ApiModel(description = "用户组列表查询 DTO")
+@ApiModel(description = "用户组分页查询 DTO")
 @Data
-public class UserGroupListQueryDTO {
+public class UserGroupPageQueryDTO {
     @ApiModelProperty("用户组名称")
     private String groupName;
 

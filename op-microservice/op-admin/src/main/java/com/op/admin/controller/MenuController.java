@@ -50,8 +50,14 @@ public class MenuController {
 
     @ApiOperation("查询菜单树列表")
     @PostMapping("queryTreeList")
-    public List<MenuTreeVO> queryTreeList(@Valid @RequestBody MenuListQueryDTO queryDTO) {
-        return menuService.queryTreeList(queryDTO);
+    public List<MenuTreeVO> queryTreeList() {
+        return menuService.queryTreeList();
+    }
+
+    @ApiOperation("查询菜单列表")
+    @PostMapping("queryList")
+    public List<MenuVO> queryList(@Valid @RequestBody MenuListQueryDTO queryDTO) {
+        return menuService.queryList(queryDTO);
     }
 
     @ApiOperation("显示/隐藏菜单")
