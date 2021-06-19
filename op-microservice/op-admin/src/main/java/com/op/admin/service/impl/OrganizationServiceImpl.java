@@ -136,6 +136,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         return organizationMapping.toOrganizationVOList(organizations);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void assignRoles(Integer id, List<Integer> roleIds) {
         // 获取已建立关联的角色ids
@@ -170,6 +171,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         }
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void assignResources(Integer id, List<Integer> resourceActionIds) {
         // 获取已建立关联的资源动作ids
@@ -204,6 +206,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         }
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void assignMenus(Integer id, List<Integer> menuIds) {
         // 获取已建立关联的菜单ids
@@ -238,6 +241,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         }
     }
 
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<Integer> loadRoleIds(Integer id) {
         SelectStatementProvider selectStatementProvider = select(OrganizationRoleRelationDynamicSqlSupport.roleId)
@@ -248,6 +252,7 @@ public class OrganizationServiceImpl implements OrganizationService {
                 .map(OrganizationRoleRelation::getRoleId).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<Integer> loadResourceIds(Integer id) {
         SelectStatementProvider selectStatementProvider = select(OrganizationResourceActionRelationDynamicSqlSupport.actionId)
@@ -258,6 +263,7 @@ public class OrganizationServiceImpl implements OrganizationService {
                 .map(OrganizationResourceActionRelation::getActionId).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<Integer> loadMenuIds(Integer id) {
         SelectStatementProvider selectStatementProvider = select(OrganizationMenuRelationDynamicSqlSupport.menuId)

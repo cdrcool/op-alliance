@@ -2,6 +2,7 @@ package com.op.admin.service;
 
 import com.op.admin.dto.RolePageQueryDTO;
 import com.op.admin.dto.RoleSaveDTO;
+import com.op.admin.vo.RoleAssignVO;
 import com.op.admin.vo.RoleVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,6 +46,13 @@ public interface RoleService {
      * @return 角色 vo 分页列表
      */
     Page<RoleVO> queryPage(Pageable pageable, RolePageQueryDTO queryDTO);
+
+    /**
+     * 查找所有角色，用于分配角色使用
+     *
+     * @return 角色分配 VO 列表
+     */
+    List<RoleAssignVO> findAllToAssign();
 
     /**
      * 启用/禁用角色

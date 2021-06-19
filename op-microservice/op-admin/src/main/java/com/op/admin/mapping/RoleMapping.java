@@ -2,6 +2,7 @@ package com.op.admin.mapping;
 
 import com.op.admin.dto.RoleSaveDTO;
 import com.op.admin.entity.Role;
+import com.op.admin.vo.RoleAssignVO;
 import com.op.admin.vo.RoleVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -47,4 +48,12 @@ public interface RoleMapping {
      * @return 角色 vo 列表
      */
     List<RoleVO> toRoleVOList(List<Role> roles);
+
+    /**
+     * 角色列表 -> 角色分配 vo 列表
+     *
+     * @param roles 角色列表
+     * @return 角色分配 vo 列表
+     */
+    List<RoleAssignVO> toRoleAssignVOList(List<Role> roles);
 }

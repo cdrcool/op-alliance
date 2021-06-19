@@ -160,6 +160,7 @@ public class UserServiceImpl implements UserService {
         userMapper.update(updateStatement);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void assignRoles(Integer id, List<Integer> roleIds) {
         // 获取已建立关联的角色ids
@@ -194,6 +195,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void assignResources(Integer id, List<Integer> resourceActionIds) {
         // 获取已建立关联的资源动作ids
@@ -228,6 +230,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void assignMenus(Integer id, List<Integer> menuIds) {
         // 获取已建立关联的菜单ids
@@ -262,6 +265,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<Integer> loadRoleIds(Integer id) {
         SelectStatementProvider selectStatementProvider = select(UserRoleRelationDynamicSqlSupport.roleId)
@@ -272,6 +276,7 @@ public class UserServiceImpl implements UserService {
                 .map(UserRoleRelation::getRoleId).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<Integer> loadResourceIds(Integer id) {
         SelectStatementProvider selectStatementProvider = select(UserResourceActionRelationDynamicSqlSupport.actionId)
@@ -282,6 +287,7 @@ public class UserServiceImpl implements UserService {
                 .map(UserResourceActionRelation::getActionId).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<Integer> loadMenuIds(Integer id) {
         SelectStatementProvider selectStatementProvider = select(UserMenuRelationDynamicSqlSupport.menuId)

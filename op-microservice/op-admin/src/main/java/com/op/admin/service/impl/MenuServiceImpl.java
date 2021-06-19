@@ -12,6 +12,7 @@ import com.op.admin.mapper.extend.MenuMapperExtend;
 import com.op.admin.mapping.MenuMapping;
 import com.op.admin.service.MenuService;
 import com.op.admin.utils.TreeUtils;
+import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.MenuTreeVO;
 import com.op.admin.vo.MenuVO;
 import com.op.framework.web.common.api.response.exception.BusinessException;
@@ -115,6 +116,12 @@ public class MenuServiceImpl implements MenuService {
         List<Menu> menus = menuMapper.selectMany(selectStatementProvider);
 
         return menuMapping.toMenuVOList(menus);
+    }
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public List<MenuAssignVO> findAllToAssign() {
+        return null;
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)

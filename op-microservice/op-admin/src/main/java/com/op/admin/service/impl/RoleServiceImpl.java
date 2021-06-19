@@ -3,12 +3,14 @@ package com.op.admin.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.op.admin.dto.RolePageQueryDTO;
 import com.op.admin.dto.RoleSaveDTO;
+import com.op.admin.entity.Menu;
 import com.op.admin.entity.Role;
 import com.op.admin.entity.RoleMenuRelation;
 import com.op.admin.entity.RoleResourceActionRelation;
 import com.op.admin.mapper.*;
 import com.op.admin.mapping.RoleMapping;
 import com.op.admin.service.RoleService;
+import com.op.admin.vo.RoleAssignVO;
 import com.op.admin.vo.RoleVO;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.apache.commons.collections4.CollectionUtils;
@@ -16,6 +18,7 @@ import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
+import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.SimpleSortSpecification;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
@@ -105,6 +108,19 @@ public class RoleServiceImpl implements RoleService {
         return new PageImpl<>(result.getResult(), pageable, result.getTotal());
     }
 
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public List<RoleAssignVO> findAllToAssign() {
+        SelectStatementProvider selectStatementProvider = select(RoleDynamicSqlSupport.id, RoleDynamicSqlSupport.roleName, RoleDynamicSqlSupport.roleCode)
+                .from(RoleDynamicSqlSupport.role)
+                .where(RoleDynamicSqlSupport.status, isEqualTo(1))
+                .orderBy(RoleDynamicSqlSupport.roleNo)
+                .build().render(RenderingStrategies.MYBATIS3);
+        List<Role> roles = roleMapper.selectMany(selectStatementProvider);
+        return roleMapping.toRoleAssignVOList(roles);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void changeEnabled(Integer id, boolean enable) {
         UpdateStatementProvider updateStatement = SqlBuilder.update(RoleDynamicSqlSupport.role)
@@ -116,6 +132,7 @@ public class RoleServiceImpl implements RoleService {
         roleMapper.update(updateStatement);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void assignResources(Integer id, List<Integer> resourceActionIds) {
         // 获取已建立关联的资源动作ids
@@ -150,6 +167,7 @@ public class RoleServiceImpl implements RoleService {
         }
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void assignMenus(Integer id, List<Integer> menuIds) {
         // 获取已建立关联的菜单ids
@@ -184,6 +202,7 @@ public class RoleServiceImpl implements RoleService {
         }
     }
 
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<Integer> loadResourceIds(Integer id) {
         SelectStatementProvider selectStatementProvider = select(RoleResourceActionRelationDynamicSqlSupport.actionId)
@@ -194,6 +213,7 @@ public class RoleServiceImpl implements RoleService {
                 .map(RoleResourceActionRelation::getActionId).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<Integer> loadMenuIds(Integer id) {
         SelectStatementProvider selectStatementProvider = select(RoleMenuRelationDynamicSqlSupport.menuId)

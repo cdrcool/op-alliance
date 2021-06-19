@@ -2,9 +2,12 @@ package com.op.admin.service;
 
 import com.op.admin.dto.ResourcePageQueryDTO;
 import com.op.admin.dto.ResourceSaveDTO;
+import com.op.admin.vo.ResourceAssignVO;
 import com.op.admin.vo.ResourceVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 /**
  * 资源 Service
@@ -50,4 +53,11 @@ public interface ResourceService {
      * @return 资源 vo 分页列表
      */
     Page<ResourceVO> queryPage(Pageable pageable, ResourcePageQueryDTO queryDTO);
+
+    /**
+     * 查找所有资源，用于分配资源使用
+     *
+     * @return 资源 VO 列表
+     */
+    List<ResourceAssignVO> findAllToAssign();
 }

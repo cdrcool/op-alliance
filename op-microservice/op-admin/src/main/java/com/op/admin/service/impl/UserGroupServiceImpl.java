@@ -174,6 +174,7 @@ public class UserGroupServiceImpl implements UserGroupService {
         }
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void assignMenus(Integer id, List<Integer> menuIds) {
         // 获取已建立关联的菜单ids
@@ -208,6 +209,7 @@ public class UserGroupServiceImpl implements UserGroupService {
         }
     }
 
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<Integer> loadRoleIds(Integer id) {
         SelectStatementProvider selectStatementProvider = select(UserGroupRoleRelationDynamicSqlSupport.roleId)
@@ -218,6 +220,7 @@ public class UserGroupServiceImpl implements UserGroupService {
                 .map(UserGroupRoleRelation::getRoleId).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<Integer> loadResourceIds(Integer id) {
         SelectStatementProvider selectStatementProvider = select(UserGroupResourceActionRelationDynamicSqlSupport.actionId)
@@ -228,6 +231,7 @@ public class UserGroupServiceImpl implements UserGroupService {
                 .map(UserGroupResourceActionRelation::getActionId).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<Integer> loadMenuIds(Integer id) {
         SelectStatementProvider selectStatementProvider = select(UserGroupMenuRelationDynamicSqlSupport.menuId)

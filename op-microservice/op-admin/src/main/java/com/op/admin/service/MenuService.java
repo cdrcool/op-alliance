@@ -2,8 +2,10 @@ package com.op.admin.service;
 
 import com.op.admin.dto.MenuListQueryDTO;
 import com.op.admin.dto.MenuSaveDTO;
+import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.MenuTreeVO;
 import com.op.admin.vo.MenuVO;
+import com.op.admin.vo.RoleAssignVO;
 
 import java.util.List;
 
@@ -50,6 +52,13 @@ public interface MenuService {
      * @return 菜单 vo 列表
      */
     List<MenuVO> queryList(MenuListQueryDTO queryDTO);
+
+    /**
+     * 查找所有菜单，用于分配菜单使用
+     *
+     * @return 菜单分配 VO 列表
+     */
+    List<MenuAssignVO> findAllToAssign();
 
     /**
      * 显示/隐藏菜单

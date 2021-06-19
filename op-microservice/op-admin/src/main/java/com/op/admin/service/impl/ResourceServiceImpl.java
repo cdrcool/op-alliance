@@ -9,6 +9,7 @@ import com.op.admin.mapper.ResourceMapper;
 import com.op.admin.mapping.ResourceMapping;
 import com.op.admin.service.ResourceActionService;
 import com.op.admin.service.ResourceService;
+import com.op.admin.vo.ResourceAssignVO;
 import com.op.admin.vo.ResourceVO;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.mybatis.dynamic.sql.SortSpecification;
@@ -21,6 +22,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
@@ -104,5 +107,11 @@ public class ResourceServiceImpl implements ResourceService {
                 .doSelectPage(() -> resourceMapping.toResourceVOList(resourceMapper.selectMany(selectStatementProvider)));
 
         return new PageImpl<>(result.getResult(), pageable, result.getTotal());
+    }
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public List<ResourceAssignVO> findAllToAssign() {
+        return null;
     }
 }
