@@ -25,14 +25,14 @@ public interface UserGroupService {
     /**
      * 删除用户组
      *
-     * @param id 用户组id
+     * @param id 用户组 id
      */
     void deleteById(Integer id);
 
     /**
      * 查找用户组
      *
-     * @param id 用户组id
+     * @param id 用户组 id
      * @return 用户组 vo
      */
     UserGroupVO findById(Integer id);
@@ -49,7 +49,7 @@ public interface UserGroupService {
     /**
      * 分配角色
      *
-     * @param id 用户组id
+     * @param id      用户组 id
      * @param roleIds 角色 ids
      */
     void assignRoles(Integer id, List<Integer> roleIds);
@@ -57,7 +57,7 @@ public interface UserGroupService {
     /**
      * 分配资源
      *
-     * @param id 用户组id
+     * @param id                用户组 id
      * @param resourceActionIds 资源动作 ids
      */
     void assignResources(Integer id, List<Integer> resourceActionIds);
@@ -65,8 +65,32 @@ public interface UserGroupService {
     /**
      * 分配菜单
      *
-     * @param id 用户组id
+     * @param id      用户组 id
      * @param menuIds 菜单 ids
      */
     void assignMenus(Integer id, List<Integer> menuIds);
+
+    /**
+     * 获取用户组所分配的角色 ids
+     *
+     * @param id 用户组 id
+     * @return 角色 ids
+     */
+    List<Integer> loadRoleIds(Integer id);
+
+    /**
+     * 获取用户组所分配的资源 ids
+     *
+     * @param id 用户组 id
+     * @return 资源 ids
+     */
+    List<Integer> loadResourceIds(Integer id);
+
+    /**
+     * 获取用户组所分配的菜单 ids
+     *
+     * @param id 用户组 id
+     * @return 菜单 ids
+     */
+    List<Integer> loadMenuIds(Integer id);
 }

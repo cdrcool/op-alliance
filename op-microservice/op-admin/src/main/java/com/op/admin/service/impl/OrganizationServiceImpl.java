@@ -139,12 +139,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public void assignRoles(Integer id, List<Integer> roleIds) {
         // 获取已建立关联的角色ids
-        SelectStatementProvider selectStatementProvider = select(OrganizationRoleRelationDynamicSqlSupport.roleId)
-                .from(OrganizationRoleRelationDynamicSqlSupport.organizationRoleRelation)
-                .where(OrganizationRoleRelationDynamicSqlSupport.orgId, isEqualTo(id))
-                .build().render(RenderingStrategies.MYBATIS3);
-        List<Integer> preRoleIds = organizationRoleRelationMapper.selectMany(selectStatementProvider).stream()
-                .map(OrganizationRoleRelation::getRoleId).collect(Collectors.toList());
+        List<Integer> preRoleIds = loadRoleIds(id);
 
         // 获取要新建关联的角色ids
         List<Integer> toAddRoleIds = roleIds.stream()
@@ -178,12 +173,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public void assignResources(Integer id, List<Integer> resourceActionIds) {
         // 获取已建立关联的资源动作ids
-        SelectStatementProvider selectStatementProvider = select(OrganizationResourceActionRelationDynamicSqlSupport.actionId)
-                .from(OrganizationResourceActionRelationDynamicSqlSupport.organizationResourceActionRelation)
-                .where(OrganizationResourceActionRelationDynamicSqlSupport.orgId, isEqualTo(id))
-                .build().render(RenderingStrategies.MYBATIS3);
-        List<Integer> preActionIds = organizationResourceActionRelationMapper.selectMany(selectStatementProvider).stream()
-                .map(OrganizationResourceActionRelation::getActionId).collect(Collectors.toList());
+        List<Integer> preActionIds = loadResourceIds(id);
 
         // 获取要新建关联的资源动作ids
         List<Integer> toAddActionIds = resourceActionIds.stream()
@@ -217,12 +207,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public void assignMenus(Integer id, List<Integer> menuIds) {
         // 获取已建立关联的菜单ids
-        SelectStatementProvider selectStatementProvider = select(OrganizationMenuRelationDynamicSqlSupport.menuId)
-                .from(OrganizationMenuRelationDynamicSqlSupport.organizationMenuRelation)
-                .where(OrganizationMenuRelationDynamicSqlSupport.orgId, isEqualTo(id))
-                .build().render(RenderingStrategies.MYBATIS3);
-        List<Integer> preMenuIds = organizationMenuRelationMapper.selectMany(selectStatementProvider).stream()
-                .map(OrganizationMenuRelation::getMenuId).collect(Collectors.toList());
+        List<Integer> preMenuIds = loadMenuIds(id);
 
         // 获取要新建关联的菜单ids
         List<Integer> toAddMenuIds = menuIds.stream()
@@ -251,5 +236,35 @@ public class OrganizationServiceImpl implements OrganizationService {
                     .build().render(RenderingStrategies.MYBATIS3);
             organizationMenuRelationMapper.delete(deleteStatementProvider);
         }
+    }
+
+    @Override
+    public List<Integer> loadRoleIds(Integer id) {
+        SelectStatementProvider selectStatementProvider = select(OrganizationRoleRelationDynamicSqlSupport.roleId)
+                .from(OrganizationRoleRelationDynamicSqlSupport.organizationRoleRelation)
+                .where(OrganizationRoleRelationDynamicSqlSupport.orgId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        return organizationRoleRelationMapper.selectMany(selectStatementProvider).stream()
+                .map(OrganizationRoleRelation::getRoleId).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Integer> loadResourceIds(Integer id) {
+        SelectStatementProvider selectStatementProvider = select(OrganizationResourceActionRelationDynamicSqlSupport.actionId)
+                .from(OrganizationResourceActionRelationDynamicSqlSupport.organizationResourceActionRelation)
+                .where(OrganizationResourceActionRelationDynamicSqlSupport.orgId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        return organizationResourceActionRelationMapper.selectMany(selectStatementProvider).stream()
+                .map(OrganizationResourceActionRelation::getActionId).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Integer> loadMenuIds(Integer id) {
+        SelectStatementProvider selectStatementProvider = select(OrganizationMenuRelationDynamicSqlSupport.menuId)
+                .from(OrganizationMenuRelationDynamicSqlSupport.organizationMenuRelation)
+                .where(OrganizationMenuRelationDynamicSqlSupport.orgId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        return organizationMenuRelationMapper.selectMany(selectStatementProvider).stream()
+                .map(OrganizationMenuRelation::getMenuId).collect(Collectors.toList());
     }
 }

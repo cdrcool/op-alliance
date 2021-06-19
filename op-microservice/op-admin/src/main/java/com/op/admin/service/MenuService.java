@@ -24,14 +24,14 @@ public interface MenuService {
     /**
      * 删除菜单
      *
-     * @param id 菜单id
+     * @param id 菜单 id
      */
     void deleteById(Integer id);
 
     /**
      * 查找菜单
      *
-     * @param id 菜单id
+     * @param id 菜单 id
      * @return 菜单 vo
      */
     MenuVO findById(Integer id);
@@ -54,7 +54,7 @@ public interface MenuService {
     /**
      * 显示/隐藏菜单
      *
-     * @param id   菜单id
+     * @param id   菜单 id
      * @param show 显示 or 隐藏
      */
     void changeVisibility(Integer id, boolean show);

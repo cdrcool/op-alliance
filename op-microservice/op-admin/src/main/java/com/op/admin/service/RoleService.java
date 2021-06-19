@@ -25,14 +25,14 @@ public interface RoleService {
     /**
      * 删除角色
      *
-     * @param id 角色id
+     * @param id 角色 id
      */
     void deleteById(Integer id);
 
     /**
      * 查找角色
      *
-     * @param id 角色id
+     * @param id 角色 id
      * @return 角色 vo
      */
     RoleVO findById(Integer id);
@@ -49,15 +49,15 @@ public interface RoleService {
     /**
      * 启用/禁用角色
      *
-     * @param id 角色id
+     * @param id     角色 id
      * @param enable 启用 or 禁用
      */
     void changeEnabled(Integer id, boolean enable);
 
     /**
      * 分配资源
-
-     * @param id 角色id
+     *
+     * @param id                角色 id
      * @param resourceActionIds 资源动作 ids
      */
     void assignResources(Integer id, List<Integer> resourceActionIds);
@@ -65,8 +65,24 @@ public interface RoleService {
     /**
      * 分配菜单
      *
-     * @param id 角色id
+     * @param id      角色 id
      * @param menuIds 菜单 ids
      */
     void assignMenus(Integer id, List<Integer> menuIds);
+
+    /**
+     * 获取角色所分配的资源 ids
+     *
+     * @param id 角色 id
+     * @return 资源 ids
+     */
+    List<Integer> loadResourceIds(Integer id);
+
+    /**
+     * 获取角色所分配的菜单 ids
+     *
+     * @param id 角色 id
+     * @return 菜单 ids
+     */
+    List<Integer> loadMenuIds(Integer id);
 }

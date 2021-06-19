@@ -109,12 +109,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     @Override
     public void assignRoles(Integer id, List<Integer> roleIds) {
         // 获取已建立关联的角色ids
-        SelectStatementProvider selectStatementProvider = select(UserGroupRoleRelationDynamicSqlSupport.roleId)
-                .from(UserGroupRoleRelationDynamicSqlSupport.userGroupRoleRelation)
-                .where(UserGroupRoleRelationDynamicSqlSupport.groupId, isEqualTo(id))
-                .build().render(RenderingStrategies.MYBATIS3);
-        List<Integer> preRoleIds = userGroupRoleRelationMapper.selectMany(selectStatementProvider).stream()
-                .map(UserGroupRoleRelation::getRoleId).collect(Collectors.toList());
+        List<Integer> preRoleIds = loadRoleIds(id);
 
         // 获取要新建关联的角色ids
         List<Integer> toAddRoleIds = roleIds.stream()
@@ -148,12 +143,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     @Override
     public void assignResources(Integer id, List<Integer> resourceActionIds) {
         // 获取已建立关联的资源动作ids
-        SelectStatementProvider selectStatementProvider = select(UserGroupResourceActionRelationDynamicSqlSupport.actionId)
-                .from(UserGroupResourceActionRelationDynamicSqlSupport.userGroupResourceActionRelation)
-                .where(UserGroupResourceActionRelationDynamicSqlSupport.groupId, isEqualTo(id))
-                .build().render(RenderingStrategies.MYBATIS3);
-        List<Integer> preActionIds = userGroupResourceActionRelationMapper.selectMany(selectStatementProvider).stream()
-                .map(UserGroupResourceActionRelation::getActionId).collect(Collectors.toList());
+        List<Integer> preActionIds = loadResourceIds(id);
 
         // 获取要新建关联的资源动作ids
         List<Integer> toAddActionIds = resourceActionIds.stream()
@@ -187,12 +177,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     @Override
     public void assignMenus(Integer id, List<Integer> menuIds) {
         // 获取已建立关联的菜单ids
-        SelectStatementProvider selectStatementProvider = select(UserGroupMenuRelationDynamicSqlSupport.menuId)
-                .from(UserGroupMenuRelationDynamicSqlSupport.userGroupMenuRelation)
-                .where(UserGroupMenuRelationDynamicSqlSupport.groupId, isEqualTo(id))
-                .build().render(RenderingStrategies.MYBATIS3);
-        List<Integer> preMenuIds = userGroupMenuRelationMapper.selectMany(selectStatementProvider).stream()
-                .map(UserGroupMenuRelation::getMenuId).collect(Collectors.toList());
+        List<Integer> preMenuIds = loadMenuIds(id);
 
         // 获取要新建关联的菜单ids
         List<Integer> toAddMenuIds = menuIds.stream()
@@ -221,5 +206,35 @@ public class UserGroupServiceImpl implements UserGroupService {
                     .build().render(RenderingStrategies.MYBATIS3);
             userGroupMenuRelationMapper.delete(deleteStatementProvider);
         }
+    }
+
+    @Override
+    public List<Integer> loadRoleIds(Integer id) {
+        SelectStatementProvider selectStatementProvider = select(UserGroupRoleRelationDynamicSqlSupport.roleId)
+                .from(UserGroupRoleRelationDynamicSqlSupport.userGroupRoleRelation)
+                .where(UserGroupRoleRelationDynamicSqlSupport.groupId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        return userGroupRoleRelationMapper.selectMany(selectStatementProvider).stream()
+                .map(UserGroupRoleRelation::getRoleId).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Integer> loadResourceIds(Integer id) {
+        SelectStatementProvider selectStatementProvider = select(UserGroupResourceActionRelationDynamicSqlSupport.actionId)
+                .from(UserGroupResourceActionRelationDynamicSqlSupport.userGroupResourceActionRelation)
+                .where(UserGroupResourceActionRelationDynamicSqlSupport.groupId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        return userGroupResourceActionRelationMapper.selectMany(selectStatementProvider).stream()
+                .map(UserGroupResourceActionRelation::getActionId).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Integer> loadMenuIds(Integer id) {
+        SelectStatementProvider selectStatementProvider = select(UserGroupMenuRelationDynamicSqlSupport.menuId)
+                .from(UserGroupMenuRelationDynamicSqlSupport.userGroupMenuRelation)
+                .where(UserGroupMenuRelationDynamicSqlSupport.groupId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        return userGroupMenuRelationMapper.selectMany(selectStatementProvider).stream()
+                .map(UserGroupMenuRelation::getMenuId).collect(Collectors.toList());
     }
 }

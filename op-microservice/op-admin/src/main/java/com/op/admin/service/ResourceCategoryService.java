@@ -23,14 +23,14 @@ public interface ResourceCategoryService {
     /**
      * 删除资源分类
      *
-     * @param id 资源分类id
+     * @param id 资源分类 id
      */
     void deleteById(Integer id);
 
     /**
      * 查找资源分类
      *
-     * @param id 资源分类id
+     * @param id 资源分类 id
      * @return 资源分类 vo
      */
     ResourceCategoryVO findById(Integer id);

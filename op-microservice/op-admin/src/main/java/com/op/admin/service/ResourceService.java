@@ -23,7 +23,7 @@ public interface ResourceService {
     /**
      * 删除资源
      *
-     * @param id 资源id
+     * @param id 资源 id
      */
     void deleteById(Integer id);
 
@@ -37,7 +37,7 @@ public interface ResourceService {
     /**
      * 查找资源
      *
-     * @param id 资源id
+     * @param id 资源 id
      * @return 资源 vo
      */
     ResourceVO findById(Integer id);

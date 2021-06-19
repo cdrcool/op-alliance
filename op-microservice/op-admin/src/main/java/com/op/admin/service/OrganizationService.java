@@ -25,14 +25,14 @@ public interface OrganizationService {
     /**
      * 删除组织
      *
-     * @param id 组织id
+     * @param id 组织 id
      */
     void deleteById(Integer id);
 
     /**
      * 查找组织
      *
-     * @param id 组织id
+     * @param id 组织 id
      * @return 组织 vo
      */
     OrganizationVO findById(Integer id);
@@ -56,7 +56,7 @@ public interface OrganizationService {
     /**
      * 分配角色
      *
-     * @param id 组织id
+     * @param id 组织 id
      * @param roleIds 角色 ids
      */
     void assignRoles(Integer id, List<Integer> roleIds);
@@ -64,7 +64,7 @@ public interface OrganizationService {
     /**
      * 分配资源
      *
-     * @param id 组织id
+     * @param id 组织 id
      * @param resourceActionIds 资源动作 ids
      */
     void assignResources(Integer id, List<Integer> resourceActionIds);
@@ -72,8 +72,32 @@ public interface OrganizationService {
     /**
      * 分配菜单
      *
-     * @param id 组织id
+     * @param id 组织 id
      * @param menuIds 菜单 ids
      */
     void assignMenus(Integer id, List<Integer> menuIds);
+
+    /**
+     * 获取组织所分配的角色 ids
+     *
+     * @param id 组织 id
+     * @return 角色 ids
+     */
+    List<Integer> loadRoleIds(Integer id);
+
+    /**
+     * 获取组织所分配的资源 ids
+     *
+     * @param id 组织 id
+     * @return 资源 ids
+     */
+    List<Integer> loadResourceIds(Integer id);
+
+    /**
+     * 获取组织所分配的菜单 ids
+     *
+     * @param id 组织 id
+     * @return 菜单 ids
+     */
+    List<Integer> loadMenuIds(Integer id);
 }

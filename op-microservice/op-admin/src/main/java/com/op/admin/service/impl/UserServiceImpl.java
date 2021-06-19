@@ -163,12 +163,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void assignRoles(Integer id, List<Integer> roleIds) {
         // 获取已建立关联的角色ids
-        SelectStatementProvider selectStatementProvider = select(UserRoleRelationDynamicSqlSupport.roleId)
-                .from(UserRoleRelationDynamicSqlSupport.userRoleRelation)
-                .where(UserRoleRelationDynamicSqlSupport.userId, isEqualTo(id))
-                .build().render(RenderingStrategies.MYBATIS3);
-        List<Integer> preRoleIds = userRoleRelationMapper.selectMany(selectStatementProvider).stream()
-                .map(UserRoleRelation::getRoleId).collect(Collectors.toList());
+        List<Integer> preRoleIds = loadRoleIds(id);
 
         // 获取要新建关联的角色ids
         List<Integer> toAddRoleIds = roleIds.stream()
@@ -202,12 +197,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void assignResources(Integer id, List<Integer> resourceActionIds) {
         // 获取已建立关联的资源动作ids
-        SelectStatementProvider selectStatementProvider = select(UserResourceActionRelationDynamicSqlSupport.actionId)
-                .from(UserResourceActionRelationDynamicSqlSupport.userResourceActionRelation)
-                .where(UserResourceActionRelationDynamicSqlSupport.userId, isEqualTo(id))
-                .build().render(RenderingStrategies.MYBATIS3);
-        List<Integer> preActionIds = userResourceActionRelationMapper.selectMany(selectStatementProvider).stream()
-                .map(UserResourceActionRelation::getActionId).collect(Collectors.toList());
+        List<Integer> preActionIds = loadResourceIds(id);
 
         // 获取要新建关联的资源动作ids
         List<Integer> toAddActionIds = resourceActionIds.stream()
@@ -241,12 +231,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void assignMenus(Integer id, List<Integer> menuIds) {
         // 获取已建立关联的菜单ids
-        SelectStatementProvider selectStatementProvider = select(UserMenuRelationDynamicSqlSupport.menuId)
-                .from(UserMenuRelationDynamicSqlSupport.userMenuRelation)
-                .where(UserMenuRelationDynamicSqlSupport.userId, isEqualTo(id))
-                .build().render(RenderingStrategies.MYBATIS3);
-        List<Integer> preMenuIds = userMenuRelationMapper.selectMany(selectStatementProvider).stream()
-                .map(UserMenuRelation::getMenuId).collect(Collectors.toList());
+        List<Integer> preMenuIds = loadMenuIds(id);
 
         // 获取要新建关联的菜单ids
         List<Integer> toAddMenuIds = menuIds.stream()
@@ -275,5 +260,35 @@ public class UserServiceImpl implements UserService {
                     .build().render(RenderingStrategies.MYBATIS3);
             userMenuRelationMapper.delete(deleteStatementProvider);
         }
+    }
+
+    @Override
+    public List<Integer> loadRoleIds(Integer id) {
+        SelectStatementProvider selectStatementProvider = select(UserRoleRelationDynamicSqlSupport.roleId)
+                .from(UserRoleRelationDynamicSqlSupport.userRoleRelation)
+                .where(UserRoleRelationDynamicSqlSupport.userId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        return userRoleRelationMapper.selectMany(selectStatementProvider).stream()
+                .map(UserRoleRelation::getRoleId).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Integer> loadResourceIds(Integer id) {
+        SelectStatementProvider selectStatementProvider = select(UserResourceActionRelationDynamicSqlSupport.actionId)
+                .from(UserResourceActionRelationDynamicSqlSupport.userResourceActionRelation)
+                .where(UserResourceActionRelationDynamicSqlSupport.userId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        return userResourceActionRelationMapper.selectMany(selectStatementProvider).stream()
+                .map(UserResourceActionRelation::getActionId).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Integer> loadMenuIds(Integer id) {
+        SelectStatementProvider selectStatementProvider = select(UserMenuRelationDynamicSqlSupport.menuId)
+                .from(UserMenuRelationDynamicSqlSupport.userMenuRelation)
+                .where(UserMenuRelationDynamicSqlSupport.userId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        return userMenuRelationMapper.selectMany(selectStatementProvider).stream()
+                .map(UserMenuRelation::getMenuId).collect(Collectors.toList());
     }
 }

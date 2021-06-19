@@ -23,21 +23,21 @@ public interface ResourceActionService {
     /**
      * 删除资源动作
      *
-     * @param id 资源id
+     * @param id 资源动作 id
      */
     void deleteById(Integer id);
 
     /**
      * 删除资源下所有的资源动作
      *
-     * @param resourceId 资源 id
+     * @param resourceId 资源动作 id
      */
     void deleteByResourceId(Integer resourceId);
 
     /**
      * 查找资源动作
      *
-     * @param id 资源动作id
+     * @param id 资源动作 id
      * @return 资源动作 vo
      */
     ResourceActionVO findById(Integer id);
