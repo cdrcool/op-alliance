@@ -121,7 +121,9 @@ public class MenuServiceImpl implements MenuService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<MenuAssignVO> findAllToAssign() {
-        return null;
+        List<Menu> menus = menuMapper.select(SelectDSLCompleter.allRows());
+        return TreeUtils.buildTree(menus, menuMapping::toMenuAssignVO, MenuAssignVO::getPid, MenuAssignVO::getId,
+                (menu, children) -> menu.setChildren(children.stream().sorted(Comparator.comparing(MenuAssignVO::getMenuNo)).collect(Collectors.toList())), -1);
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)

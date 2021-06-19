@@ -3,6 +3,7 @@ package com.op.admin.mapping;
 import com.op.admin.dto.MenuSaveDTO;
 import com.op.admin.entity.Menu;
 import com.op.admin.entity.Organization;
+import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.MenuTreeVO;
 import com.op.admin.vo.MenuVO;
 import com.op.admin.vo.OrganizationVO;
@@ -58,4 +59,12 @@ public interface MenuMapping {
      * @return 菜单树 vo
      */
     MenuTreeVO toMenuTreeVO(Menu menu);
+
+    /**
+     * 菜单 -> 菜单分配 vo
+     *
+     * @param menu 菜单
+     * @return 菜单分配 vo
+     */
+    MenuAssignVO toMenuAssignVO(Menu menu);
 }

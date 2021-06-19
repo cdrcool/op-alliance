@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.annotation.Generated;
 import java.util.List;
 
 /**
@@ -17,11 +18,17 @@ public class MenuAssignVO {
     @ApiModelProperty("菜单id")
     private Integer id;
 
+    @ApiModelProperty("父菜单id")
+    private Integer pid;
+
     @ApiModelProperty("菜单名称")
     private String menuName;
 
     @ApiModelProperty("菜单编码")
     private String menuCode;
+
+    @ApiModelProperty("菜单编号")
+    private Integer menuNo;
 
     @ApiModelProperty("下级菜单列表")
     private List<MenuAssignVO> children;
