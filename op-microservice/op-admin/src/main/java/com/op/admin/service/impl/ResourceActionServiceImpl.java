@@ -8,6 +8,7 @@ import com.op.admin.mapper.ResourceActionDynamicSqlSupport;
 import com.op.admin.mapper.ResourceActionMapper;
 import com.op.admin.mapping.ResourceActionMapping;
 import com.op.admin.service.ResourceActionService;
+import com.op.admin.vo.ResourceActionAssignVO;
 import com.op.admin.vo.ResourceActionVO;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.mybatis.dynamic.sql.SortSpecification;
@@ -20,6 +21,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
@@ -99,5 +104,17 @@ public class ResourceActionServiceImpl implements ResourceActionService {
                 .doSelectPage(() -> resourceActionMapping.toResourceActionVOList(resourceActionMapper.selectMany(selectStatementProvider)));
 
         return new PageImpl<>(result.getResult(), pageable, result.getTotal());
+    }
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public Map<Integer, List<ResourceActionAssignVO>> findAllToAssign() {
+        SelectStatementProvider selectStatementProvider = select(ResourceActionDynamicSqlSupport.id, ResourceActionDynamicSqlSupport.actionName)
+                .from(ResourceActionDynamicSqlSupport.resourceAction)
+                .orderBy(ResourceActionDynamicSqlSupport.actionNo)
+                .build().render(RenderingStrategies.MYBATIS3);
+        List<ResourceAction> actions = resourceActionMapper.selectMany(selectStatementProvider);
+        List<ResourceActionAssignVO> actionAssignList = resourceActionMapping.toResourceActionAssignVOVOList(actions);
+        return actionAssignList.stream().collect(Collectors.groupingBy(ResourceActionAssignVO::getResourceId));
     }
 }

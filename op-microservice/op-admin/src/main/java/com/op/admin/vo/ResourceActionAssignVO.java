@@ -15,6 +15,9 @@ public class ResourceActionAssignVO {
     @ApiModelProperty("资源动作id")
     private Integer id;
 
+    @ApiModelProperty("资源id")
+    private Integer resourceId;
+
     @ApiModelProperty("动作名称")
     private String actionName;
 }

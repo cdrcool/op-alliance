@@ -9,6 +9,7 @@ import com.op.admin.mapper.ResourceMapper;
 import com.op.admin.mapping.ResourceMapping;
 import com.op.admin.service.ResourceActionService;
 import com.op.admin.service.ResourceService;
+import com.op.admin.vo.ResourceActionAssignVO;
 import com.op.admin.vo.ResourceAssignVO;
 import com.op.admin.vo.ResourceVO;
 import com.op.framework.web.common.api.response.exception.BusinessException;
@@ -24,6 +25,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
@@ -111,7 +114,18 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<ResourceAssignVO> findAllToAssign() {
-        return null;
+    public Map<Integer, List<ResourceAssignVO>> findAllToAssign() {
+        SelectStatementProvider selectStatementProvider = select(ResourceDynamicSqlSupport.id, ResourceDynamicSqlSupport.resourceName)
+                .from(ResourceDynamicSqlSupport.resource)
+                .orderBy(ResourceDynamicSqlSupport.resourceNo)
+                .build().render(RenderingStrategies.MYBATIS3);
+        List<Resource> resources = resourceMapper.selectMany(selectStatementProvider);
+        List<ResourceAssignVO> resourceAssignList = resourceMapping.toResourceAssignVOList(resources);
+
+        Map<Integer, List<ResourceActionAssignVO>> resourceActionAssignMap = resourceActionService.findAllToAssign();
+
+        resourceAssignList.forEach(resource -> resource.setActions(resourceActionAssignMap.get(resource.getId())));
+
+        return resourceAssignList.stream().collect(Collectors.groupingBy(ResourceAssignVO::getCategoryId));
     }
 }

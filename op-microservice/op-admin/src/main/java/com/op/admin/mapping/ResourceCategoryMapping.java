@@ -2,6 +2,7 @@ package com.op.admin.mapping;
 
 import com.op.admin.dto.ResourceCategorySaveDTO;
 import com.op.admin.entity.ResourceCategory;
+import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.ResourceCategoryVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -47,4 +48,12 @@ public interface ResourceCategoryMapping {
      * @return 资源分类 vo 列表
      */
     List<ResourceCategoryVO> toResourceCategoryVOList(List<ResourceCategory> resourceCategories);
+
+    /**
+     * 资源分类列表 -> 资源分类分配 vo 列表
+     *
+     * @param resourceCategories 资源分类列表
+     * @return 资源分类分配 vo 列表
+     */
+    List<ResourceCategoryAssignVO> toResourceCategoryAssignVOList(List<ResourceCategory> resourceCategories);
 }

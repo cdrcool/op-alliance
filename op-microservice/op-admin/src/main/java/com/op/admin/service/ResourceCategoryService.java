@@ -2,9 +2,12 @@ package com.op.admin.service;
 
 import com.op.admin.dto.ResourceCategoryPageQueryDTO;
 import com.op.admin.dto.ResourceCategorySaveDTO;
+import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.ResourceCategoryVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 /**
  * 资源分类 Service
@@ -43,4 +46,11 @@ public interface ResourceCategoryService {
      * @return 资源分类 vo 分页列表
      */
     Page<ResourceCategoryVO> queryPage(Pageable pageable, ResourceCategoryPageQueryDTO queryDTO);
+
+    /**
+     * 查找所有资源分类，用于分配资源使用
+     *
+     * @return 资源分类分配 VO 列表
+     */
+    List<ResourceCategoryAssignVO> findAllToAssign();
 }

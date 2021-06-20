@@ -111,7 +111,8 @@ public class RoleServiceImpl implements RoleService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<RoleAssignVO> findAllToAssign() {
-        SelectStatementProvider selectStatementProvider = select(RoleDynamicSqlSupport.id, RoleDynamicSqlSupport.roleName, RoleDynamicSqlSupport.roleCode)
+        SelectStatementProvider selectStatementProvider = select(RoleDynamicSqlSupport.id,
+                RoleDynamicSqlSupport.roleName, RoleDynamicSqlSupport.roleCode)
                 .from(RoleDynamicSqlSupport.role)
                 .where(RoleDynamicSqlSupport.status, isEqualTo(1))
                 .orderBy(RoleDynamicSqlSupport.roleNo)

@@ -17,6 +17,9 @@ public class ResourceAssignVO {
     @ApiModelProperty("资源id")
     private Integer id;
 
+    @ApiModelProperty("资源分类id")
+    private Integer categoryId;
+
     @ApiModelProperty("资源名称")
     private String resourceName;
 

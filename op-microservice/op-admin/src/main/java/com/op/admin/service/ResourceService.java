@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 资源 Service
@@ -57,7 +58,7 @@ public interface ResourceService {
     /**
      * 查找所有资源，用于分配资源使用
      *
-     * @return 资源 VO 列表
+     * @return 资源分配 VO Map（key：资源分类 id；value：资源列表）
      */
-    List<ResourceAssignVO> findAllToAssign();
+    Map<Integer, List<ResourceAssignVO>> findAllToAssign();
 }

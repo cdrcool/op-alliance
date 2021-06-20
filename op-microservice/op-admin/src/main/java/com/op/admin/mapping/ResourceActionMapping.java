@@ -2,6 +2,7 @@ package com.op.admin.mapping;
 
 import com.op.admin.dto.ResourceActionSaveDTO;
 import com.op.admin.entity.ResourceAction;
+import com.op.admin.vo.ResourceActionAssignVO;
 import com.op.admin.vo.ResourceActionVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -47,4 +48,12 @@ public interface ResourceActionMapping {
      * @return 资源动作 vo 列表
      */
     List<ResourceActionVO> toResourceActionVOList(List<ResourceAction> resourceActions);
+
+    /**
+     * 资源动作列表 -> 资源动作分配 vo 列表
+     *
+     * @param resourceActions 资源动作列表
+     * @return 资源动作分配 vo 列表
+     */
+    List<ResourceActionAssignVO> toResourceActionAssignVOVOList(List<ResourceAction> resourceActions);
 }

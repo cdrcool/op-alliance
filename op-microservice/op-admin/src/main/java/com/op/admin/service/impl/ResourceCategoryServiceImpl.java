@@ -9,6 +9,8 @@ import com.op.admin.mapper.ResourceCategoryMapper;
 import com.op.admin.mapping.ResourceCategoryMapping;
 import com.op.admin.service.ResourceCategoryService;
 import com.op.admin.service.ResourceService;
+import com.op.admin.vo.ResourceAssignVO;
+import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.ResourceCategoryVO;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.mybatis.dynamic.sql.SortSpecification;
@@ -20,6 +22,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Map;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
@@ -94,5 +99,22 @@ public class ResourceCategoryServiceImpl implements ResourceCategoryService {
                 .doSelectPage(() -> resourceCategoryMapping.toResourceCategoryVOList(resourceCategoryMapper.selectMany(selectStatementProvider)));
 
         return new PageImpl<>(result.getResult(), pageable, result.getTotal());
+    }
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public List<ResourceCategoryAssignVO> findAllToAssign() {
+        SelectStatementProvider selectStatementProvider = select(ResourceCategoryDynamicSqlSupport.id, ResourceCategoryDynamicSqlSupport.categoryName)
+                .from(ResourceCategoryDynamicSqlSupport.resourceCategory)
+                .orderBy(ResourceCategoryDynamicSqlSupport.categoryNo)
+                .build().render(RenderingStrategies.MYBATIS3);
+        List<ResourceCategory> categories = resourceCategoryMapper.selectMany(selectStatementProvider);
+        List<ResourceCategoryAssignVO> categoryAssignList = resourceCategoryMapping.toResourceCategoryAssignVOList(categories);
+
+        Map<Integer, List<ResourceAssignVO>> resourceAssignMap = resourceService.findAllToAssign();
+
+        categoryAssignList.forEach(category -> category.setResources(resourceAssignMap.get(category.getId())));
+
+        return categoryAssignList;
     }
 }
