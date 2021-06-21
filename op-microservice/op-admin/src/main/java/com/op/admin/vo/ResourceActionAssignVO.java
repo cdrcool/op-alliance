@@ -20,4 +20,10 @@ public class ResourceActionAssignVO {
 
     @ApiModelProperty("动作名称")
     private String actionName;
+
+    @ApiModelProperty("是否选中")
+    private Boolean checked;
+
+    @ApiModelProperty("是否可以取消选中")
+    private Boolean enableUncheck;
 }

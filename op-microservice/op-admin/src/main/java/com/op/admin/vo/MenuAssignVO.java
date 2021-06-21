@@ -32,4 +32,10 @@ public class MenuAssignVO {
 
     @ApiModelProperty("下级菜单列表")
     private List<MenuAssignVO> children;
+
+    @ApiModelProperty("是否选中")
+    private Boolean checked;
+
+    @ApiModelProperty("是否可以取消选中")
+    private Boolean enableUncheck;
 }

@@ -8,11 +8,14 @@ import com.op.admin.entity.OrganizationMenuRelation;
 import com.op.admin.entity.OrganizationResourceActionRelation;
 import com.op.admin.entity.OrganizationRoleRelation;
 import com.op.admin.mapper.*;
+import com.op.admin.mapper.extend.OrganizationMapperExtend;
 import com.op.admin.mapping.OrganizationMapping;
+import com.op.admin.service.MenuService;
 import com.op.admin.service.OrganizationService;
+import com.op.admin.service.ResourceCategoryService;
+import com.op.admin.service.RoleService;
 import com.op.admin.utils.TreeUtils;
-import com.op.admin.vo.OrganizationTreeVO;
-import com.op.admin.vo.OrganizationVO;
+import com.op.admin.vo.*;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
@@ -35,21 +39,30 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
  */
 @Service
 public class OrganizationServiceImpl implements OrganizationService {
-    private final OrganizationMapper organizationMapper;
+    private final OrganizationMapperExtend organizationMapper;
     private final OrganizationMapping organizationMapping;
     private final OrganizationRoleRelationMapper organizationRoleRelationMapper;
     private final OrganizationResourceActionRelationMapper organizationResourceActionRelationMapper;
     private final OrganizationMenuRelationMapper organizationMenuRelationMapper;
+    private final RoleService roleService;
+    private final ResourceCategoryService resourceCategoryService;
+    private final MenuService menuService;
 
-    public OrganizationServiceImpl(OrganizationMapper organizationMapper, OrganizationMapping organizationMapping,
+    public OrganizationServiceImpl(OrganizationMapperExtend organizationMapper, OrganizationMapping organizationMapping,
                                    OrganizationRoleRelationMapper organizationRoleRelationMapper,
                                    OrganizationResourceActionRelationMapper organizationResourceActionRelationMapper,
-                                   OrganizationMenuRelationMapper organizationMenuRelationMapper) {
+                                   OrganizationMenuRelationMapper organizationMenuRelationMapper,
+                                   RoleService roleService,
+                                   ResourceCategoryService resourceCategoryService,
+                                   MenuService menuService) {
         this.organizationMapper = organizationMapper;
         this.organizationMapping = organizationMapping;
         this.organizationRoleRelationMapper = organizationRoleRelationMapper;
         this.organizationResourceActionRelationMapper = organizationResourceActionRelationMapper;
         this.organizationMenuRelationMapper = organizationMenuRelationMapper;
+        this.roleService = roleService;
+        this.resourceCategoryService = resourceCategoryService;
+        this.menuService = menuService;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -213,7 +226,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public void assignMenus(Integer id, List<Integer> menuIds) {
         // 获取已建立关联的菜单ids
-        List<Integer> preMenuIds = loadMenuIds(id);
+        List<Integer> preMenuIds = this.loadMenuIds(id);
 
         // 获取要新建关联的菜单ids
         List<Integer> toAddMenuIds = menuIds.stream()
@@ -275,5 +288,84 @@ public class OrganizationServiceImpl implements OrganizationService {
                 .build().render(RenderingStrategies.MYBATIS3);
         return organizationMenuRelationMapper.selectMany(selectStatementProvider).stream()
                 .map(OrganizationMenuRelation::getMenuId).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public List<RoleAssignVO> loadRolesWithAssignInfo(Integer id) {
+        List<Integer> parentIds = organizationMapper.getParentIds(id);
+
+        SelectStatementProvider selectStatementProvider = select(OrganizationRoleRelationDynamicSqlSupport.orgId, OrganizationRoleRelationDynamicSqlSupport.roleId)
+                .from(OrganizationRoleRelationDynamicSqlSupport.organizationRoleRelation)
+                .where(OrganizationRoleRelationDynamicSqlSupport.orgId, isIn(parentIds))
+                .build().render(RenderingStrategies.MYBATIS3);
+        List<OrganizationRoleRelation> relations = organizationRoleRelationMapper.selectMany(selectStatementProvider);
+        Map<Integer, List<OrganizationRoleRelation>> relationsMap = relations.stream().collect(Collectors.groupingBy(OrganizationRoleRelation::getRoleId));
+
+        List<RoleAssignVO> roles = roleService.findAllToAssign();
+        roles.forEach(role -> {
+            List<Integer> orgIds = relationsMap.get(role.getId()).stream()
+                    .map(OrganizationRoleRelation::getOrgId).collect(Collectors.toList());
+            role.setChecked(CollectionUtils.isNotEmpty(orgIds));
+            role.setEnableUncheck(orgIds.stream().anyMatch(orgId -> !id.equals(orgId)));
+        });
+
+        return roles;
+    }
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public List<ResourceCategoryAssignVO> loadResourcesWithAssignInfo(Integer id) {
+        List<Integer> parentIds = organizationMapper.getParentIds(id);
+
+        SelectStatementProvider selectStatementProvider = select(OrganizationResourceActionRelationDynamicSqlSupport.orgId, OrganizationResourceActionRelationDynamicSqlSupport.actionId)
+                .from(OrganizationResourceActionRelationDynamicSqlSupport.organizationResourceActionRelation)
+                .where(OrganizationResourceActionRelationDynamicSqlSupport.orgId, isIn(parentIds))
+                .build().render(RenderingStrategies.MYBATIS3);
+        List<OrganizationResourceActionRelation> relations = organizationResourceActionRelationMapper.selectMany(selectStatementProvider);
+        Map<Integer, List<OrganizationResourceActionRelation>> relationsMap = relations.stream().collect(Collectors.groupingBy(OrganizationResourceActionRelation::getActionId));
+
+        List<ResourceCategoryAssignVO> categories = resourceCategoryService.findAllToAssign();
+        categories.forEach(category ->
+                category.getResources().forEach(resource ->
+                        resource.getActions().forEach(action -> {
+                            List<Integer> orgIds = relationsMap.get(action.getId()).stream()
+                                    .map(OrganizationResourceActionRelation::getOrgId).collect(Collectors.toList());
+                            action.setChecked(CollectionUtils.isNotEmpty(orgIds));
+                            action.setEnableUncheck(orgIds.stream().anyMatch(orgId -> !id.equals(orgId)));
+                        })));
+
+        return categories;
+    }
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public List<MenuAssignVO> loadMenusWithAssignInfo(Integer id) {
+        List<Integer> parentIds = organizationMapper.getParentIds(id);
+
+        SelectStatementProvider selectStatementProvider = select(OrganizationMenuRelationDynamicSqlSupport.orgId, OrganizationMenuRelationDynamicSqlSupport.menuId)
+                .from(OrganizationMenuRelationDynamicSqlSupport.organizationMenuRelation)
+                .where(OrganizationMenuRelationDynamicSqlSupport.orgId, isIn(parentIds))
+                .build().render(RenderingStrategies.MYBATIS3);
+        List<OrganizationMenuRelation> relations = organizationMenuRelationMapper.selectMany(selectStatementProvider);
+        Map<Integer, List<OrganizationMenuRelation>> relationsMap = relations.stream().collect(Collectors.groupingBy(OrganizationMenuRelation::getMenuId));
+
+        List<MenuAssignVO> menus = menuService.findAllToAssign();
+        setMenuItems(menus, relationsMap, id);
+
+        return menus;
+    }
+
+    private void setMenuItems(List<MenuAssignVO> menus, Map<Integer, List<OrganizationMenuRelation>> relationsMap, Integer id) {
+        menus.forEach(menu -> {
+            List<Integer> orgIds = relationsMap.get(menu.getId()).stream()
+                    .map(OrganizationMenuRelation::getOrgId).collect(Collectors.toList());
+            menu.setChecked(CollectionUtils.isNotEmpty(orgIds));
+            menu.setEnableUncheck(orgIds.stream().anyMatch(orgId -> !id.equals(orgId)));
+
+            if (!CollectionUtils.isEmpty(menu.getChildren())) {
+                setMenuItems(menu.getChildren(), relationsMap, id);
+            }
+        });
     }
 }
