@@ -77,13 +77,13 @@ public class RoleController {
         roleService.assignMenus(menuAssignDTO.getId(), menuAssignDTO.getMenuIds());
     }
 
-    @ApiOperation("查找所有资源，以及用户分配情况")
+    @ApiOperation("查找所有资源，以及角色分配情况")
     @GetMapping("loadResources")
     public List<ResourceCategoryAssignVO> loadResources(@RequestParam Integer id) {
         return roleService.loadResources(id);
     }
 
-    @ApiOperation("查找所有菜单，以及用户分配情况")
+    @ApiOperation("查找所有菜单，以及角色分配情况")
     @GetMapping("loadMenus")
     public List<MenuAssignVO> loadMenus(@RequestParam Integer id) {
         return roleService.loadMenus(id);

@@ -75,19 +75,19 @@ public class UserGroupController {
         userGroupService.assignMenus(menuAssignDTO.getId(), menuAssignDTO.getMenuIds());
     }
 
-    @ApiOperation("查找所有角色，以及用户分配情况")
+    @ApiOperation("查找所有角色，以及用户组分配情况")
     @GetMapping("loadRoles")
     public List<RoleAssignVO> loadRoles(@RequestParam Integer id) {
         return userGroupService.loadRoles(id);
     }
 
-    @ApiOperation("查找所有资源，以及用户分配情况")
+    @ApiOperation("查找所有资源，以及用户组分配情况")
     @GetMapping("loadResources")
     public List<ResourceCategoryAssignVO> loadResources(@RequestParam Integer id) {
         return userGroupService.loadResources(id);
     }
 
-    @ApiOperation("查找所有菜单，以及用户分配情况")
+    @ApiOperation("查找所有菜单，以及用户组分配情况")
     @GetMapping("loadMenus")
     public List<MenuAssignVO> loadMenus(@RequestParam Integer id) {
         return userGroupService.loadMenus(id);
