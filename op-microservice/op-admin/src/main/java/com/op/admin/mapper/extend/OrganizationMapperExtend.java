@@ -20,8 +20,8 @@ public interface OrganizationMapperExtend extends OrganizationMapper {
      * @param id 组织 id
      * @return 本上级 ids
      */
-    @Delete(" SELECT id FROM admin_organization o1" +
-            " INNER JOIN admin_organization o2 ON FIND_INSET(o1.org_code, o2.org_code)" +
+    @Delete(" SELECT o1.id FROM admin_organization o1" +
+            " INNER JOIN admin_organization o2 ON FIND_INSET(o1.org_code, o2.org_code_link)" +
             " WHERE 02.id = #{id}")
     List<Integer> getParentIds(Integer id);
 }

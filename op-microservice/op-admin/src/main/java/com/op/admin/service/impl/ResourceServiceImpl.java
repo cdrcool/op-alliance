@@ -12,6 +12,7 @@ import com.op.admin.service.ResourceService;
 import com.op.admin.vo.ResourceActionAssignVO;
 import com.op.admin.vo.ResourceAssignVO;
 import com.op.admin.vo.ResourceVO;
+import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
@@ -56,7 +57,8 @@ public class ResourceServiceImpl implements ResourceService {
             resourceMapper.insert(resource);
         } else {
             Integer id = saveDTO.getId();
-            Resource resource = resourceMapper.selectByPrimaryKey(id).orElseThrow(() -> new BusinessException("找不到资源，资源id：" + id));
+            Resource resource = resourceMapper.selectByPrimaryKey(id)
+                    .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的资源"));
             resourceMapping.update(saveDTO, resource);
             resourceMapper.updateByPrimaryKey(resource);
         }
@@ -115,10 +117,11 @@ public class ResourceServiceImpl implements ResourceService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public Map<Integer, List<ResourceAssignVO>> findAllForAssign() {
-        SelectStatementProvider selectStatementProvider = select(ResourceDynamicSqlSupport.id, ResourceDynamicSqlSupport.resourceName)
-                .from(ResourceDynamicSqlSupport.resource)
-                .orderBy(ResourceDynamicSqlSupport.resourceNo)
-                .build().render(RenderingStrategies.MYBATIS3);
+        SelectStatementProvider selectStatementProvider =
+                select(ResourceDynamicSqlSupport.id, ResourceDynamicSqlSupport.resourceName)
+                        .from(ResourceDynamicSqlSupport.resource)
+                        .orderBy(ResourceDynamicSqlSupport.resourceNo)
+                        .build().render(RenderingStrategies.MYBATIS3);
         List<Resource> resources = resourceMapper.selectMany(selectStatementProvider);
         List<ResourceAssignVO> resourceAssignList = resourceMapping.toResourceAssignVOList(resources);
 

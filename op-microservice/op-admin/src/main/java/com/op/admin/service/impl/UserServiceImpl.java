@@ -18,6 +18,7 @@ import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.RoleAssignVO;
 import com.op.admin.vo.UserVO;
+import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.mybatis.dynamic.sql.SortSpecification;
@@ -99,11 +100,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public void changePassword(UserChangePasswordDTO changePasswordDto) {
         Integer id = changePasswordDto.getId();
-        User user = userMapper.selectByPrimaryKey(id).orElseThrow(() -> new BusinessException("找不到用户，用户id：" + id));
+        User user = userMapper.selectByPrimaryKey(id)
+                .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的用户"));
 
         String newPassword = changePasswordDto.getPassword();
         if (!passwordEncoder.matches(newPassword, user.getPassword())) {
-            throw new BusinessException("旧密码不正确");
+            throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "旧密码不正确");
         }
 
         userMapping.update(changePasswordDto, user);
@@ -116,7 +118,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void update(UserUpdateDTO updateDTO) {
         Integer id = updateDTO.getId();
-        User user = userMapper.selectByPrimaryKey(id).orElseThrow(() -> new BusinessException("找不到用户，用户id：" + id));
+        User user = userMapper.selectByPrimaryKey(id)
+                .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的用户"));
         userMapping.update(updateDTO, user);
         userMapper.updateByPrimaryKey(user);
     }
@@ -181,14 +184,14 @@ public class UserServiceImpl implements UserService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void assignRoles(Integer id, List<Integer> roleIds) {
-        // 获取已建立关联的角色ids
-        List<Integer> preRoleIds = getAssignedRoleIds(id);
+        // 获取已建立关联的角色 ids
+        List<Integer> preRoleIds = this.getAssignedRoleIds(id);
 
-        // 获取要新建关联的角色ids
+        // 获取要新建关联的角色 ids
         List<Integer> toAddRoleIds = roleIds.stream()
                 .filter(roleId -> !preRoleIds.contains(roleId)).collect(Collectors.toList());
 
-        // 获取要删除关联的角色ids
+        // 获取要删除关联的角色 ids
         List<Integer> toDelRoleIds = preRoleIds.stream()
                 .filter(actionId -> !roleIds.contains(actionId)).collect(Collectors.toList());
 
@@ -205,10 +208,11 @@ public class UserServiceImpl implements UserService {
 
         // 删除要删除的用户-角色关联
         if (!CollectionUtils.isEmpty(toDelRoleIds)) {
-            DeleteStatementProvider deleteStatementProvider = deleteFrom(UserRoleRelationDynamicSqlSupport.userRoleRelation)
-                    .where(UserRoleRelationDynamicSqlSupport.userId, isEqualTo(id))
-                    .and(UserRoleRelationDynamicSqlSupport.roleId, isIn(toDelRoleIds))
-                    .build().render(RenderingStrategies.MYBATIS3);
+            DeleteStatementProvider deleteStatementProvider =
+                    deleteFrom(UserRoleRelationDynamicSqlSupport.userRoleRelation)
+                            .where(UserRoleRelationDynamicSqlSupport.userId, isEqualTo(id))
+                            .and(UserRoleRelationDynamicSqlSupport.roleId, isIn(toDelRoleIds))
+                            .build().render(RenderingStrategies.MYBATIS3);
             userRoleRelationMapper.delete(deleteStatementProvider);
         }
     }
@@ -216,14 +220,14 @@ public class UserServiceImpl implements UserService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void assignResources(Integer id, List<Integer> resourceActionIds) {
-        // 获取已建立关联的资源动作ids
-        List<Integer> preActionIds = getAssignedResourceActionIds(id);
+        // 获取已建立关联的资源动作 ids
+        List<Integer> preActionIds = this.getAssignedResourceActionIds(id);
 
-        // 获取要新建关联的资源动作ids
+        // 获取要新建关联的资源动作 ids
         List<Integer> toAddActionIds = resourceActionIds.stream()
                 .filter(actionId -> !preActionIds.contains(actionId)).collect(Collectors.toList());
 
-        // 获取要删除关联的资源动作ids
+        // 获取要删除关联的资源动作 ids
         List<Integer> toDelActionIds = preActionIds.stream()
                 .filter(actionId -> !resourceActionIds.contains(actionId)).collect(Collectors.toList());
 
@@ -240,10 +244,11 @@ public class UserServiceImpl implements UserService {
 
         // 删除要删除的用户-资源动作关联
         if (!CollectionUtils.isEmpty(toDelActionIds)) {
-            DeleteStatementProvider deleteStatementProvider = deleteFrom(UserResourceActionRelationDynamicSqlSupport.userResourceActionRelation)
-                    .where(UserResourceActionRelationDynamicSqlSupport.userId, isEqualTo(id))
-                    .and(UserResourceActionRelationDynamicSqlSupport.actionId, isIn(toDelActionIds))
-                    .build().render(RenderingStrategies.MYBATIS3);
+            DeleteStatementProvider deleteStatementProvider =
+                    deleteFrom(UserResourceActionRelationDynamicSqlSupport.userResourceActionRelation)
+                            .where(UserResourceActionRelationDynamicSqlSupport.userId, isEqualTo(id))
+                            .and(UserResourceActionRelationDynamicSqlSupport.actionId, isIn(toDelActionIds))
+                            .build().render(RenderingStrategies.MYBATIS3);
             userResourceActionRelationMapper.delete(deleteStatementProvider);
         }
     }
@@ -251,14 +256,14 @@ public class UserServiceImpl implements UserService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void assignMenus(Integer id, List<Integer> menuIds) {
-        // 获取已建立关联的菜单ids
-        List<Integer> preMenuIds = getAssignedMenuIds(id);
+        // 获取已建立关联的菜单 ids
+        List<Integer> preMenuIds = this.getAssignedMenuIds(id);
 
-        // 获取要新建关联的菜单ids
+        // 获取要新建关联的菜单 ids
         List<Integer> toAddMenuIds = menuIds.stream()
                 .filter(menuId -> !preMenuIds.contains(menuId)).collect(Collectors.toList());
 
-        // 获取要删除关联的菜单ids
+        // 获取要删除关联的菜单 ids
         List<Integer> toDelMenuIds = preMenuIds.stream()
                 .filter(menuId -> !menuIds.contains(menuId)).collect(Collectors.toList());
 
@@ -319,7 +324,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<RoleAssignVO> loadRoles(Integer id) {
-        List<Integer> assignedRoleIds = getAssignedRoleIds(id);
+        List<Integer> assignedRoleIds = this.getAssignedRoleIds(id);
         List<Integer> groupAssignedRoleIds = userGroupService.getAssignedRoleIds(id);
         List<Integer> orgAssignedRoleIds = organizationService.getAssignedRoleIds(id);
 
@@ -338,7 +343,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<ResourceCategoryAssignVO> loadResources(Integer id) {
-        List<Integer> assignedActionIds = getAssignedResourceActionIds(id);
+        List<Integer> assignedActionIds = this.getAssignedResourceActionIds(id);
         List<Integer> groupAssignedActionIds = userGroupService.getAssignedResourceActionIds(id);
         List<Integer> orgAssignedActionIds = organizationService.getAssignedResourceActionIds(id);
 
@@ -359,7 +364,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<MenuAssignVO> loadMenus(Integer id) {
-        List<Integer> assignedMenuIds = getAssignedMenuIds(id);
+        List<Integer> assignedMenuIds = this.getAssignedMenuIds(id);
         List<Integer> groupAssignedMenuIds = userGroupService.getAssignedMenuIds(id);
         List<Integer> orgAssignedMenuIds = organizationService.getAssignedMenuIds(id);
 
@@ -369,7 +374,8 @@ public class UserServiceImpl implements UserService {
         return menus;
     }
 
-    private void setMenuItems(List<MenuAssignVO> menus, List<Integer> assignedMenuIds, List<Integer> groupAssignedMenuIds, List<Integer> orgAssignedMenuIds) {
+    private void setMenuItems(List<MenuAssignVO> menus, List<Integer> assignedMenuIds,
+                              List<Integer> groupAssignedMenuIds, List<Integer> orgAssignedMenuIds) {
         menus.forEach(menu -> {
             menu.setChecked(assignedMenuIds.contains(menu.getId()) ||
                     groupAssignedMenuIds.contains(menu.getId()) ||

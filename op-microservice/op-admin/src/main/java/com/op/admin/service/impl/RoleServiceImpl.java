@@ -15,6 +15,7 @@ import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.RoleAssignVO;
 import com.op.admin.vo.RoleVO;
+import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.mybatis.dynamic.sql.SortSpecification;
@@ -70,7 +71,8 @@ public class RoleServiceImpl implements RoleService {
             roleMapper.insert(role);
         } else {
             Integer id = saveDTO.getId();
-            Role role = roleMapper.selectByPrimaryKey(id).orElseThrow(() -> new BusinessException("找不到角色，角色id：" + id));
+            Role role = roleMapper.selectByPrimaryKey(id)
+                    .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的角色"));
             roleMapping.update(saveDTO, role);
             roleMapper.updateByPrimaryKey(role);
         }
@@ -144,14 +146,14 @@ public class RoleServiceImpl implements RoleService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void assignResources(Integer id, List<Integer> resourceActionIds) {
-        // 获取已建立关联的资源动作ids
+        // 获取已建立关联的资源动作 ids
         List<Integer> preActionIds = getAssignedResourceActionIds(id);
 
-        // 获取要新建关联的资源动作ids
+        // 获取要新建关联的资源动作 ids
         List<Integer> toAddActionIds = resourceActionIds.stream()
                 .filter(actionId -> !preActionIds.contains(actionId)).collect(Collectors.toList());
 
-        // 获取要删除关联的资源动作ids
+        // 获取要删除关联的资源动作 ids
         List<Integer> toDelActionIds = preActionIds.stream()
                 .filter(actionId -> !resourceActionIds.contains(actionId)).collect(Collectors.toList());
 
@@ -179,14 +181,14 @@ public class RoleServiceImpl implements RoleService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void assignMenus(Integer id, List<Integer> menuIds) {
-        // 获取已建立关联的菜单ids
+        // 获取已建立关联的菜单 ids
         List<Integer> preMenuIds = getAssignedMenuIds(id);
 
-        // 获取要新建关联的菜单ids
+        // 获取要新建关联的菜单 ids
         List<Integer> toAddMenuIds = menuIds.stream()
                 .filter(menuId -> !preMenuIds.contains(menuId)).collect(Collectors.toList());
 
-        // 获取要删除关联的菜单ids
+        // 获取要删除关联的菜单 ids
         List<Integer> toDelMenuIds = preMenuIds.stream()
                 .filter(menuId -> !menuIds.contains(menuId)).collect(Collectors.toList());
 
@@ -236,7 +238,7 @@ public class RoleServiceImpl implements RoleService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<ResourceCategoryAssignVO> loadResources(Integer id) {
-        List<Integer> assignedActionIds = getAssignedResourceActionIds(id);
+        List<Integer> assignedActionIds = this.getAssignedResourceActionIds(id);
 
         List<ResourceCategoryAssignVO> categories = resourceCategoryService.findAllForAssign();
         categories.forEach(category ->
@@ -252,7 +254,7 @@ public class RoleServiceImpl implements RoleService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<MenuAssignVO> loadMenus(Integer id) {
-        List<Integer> assignedMenuIds = getAssignedMenuIds(id);
+        List<Integer> assignedMenuIds = this.getAssignedMenuIds(id);
 
         List<MenuAssignVO> menus = menuService.findAllForAssign();
         setMenuItems(menus, assignedMenuIds);

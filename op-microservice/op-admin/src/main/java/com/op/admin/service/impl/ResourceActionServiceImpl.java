@@ -10,6 +10,7 @@ import com.op.admin.mapping.ResourceActionMapping;
 import com.op.admin.service.ResourceActionService;
 import com.op.admin.vo.ResourceActionAssignVO;
 import com.op.admin.vo.ResourceActionVO;
+import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
@@ -51,7 +52,8 @@ public class ResourceActionServiceImpl implements ResourceActionService {
             resourceActionMapper.insert(resourceAction);
         } else {
             Integer id = saveDTO.getId();
-            ResourceAction resourceAction = resourceActionMapper.selectByPrimaryKey(id).orElseThrow(() -> new BusinessException("找不到资源动作，资源动作id：" + id));
+            ResourceAction resourceAction = resourceActionMapper.selectByPrimaryKey(id)
+                    .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的资源动作"));
             resourceActionMapping.update(saveDTO, resourceAction);
             resourceActionMapper.updateByPrimaryKey(resourceAction);
         }
@@ -109,10 +111,11 @@ public class ResourceActionServiceImpl implements ResourceActionService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public Map<Integer, List<ResourceActionAssignVO>> findAllForAssign() {
-        SelectStatementProvider selectStatementProvider = select(ResourceActionDynamicSqlSupport.id, ResourceActionDynamicSqlSupport.actionName)
-                .from(ResourceActionDynamicSqlSupport.resourceAction)
-                .orderBy(ResourceActionDynamicSqlSupport.actionNo)
-                .build().render(RenderingStrategies.MYBATIS3);
+        SelectStatementProvider selectStatementProvider =
+                select(ResourceActionDynamicSqlSupport.id, ResourceActionDynamicSqlSupport.actionName)
+                        .from(ResourceActionDynamicSqlSupport.resourceAction)
+                        .orderBy(ResourceActionDynamicSqlSupport.actionNo)
+                        .build().render(RenderingStrategies.MYBATIS3);
         List<ResourceAction> actions = resourceActionMapper.selectMany(selectStatementProvider);
         List<ResourceActionAssignVO> actionAssignList = resourceActionMapping.toResourceActionAssignVOVOList(actions);
         return actionAssignList.stream().collect(Collectors.groupingBy(ResourceActionAssignVO::getResourceId));

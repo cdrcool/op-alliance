@@ -12,6 +12,7 @@ import com.op.admin.service.ResourceService;
 import com.op.admin.vo.ResourceAssignVO;
 import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.ResourceCategoryVO;
+import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
@@ -54,7 +55,8 @@ public class ResourceCategoryServiceImpl implements ResourceCategoryService {
             resourceCategoryMapper.insert(resourceCategory);
         } else {
             Integer id = saveDTO.getId();
-            ResourceCategory resourceCategory = resourceCategoryMapper.selectByPrimaryKey(id).orElseThrow(() -> new BusinessException("找不到资源分类，资源分类id：" + id));
+            ResourceCategory resourceCategory = resourceCategoryMapper.selectByPrimaryKey(id)
+                    .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的资源分类"));
             resourceCategoryMapping.update(saveDTO, resourceCategory);
             resourceCategoryMapper.updateByPrimaryKey(resourceCategory);
         }
@@ -104,10 +106,11 @@ public class ResourceCategoryServiceImpl implements ResourceCategoryService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<ResourceCategoryAssignVO> findAllForAssign() {
-        SelectStatementProvider selectStatementProvider = select(ResourceCategoryDynamicSqlSupport.id, ResourceCategoryDynamicSqlSupport.categoryName)
-                .from(ResourceCategoryDynamicSqlSupport.resourceCategory)
-                .orderBy(ResourceCategoryDynamicSqlSupport.categoryNo)
-                .build().render(RenderingStrategies.MYBATIS3);
+        SelectStatementProvider selectStatementProvider =
+                select(ResourceCategoryDynamicSqlSupport.id, ResourceCategoryDynamicSqlSupport.categoryName)
+                        .from(ResourceCategoryDynamicSqlSupport.resourceCategory)
+                        .orderBy(ResourceCategoryDynamicSqlSupport.categoryNo)
+                        .build().render(RenderingStrategies.MYBATIS3);
         List<ResourceCategory> categories = resourceCategoryMapper.selectMany(selectStatementProvider);
         List<ResourceCategoryAssignVO> categoryAssignList = resourceCategoryMapping.toResourceCategoryAssignVOList(categories);
 

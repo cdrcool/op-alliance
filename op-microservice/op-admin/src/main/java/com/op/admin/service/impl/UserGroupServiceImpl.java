@@ -17,6 +17,7 @@ import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.RoleAssignVO;
 import com.op.admin.vo.UserGroupVO;
+import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.mybatis.dynamic.sql.SortSpecification;
@@ -54,7 +55,10 @@ public class UserGroupServiceImpl implements UserGroupService {
     public UserGroupServiceImpl(UserGroupMapper userGroupMapper, UserGroupMapping userGroupMapping,
                                 UserGroupRoleRelationMapper userGroupRoleRelationMapper,
                                 UserGroupResourceActionRelationMapper userGroupResourceActionRelationMapper,
-                                UserGroupMenuRelationMapper userGroupMenuRelationMapper, RoleService roleService, ResourceCategoryService resourceCategoryService, MenuService menuService) {
+                                UserGroupMenuRelationMapper userGroupMenuRelationMapper,
+                                RoleService roleService,
+                                ResourceCategoryService resourceCategoryService,
+                                MenuService menuService) {
         this.userGroupMapper = userGroupMapper;
         this.userGroupMapping = userGroupMapping;
         this.userGroupRoleRelationMapper = userGroupRoleRelationMapper;
@@ -73,7 +77,8 @@ public class UserGroupServiceImpl implements UserGroupService {
             userGroupMapper.insert(userGroup);
         } else {
             Integer id = saveDTO.getId();
-            UserGroup userGroup = userGroupMapper.selectByPrimaryKey(id).orElseThrow(() -> new BusinessException("找不到用户组，用户组id：" + id));
+            UserGroup userGroup = userGroupMapper.selectByPrimaryKey(id)
+                    .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的用户组"));
             userGroupMapping.update(saveDTO, userGroup);
             userGroupMapper.updateByPrimaryKey(userGroup);
         }
@@ -120,14 +125,14 @@ public class UserGroupServiceImpl implements UserGroupService {
 
     @Override
     public void assignRoles(Integer id, List<Integer> roleIds) {
-        // 获取已建立关联的角色ids
-        List<Integer> preRoleIds = getAssignedRoleIds(id);
+        // 获取已建立关联的角色 ids
+        List<Integer> preRoleIds = this.getAssignedRoleIds(id);
 
-        // 获取要新建关联的角色ids
+        // 获取要新建关联的角色 ids
         List<Integer> toAddRoleIds = roleIds.stream()
                 .filter(roleId -> !preRoleIds.contains(roleId)).collect(Collectors.toList());
 
-        // 获取要删除关联的角色ids
+        // 获取要删除关联的角色 ids
         List<Integer> toDelRoleIds = preRoleIds.stream()
                 .filter(actionId -> !roleIds.contains(actionId)).collect(Collectors.toList());
 
@@ -154,14 +159,14 @@ public class UserGroupServiceImpl implements UserGroupService {
 
     @Override
     public void assignResources(Integer id, List<Integer> resourceActionIds) {
-        // 获取已建立关联的资源动作ids
-        List<Integer> preActionIds = getAssignedResourceActionIds(id);
+        // 获取已建立关联的资源动作 ids
+        List<Integer> preActionIds = this.getAssignedResourceActionIds(id);
 
-        // 获取要新建关联的资源动作ids
+        // 获取要新建关联的资源动作 ids
         List<Integer> toAddActionIds = resourceActionIds.stream()
                 .filter(actionId -> !preActionIds.contains(actionId)).collect(Collectors.toList());
 
-        // 获取要删除关联的资源动作ids
+        // 获取要删除关联的资源动作 ids
         List<Integer> toDelActionIds = preActionIds.stream()
                 .filter(actionId -> !resourceActionIds.contains(actionId)).collect(Collectors.toList());
 
@@ -189,14 +194,14 @@ public class UserGroupServiceImpl implements UserGroupService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void assignMenus(Integer id, List<Integer> menuIds) {
-        // 获取已建立关联的菜单ids
-        List<Integer> preMenuIds = getAssignedMenuIds(id);
+        // 获取已建立关联的菜单 ids
+        List<Integer> preMenuIds = this.getAssignedMenuIds(id);
 
-        // 获取要新建关联的菜单ids
+        // 获取要新建关联的菜单 ids
         List<Integer> toAddMenuIds = menuIds.stream()
                 .filter(menuId -> !preMenuIds.contains(menuId)).collect(Collectors.toList());
 
-        // 获取要删除关联的菜单ids
+        // 获取要删除关联的菜单 ids
         List<Integer> toDelMenuIds = preMenuIds.stream()
                 .filter(menuId -> !menuIds.contains(menuId)).collect(Collectors.toList());
 
@@ -271,7 +276,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<ResourceCategoryAssignVO> loadResources(Integer id) {
-        List<Integer> assignedActionIds = getAssignedResourceActionIds(id);
+        List<Integer> assignedActionIds = this.getAssignedResourceActionIds(id);
 
         List<ResourceCategoryAssignVO> categories = resourceCategoryService.findAllForAssign();
         categories.forEach(category ->
@@ -287,7 +292,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<MenuAssignVO> loadMenus(Integer id) {
-        List<Integer> assignedMenuIds = getAssignedMenuIds(id);
+        List<Integer> assignedMenuIds = this.getAssignedMenuIds(id);
 
         List<MenuAssignVO> menus = menuService.findAllForAssign();
         setMenuItems(menus, assignedMenuIds);

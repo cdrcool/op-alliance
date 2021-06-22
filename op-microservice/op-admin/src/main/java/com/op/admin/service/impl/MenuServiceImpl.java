@@ -12,6 +12,7 @@ import com.op.admin.utils.TreeUtils;
 import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.MenuTreeVO;
 import com.op.admin.vo.MenuVO;
+import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.SqlBuilder;
@@ -52,7 +53,8 @@ public class MenuServiceImpl implements MenuService {
             menuMapper.insert(menu);
         } else {
             Integer id = saveDTO.getId();
-            Menu menu = menuMapper.selectByPrimaryKey(id).orElseThrow(() -> new BusinessException("找不到菜单，菜单id：" + id));
+            Menu menu = menuMapper.selectByPrimaryKey(id)
+                    .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的菜单"));
             setMenuProps(menu, saveDTO.getPid());
             menuMapping.update(saveDTO, menu);
             menuMapper.updateByPrimaryKey(menu);
@@ -72,7 +74,7 @@ public class MenuServiceImpl implements MenuService {
             menu.setMenuLevel(1);
         } else if (!pid.equals(menu.getPid())) {
             Menu pMenu = menuMapper.selectByPrimaryKey(pid)
-                    .orElseThrow(() -> new BusinessException("找不到父菜单，父菜单id：" + pid));
+                    .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + pid + "】的父菜单"));
             String parentIds = pMenu.getParentIds();
             parentIds = StringUtils.isNoneBlank(parentIds) ? parentIds + "," + pid : String.valueOf(pid);
             menu.setParentIds(parentIds);
