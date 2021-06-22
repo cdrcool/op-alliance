@@ -5,6 +5,8 @@ import com.op.admin.dto.ResourceAssignDTO;
 import com.op.admin.dto.RolePageQueryDTO;
 import com.op.admin.dto.RoleSaveDTO;
 import com.op.admin.service.RoleService;
+import com.op.admin.vo.MenuAssignVO;
+import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.RoleVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -15,6 +17,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 角色 Controller
@@ -72,5 +75,17 @@ public class RoleController {
     @PostMapping("assignMenus")
     public void assignMenus(@Valid @RequestBody MenuAssignDTO menuAssignDTO) {
         roleService.assignMenus(menuAssignDTO.getId(), menuAssignDTO.getMenuIds());
+    }
+
+    @ApiOperation("查找所有资源，以及用户分配情况")
+    @GetMapping("loadResources")
+    public List<ResourceCategoryAssignVO> loadResources(@RequestParam Integer id) {
+        return roleService.loadResources(id);
+    }
+
+    @ApiOperation("查找所有菜单，以及用户分配情况")
+    @GetMapping("loadMenus")
+    public List<MenuAssignVO> loadMenus(@RequestParam Integer id) {
+        return roleService.loadMenus(id);
     }
 }

@@ -2,8 +2,7 @@ package com.op.admin.controller;
 
 import com.op.admin.dto.*;
 import com.op.admin.service.OrganizationService;
-import com.op.admin.vo.OrganizationTreeVO;
-import com.op.admin.vo.OrganizationVO;
+import com.op.admin.vo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
@@ -72,5 +71,23 @@ public class OrganizationController {
     @PostMapping("assignMenus")
     public void assignMenus(@Valid @RequestBody MenuAssignDTO menuAssignDTO) {
         organizationService.assignMenus(menuAssignDTO.getId(), menuAssignDTO.getMenuIds());
+    }
+
+    @ApiOperation("查找所有角色，以及用户分配情况")
+    @GetMapping("loadRoles")
+    public List<RoleAssignVO> loadRoles(@RequestParam Integer id) {
+        return organizationService.loadRoles(id);
+    }
+
+    @ApiOperation("查找所有资源，以及用户分配情况")
+    @GetMapping("loadResources")
+    public List<ResourceCategoryAssignVO> loadResources(@RequestParam Integer id) {
+        return organizationService.loadResources(id);
+    }
+
+    @ApiOperation("查找所有菜单，以及用户分配情况")
+    @GetMapping("loadMenus")
+    public List<MenuAssignVO> loadMenus(@RequestParam Integer id) {
+        return organizationService.loadMenus(id);
     }
 }
