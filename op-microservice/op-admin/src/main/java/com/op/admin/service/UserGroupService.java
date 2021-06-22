@@ -2,6 +2,9 @@ package com.op.admin.service;
 
 import com.op.admin.dto.UserGroupPageQueryDTO;
 import com.op.admin.dto.UserGroupSaveDTO;
+import com.op.admin.vo.MenuAssignVO;
+import com.op.admin.vo.ResourceCategoryAssignVO;
+import com.op.admin.vo.RoleAssignVO;
 import com.op.admin.vo.UserGroupVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -76,7 +79,7 @@ public interface UserGroupService {
      * @param id 用户组 id
      * @return 角色 ids
      */
-    List<Integer> loadRoleIds(Integer id);
+    List<Integer> getAssignedRoleIds(Integer id);
 
     /**
      * 获取用户组所分配的资源 ids
@@ -84,7 +87,7 @@ public interface UserGroupService {
      * @param id 用户组 id
      * @return 资源 ids
      */
-    List<Integer> loadResourceIds(Integer id);
+    List<Integer> getAssignedResourceActionIds(Integer id);
 
     /**
      * 获取用户组所分配的菜单 ids
@@ -92,5 +95,29 @@ public interface UserGroupService {
      * @param id 用户组 id
      * @return 菜单 ids
      */
-    List<Integer> loadMenuIds(Integer id);
+    List<Integer> getAssignedMenuIds(Integer id);
+
+    /**
+     * 查找所有角色，以及用户组分配情况
+     *
+     * @param id 用户组 id
+     * @return 角色分配 VO 列表
+     */
+    List<RoleAssignVO> loadRoles(Integer id);
+
+    /**
+     * 查找所有资源，以及用户组分配情况
+     *
+     * @param id 用户组 id
+     * @return 资源分类分配 VO 列表
+     */
+    List<ResourceCategoryAssignVO> loadResources(Integer id);
+
+    /**
+     * 查找所有菜单，以及用户组分配情况
+     *
+     * @param id 用户组 id
+     * @return 菜单分配 VO 列表
+     */
+    List<MenuAssignVO> loadMenus(Integer id);
 }

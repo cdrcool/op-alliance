@@ -11,9 +11,12 @@ import com.op.admin.entity.UserResourceActionRelation;
 import com.op.admin.entity.UserRoleRelation;
 import com.op.admin.mapper.*;
 import com.op.admin.mapping.UserMapping;
-import com.op.admin.service.UserService;
+import com.op.admin.service.*;
 import com.op.admin.utils.BCryptPasswordEncoder;
 import com.op.admin.utils.PasswordGenerator;
+import com.op.admin.vo.MenuAssignVO;
+import com.op.admin.vo.ResourceCategoryAssignVO;
+import com.op.admin.vo.RoleAssignVO;
 import com.op.admin.vo.UserVO;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.apache.commons.collections4.CollectionUtils;
@@ -52,16 +55,31 @@ public class UserServiceImpl implements UserService {
     private final UserRoleRelationMapper userRoleRelationMapper;
     private final UserResourceActionRelationMapper userResourceActionRelationMapper;
     private final UserMenuRelationMapper userMenuRelationMapper;
+    private final RoleService roleService;
+    private final ResourceCategoryService resourceCategoryService;
+    private final MenuService menuService;
+    private final UserGroupService userGroupService;
+    private final OrganizationService organizationService;
 
     public UserServiceImpl(UserMapper userMapper, UserMapping userMapping,
                            UserRoleRelationMapper userRoleRelationMapper,
                            UserResourceActionRelationMapper userResourceActionRelationMapper,
-                           UserMenuRelationMapper userMenuRelationMapper) {
+                           UserMenuRelationMapper userMenuRelationMapper,
+                           RoleService roleService,
+                           ResourceCategoryService resourceCategoryService,
+                           MenuService menuService,
+                           UserGroupService userGroupService,
+                           OrganizationService organizationService) {
         this.userMapper = userMapper;
         this.userMapping = userMapping;
         this.userRoleRelationMapper = userRoleRelationMapper;
         this.userResourceActionRelationMapper = userResourceActionRelationMapper;
         this.userMenuRelationMapper = userMenuRelationMapper;
+        this.roleService = roleService;
+        this.resourceCategoryService = resourceCategoryService;
+        this.menuService = menuService;
+        this.userGroupService = userGroupService;
+        this.organizationService = organizationService;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -164,7 +182,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void assignRoles(Integer id, List<Integer> roleIds) {
         // 获取已建立关联的角色ids
-        List<Integer> preRoleIds = loadRoleIds(id);
+        List<Integer> preRoleIds = getAssignedRoleIds(id);
 
         // 获取要新建关联的角色ids
         List<Integer> toAddRoleIds = roleIds.stream()
@@ -199,7 +217,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void assignResources(Integer id, List<Integer> resourceActionIds) {
         // 获取已建立关联的资源动作ids
-        List<Integer> preActionIds = loadResourceIds(id);
+        List<Integer> preActionIds = getAssignedResourceActionIds(id);
 
         // 获取要新建关联的资源动作ids
         List<Integer> toAddActionIds = resourceActionIds.stream()
@@ -234,7 +252,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void assignMenus(Integer id, List<Integer> menuIds) {
         // 获取已建立关联的菜单ids
-        List<Integer> preMenuIds = loadMenuIds(id);
+        List<Integer> preMenuIds = getAssignedMenuIds(id);
 
         // 获取要新建关联的菜单ids
         List<Integer> toAddMenuIds = menuIds.stream()
@@ -267,7 +285,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<Integer> loadRoleIds(Integer id) {
+    public List<Integer> getAssignedRoleIds(Integer id) {
         SelectStatementProvider selectStatementProvider = select(UserRoleRelationDynamicSqlSupport.roleId)
                 .from(UserRoleRelationDynamicSqlSupport.userRoleRelation)
                 .where(UserRoleRelationDynamicSqlSupport.userId, isEqualTo(id))
@@ -278,7 +296,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<Integer> loadResourceIds(Integer id) {
+    public List<Integer> getAssignedResourceActionIds(Integer id) {
         SelectStatementProvider selectStatementProvider = select(UserResourceActionRelationDynamicSqlSupport.actionId)
                 .from(UserResourceActionRelationDynamicSqlSupport.userResourceActionRelation)
                 .where(UserResourceActionRelationDynamicSqlSupport.userId, isEqualTo(id))
@@ -289,12 +307,79 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<Integer> loadMenuIds(Integer id) {
+    public List<Integer> getAssignedMenuIds(Integer id) {
         SelectStatementProvider selectStatementProvider = select(UserMenuRelationDynamicSqlSupport.menuId)
                 .from(UserMenuRelationDynamicSqlSupport.userMenuRelation)
                 .where(UserMenuRelationDynamicSqlSupport.userId, isEqualTo(id))
                 .build().render(RenderingStrategies.MYBATIS3);
         return userMenuRelationMapper.selectMany(selectStatementProvider).stream()
                 .map(UserMenuRelation::getMenuId).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public List<RoleAssignVO> loadRoles(Integer id) {
+        List<Integer> assignedRoleIds = getAssignedRoleIds(id);
+        List<Integer> groupAssignedRoleIds = userGroupService.getAssignedRoleIds(id);
+        List<Integer> orgAssignedRoleIds = organizationService.getAssignedRoleIds(id);
+
+        List<RoleAssignVO> roles = roleService.findAllForAssign();
+        roles.forEach(role -> {
+            role.setChecked(assignedRoleIds.contains(role.getId()) ||
+                    groupAssignedRoleIds.contains(role.getId()) ||
+                    orgAssignedRoleIds.contains(role.getId()));
+            role.setEnableUncheck(groupAssignedRoleIds.contains(role.getId()) &&
+                    !orgAssignedRoleIds.contains(role.getId()));
+        });
+
+        return roles;
+    }
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public List<ResourceCategoryAssignVO> loadResources(Integer id) {
+        List<Integer> assignedActionIds = getAssignedResourceActionIds(id);
+        List<Integer> groupAssignedActionIds = userGroupService.getAssignedResourceActionIds(id);
+        List<Integer> orgAssignedActionIds = organizationService.getAssignedResourceActionIds(id);
+
+        List<ResourceCategoryAssignVO> categories = resourceCategoryService.findAllForAssign();
+        categories.forEach(category ->
+                category.getResources().forEach(resource ->
+                        resource.getActions().forEach(action -> {
+                            action.setChecked(assignedActionIds.contains(action.getId()) ||
+                                    groupAssignedActionIds.contains(action.getId()) ||
+                                    orgAssignedActionIds.contains(action.getId()));
+                            action.setEnableUncheck(groupAssignedActionIds.contains(action.getId()) &&
+                                    !orgAssignedActionIds.contains(action.getId()));
+                        })));
+
+        return categories;
+    }
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public List<MenuAssignVO> loadMenus(Integer id) {
+        List<Integer> assignedMenuIds = getAssignedMenuIds(id);
+        List<Integer> groupAssignedMenuIds = userGroupService.getAssignedMenuIds(id);
+        List<Integer> orgAssignedMenuIds = organizationService.getAssignedMenuIds(id);
+
+        List<MenuAssignVO> menus = menuService.findAllForAssign();
+        setMenuItems(menus, assignedMenuIds, groupAssignedMenuIds, orgAssignedMenuIds);
+
+        return menus;
+    }
+
+    private void setMenuItems(List<MenuAssignVO> menus, List<Integer> assignedMenuIds, List<Integer> groupAssignedMenuIds, List<Integer> orgAssignedMenuIds) {
+        menus.forEach(menu -> {
+            menu.setChecked(assignedMenuIds.contains(menu.getId()) ||
+                    groupAssignedMenuIds.contains(menu.getId()) ||
+                    orgAssignedMenuIds.contains(menu.getId()));
+            menu.setEnableUncheck(groupAssignedMenuIds.contains(menu.getId()) &&
+                    !orgAssignedMenuIds.contains(menu.getId()));
+
+            if (!CollectionUtils.isEmpty(menu.getChildren())) {
+                setMenuItems(menu.getChildren(), assignedMenuIds, groupAssignedMenuIds, orgAssignedMenuIds);
+            }
+        });
     }
 }

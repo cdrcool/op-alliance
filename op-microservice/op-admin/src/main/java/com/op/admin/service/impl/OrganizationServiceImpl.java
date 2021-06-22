@@ -156,7 +156,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public void assignRoles(Integer id, List<Integer> roleIds) {
         // 获取已建立关联的角色ids
-        List<Integer> preRoleIds = loadRoleIds(id);
+        List<Integer> preRoleIds = getAssignedRoleIds(id);
 
         // 获取要新建关联的角色ids
         List<Integer> toAddRoleIds = roleIds.stream()
@@ -191,7 +191,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public void assignResources(Integer id, List<Integer> resourceActionIds) {
         // 获取已建立关联的资源动作ids
-        List<Integer> preActionIds = loadResourceIds(id);
+        List<Integer> preActionIds = getAssignedResourceActionIds(id);
 
         // 获取要新建关联的资源动作ids
         List<Integer> toAddActionIds = resourceActionIds.stream()
@@ -226,7 +226,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public void assignMenus(Integer id, List<Integer> menuIds) {
         // 获取已建立关联的菜单ids
-        List<Integer> preMenuIds = this.loadMenuIds(id);
+        List<Integer> preMenuIds = this.getAssignedMenuIds(id);
 
         // 获取要新建关联的菜单ids
         List<Integer> toAddMenuIds = menuIds.stream()
@@ -259,7 +259,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<Integer> loadRoleIds(Integer id) {
+    public List<Integer> getAssignedRoleIds(Integer id) {
         SelectStatementProvider selectStatementProvider = select(OrganizationRoleRelationDynamicSqlSupport.roleId)
                 .from(OrganizationRoleRelationDynamicSqlSupport.organizationRoleRelation)
                 .where(OrganizationRoleRelationDynamicSqlSupport.orgId, isEqualTo(id))
@@ -270,7 +270,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<Integer> loadResourceIds(Integer id) {
+    public List<Integer> getAssignedResourceActionIds(Integer id) {
         SelectStatementProvider selectStatementProvider = select(OrganizationResourceActionRelationDynamicSqlSupport.actionId)
                 .from(OrganizationResourceActionRelationDynamicSqlSupport.organizationResourceActionRelation)
                 .where(OrganizationResourceActionRelationDynamicSqlSupport.orgId, isEqualTo(id))
@@ -281,7 +281,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<Integer> loadMenuIds(Integer id) {
+    public List<Integer> getAssignedMenuIds(Integer id) {
         SelectStatementProvider selectStatementProvider = select(OrganizationMenuRelationDynamicSqlSupport.menuId)
                 .from(OrganizationMenuRelationDynamicSqlSupport.organizationMenuRelation)
                 .where(OrganizationMenuRelationDynamicSqlSupport.orgId, isEqualTo(id))
@@ -292,7 +292,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<RoleAssignVO> loadRolesWithAssignInfo(Integer id) {
+    public List<RoleAssignVO> loadRoles(Integer id) {
         List<Integer> parentIds = organizationMapper.getParentIds(id);
 
         SelectStatementProvider selectStatementProvider = select(OrganizationRoleRelationDynamicSqlSupport.orgId, OrganizationRoleRelationDynamicSqlSupport.roleId)
@@ -302,12 +302,12 @@ public class OrganizationServiceImpl implements OrganizationService {
         List<OrganizationRoleRelation> relations = organizationRoleRelationMapper.selectMany(selectStatementProvider);
         Map<Integer, List<OrganizationRoleRelation>> relationsMap = relations.stream().collect(Collectors.groupingBy(OrganizationRoleRelation::getRoleId));
 
-        List<RoleAssignVO> roles = roleService.findAllToAssign();
+        List<RoleAssignVO> roles = roleService.findAllForAssign();
         roles.forEach(role -> {
             List<Integer> orgIds = relationsMap.get(role.getId()).stream()
                     .map(OrganizationRoleRelation::getOrgId).collect(Collectors.toList());
             role.setChecked(CollectionUtils.isNotEmpty(orgIds));
-            role.setEnableUncheck(orgIds.stream().anyMatch(orgId -> !id.equals(orgId)));
+            role.setEnableUncheck(orgIds.stream().allMatch(id::equals));
         });
 
         return roles;
@@ -315,7 +315,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<ResourceCategoryAssignVO> loadResourcesWithAssignInfo(Integer id) {
+    public List<ResourceCategoryAssignVO> loadResources(Integer id) {
         List<Integer> parentIds = organizationMapper.getParentIds(id);
 
         SelectStatementProvider selectStatementProvider = select(OrganizationResourceActionRelationDynamicSqlSupport.orgId, OrganizationResourceActionRelationDynamicSqlSupport.actionId)
@@ -325,14 +325,14 @@ public class OrganizationServiceImpl implements OrganizationService {
         List<OrganizationResourceActionRelation> relations = organizationResourceActionRelationMapper.selectMany(selectStatementProvider);
         Map<Integer, List<OrganizationResourceActionRelation>> relationsMap = relations.stream().collect(Collectors.groupingBy(OrganizationResourceActionRelation::getActionId));
 
-        List<ResourceCategoryAssignVO> categories = resourceCategoryService.findAllToAssign();
+        List<ResourceCategoryAssignVO> categories = resourceCategoryService.findAllForAssign();
         categories.forEach(category ->
                 category.getResources().forEach(resource ->
                         resource.getActions().forEach(action -> {
                             List<Integer> orgIds = relationsMap.get(action.getId()).stream()
                                     .map(OrganizationResourceActionRelation::getOrgId).collect(Collectors.toList());
                             action.setChecked(CollectionUtils.isNotEmpty(orgIds));
-                            action.setEnableUncheck(orgIds.stream().anyMatch(orgId -> !id.equals(orgId)));
+                            action.setEnableUncheck(orgIds.stream().allMatch(id::equals));
                         })));
 
         return categories;
@@ -340,7 +340,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<MenuAssignVO> loadMenusWithAssignInfo(Integer id) {
+    public List<MenuAssignVO> loadMenus(Integer id) {
         List<Integer> parentIds = organizationMapper.getParentIds(id);
 
         SelectStatementProvider selectStatementProvider = select(OrganizationMenuRelationDynamicSqlSupport.orgId, OrganizationMenuRelationDynamicSqlSupport.menuId)
@@ -350,7 +350,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         List<OrganizationMenuRelation> relations = organizationMenuRelationMapper.selectMany(selectStatementProvider);
         Map<Integer, List<OrganizationMenuRelation>> relationsMap = relations.stream().collect(Collectors.groupingBy(OrganizationMenuRelation::getMenuId));
 
-        List<MenuAssignVO> menus = menuService.findAllToAssign();
+        List<MenuAssignVO> menus = menuService.findAllForAssign();
         setMenuItems(menus, relationsMap, id);
 
         return menus;
@@ -361,7 +361,7 @@ public class OrganizationServiceImpl implements OrganizationService {
             List<Integer> orgIds = relationsMap.get(menu.getId()).stream()
                     .map(OrganizationMenuRelation::getOrgId).collect(Collectors.toList());
             menu.setChecked(CollectionUtils.isNotEmpty(orgIds));
-            menu.setEnableUncheck(orgIds.stream().anyMatch(orgId -> !id.equals(orgId)));
+            menu.setEnableUncheck(orgIds.stream().allMatch(id::equals));
 
             if (!CollectionUtils.isEmpty(menu.getChildren())) {
                 setMenuItems(menu.getChildren(), relationsMap, id);

@@ -52,7 +52,7 @@ public class RoleController {
     @ApiOperation("分页查询角色")
     @PostMapping("page")
     public Page<RoleVO> queryPage(@PageableDefault(sort = "roleNo", direction = Sort.Direction.ASC) Pageable pageable,
-                                       @Valid @RequestBody RolePageQueryDTO queryDTO) {
+                                  @Valid @RequestBody RolePageQueryDTO queryDTO) {
         return roleService.queryPage(pageable, queryDTO);
     }
 
@@ -64,13 +64,13 @@ public class RoleController {
 
     @ApiOperation("分配资源")
     @PostMapping("assignResources")
-    public void assignResources(@Valid @RequestBody ResourceAssignDTO resourceAssignDTO){
+    public void assignResources(@Valid @RequestBody ResourceAssignDTO resourceAssignDTO) {
         roleService.assignResources(resourceAssignDTO.getId(), resourceAssignDTO.getResourceIds());
     }
 
     @ApiOperation("分配菜单")
     @PostMapping("assignMenus")
-    public void assignMenus(@Valid @RequestBody MenuAssignDTO menuAssignDTO){
+    public void assignMenus(@Valid @RequestBody MenuAssignDTO menuAssignDTO) {
         roleService.assignMenus(menuAssignDTO.getId(), menuAssignDTO.getMenuIds());
     }
 }

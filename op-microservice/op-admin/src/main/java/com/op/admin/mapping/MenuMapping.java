@@ -2,11 +2,9 @@ package com.op.admin.mapping;
 
 import com.op.admin.dto.MenuSaveDTO;
 import com.op.admin.entity.Menu;
-import com.op.admin.entity.Organization;
 import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.MenuTreeVO;
 import com.op.admin.vo.MenuVO;
-import com.op.admin.vo.OrganizationVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 

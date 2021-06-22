@@ -38,7 +38,7 @@ public interface UserMapping {
      * 根据用户更新 dto 更新用户
      *
      * @param updateDTO 用户更新 dto
-     * @param user          用户
+     * @param user      用户
      */
     void update(UserUpdateDTO updateDTO, @MappingTarget User user);
 

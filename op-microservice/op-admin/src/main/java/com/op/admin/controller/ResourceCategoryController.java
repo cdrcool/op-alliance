@@ -50,7 +50,7 @@ public class ResourceCategoryController {
     @ApiOperation("分页查询资源分类")
     @PostMapping("page")
     public Page<ResourceCategoryVO> queryPage(@PageableDefault(sort = "categoryNo", direction = Sort.Direction.ASC) Pageable pageable,
-                                      @Valid @RequestBody ResourceCategoryPageQueryDTO queryDTO) {
+                                              @Valid @RequestBody ResourceCategoryPageQueryDTO queryDTO) {
         return resourceCategoryService.queryPage(pageable, queryDTO);
     }
 }

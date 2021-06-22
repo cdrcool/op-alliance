@@ -103,7 +103,7 @@ public class ResourceCategoryServiceImpl implements ResourceCategoryService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<ResourceCategoryAssignVO> findAllToAssign() {
+    public List<ResourceCategoryAssignVO> findAllForAssign() {
         SelectStatementProvider selectStatementProvider = select(ResourceCategoryDynamicSqlSupport.id, ResourceCategoryDynamicSqlSupport.categoryName)
                 .from(ResourceCategoryDynamicSqlSupport.resourceCategory)
                 .orderBy(ResourceCategoryDynamicSqlSupport.categoryNo)
@@ -111,7 +111,7 @@ public class ResourceCategoryServiceImpl implements ResourceCategoryService {
         List<ResourceCategory> categories = resourceCategoryMapper.selectMany(selectStatementProvider);
         List<ResourceCategoryAssignVO> categoryAssignList = resourceCategoryMapping.toResourceCategoryAssignVOList(categories);
 
-        Map<Integer, List<ResourceAssignVO>> resourceAssignMap = resourceService.findAllToAssign();
+        Map<Integer, List<ResourceAssignVO>> resourceAssignMap = resourceService.findAllForAssign();
 
         categoryAssignList.forEach(category -> category.setResources(resourceAssignMap.get(category.getId())));
 

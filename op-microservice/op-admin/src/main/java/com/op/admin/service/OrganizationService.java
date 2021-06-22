@@ -6,7 +6,6 @@ import com.op.admin.dto.OrganizationTreeQueryDTO;
 import com.op.admin.vo.*;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 组织 Service
@@ -83,15 +82,15 @@ public interface OrganizationService {
      * @param id 组织 id
      * @return 角色 ids
      */
-    List<Integer> loadRoleIds(Integer id);
+    List<Integer> getAssignedRoleIds(Integer id);
 
     /**
-     * 获取组织所分配的资源 ids
+     * 获取组织所分配的资源动作 ids
      *
      * @param id 组织 id
-     * @return 资源 ids
+     * @return 资源动作 ids
      */
-    List<Integer> loadResourceIds(Integer id);
+    List<Integer> getAssignedResourceActionIds(Integer id);
 
     /**
      * 获取组织所分配的菜单 ids
@@ -99,7 +98,7 @@ public interface OrganizationService {
      * @param id 组织 id
      * @return 菜单 ids
      */
-    List<Integer> loadMenuIds(Integer id);
+    List<Integer> getAssignedMenuIds(Integer id);
 
     /**
      * 查找所有角色，以及组织分配情况
@@ -107,21 +106,21 @@ public interface OrganizationService {
      * @param id 组织 id
      * @return 角色分配 VO 列表
      */
-    List<RoleAssignVO> loadRolesWithAssignInfo(Integer id);
+    List<RoleAssignVO> loadRoles(Integer id);
 
     /**
-     * 获取组织所分配的所有资源 ids（包括其所有上级组织的）
+     * 查找所有资源，以及组织分配情况
      *
      * @param id 组织 id
-     * @return 资源 ids
+     * @return 资源分类分配 VO 列表
      */
-    List<ResourceCategoryAssignVO> loadResourcesWithAssignInfo(Integer id);
+    List<ResourceCategoryAssignVO> loadResources(Integer id);
 
     /**
-     * 获取组织所分配的所有菜单 ids（包括其所有上级组织的）
+     * 查找所有菜单，以及组织分配情况
      *
      * @param id 组织 id
-     * @return 菜单 ids
+     * @return 菜单分配 VO 列表
      */
-    List<MenuAssignVO> loadMenusWithAssignInfo(Integer id);
+    List<MenuAssignVO> loadMenus(Integer id);
 }

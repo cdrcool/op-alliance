@@ -114,7 +114,7 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public Map<Integer, List<ResourceAssignVO>> findAllToAssign() {
+    public Map<Integer, List<ResourceAssignVO>> findAllForAssign() {
         SelectStatementProvider selectStatementProvider = select(ResourceDynamicSqlSupport.id, ResourceDynamicSqlSupport.resourceName)
                 .from(ResourceDynamicSqlSupport.resource)
                 .orderBy(ResourceDynamicSqlSupport.resourceNo)
@@ -122,7 +122,7 @@ public class ResourceServiceImpl implements ResourceService {
         List<Resource> resources = resourceMapper.selectMany(selectStatementProvider);
         List<ResourceAssignVO> resourceAssignList = resourceMapping.toResourceAssignVOList(resources);
 
-        Map<Integer, List<ResourceActionAssignVO>> resourceActionAssignMap = resourceActionService.findAllToAssign();
+        Map<Integer, List<ResourceActionAssignVO>> resourceActionAssignMap = resourceActionService.findAllForAssign();
 
         resourceAssignList.forEach(resource -> resource.setActions(resourceActionAssignMap.get(resource.getId())));
 

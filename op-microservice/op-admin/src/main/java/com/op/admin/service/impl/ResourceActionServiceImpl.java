@@ -108,7 +108,7 @@ public class ResourceActionServiceImpl implements ResourceActionService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public Map<Integer, List<ResourceActionAssignVO>> findAllToAssign() {
+    public Map<Integer, List<ResourceActionAssignVO>> findAllForAssign() {
         SelectStatementProvider selectStatementProvider = select(ResourceActionDynamicSqlSupport.id, ResourceActionDynamicSqlSupport.actionName)
                 .from(ResourceActionDynamicSqlSupport.resourceAction)
                 .orderBy(ResourceActionDynamicSqlSupport.actionNo)

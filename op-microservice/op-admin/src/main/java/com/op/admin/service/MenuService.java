@@ -5,7 +5,6 @@ import com.op.admin.dto.MenuSaveDTO;
 import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.MenuTreeVO;
 import com.op.admin.vo.MenuVO;
-import com.op.admin.vo.RoleAssignVO;
 
 import java.util.List;
 
@@ -58,7 +57,7 @@ public interface MenuService {
      *
      * @return 菜单分配 VO 列表
      */
-    List<MenuAssignVO> findAllToAssign();
+    List<MenuAssignVO> findAllForAssign();
 
     /**
      * 显示/隐藏菜单

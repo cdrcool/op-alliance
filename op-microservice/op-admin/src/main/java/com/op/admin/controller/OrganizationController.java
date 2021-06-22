@@ -64,13 +64,13 @@ public class OrganizationController {
 
     @ApiOperation("分配资源")
     @PostMapping("assignResources")
-    public void assignResources(@Valid @RequestBody ResourceAssignDTO resourceAssignDTO){
+    public void assignResources(@Valid @RequestBody ResourceAssignDTO resourceAssignDTO) {
         organizationService.assignRoles(resourceAssignDTO.getId(), resourceAssignDTO.getResourceIds());
     }
 
     @ApiOperation("分配菜单")
     @PostMapping("assignMenus")
-    public void assignMenus(@Valid @RequestBody MenuAssignDTO menuAssignDTO){
+    public void assignMenus(@Valid @RequestBody MenuAssignDTO menuAssignDTO) {
         organizationService.assignMenus(menuAssignDTO.getId(), menuAssignDTO.getMenuIds());
     }
 }

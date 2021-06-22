@@ -79,13 +79,13 @@ public class UserController {
 
     @ApiOperation("分配资源")
     @PostMapping("assignResources")
-    public void assignResources(@Valid @RequestBody ResourceAssignDTO resourceAssignDTO){
+    public void assignResources(@Valid @RequestBody ResourceAssignDTO resourceAssignDTO) {
         userService.assignRoles(resourceAssignDTO.getId(), resourceAssignDTO.getResourceIds());
     }
 
     @ApiOperation("分配菜单")
     @PostMapping("assignMenus")
-    public void assignMenus(@Valid @RequestBody MenuAssignDTO menuAssignDTO){
+    public void assignMenus(@Valid @RequestBody MenuAssignDTO menuAssignDTO) {
         userService.assignMenus(menuAssignDTO.getId(), menuAssignDTO.getMenuIds());
     }
 }

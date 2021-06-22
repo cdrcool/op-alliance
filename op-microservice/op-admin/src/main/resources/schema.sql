@@ -335,7 +335,7 @@ DROP TABLE IF EXISTS `admin_organization_menu_relation`;
 CREATE TABLE `admin_organization_menu_relation`
 (
     `org_id`           int NULL DEFAULT NULL COMMENT '组织id',
-    `menu_id`        int NULL DEFAULT NULL COMMENT '菜单id',
+    `menu_id`          int NULL DEFAULT NULL COMMENT '菜单id',
     `version`          int NULL DEFAULT NULL COMMENT '版本号',
     `deleted`          tinyint(1) NULL DEFAULT NULL COMMENT '是否逻辑删除',
     `creator_id`       int NULL DEFAULT NULL COMMENT '创建人id',
@@ -353,7 +353,7 @@ DROP TABLE IF EXISTS `admin_user_menu_relation`;
 CREATE TABLE `admin_user_menu_relation`
 (
     `user_id`          int NULL DEFAULT NULL COMMENT '用户id',
-    `menu_id`        int NULL DEFAULT NULL COMMENT '菜单id',
+    `menu_id`          int NULL DEFAULT NULL COMMENT '菜单id',
     `version`          int NULL DEFAULT NULL COMMENT '版本号',
     `deleted`          tinyint(1) NULL DEFAULT NULL COMMENT '是否逻辑删除',
     `creator_id`       int NULL DEFAULT NULL COMMENT '创建人id',
@@ -371,7 +371,7 @@ DROP TABLE IF EXISTS `admin_role_menu_relation`;
 CREATE TABLE `admin_role_menu_relation`
 (
     `role_id`          int         DEFAULT NULL COMMENT '角色id',
-    `menu_id`        int         DEFAULT NULL COMMENT '菜单id',
+    `menu_id`          int         DEFAULT NULL COMMENT '菜单id',
     `version`          int         DEFAULT NULL COMMENT '版本号',
     `deleted`          tinyint(1) DEFAULT NULL COMMENT '是否逻辑删除',
     `creator_id`       int         DEFAULT NULL COMMENT '创建人id',
@@ -389,7 +389,7 @@ DROP TABLE IF EXISTS `admin_user_group_menu_relation`;
 CREATE TABLE `admin_user_group_menu_relation`
 (
     `group_id`         int NULL DEFAULT NULL COMMENT '用户组id',
-    `menu_id`        int NULL DEFAULT NULL COMMENT '菜单id',
+    `menu_id`          int NULL DEFAULT NULL COMMENT '菜单id',
     `version`          int NULL DEFAULT NULL COMMENT '版本号',
     `deleted`          tinyint(1) NULL DEFAULT NULL COMMENT '是否逻辑删除',
     `creator_id`       int NULL DEFAULT NULL COMMENT '创建人id',

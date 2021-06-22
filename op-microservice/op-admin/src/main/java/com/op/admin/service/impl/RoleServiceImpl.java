@@ -3,13 +3,16 @@ package com.op.admin.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.op.admin.dto.RolePageQueryDTO;
 import com.op.admin.dto.RoleSaveDTO;
-import com.op.admin.entity.Menu;
 import com.op.admin.entity.Role;
 import com.op.admin.entity.RoleMenuRelation;
 import com.op.admin.entity.RoleResourceActionRelation;
 import com.op.admin.mapper.*;
 import com.op.admin.mapping.RoleMapping;
+import com.op.admin.service.MenuService;
+import com.op.admin.service.ResourceCategoryService;
 import com.op.admin.service.RoleService;
+import com.op.admin.vo.MenuAssignVO;
+import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.RoleAssignVO;
 import com.op.admin.vo.RoleVO;
 import com.op.framework.web.common.api.response.exception.BusinessException;
@@ -18,7 +21,6 @@ import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
-import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.SimpleSortSpecification;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
@@ -44,14 +46,20 @@ public class RoleServiceImpl implements RoleService {
     private final RoleMapping roleMapping;
     private final RoleResourceActionRelationMapper roleResourceActionRelationMapper;
     private final RoleMenuRelationMapper roleMenuRelationMapper;
+    private final ResourceCategoryService resourceCategoryService;
+    private final MenuService menuService;
 
     public RoleServiceImpl(RoleMapper roleMapper, RoleMapping roleMapping,
                            RoleResourceActionRelationMapper roleResourceActionRelationMapper,
-                           RoleMenuRelationMapper roleMenuRelationMapper) {
+                           RoleMenuRelationMapper roleMenuRelationMapper,
+                           ResourceCategoryService resourceCategoryService,
+                           MenuService menuService) {
         this.roleMapper = roleMapper;
         this.roleMapping = roleMapping;
         this.roleResourceActionRelationMapper = roleResourceActionRelationMapper;
         this.roleMenuRelationMapper = roleMenuRelationMapper;
+        this.resourceCategoryService = resourceCategoryService;
+        this.menuService = menuService;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -110,7 +118,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<RoleAssignVO> findAllToAssign() {
+    public List<RoleAssignVO> findAllForAssign() {
         SelectStatementProvider selectStatementProvider = select(RoleDynamicSqlSupport.id,
                 RoleDynamicSqlSupport.roleName, RoleDynamicSqlSupport.roleCode)
                 .from(RoleDynamicSqlSupport.role)
@@ -137,7 +145,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void assignResources(Integer id, List<Integer> resourceActionIds) {
         // 获取已建立关联的资源动作ids
-        List<Integer> preActionIds = loadResourceIds(id);
+        List<Integer> preActionIds = getAssignedResourceActionIds(id);
 
         // 获取要新建关联的资源动作ids
         List<Integer> toAddActionIds = resourceActionIds.stream()
@@ -172,7 +180,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void assignMenus(Integer id, List<Integer> menuIds) {
         // 获取已建立关联的菜单ids
-        List<Integer> preMenuIds = loadMenuIds(id);
+        List<Integer> preMenuIds = getAssignedMenuIds(id);
 
         // 获取要新建关联的菜单ids
         List<Integer> toAddMenuIds = menuIds.stream()
@@ -205,7 +213,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<Integer> loadResourceIds(Integer id) {
+    public List<Integer> getAssignedResourceActionIds(Integer id) {
         SelectStatementProvider selectStatementProvider = select(RoleResourceActionRelationDynamicSqlSupport.actionId)
                 .from(RoleResourceActionRelationDynamicSqlSupport.roleResourceActionRelation)
                 .where(RoleResourceActionRelationDynamicSqlSupport.roleId, isEqualTo(id))
@@ -216,12 +224,50 @@ public class RoleServiceImpl implements RoleService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<Integer> loadMenuIds(Integer id) {
+    public List<Integer> getAssignedMenuIds(Integer id) {
         SelectStatementProvider selectStatementProvider = select(RoleMenuRelationDynamicSqlSupport.menuId)
                 .from(RoleMenuRelationDynamicSqlSupport.roleMenuRelation)
                 .where(RoleMenuRelationDynamicSqlSupport.roleId, isEqualTo(id))
                 .build().render(RenderingStrategies.MYBATIS3);
         return roleMenuRelationMapper.selectMany(selectStatementProvider).stream()
                 .map(RoleMenuRelation::getMenuId).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public List<ResourceCategoryAssignVO> loadResources(Integer id) {
+        List<Integer> assignedActionIds = getAssignedResourceActionIds(id);
+
+        List<ResourceCategoryAssignVO> categories = resourceCategoryService.findAllForAssign();
+        categories.forEach(category ->
+                category.getResources().forEach(resource ->
+                        resource.getActions().forEach(action -> {
+                            action.setChecked(assignedActionIds.contains(action.getId()));
+                            action.setEnableUncheck(true);
+                        })));
+
+        return categories;
+    }
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public List<MenuAssignVO> loadMenus(Integer id) {
+        List<Integer> assignedMenuIds = getAssignedMenuIds(id);
+
+        List<MenuAssignVO> menus = menuService.findAllForAssign();
+        setMenuItems(menus, assignedMenuIds);
+
+        return menus;
+    }
+
+    private void setMenuItems(List<MenuAssignVO> menus, List<Integer> assignedMenuIds) {
+        menus.forEach(menu -> {
+            menu.setChecked(assignedMenuIds.contains(menu.getId()));
+            menu.setEnableUncheck(true);
+
+            if (!CollectionUtils.isEmpty(menu.getChildren())) {
+                setMenuItems(menu.getChildren(), assignedMenuIds);
+            }
+        });
     }
 }

@@ -28,8 +28,8 @@ public interface RoleMapping {
     /**
      * 根据角色保存 dto 更新角色
      *
-     * @param saveDTO          角色保存 dto
-     * @param role 角色
+     * @param saveDTO 角色保存 dto
+     * @param role    角色
      */
     void update(RoleSaveDTO saveDTO, @MappingTarget Role role);
 

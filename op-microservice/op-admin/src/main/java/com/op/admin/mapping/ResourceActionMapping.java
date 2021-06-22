@@ -28,8 +28,8 @@ public interface ResourceActionMapping {
     /**
      * 根据资源动作保存 dto 更新资源动作
      *
-     * @param saveDTO 资源动作保存 dto
-     * @param resourceAction    资源动作
+     * @param saveDTO        资源动作保存 dto
+     * @param resourceAction 资源动作
      */
     void update(ResourceActionSaveDTO saveDTO, @MappingTarget ResourceAction resourceAction);
 

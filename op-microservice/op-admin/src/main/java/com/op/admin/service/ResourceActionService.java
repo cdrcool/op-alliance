@@ -60,5 +60,5 @@ public interface ResourceActionService {
      *
      * @return 资源动作分配 VO Map（key：资源 id；value：资源动作列表）
      */
-    Map<Integer, List<ResourceActionAssignVO>> findAllToAssign();
+    Map<Integer, List<ResourceActionAssignVO>> findAllForAssign();
 }

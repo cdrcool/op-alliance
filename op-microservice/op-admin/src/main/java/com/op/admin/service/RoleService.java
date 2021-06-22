@@ -2,6 +2,8 @@ package com.op.admin.service;
 
 import com.op.admin.dto.RolePageQueryDTO;
 import com.op.admin.dto.RoleSaveDTO;
+import com.op.admin.vo.MenuAssignVO;
+import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.RoleAssignVO;
 import com.op.admin.vo.RoleVO;
 import org.springframework.data.domain.Page;
@@ -52,7 +54,7 @@ public interface RoleService {
      *
      * @return 角色分配 VO 列表
      */
-    List<RoleAssignVO> findAllToAssign();
+    List<RoleAssignVO> findAllForAssign();
 
     /**
      * 启用/禁用角色
@@ -79,12 +81,12 @@ public interface RoleService {
     void assignMenus(Integer id, List<Integer> menuIds);
 
     /**
-     * 获取角色所分配的资源 ids
+     * 获取角色所分配的资源动作 ids
      *
      * @param id 角色 id
-     * @return 资源 ids
+     * @return 资源动作 ids
      */
-    List<Integer> loadResourceIds(Integer id);
+    List<Integer> getAssignedResourceActionIds(Integer id);
 
     /**
      * 获取角色所分配的菜单 ids
@@ -92,5 +94,21 @@ public interface RoleService {
      * @param id 角色 id
      * @return 菜单 ids
      */
-    List<Integer> loadMenuIds(Integer id);
+    List<Integer> getAssignedMenuIds(Integer id);
+
+    /**
+     * 查找所有资源，以及角色分配情况
+     *
+     * @param id 角色 id
+     * @return 资源分类分配 VO 列表
+     */
+    List<ResourceCategoryAssignVO> loadResources(Integer id);
+
+    /**
+     * 查找所有菜单，以及角色分配情况
+     *
+     * @param id 角色 id
+     * @return 菜单分配 VO 列表
+     */
+    List<MenuAssignVO> loadMenus(Integer id);
 }

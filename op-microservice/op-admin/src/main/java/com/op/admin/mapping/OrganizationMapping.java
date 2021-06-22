@@ -1,9 +1,7 @@
 package com.op.admin.mapping;
 
 import com.op.admin.dto.OrganizationSaveDTO;
-import com.op.admin.entity.Menu;
 import com.op.admin.entity.Organization;
-import com.op.admin.vo.MenuTreeVO;
 import com.op.admin.vo.OrganizationTreeVO;
 import com.op.admin.vo.OrganizationVO;
 import org.mapstruct.Mapper;
@@ -30,7 +28,7 @@ public interface OrganizationMapping {
     /**
      * 根据组织保存 dto 更新组织
      *
-     * @param saveDTO          组织保存 dto
+     * @param saveDTO      组织保存 dto
      * @param organization 组织
      */
     void update(OrganizationSaveDTO saveDTO, @MappingTarget Organization organization);

@@ -52,5 +52,5 @@ public interface ResourceCategoryService {
      *
      * @return 资源分类分配 VO 列表
      */
-    List<ResourceCategoryAssignVO> findAllToAssign();
+    List<ResourceCategoryAssignVO> findAllForAssign();
 }

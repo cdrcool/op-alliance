@@ -27,7 +27,7 @@ public interface UserGroupMapping {
     /**
      * 根据用户组保存 dto 更新用户组
      *
-     * @param saveDTO          用户组保存 dto
+     * @param saveDTO   用户组保存 dto
      * @param userGroup 用户组
      */
     void update(UserGroupSaveDTO saveDTO, @MappingTarget UserGroup userGroup);
