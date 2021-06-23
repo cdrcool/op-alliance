@@ -23,5 +23,16 @@ public interface OrganizationMapperExtend extends OrganizationMapper {
     @Delete(" SELECT o1.id FROM admin_organization o1" +
             " INNER JOIN admin_organization o2 ON FIND_INSET(o1.org_code, o2.org_code_link)" +
             " WHERE 02.id = #{id}")
-    List<Integer> getParentIds(Integer id);
+    List<Integer> getParentsIds(Integer id);
+
+    /**
+     * 获取本下级 ids
+     *
+     * @param id 组织 id
+     * @return 本下级 ids
+     */
+    @Delete(" SELECT o1.id FROM admin_organization o1" +
+            " INNER JOIN admin_organization o2 ON FIND_INSET(o2.org_code, o1.org_code_link)" +
+            " WHERE 02.id = #{id}")
+    List<Integer> getChildrenIds(Integer id);
 }

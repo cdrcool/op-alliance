@@ -13,7 +13,7 @@ import org.apache.ibatis.annotations.Mapper;
 public interface MenuMapperExtend extends MenuMapper {
 
     /**
-     * 删除菜单
+     * 删除菜单及其子菜单列表
      *
      * @param id 菜单 id
      */

@@ -50,6 +50,13 @@ public interface UserService {
     void deleteById(Integer id);
 
     /**
+     * 删除组织下所有的用户
+     *
+     * @param orgIds 组织 ids
+     */
+    void deleteByOrgIds(List<Integer> orgIds);
+
+    /**
      * 查找用户
      *
      * @param id 用户 id

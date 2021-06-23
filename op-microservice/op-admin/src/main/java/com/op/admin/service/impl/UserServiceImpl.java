@@ -86,6 +86,9 @@ public class UserServiceImpl implements UserService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public String create(UserCreateDTO createDTO) {
+        // 校验用户名是否重复
+        validateUserName(null, createDTO.getUsername());
+
         User user = userMapping.toUser(createDTO);
 
         // 新建用户随机生成6位数密码
@@ -94,6 +97,23 @@ public class UserServiceImpl implements UserService {
 
         userMapper.insert(user);
         return password;
+    }
+
+    /**
+     * 校验用户名是否重复
+     *
+     * @param id       主键
+     * @param username 用户名
+     */
+    private void validateUserName(Integer id, String username) {
+        SelectStatementProvider selectStatementProvider = countFrom(UserDynamicSqlSupport.user)
+                .where(UserDynamicSqlSupport.username, isEqualTo(username))
+                .and(UserDynamicSqlSupport.id, isNotEqualToWhenPresent(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        long count = userMapper.count(selectStatementProvider);
+        if (count > 0) {
+            throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "已存在相同用户名的用户，用户名不能重复");
+        }
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -117,6 +137,9 @@ public class UserServiceImpl implements UserService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void update(UserUpdateDTO updateDTO) {
+        // 校验用户名是否重复
+        validateUserName(updateDTO.getId(), updateDTO.getUsername());
+
         Integer id = updateDTO.getId();
         User user = userMapper.selectByPrimaryKey(id)
                 .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的用户"));
@@ -128,6 +151,36 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteById(Integer id) {
         userMapper.deleteByPrimaryKey(id);
+
+        // 删除用户-角色关联列表
+        DeleteStatementProvider userRoleRelationProvider = deleteFrom(UserRoleRelationDynamicSqlSupport.userRoleRelation)
+                .where(UserRoleRelationDynamicSqlSupport.userId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        userMenuRelationMapper.delete(userRoleRelationProvider);
+
+        // 删除用户-资源动作关联列表
+        DeleteStatementProvider userResourceActionRelationProvider = deleteFrom(UserResourceActionRelationDynamicSqlSupport.userResourceActionRelation)
+                .where(UserResourceActionRelationDynamicSqlSupport.userId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        userResourceActionRelationMapper.delete(userResourceActionRelationProvider);
+
+        // 删除用户-菜单关联列表
+        DeleteStatementProvider userMenuRelationProvider = deleteFrom(UserMenuRelationDynamicSqlSupport.userMenuRelation)
+                .where(UserMenuRelationDynamicSqlSupport.userId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        userMenuRelationMapper.delete(userMenuRelationProvider);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void deleteByOrgIds(List<Integer> orgIds) {
+        SelectStatementProvider selectStatementProvider = select(UserDynamicSqlSupport.id)
+                .from(UserDynamicSqlSupport.user)
+                .where(UserDynamicSqlSupport.orgId, isIn(orgIds))
+                .build().render(RenderingStrategies.MYBATIS3);
+        List<Integer> ids = userMapper.selectMany(selectStatementProvider).stream()
+                .map(User::getId).collect(Collectors.toList());
+        ids.forEach(this::deleteById);
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)

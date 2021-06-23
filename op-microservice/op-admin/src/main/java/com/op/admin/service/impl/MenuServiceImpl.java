@@ -5,6 +5,7 @@ import com.op.admin.dto.MenuSaveDTO;
 import com.op.admin.entity.Menu;
 import com.op.admin.mapper.MenuDynamicSqlSupport;
 import com.op.admin.mapper.MenuMapper;
+import com.op.admin.mapper.OrganizationDynamicSqlSupport;
 import com.op.admin.mapper.extend.MenuMapperExtend;
 import com.op.admin.mapping.MenuMapping;
 import com.op.admin.service.MenuService;
@@ -47,6 +48,9 @@ public class MenuServiceImpl implements MenuService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void save(MenuSaveDTO saveDTO) {
+        // 校验同一菜单下，子菜单名称是否重复
+        validateMenuName(saveDTO.getPid(), saveDTO.getPid(), saveDTO.getMenuName());
+
         if (saveDTO.getId() == null) {
             Menu menu = menuMapping.toMenu(saveDTO);
             setMenuProps(menu, saveDTO.getPid());
@@ -58,6 +62,25 @@ public class MenuServiceImpl implements MenuService {
             setMenuProps(menu, saveDTO.getPid());
             menuMapping.update(saveDTO, menu);
             menuMapper.updateByPrimaryKey(menu);
+        }
+    }
+
+    /**
+     * 校验同一菜单下，子菜单名称是否重复
+     *
+     * @param pid 父 id
+     * @param id 主键
+     * @param menuName 菜单名称
+     */
+    private void validateMenuName(Integer pid, Integer id, String menuName) {
+        SelectStatementProvider selectStatementProvider = countFrom(MenuDynamicSqlSupport.menu)
+                .where(MenuDynamicSqlSupport.pid, isEqualTo(pid))
+                .and(MenuDynamicSqlSupport.menuName, isEqualTo(menuName))
+                .and(MenuDynamicSqlSupport.id, isNotEqualToWhenPresent(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        long count = menuMapper.count(selectStatementProvider);
+        if (count > 0) {
+            throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "同一菜单下，已存在相同菜单名称的子菜单，菜单名称不能重复");
         }
     }
 
@@ -85,6 +108,7 @@ public class MenuServiceImpl implements MenuService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteById(Integer id) {
+        // 删除菜单及其子菜单列表
         menuMapper.deleteById(id);
     }
 

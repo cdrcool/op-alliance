@@ -66,6 +66,11 @@ public class RoleServiceImpl implements RoleService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void save(RoleSaveDTO saveDTO) {
+        // 校验角色名是否重复
+        validateRoleName(saveDTO.getId(), saveDTO.getRoleName());
+        // 校验角色编码是否重复
+        validateRoleCode(saveDTO.getId(), saveDTO.getRoleCode());
+
         if (saveDTO.getId() == null) {
             Role role = roleMapping.toRole(saveDTO);
             roleMapper.insert(role);
@@ -78,10 +83,56 @@ public class RoleServiceImpl implements RoleService {
         }
     }
 
+    /**
+     * 校验角色名是否重复
+     *
+     * @param id 主键
+     * @param roleName 角色名
+     */
+    private void validateRoleName(Integer id, String roleName) {
+        SelectStatementProvider selectStatementProvider = countFrom(RoleDynamicSqlSupport.role)
+                .where(RoleDynamicSqlSupport.roleName, isEqualTo(roleName))
+                .and(RoleDynamicSqlSupport.id, isNotEqualToWhenPresent(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        long count = roleMapper.count(selectStatementProvider);
+        if (count > 0) {
+            throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "已存在相同角色名的角色，角色名不能重复");
+        }
+    }
+
+    /**
+     * 校验角色编码是否重复
+     *
+     * @param id 主键
+     * @param roleCode 角色编码
+     */
+    private void validateRoleCode(Integer id, String roleCode) {
+        SelectStatementProvider selectStatementProvider = countFrom(RoleDynamicSqlSupport.role)
+                .where(RoleDynamicSqlSupport.roleCode, isEqualTo(roleCode))
+                .and(RoleDynamicSqlSupport.id, isNotEqualToWhenPresent(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        long count = roleMapper.count(selectStatementProvider);
+        if (count > 0) {
+            throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "已存在相同角色编码的用户组，角色编码不能重复");
+        }
+    }
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteById(Integer id) {
         roleMapper.deleteByPrimaryKey(id);
+
+        // 删除角色-资源动作关联列表
+        DeleteStatementProvider roleResourceActionRelationProvider = deleteFrom(RoleResourceActionRelationDynamicSqlSupport.roleResourceActionRelation)
+                .where(RoleResourceActionRelationDynamicSqlSupport.roleId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        roleResourceActionRelationMapper.delete(roleResourceActionRelationProvider);
+
+        // 删除角色-菜单关联列表
+        DeleteStatementProvider roleMenuRelationProvider = deleteFrom(RoleMenuRelationDynamicSqlSupport.roleMenuRelation)
+                .where(RoleMenuRelationDynamicSqlSupport.roleId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        roleMenuRelationMapper.delete(roleMenuRelationProvider);
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)

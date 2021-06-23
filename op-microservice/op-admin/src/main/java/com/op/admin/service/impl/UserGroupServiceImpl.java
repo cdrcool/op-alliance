@@ -45,6 +45,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 public class UserGroupServiceImpl implements UserGroupService {
     private final UserGroupMapper userGroupMapper;
     private final UserGroupMapping userGroupMapping;
+    private final UserGroupUserRelationMapper userGroupUserRelationMapper;
     private final UserGroupRoleRelationMapper userGroupRoleRelationMapper;
     private final UserGroupResourceActionRelationMapper userGroupResourceActionRelationMapper;
     private final UserGroupMenuRelationMapper userGroupMenuRelationMapper;
@@ -53,6 +54,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     private final MenuService menuService;
 
     public UserGroupServiceImpl(UserGroupMapper userGroupMapper, UserGroupMapping userGroupMapping,
+                                UserGroupUserRelationMapper userGroupUserRelationMapper,
                                 UserGroupRoleRelationMapper userGroupRoleRelationMapper,
                                 UserGroupResourceActionRelationMapper userGroupResourceActionRelationMapper,
                                 UserGroupMenuRelationMapper userGroupMenuRelationMapper,
@@ -61,6 +63,7 @@ public class UserGroupServiceImpl implements UserGroupService {
                                 MenuService menuService) {
         this.userGroupMapper = userGroupMapper;
         this.userGroupMapping = userGroupMapping;
+        this.userGroupUserRelationMapper = userGroupUserRelationMapper;
         this.userGroupRoleRelationMapper = userGroupRoleRelationMapper;
         this.userGroupResourceActionRelationMapper = userGroupResourceActionRelationMapper;
         this.userGroupMenuRelationMapper = userGroupMenuRelationMapper;
@@ -72,6 +75,9 @@ public class UserGroupServiceImpl implements UserGroupService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void save(UserGroupSaveDTO saveDTO) {
+        // 校验组名是否重复
+        validateGroupName(saveDTO.getId(), saveDTO.getGroupName());
+
         if (saveDTO.getId() == null) {
             UserGroup userGroup = userGroupMapping.toUserGroup(saveDTO);
             userGroupMapper.insert(userGroup);
@@ -84,10 +90,51 @@ public class UserGroupServiceImpl implements UserGroupService {
         }
     }
 
+    /**
+     * 校验组名是否重复
+     *
+     * @param id        主键
+     * @param groupName 组名
+     */
+    private void validateGroupName(Integer id, String groupName) {
+        SelectStatementProvider selectStatementProvider = countFrom(UserGroupDynamicSqlSupport.userGroup)
+                .where(UserGroupDynamicSqlSupport.groupName, isEqualTo(groupName))
+                .and(UserGroupDynamicSqlSupport.id, isNotEqualToWhenPresent(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        long count = userGroupMapper.count(selectStatementProvider);
+        if (count > 0) {
+            throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "已存在相同组名的用户组，组名不能重复");
+        }
+    }
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteById(Integer id) {
         userGroupMapper.deleteByPrimaryKey(id);
+
+        // 删除用户组-用户关联列表
+        DeleteStatementProvider userGroupUserRelationProvider = deleteFrom(UserGroupUserRelationDynamicSqlSupport.userGroupUserRelation)
+                .where(UserGroupRoleRelationDynamicSqlSupport.groupId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        userGroupUserRelationMapper.delete(userGroupUserRelationProvider);
+
+        // 删除用户组-角色关联列表
+        DeleteStatementProvider userGroupRoleRelationProvider = deleteFrom(UserGroupRoleRelationDynamicSqlSupport.userGroupRoleRelation)
+                .where(UserGroupRoleRelationDynamicSqlSupport.groupId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        userGroupMenuRelationMapper.delete(userGroupRoleRelationProvider);
+
+        // 删除用户组-资源动作关联列表
+        DeleteStatementProvider userGroupResourceActionRelationProvider = deleteFrom(UserGroupResourceActionRelationDynamicSqlSupport.userGroupResourceActionRelation)
+                .where(UserGroupResourceActionRelationDynamicSqlSupport.groupId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        userGroupResourceActionRelationMapper.delete(userGroupResourceActionRelationProvider);
+
+        // 删除用户组-菜单关联列表
+        DeleteStatementProvider userGroupMenuRelationProvider = deleteFrom(UserGroupMenuRelationDynamicSqlSupport.userGroupMenuRelation)
+                .where(UserGroupMenuRelationDynamicSqlSupport.groupId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        userGroupMenuRelationMapper.delete(userGroupMenuRelationProvider);
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)

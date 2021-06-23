@@ -10,10 +10,7 @@ import com.op.admin.entity.OrganizationRoleRelation;
 import com.op.admin.mapper.*;
 import com.op.admin.mapper.extend.OrganizationMapperExtend;
 import com.op.admin.mapping.OrganizationMapping;
-import com.op.admin.service.MenuService;
-import com.op.admin.service.OrganizationService;
-import com.op.admin.service.ResourceCategoryService;
-import com.op.admin.service.RoleService;
+import com.op.admin.service.*;
 import com.op.admin.utils.TreeUtils;
 import com.op.admin.vo.*;
 import com.op.framework.web.common.api.response.ResultCode;
@@ -45,6 +42,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     private final OrganizationRoleRelationMapper organizationRoleRelationMapper;
     private final OrganizationResourceActionRelationMapper organizationResourceActionRelationMapper;
     private final OrganizationMenuRelationMapper organizationMenuRelationMapper;
+    private final UserService userService;
     private final RoleService roleService;
     private final ResourceCategoryService resourceCategoryService;
     private final MenuService menuService;
@@ -53,6 +51,7 @@ public class OrganizationServiceImpl implements OrganizationService {
                                    OrganizationRoleRelationMapper organizationRoleRelationMapper,
                                    OrganizationResourceActionRelationMapper organizationResourceActionRelationMapper,
                                    OrganizationMenuRelationMapper organizationMenuRelationMapper,
+                                   UserService userService,
                                    RoleService roleService,
                                    ResourceCategoryService resourceCategoryService,
                                    MenuService menuService) {
@@ -61,6 +60,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         this.organizationRoleRelationMapper = organizationRoleRelationMapper;
         this.organizationResourceActionRelationMapper = organizationResourceActionRelationMapper;
         this.organizationMenuRelationMapper = organizationMenuRelationMapper;
+        this.userService = userService;
         this.roleService = roleService;
         this.resourceCategoryService = resourceCategoryService;
         this.menuService = menuService;
@@ -69,6 +69,11 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void save(OrganizationSaveDTO saveDTO) {
+        // 校验同一组织下，下级组织名称是否重复
+        validateOrgName(saveDTO.getPid(), saveDTO.getId(), saveDTO.getOrgName());
+        // 校验同一组织下，下级组织编码是否重复
+        validateOrgCode(saveDTO.getPid(), saveDTO.getId(), saveDTO.getOrgCode());
+
         if (saveDTO.getId() == null) {
             Organization organization = organizationMapping.toOrganization(saveDTO);
             setOrganizationProps(organization, saveDTO.getPid());
@@ -80,6 +85,44 @@ public class OrganizationServiceImpl implements OrganizationService {
             setOrganizationProps(organization, saveDTO.getPid());
             organizationMapping.update(saveDTO, organization);
             organizationMapper.updateByPrimaryKey(organization);
+        }
+    }
+
+    /**
+     * 校验同一组织下，下级组织名称是否重复
+     *
+     * @param pid     父 id
+     * @param id      主键
+     * @param orgName 组织名称
+     */
+    private void validateOrgName(Integer pid, Integer id, String orgName) {
+        SelectStatementProvider selectStatementProvider = countFrom(OrganizationDynamicSqlSupport.organization)
+                .where(OrganizationDynamicSqlSupport.pid, isEqualTo(pid))
+                .and(OrganizationDynamicSqlSupport.orgName, isEqualTo(orgName))
+                .and(OrganizationDynamicSqlSupport.id, isNotEqualToWhenPresent(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        long count = organizationMapper.count(selectStatementProvider);
+        if (count > 0) {
+            throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "同一组织下，已存在相同组织名称的下级组织，组织名称不能重复");
+        }
+    }
+
+    /**
+     * 校验同一组织下，下级组织编码是否重复
+     *
+     * @param pid     父 id
+     * @param id      主键
+     * @param orgCode 组织编码
+     */
+    private void validateOrgCode(Integer pid, Integer id, String orgCode) {
+        SelectStatementProvider selectStatementProvider = countFrom(OrganizationDynamicSqlSupport.organization)
+                .where(OrganizationDynamicSqlSupport.pid, isEqualTo(pid))
+                .and(OrganizationDynamicSqlSupport.orgCode, isEqualTo(orgCode))
+                .and(OrganizationDynamicSqlSupport.id, isNotEqualToWhenPresent(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        long count = organizationMapper.count(selectStatementProvider);
+        if (count > 0) {
+            throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "同一父组织下，已存在相同组织编码的下级组织，组织编码不能重复");
         }
     }
 
@@ -105,7 +148,35 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteById(Integer id) {
-        organizationMapper.deleteByPrimaryKey(id);
+        // 获取本下级组织 ids
+        List<Integer> childrenIds = organizationMapper.getChildrenIds(id);
+
+        // 删除本下级组织
+        DeleteStatementProvider deleteStatementProvider = deleteFrom(OrganizationDynamicSqlSupport.organization)
+                .where(OrganizationDynamicSqlSupport.id, isIn(childrenIds))
+                .build().render(RenderingStrategies.MYBATIS3);
+        organizationMapper.delete(deleteStatementProvider);
+
+        // 删除本下级组织下所有用户
+        userService.deleteByOrgIds(childrenIds);
+
+        // 删除本下级组织的组织-角色关联列表
+        DeleteStatementProvider organizationRoleRelationProvider = deleteFrom(OrganizationRoleRelationDynamicSqlSupport.organizationRoleRelation)
+                .where(OrganizationRoleRelationDynamicSqlSupport.orgId, isIn(childrenIds))
+                .build().render(RenderingStrategies.MYBATIS3);
+        organizationRoleRelationMapper.delete(organizationRoleRelationProvider);
+
+        // 删除本下级组织的组织-资源动作关联列表
+        DeleteStatementProvider organizationResourceActionRelationProvider = deleteFrom(OrganizationResourceActionRelationDynamicSqlSupport.organizationResourceActionRelation)
+                .where(OrganizationRoleRelationDynamicSqlSupport.orgId, isIn(childrenIds))
+                .build().render(RenderingStrategies.MYBATIS3);
+        organizationResourceActionRelationMapper.delete(organizationResourceActionRelationProvider);
+
+        // 删除本下级组织的组织-菜单关联列表
+        DeleteStatementProvider organizationMenuRelationProvider = deleteFrom(OrganizationMenuRelationDynamicSqlSupport.organizationMenuRelation)
+                .where(OrganizationRoleRelationDynamicSqlSupport.orgId, isIn(childrenIds))
+                .build().render(RenderingStrategies.MYBATIS3);
+        organizationMenuRelationMapper.delete(organizationMenuRelationProvider);
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -180,11 +251,11 @@ public class OrganizationServiceImpl implements OrganizationService {
 
         // 删除要删除的组织-角色关联
         if (!CollectionUtils.isEmpty(toDelRoleIds)) {
-            DeleteStatementProvider deleteStatementProvider = 
+            DeleteStatementProvider deleteStatementProvider =
                     deleteFrom(OrganizationRoleRelationDynamicSqlSupport.organizationRoleRelation)
-                    .where(OrganizationRoleRelationDynamicSqlSupport.orgId, isEqualTo(id))
-                    .and(OrganizationRoleRelationDynamicSqlSupport.roleId, isIn(toDelRoleIds))
-                    .build().render(RenderingStrategies.MYBATIS3);
+                            .where(OrganizationRoleRelationDynamicSqlSupport.orgId, isEqualTo(id))
+                            .and(OrganizationRoleRelationDynamicSqlSupport.roleId, isIn(toDelRoleIds))
+                            .build().render(RenderingStrategies.MYBATIS3);
             organizationRoleRelationMapper.delete(deleteStatementProvider);
         }
     }
@@ -216,11 +287,11 @@ public class OrganizationServiceImpl implements OrganizationService {
 
         // 删除要删除的组织-资源动作关联
         if (!CollectionUtils.isEmpty(toDelActionIds)) {
-            DeleteStatementProvider deleteStatementProvider = 
+            DeleteStatementProvider deleteStatementProvider =
                     deleteFrom(OrganizationResourceActionRelationDynamicSqlSupport.organizationResourceActionRelation)
-                    .where(OrganizationResourceActionRelationDynamicSqlSupport.orgId, isEqualTo(id))
-                    .and(OrganizationResourceActionRelationDynamicSqlSupport.actionId, isIn(toDelActionIds))
-                    .build().render(RenderingStrategies.MYBATIS3);
+                            .where(OrganizationResourceActionRelationDynamicSqlSupport.orgId, isEqualTo(id))
+                            .and(OrganizationResourceActionRelationDynamicSqlSupport.actionId, isIn(toDelActionIds))
+                            .build().render(RenderingStrategies.MYBATIS3);
             organizationResourceActionRelationMapper.delete(deleteStatementProvider);
         }
     }
@@ -297,7 +368,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<RoleAssignVO> loadRoles(Integer id) {
-        List<Integer> parentIds = organizationMapper.getParentIds(id);
+        List<Integer> parentIds = organizationMapper.getParentsIds(id);
 
         SelectStatementProvider selectStatementProvider =
                 select(OrganizationRoleRelationDynamicSqlSupport.orgId, OrganizationRoleRelationDynamicSqlSupport.roleId)
@@ -322,7 +393,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<ResourceCategoryAssignVO> loadResources(Integer id) {
-        List<Integer> parentIds = organizationMapper.getParentIds(id);
+        List<Integer> parentIds = organizationMapper.getParentsIds(id);
 
         SelectStatementProvider selectStatementProvider =
                 select(OrganizationResourceActionRelationDynamicSqlSupport.orgId, OrganizationResourceActionRelationDynamicSqlSupport.actionId)
@@ -349,7 +420,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<MenuAssignVO> loadMenus(Integer id) {
-        List<Integer> parentIds = organizationMapper.getParentIds(id);
+        List<Integer> parentIds = organizationMapper.getParentsIds(id);
 
         SelectStatementProvider selectStatementProvider =
                 select(OrganizationMenuRelationDynamicSqlSupport.orgId, OrganizationMenuRelationDynamicSqlSupport.menuId)
