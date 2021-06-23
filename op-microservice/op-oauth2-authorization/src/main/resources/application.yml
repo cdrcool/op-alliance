@@ -1,0 +1,67 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    initialization-mode: never
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/onepiece_platform?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false&useSSL=true&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+    hikari:
+      # 最大连接数，缺省值：10；推荐的公式：((core_count * 2) + effective_spindle_count)
+      maximum-pool-size: 500
+      # 最小连接数
+      minimum-idle: 50
+      # 等待连接池分配连接的最大时长（毫秒），超过这个时长还没可用的连接则发生SQLException， 缺省:30秒
+      connection-timeout: 30000
+      # 一个连接的生命时长（毫秒），超时而且没被使用则被释放（retired），缺省:30分钟，建议设置比数据库超时时长少30秒，参考MySQL wait_timeout参数（show variables like '%timeout%';）
+      max-lifetime: 1800000
+      # 一个连接idle状态的最大时长（毫秒），超时则被释放（retired），缺省:10分钟
+      idle-timeout: 600
+
+feign:
+  client:
+    config:
+      default:
+        # 默认 2s，建议 1~5 秒
+        connectTimeout: 2000
+        # 默认 5s，建议 <= 30s
+        readTimeout: 30000
+  ## 启用 httpclient 连接池
+  httpclient:
+    enabled: true
+
+${spring.applicationname}:
+  ribbon:
+    # 同一台服务器上的最大重试次数（不包括第一次尝试），默认值 0
+    MaxAutoRetries: 1
+    # 要重试的下一个服务器的最大数量（不包括第一个服务器），默认值 1
+    MaxAutoRetriesNextServer: 1
+    # 可以根据接口返回的状态码判断是否重试
+    # retryableStatusCodes: 500,404
+    # 对所有的超时请求重试（包括 POST 等请求），默认值 false
+    OkToRetryOnAllOperations: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        # 默认只暴露 health 和 info 两个端点
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    root: INFO
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
+
+encrypt:
+  key-store:
+    location: keys.keystore
+    secret: admin123
+    alias: yoyo-mall-certificate
+    password: admin123
