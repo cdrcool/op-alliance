@@ -39,7 +39,7 @@ https://github.com/rabbitmq/rabbitmq-prometheus
 docker exec -it rabbitmq bash
 rabbitmq-plugins list
 rabbitmq-plugins enable rabbitmq_delayed_message_exchange
-rabbitmq_prometheus
+rabbitmq-plugins enable rabbitmq_prometheus
 --------------------------------------------------
 
 elasticsearch
