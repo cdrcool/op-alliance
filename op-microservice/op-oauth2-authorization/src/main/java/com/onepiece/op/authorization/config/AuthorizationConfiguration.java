@@ -56,7 +56,13 @@ public class AuthorizationConfiguration extends AuthorizationServerConfigurerAda
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.jdbc(this.dataSource);
+        clients
+                .inMemory()
+                .withClient("client")
+                .secret("secret")
+                .scopes("resource:read")
+                .authorizedGrantTypes("authorization_code")
+                .redirectUris("http://localhost:8081/oauth/login/client-app");
     }
 
     @Override
