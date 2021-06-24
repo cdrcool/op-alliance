@@ -120,4 +120,15 @@ public class ResourceActionServiceImpl implements ResourceActionService {
         List<ResourceActionAssignVO> actionAssignList = resourceActionMapping.toResourceActionAssignVOVOList(actions);
         return actionAssignList.stream().collect(Collectors.groupingBy(ResourceActionAssignVO::getResourceId));
     }
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public List<String> getPermissions(List<Integer> ids) {
+        SelectStatementProvider selectStatementProvider =
+                select(ResourceActionDynamicSqlSupport.permissionName)
+                        .from(ResourceActionDynamicSqlSupport.resourceAction)
+                        .build().render(RenderingStrategies.MYBATIS3);
+        List<ResourceAction> actions = resourceActionMapper.selectMany(selectStatementProvider);
+        return actions.stream().map(ResourceAction::getPermissionName).collect(Collectors.toList());
+    }
 }

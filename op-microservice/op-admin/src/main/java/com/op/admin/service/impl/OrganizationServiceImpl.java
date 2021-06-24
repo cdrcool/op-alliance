@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,7 +52,7 @@ public class OrganizationServiceImpl implements OrganizationService {
                                    OrganizationRoleRelationMapper organizationRoleRelationMapper,
                                    OrganizationResourceActionRelationMapper organizationResourceActionRelationMapper,
                                    OrganizationMenuRelationMapper organizationMenuRelationMapper,
-                                   UserService userService,
+                                   @Lazy UserService userService,
                                    RoleService roleService,
                                    ResourceCategoryService resourceCategoryService,
                                    MenuService menuService) {
@@ -262,7 +263,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void assignResources(Integer id, List<Integer> resourceActionIds) {
+    public void assignResourceActions(Integer id, List<Integer> resourceActionIds) {
         // 获取已建立关联的资源动作 ids
         List<Integer> preActionIds = this.getAssignedResourceActionIds(id);
 

@@ -29,4 +29,7 @@ public class ResourceActionSaveDTO {
 
     @ApiModelProperty("动作编号")
     private Integer actionNo;
+
+    @ApiModelProperty("权限名")
+    private String permissionName;
 }

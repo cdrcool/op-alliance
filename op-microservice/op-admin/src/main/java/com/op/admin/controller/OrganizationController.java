@@ -61,10 +61,10 @@ public class OrganizationController {
         organizationService.assignRoles(roleAssignDTO.getId(), roleAssignDTO.getRoleIds());
     }
 
-    @ApiOperation("分配资源")
-    @PostMapping("assignResources")
-    public void assignResources(@Valid @RequestBody ResourceAssignDTO resourceAssignDTO) {
-        organizationService.assignRoles(resourceAssignDTO.getId(), resourceAssignDTO.getResourceIds());
+    @ApiOperation("分配资源动作")
+    @PostMapping("assignResourceActions")
+    public void assignResourceActions(@Valid @RequestBody ResourceAssignDTO resourceAssignDTO) {
+        organizationService.assignResourceActions(resourceAssignDTO.getId(), resourceAssignDTO.getResourceIds());
     }
 
     @ApiOperation("分配菜单")

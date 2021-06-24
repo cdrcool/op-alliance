@@ -5,7 +5,7 @@
 <Configuration status="WARN" monitorInterval="30">
     <!--自定义常量，之后使用${变量名}引用-->
     <Properties>
-        <Property name="appName">admin</Property>
+        <Property name="appName">op-admin</Property>
         <Property name="logLevel">DEBUG</Property>
         <Property name="logFilePath">logs</Property>
         <Property name="consolePattern">%d{HH:mm:ss.SSS} [%t] [%p] %c - %m%n</Property>

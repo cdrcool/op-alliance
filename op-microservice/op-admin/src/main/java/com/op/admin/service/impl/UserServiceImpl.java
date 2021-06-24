@@ -1,14 +1,8 @@
 package com.op.admin.service.impl;
 
 import com.github.pagehelper.PageHelper;
-import com.op.admin.dto.UserChangePasswordDTO;
-import com.op.admin.dto.UserCreateDTO;
-import com.op.admin.dto.UserPageQueryDTO;
-import com.op.admin.dto.UserUpdateDTO;
-import com.op.admin.entity.User;
-import com.op.admin.entity.UserMenuRelation;
-import com.op.admin.entity.UserResourceActionRelation;
-import com.op.admin.entity.UserRoleRelation;
+import com.op.admin.dto.*;
+import com.op.admin.entity.*;
 import com.op.admin.mapper.*;
 import com.op.admin.mapping.UserMapping;
 import com.op.admin.service.*;
@@ -28,12 +22,14 @@ import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SimpleSortSpecification;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,8 +52,10 @@ public class UserServiceImpl implements UserService {
     private final UserRoleRelationMapper userRoleRelationMapper;
     private final UserResourceActionRelationMapper userResourceActionRelationMapper;
     private final UserMenuRelationMapper userMenuRelationMapper;
+    private final UserGroupUserRelationMapper userGroupUserRelationMapper;
     private final RoleService roleService;
     private final ResourceCategoryService resourceCategoryService;
+    private final ResourceActionService resourceActionService;
     private final MenuService menuService;
     private final UserGroupService userGroupService;
     private final OrganizationService organizationService;
@@ -66,18 +64,20 @@ public class UserServiceImpl implements UserService {
                            UserRoleRelationMapper userRoleRelationMapper,
                            UserResourceActionRelationMapper userResourceActionRelationMapper,
                            UserMenuRelationMapper userMenuRelationMapper,
-                           RoleService roleService,
+                           UserGroupUserRelationMapper userGroupUserRelationMapper, RoleService roleService,
                            ResourceCategoryService resourceCategoryService,
-                           MenuService menuService,
+                           ResourceActionService resourceActionService, MenuService menuService,
                            UserGroupService userGroupService,
-                           OrganizationService organizationService) {
+                           @Lazy OrganizationService organizationService) {
         this.userMapper = userMapper;
         this.userMapping = userMapping;
         this.userRoleRelationMapper = userRoleRelationMapper;
         this.userResourceActionRelationMapper = userResourceActionRelationMapper;
         this.userMenuRelationMapper = userMenuRelationMapper;
+        this.userGroupUserRelationMapper = userGroupUserRelationMapper;
         this.roleService = roleService;
         this.resourceCategoryService = resourceCategoryService;
+        this.resourceActionService = resourceActionService;
         this.menuService = menuService;
         this.userGroupService = userGroupService;
         this.organizationService = organizationService;
@@ -169,6 +169,12 @@ public class UserServiceImpl implements UserService {
                 .where(UserMenuRelationDynamicSqlSupport.userId, isEqualTo(id))
                 .build().render(RenderingStrategies.MYBATIS3);
         userMenuRelationMapper.delete(userMenuRelationProvider);
+
+        // 删除用户组-用户关联列表
+        DeleteStatementProvider userGroupRelationProvider = deleteFrom(UserGroupUserRelationDynamicSqlSupport.userGroupUserRelation)
+                .where(UserGroupUserRelationDynamicSqlSupport.userId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        userGroupUserRelationMapper.delete(userMenuRelationProvider);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -188,6 +194,59 @@ public class UserServiceImpl implements UserService {
     public UserVO findById(Integer id) {
         User user = userMapper.selectByPrimaryKey(id).orElse(new User());
         return userMapping.toUserVo(user);
+    }
+
+    @Override
+    public UserDTO findByUserName(String username) {
+        SelectStatementProvider selectStatementProvider = select(UserDynamicSqlSupport.username,
+                UserDynamicSqlSupport.password,
+                UserDynamicSqlSupport.status)
+                .from(UserDynamicSqlSupport.user)
+                .where(UserDynamicSqlSupport.username, isEqualTo(username))
+                .build().render(RenderingStrategies.MYBATIS3);
+        User user = userMapper.selectOne(selectStatementProvider)
+                .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到用户名为【" + username + "】的用户"));
+
+        UserDTO userDTO = userMapping.toUserDto(user);
+        userDTO.setPermissions(this.loadAssignPermissions(user.getId(), user.getOrgId()));
+
+        return userDTO;
+    }
+
+    /**
+     * 加载用户所分配的所有权限
+     *
+     * @param id    主键
+     * @param orgId 组织 id
+     * @return 权限列表
+     */
+    private List<String> loadAssignPermissions(Integer id, Integer orgId) {
+        // 获取用户所分配的资源动作 ids
+        List<Integer> userAssignedActionIds = this.getAssignedResourceActionIds(id);
+
+        // 获取用户的角色所分配的资源动作 ids
+        List<Integer> roleIds = this.getAssignedRoleIds(id);
+        if (CollectionUtils.isNotEmpty(roleIds)) {
+            List<Integer> roleAssignedActionIds = roleService.getAssignedResourceActionIds(roleIds);
+            userAssignedActionIds.addAll(roleAssignedActionIds);
+        }
+
+        // 获取用户的用户组所分配的资源动作 ids
+        List<Integer> groupIds = this.getAssignedGroupIds(id);
+        if (CollectionUtils.isNotEmpty(groupIds)) {
+            List<Integer> groupAssignedActionIds = userGroupService.getAssignedResourceActionIds(groupIds);
+            userAssignedActionIds.addAll(groupAssignedActionIds);
+        }
+
+        // 获取用户的组织所分配的资源动作 ids
+        List<Integer> orgAssignedActionIds = organizationService.getAssignedResourceActionIds(orgId);
+        userAssignedActionIds.addAll(orgAssignedActionIds);
+
+        if (CollectionUtils.isEmpty(userAssignedActionIds)) {
+            return new ArrayList<>();
+        }
+
+        return resourceActionService.getPermissions(userAssignedActionIds);
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -272,7 +331,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void assignResources(Integer id, List<Integer> resourceActionIds) {
+    public void assignResourceActions(Integer id, List<Integer> resourceActionIds) {
         // 获取已建立关联的资源动作 ids
         List<Integer> preActionIds = this.getAssignedResourceActionIds(id);
 
@@ -343,42 +402,18 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<Integer> getAssignedRoleIds(Integer id) {
-        SelectStatementProvider selectStatementProvider = select(UserRoleRelationDynamicSqlSupport.roleId)
-                .from(UserRoleRelationDynamicSqlSupport.userRoleRelation)
-                .where(UserRoleRelationDynamicSqlSupport.userId, isEqualTo(id))
-                .build().render(RenderingStrategies.MYBATIS3);
-        return userRoleRelationMapper.selectMany(selectStatementProvider).stream()
-                .map(UserRoleRelation::getRoleId).collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
-    @Override
-    public List<Integer> getAssignedResourceActionIds(Integer id) {
-        SelectStatementProvider selectStatementProvider = select(UserResourceActionRelationDynamicSqlSupport.actionId)
-                .from(UserResourceActionRelationDynamicSqlSupport.userResourceActionRelation)
-                .where(UserResourceActionRelationDynamicSqlSupport.userId, isEqualTo(id))
-                .build().render(RenderingStrategies.MYBATIS3);
-        return userResourceActionRelationMapper.selectMany(selectStatementProvider).stream()
-                .map(UserResourceActionRelation::getActionId).collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
-    @Override
-    public List<Integer> getAssignedMenuIds(Integer id) {
-        SelectStatementProvider selectStatementProvider = select(UserMenuRelationDynamicSqlSupport.menuId)
-                .from(UserMenuRelationDynamicSqlSupport.userMenuRelation)
-                .where(UserMenuRelationDynamicSqlSupport.userId, isEqualTo(id))
-                .build().render(RenderingStrategies.MYBATIS3);
-        return userMenuRelationMapper.selectMany(selectStatementProvider).stream()
-                .map(UserMenuRelation::getMenuId).collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
-    @Override
     public List<RoleAssignVO> loadRoles(Integer id) {
+        // 获取用户所分配的角色 ids
         List<Integer> assignedRoleIds = this.getAssignedRoleIds(id);
-        List<Integer> groupAssignedRoleIds = userGroupService.getAssignedRoleIds(id);
+
+        // 获取用户的用户组所分配的角色 ids
+        List<Integer> groupAssignedRoleIds = new ArrayList<>();
+        List<Integer> groupIds = this.getAssignedGroupIds(id);
+        if (!CollectionUtils.isEmpty(groupIds)) {
+            groupAssignedRoleIds.addAll(userGroupService.getAssignedRoleIds(groupIds));
+        }
+
+        // 获取用户的组织所分配的角色 ids
         List<Integer> orgAssignedRoleIds = organizationService.getAssignedRoleIds(id);
 
         List<RoleAssignVO> roles = roleService.findAllForAssign();
@@ -386,7 +421,7 @@ public class UserServiceImpl implements UserService {
             role.setChecked(assignedRoleIds.contains(role.getId()) ||
                     groupAssignedRoleIds.contains(role.getId()) ||
                     orgAssignedRoleIds.contains(role.getId()));
-            role.setEnableUncheck(groupAssignedRoleIds.contains(role.getId()) &&
+            role.setEnableUncheck(!groupAssignedRoleIds.contains(role.getId()) &&
                     !orgAssignedRoleIds.contains(role.getId()));
         });
 
@@ -396,8 +431,24 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<ResourceCategoryAssignVO> loadResources(Integer id) {
+        // 获取用户所分配的资源动作 ids
         List<Integer> assignedActionIds = this.getAssignedResourceActionIds(id);
-        List<Integer> groupAssignedActionIds = userGroupService.getAssignedResourceActionIds(id);
+
+        // 获取用户的角色所分配的资源动作 ids
+        List<Integer> roleAssignedActionIds = new ArrayList<>();
+        List<Integer> roleIds = this.getAssignedRoleIds(id);
+        if (!CollectionUtils.isEmpty(roleIds)) {
+            roleAssignedActionIds.addAll(roleService.getAssignedResourceActionIds(roleIds));
+        }
+
+        // 获取用户的用户组所分配的资源动作 ids
+        List<Integer> groupAssignedActionIds = new ArrayList<>();
+        List<Integer> groupIds = this.getAssignedGroupIds(id);
+        if (!CollectionUtils.isEmpty(groupIds)) {
+            groupAssignedActionIds.addAll(userGroupService.getAssignedResourceActionIds(groupIds));
+        }
+
+        // 获取用户的组织所分配的资源动作 ids
         List<Integer> orgAssignedActionIds = organizationService.getAssignedResourceActionIds(id);
 
         List<ResourceCategoryAssignVO> categories = resourceCategoryService.findAllForAssign();
@@ -405,9 +456,11 @@ public class UserServiceImpl implements UserService {
                 category.getResources().forEach(resource ->
                         resource.getActions().forEach(action -> {
                             action.setChecked(assignedActionIds.contains(action.getId()) ||
+                                    roleAssignedActionIds.contains(action.getId()) ||
                                     groupAssignedActionIds.contains(action.getId()) ||
                                     orgAssignedActionIds.contains(action.getId()));
-                            action.setEnableUncheck(groupAssignedActionIds.contains(action.getId()) &&
+                            action.setEnableUncheck(!roleAssignedActionIds.contains(action.getId()) &&
+                                    !groupAssignedActionIds.contains(action.getId()) &&
                                     !orgAssignedActionIds.contains(action.getId()));
                         })));
 
@@ -417,28 +470,115 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<MenuAssignVO> loadMenus(Integer id) {
+        // 获取用户所分配的菜单 ids
         List<Integer> assignedMenuIds = this.getAssignedMenuIds(id);
-        List<Integer> groupAssignedMenuIds = userGroupService.getAssignedMenuIds(id);
+
+        // 获取用户的角色所分配的菜单 ids
+        List<Integer> roleAssignedMenuIds = new ArrayList<>();
+        List<Integer> roleIds = this.getAssignedRoleIds(id);
+        if (!CollectionUtils.isEmpty(roleIds)) {
+            roleAssignedMenuIds.addAll(roleService.getAssignedMenuIds(roleIds));
+        }
+
+        // 获取用户的用户组所分配的菜单 ids
+        List<Integer> groupAssignedMenuIds = new ArrayList<>();
+        List<Integer> groupIds = this.getAssignedGroupIds(id);
+        if (!CollectionUtils.isEmpty(groupIds)) {
+            groupAssignedMenuIds.addAll(userGroupService.getAssignedMenuIds(groupIds));
+        }
+
+        // 获取用户的组织所分配的资源动作 ids
         List<Integer> orgAssignedMenuIds = organizationService.getAssignedMenuIds(id);
 
         List<MenuAssignVO> menus = menuService.findAllForAssign();
-        setMenuItems(menus, assignedMenuIds, groupAssignedMenuIds, orgAssignedMenuIds);
+        setMenuItems(menus, assignedMenuIds, roleAssignedMenuIds, groupAssignedMenuIds, orgAssignedMenuIds);
 
         return menus;
     }
 
-    private void setMenuItems(List<MenuAssignVO> menus, List<Integer> assignedMenuIds,
+    /**
+     * 设置菜单项的选中和是否可以取消选中状态
+     *
+     * @param menus                菜单列表
+     * @param assignedMenuIds      用户所分配的菜单 ids
+     * @param roleAssignedMenuIds  用户的角色所分配的菜单 ids
+     * @param groupAssignedMenuIds 用户的用户组所分配的菜单 ids
+     * @param orgAssignedMenuIds   用户的组织所分配的资源动作 ids
+     */
+    private void setMenuItems(List<MenuAssignVO> menus, List<Integer> assignedMenuIds, List<Integer> roleAssignedMenuIds,
                               List<Integer> groupAssignedMenuIds, List<Integer> orgAssignedMenuIds) {
         menus.forEach(menu -> {
             menu.setChecked(assignedMenuIds.contains(menu.getId()) ||
+                    roleAssignedMenuIds.contains(menu.getId()) ||
                     groupAssignedMenuIds.contains(menu.getId()) ||
                     orgAssignedMenuIds.contains(menu.getId()));
-            menu.setEnableUncheck(groupAssignedMenuIds.contains(menu.getId()) &&
+            menu.setEnableUncheck(!roleAssignedMenuIds.contains(menu.getId()) &&
+                    !groupAssignedMenuIds.contains(menu.getId()) &&
                     !orgAssignedMenuIds.contains(menu.getId()));
 
             if (!CollectionUtils.isEmpty(menu.getChildren())) {
-                setMenuItems(menu.getChildren(), assignedMenuIds, groupAssignedMenuIds, orgAssignedMenuIds);
+                setMenuItems(menu.getChildren(), assignedMenuIds, roleAssignedMenuIds, groupAssignedMenuIds, orgAssignedMenuIds);
             }
         });
+    }
+
+    /**
+     * 获取用户所分配的角色 ids
+     *
+     * @param id 主键
+     * @return 角色 ids
+     */
+    private List<Integer> getAssignedRoleIds(Integer id) {
+        SelectStatementProvider selectStatementProvider = select(UserRoleRelationDynamicSqlSupport.roleId)
+                .from(UserRoleRelationDynamicSqlSupport.userRoleRelation)
+                .where(UserRoleRelationDynamicSqlSupport.userId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        return userRoleRelationMapper.selectMany(selectStatementProvider).stream()
+                .map(UserRoleRelation::getRoleId).collect(Collectors.toList());
+    }
+
+    /**
+     * 获取用户所分配的资源动作 ids
+     *
+     * @param id 主键
+     * @return 资源动作 ids
+     */
+    private List<Integer> getAssignedResourceActionIds(Integer id) {
+        SelectStatementProvider selectStatementProvider = select(UserResourceActionRelationDynamicSqlSupport.actionId)
+                .from(UserResourceActionRelationDynamicSqlSupport.userResourceActionRelation)
+                .where(UserResourceActionRelationDynamicSqlSupport.userId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        return userResourceActionRelationMapper.selectMany(selectStatementProvider).stream()
+                .map(UserResourceActionRelation::getActionId).collect(Collectors.toList());
+    }
+
+    /**
+     * 获取用户所分配的菜单 ids
+     *
+     * @param id 主键
+     * @return 菜单 ids
+     */
+    private List<Integer> getAssignedMenuIds(Integer id) {
+        SelectStatementProvider selectStatementProvider = select(UserMenuRelationDynamicSqlSupport.menuId)
+                .from(UserMenuRelationDynamicSqlSupport.userMenuRelation)
+                .where(UserMenuRelationDynamicSqlSupport.userId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        return userMenuRelationMapper.selectMany(selectStatementProvider).stream()
+                .map(UserMenuRelation::getMenuId).collect(Collectors.toList());
+    }
+
+    /**
+     * 获取用户所分配的用户组 ids
+     *
+     * @param id 主键
+     * @return 用户组 ids
+     */
+    private List<Integer> getAssignedGroupIds(Integer id) {
+        SelectStatementProvider selectStatementProvider = select(UserGroupUserRelationDynamicSqlSupport.groupId)
+                .from(UserGroupUserRelationDynamicSqlSupport.userGroupUserRelation)
+                .where(UserGroupUserRelationDynamicSqlSupport.userId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        return userGroupUserRelationMapper.selectMany(selectStatementProvider).stream()
+                .map(UserGroupUserRelation::getGroupId).collect(Collectors.toList());
     }
 }

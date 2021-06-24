@@ -65,12 +65,12 @@ public interface RoleService {
     void changeEnabled(Integer id, boolean enable);
 
     /**
-     * 分配资源
+     * 分配资源动作
      *
      * @param id                角色 id
      * @param resourceActionIds 资源动作 ids
      */
-    void assignResources(Integer id, List<Integer> resourceActionIds);
+    void assignResourceActions(Integer id, List<Integer> resourceActionIds);
 
     /**
      * 分配菜单
@@ -83,18 +83,18 @@ public interface RoleService {
     /**
      * 获取角色所分配的资源动作 ids
      *
-     * @param id 角色 id
+     * @param ids 角色 ids
      * @return 资源动作 ids
      */
-    List<Integer> getAssignedResourceActionIds(Integer id);
+    List<Integer> getAssignedResourceActionIds(List<Integer> ids);
 
     /**
      * 获取角色所分配的菜单 ids
      *
-     * @param id 角色 id
+     * @param ids 角色 ids
      * @return 菜单 ids
      */
-    List<Integer> getAssignedMenuIds(Integer id);
+    List<Integer> getAssignedMenuIds(List<Integer> ids);
 
     /**
      * 查找所有资源，以及角色分配情况

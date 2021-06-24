@@ -20,7 +20,7 @@ import javax.validation.Valid;
  * @author cdrcool
  */
 @Api(tags = "资源管理")
-@RequestMapping("role")
+@RequestMapping("resource")
 @RestController
 public class ResourceController {
     private final ResourceService resourceService;

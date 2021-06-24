@@ -1,11 +1,10 @@
 package com.op.admin.mapper;
 
-import org.mybatis.dynamic.sql.SqlColumn;
-import org.mybatis.dynamic.sql.SqlTable;
-
-import javax.annotation.Generated;
 import java.sql.JDBCType;
 import java.time.LocalDateTime;
+import javax.annotation.Generated;
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
 
 public final class ResourceActionDynamicSqlSupport {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -28,6 +27,9 @@ public final class ResourceActionDynamicSqlSupport {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Integer> actionNo = resourceAction.actionNo;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<String> permissionName = resourceAction.permissionName;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Integer> version = resourceAction.version;
@@ -63,6 +65,8 @@ public final class ResourceActionDynamicSqlSupport {
         public final SqlColumn<String> actionDesc = column("action_desc", JDBCType.VARCHAR);
 
         public final SqlColumn<Integer> actionNo = column("action_no", JDBCType.INTEGER);
+
+        public final SqlColumn<String> permissionName = column("permission_name", JDBCType.VARCHAR);
 
         public final SqlColumn<Integer> version = column("version", JDBCType.INTEGER);
 

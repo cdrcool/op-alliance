@@ -6,6 +6,7 @@ import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.RoleAssignVO;
 import com.op.admin.vo.UserVO;
+import com.op.framework.web.common.api.response.NoApiResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Page;
@@ -62,6 +63,13 @@ public class UserController {
         return userService.findById(id);
     }
 
+    @NoApiResponse
+    @ApiOperation("根据用户名查找用户")
+    @GetMapping("getByUsername")
+    public UserDTO getByUsername(@RequestParam String username) {
+        return userService.findByUserName(username);
+    }
+
     @ApiOperation("分页查询用户")
     @PostMapping("page")
     public Page<UserVO> queryPage(@PageableDefault(sort = "userNo", direction = Sort.Direction.ASC) Pageable pageable,
@@ -81,10 +89,10 @@ public class UserController {
         userService.assignRoles(roleAssignDTO.getId(), roleAssignDTO.getRoleIds());
     }
 
-    @ApiOperation("分配资源")
-    @PostMapping("assignResources")
-    public void assignResources(@Valid @RequestBody ResourceAssignDTO resourceAssignDTO) {
-        userService.assignRoles(resourceAssignDTO.getId(), resourceAssignDTO.getResourceIds());
+    @ApiOperation("分配资源动作")
+    @PostMapping("assignResourceActions")
+    public void assignResourceActions(@Valid @RequestBody ResourceAssignDTO resourceAssignDTO) {
+        userService.assignResourceActions(resourceAssignDTO.getId(), resourceAssignDTO.getResourceIds());
     }
 
     @ApiOperation("分配菜单")

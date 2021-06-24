@@ -61,4 +61,11 @@ public interface ResourceActionService {
      * @return 资源动作分配 VO Map（key：资源 id；value：资源动作列表）
      */
     Map<Integer, List<ResourceActionAssignVO>> findAllForAssign();
+
+    /**
+     * 根据 ids 获取权限列表
+     * @param ids ids
+     * @return 权限列表
+     */
+    List<String> getPermissions(List<Integer> ids);
 }

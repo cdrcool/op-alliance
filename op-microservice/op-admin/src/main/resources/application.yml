@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8082
 
 spring:
   application:
@@ -7,7 +7,7 @@ spring:
   boot:
     admin:
       client:
-        url: http://localhost:8081
+        url: http://localhost:8080,http://localhost:8080
   datasource:
     initialization-mode: never
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -52,11 +52,6 @@ management:
   metrics:
     tags:
       application: ${spring.application.name}
-
-logging:
-  file:
-    path: logs
-    name: ${user.home}/logs/admin.log
 
 mybatis:
   configuration:

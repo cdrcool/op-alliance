@@ -2,6 +2,7 @@ package com.op.admin.mapping;
 
 import com.op.admin.dto.UserChangePasswordDTO;
 import com.op.admin.dto.UserCreateDTO;
+import com.op.admin.dto.UserDTO;
 import com.op.admin.dto.UserUpdateDTO;
 import com.op.admin.entity.User;
 import com.op.admin.vo.UserVO;
@@ -57,4 +58,12 @@ public interface UserMapping {
      * @return 用户 vo 列表
      */
     List<UserVO> toUserVOList(List<User> users);
+
+    /**
+     * 用户 -> 用户 dto
+     *
+     * @param user 用户
+     * @return 用户 dto
+     */
+    UserDTO toUserDto(User user);
 }

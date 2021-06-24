@@ -65,10 +65,10 @@ public class RoleController {
         roleService.changeEnabled(id, enable);
     }
 
-    @ApiOperation("分配资源")
-    @PostMapping("assignResources")
-    public void assignResources(@Valid @RequestBody ResourceAssignDTO resourceAssignDTO) {
-        roleService.assignResources(resourceAssignDTO.getId(), resourceAssignDTO.getResourceIds());
+    @ApiOperation("分配资源动作")
+    @PostMapping("assignResourceActions")
+    public void assignResourceActions(@Valid @RequestBody ResourceAssignDTO resourceAssignDTO) {
+        roleService.assignResourceActions(resourceAssignDTO.getId(), resourceAssignDTO.getResourceIds());
     }
 
     @ApiOperation("分配菜单")

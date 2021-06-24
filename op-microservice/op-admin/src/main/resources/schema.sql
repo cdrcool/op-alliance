@@ -29,7 +29,7 @@ CREATE TABLE `admin_user`
     `id`               int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
     `org_id`           int NULL DEFAULT NULL COMMENT '组织id',
     `username`         varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '用户名',
-    `password`         varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '密码',
+    `password`         varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '密码',
     `nickname`         varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '昵称',
     `avatar`           varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '头像',
     `signature`        varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '个性签名',
@@ -147,6 +147,7 @@ CREATE TABLE `admin_resource_action`
     `action_path`      varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '动作路径',
     `action_desc`      varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '动作描述',
     `action_no`        int NULL DEFAULT NULL COMMENT '动作编号',
+    `permission_name`      varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '权限名',
     `version`          int NULL DEFAULT NULL COMMENT '版本号',
     `deleted`          tinyint(1) NULL DEFAULT NULL COMMENT '是否逻辑删除',
     `creator_id`       int NULL DEFAULT NULL COMMENT '创建人id',
@@ -399,3 +400,24 @@ CREATE TABLE `admin_user_group_menu_relation`
     `tenant_id`        varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
     UNIQUE INDEX `group_id_menu_id_index`(`group_id`, `menu_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户组-菜单关联' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for admin_oauth_client_details
+-- ----------------------------
+DROP TABLE IF EXISTS `admin_oauth_client_details`;
+CREATE TABLE `admin_oauth_client_details`
+(
+    `id`               int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `client_id`               varchar(50)  NOT NULL COMMENT '客户端标识',
+    `client_secret`           varchar(100) NOT NULL COMMENT '客户端密钥',
+    `authorized_grant_types`  varchar(50)  DEFAULT NULL COMMENT '授权许可类型',
+    `scope`                   varchar(200) DEFAULT NULL COMMENT '授权范围',
+    `web_server_redirect_uri` varchar(100) DEFAULT NULL COMMENT '重定向地址',
+    `authorities`             varchar(200) DEFAULT NULL COMMENT '权限（客户端/隐式模式需要配置）',
+    `resource_ids`            varchar(200) DEFAULT NULL COMMENT '资源ids',
+    `access_token_validity`   int          DEFAULT NULL COMMENT '访问令牌有效期',
+    `refresh_token_validity`  int          DEFAULT NULL COMMENT '刷新令牌有效期',
+    `autoapprove`             varchar(10)  DEFAULT NULL COMMENT '是否自动授权（只适用于授权码模式，可选值：true|false|read|write）',
+    `additional_information`  text COMMENT '其它信息',
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = 'oauth2-client' ROW_FORMAT = Dynamic;

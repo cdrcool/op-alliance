@@ -31,6 +31,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -173,7 +174,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     @Override
     public void assignRoles(Integer id, List<Integer> roleIds) {
         // 获取已建立关联的角色 ids
-        List<Integer> preRoleIds = this.getAssignedRoleIds(id);
+        List<Integer> preRoleIds = this.getAssignedRoleIds(Collections.singletonList(id));
 
         // 获取要新建关联的角色 ids
         List<Integer> toAddRoleIds = roleIds.stream()
@@ -205,9 +206,9 @@ public class UserGroupServiceImpl implements UserGroupService {
     }
 
     @Override
-    public void assignResources(Integer id, List<Integer> resourceActionIds) {
+    public void assignResourceActions(Integer id, List<Integer> resourceActionIds) {
         // 获取已建立关联的资源动作 ids
-        List<Integer> preActionIds = this.getAssignedResourceActionIds(id);
+        List<Integer> preActionIds = this.getAssignedResourceActionIds(Collections.singletonList(id));
 
         // 获取要新建关联的资源动作 ids
         List<Integer> toAddActionIds = resourceActionIds.stream()
@@ -242,7 +243,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     @Override
     public void assignMenus(Integer id, List<Integer> menuIds) {
         // 获取已建立关联的菜单 ids
-        List<Integer> preMenuIds = this.getAssignedMenuIds(id);
+        List<Integer> preMenuIds = this.getAssignedMenuIds(Collections.singletonList(id));
 
         // 获取要新建关联的菜单 ids
         List<Integer> toAddMenuIds = menuIds.stream()
@@ -275,10 +276,10 @@ public class UserGroupServiceImpl implements UserGroupService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<Integer> getAssignedRoleIds(Integer id) {
+    public List<Integer> getAssignedRoleIds(List<Integer> ids) {
         SelectStatementProvider selectStatementProvider = select(UserGroupRoleRelationDynamicSqlSupport.roleId)
                 .from(UserGroupRoleRelationDynamicSqlSupport.userGroupRoleRelation)
-                .where(UserGroupRoleRelationDynamicSqlSupport.groupId, isEqualTo(id))
+                .where(UserGroupRoleRelationDynamicSqlSupport.groupId, isIn(ids))
                 .build().render(RenderingStrategies.MYBATIS3);
         return userGroupRoleRelationMapper.selectMany(selectStatementProvider).stream()
                 .map(UserGroupRoleRelation::getRoleId).collect(Collectors.toList());
@@ -286,10 +287,10 @@ public class UserGroupServiceImpl implements UserGroupService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<Integer> getAssignedResourceActionIds(Integer id) {
+    public List<Integer> getAssignedResourceActionIds(List<Integer> ids) {
         SelectStatementProvider selectStatementProvider = select(UserGroupResourceActionRelationDynamicSqlSupport.actionId)
                 .from(UserGroupResourceActionRelationDynamicSqlSupport.userGroupResourceActionRelation)
-                .where(UserGroupResourceActionRelationDynamicSqlSupport.groupId, isEqualTo(id))
+                .where(UserGroupResourceActionRelationDynamicSqlSupport.groupId, isIn(ids))
                 .build().render(RenderingStrategies.MYBATIS3);
         return userGroupResourceActionRelationMapper.selectMany(selectStatementProvider).stream()
                 .map(UserGroupResourceActionRelation::getActionId).collect(Collectors.toList());
@@ -297,10 +298,10 @@ public class UserGroupServiceImpl implements UserGroupService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<Integer> getAssignedMenuIds(Integer id) {
+    public List<Integer> getAssignedMenuIds(List<Integer> ids) {
         SelectStatementProvider selectStatementProvider = select(UserGroupMenuRelationDynamicSqlSupport.menuId)
                 .from(UserGroupMenuRelationDynamicSqlSupport.userGroupMenuRelation)
-                .where(UserGroupMenuRelationDynamicSqlSupport.groupId, isEqualTo(id))
+                .where(UserGroupMenuRelationDynamicSqlSupport.groupId, isIn(ids))
                 .build().render(RenderingStrategies.MYBATIS3);
         return userGroupMenuRelationMapper.selectMany(selectStatementProvider).stream()
                 .map(UserGroupMenuRelation::getMenuId).collect(Collectors.toList());
@@ -309,7 +310,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<RoleAssignVO> loadRoles(Integer id) {
-        List<Integer> assignedRoleIds = getAssignedRoleIds(id);
+        List<Integer> assignedRoleIds = this.getAssignedRoleIds(Collections.singletonList(id));
 
         List<RoleAssignVO> roles = roleService.findAllForAssign();
         roles.forEach(role -> {
@@ -323,7 +324,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<ResourceCategoryAssignVO> loadResources(Integer id) {
-        List<Integer> assignedActionIds = this.getAssignedResourceActionIds(id);
+        List<Integer> assignedActionIds = this.getAssignedResourceActionIds(Collections.singletonList(id));
 
         List<ResourceCategoryAssignVO> categories = resourceCategoryService.findAllForAssign();
         categories.forEach(category ->
@@ -339,7 +340,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<MenuAssignVO> loadMenus(Integer id) {
-        List<Integer> assignedMenuIds = this.getAssignedMenuIds(id);
+        List<Integer> assignedMenuIds = this.getAssignedMenuIds(Collections.singletonList(id));
 
         List<MenuAssignVO> menus = menuService.findAllForAssign();
         setMenuItems(menus, assignedMenuIds);
@@ -347,6 +348,13 @@ public class UserGroupServiceImpl implements UserGroupService {
         return menus;
     }
 
+
+    /**
+     * 设置菜单项的选中和是否可以取消选中状态
+     *
+     * @param menus           菜单列表
+     * @param assignedMenuIds 用户组所分配的菜单 ids
+     */
     private void setMenuItems(List<MenuAssignVO> menus, List<Integer> assignedMenuIds) {
         menus.forEach(menu -> {
             menu.setChecked(assignedMenuIds.contains(menu.getId()));

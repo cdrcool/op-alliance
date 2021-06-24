@@ -58,12 +58,12 @@ public interface UserGroupService {
     void assignRoles(Integer id, List<Integer> roleIds);
 
     /**
-     * 分配资源
+     * 分配资源动作
      *
      * @param id                用户组 id
      * @param resourceActionIds 资源动作 ids
      */
-    void assignResources(Integer id, List<Integer> resourceActionIds);
+    void assignResourceActions(Integer id, List<Integer> resourceActionIds);
 
     /**
      * 分配菜单
@@ -76,26 +76,26 @@ public interface UserGroupService {
     /**
      * 获取用户组所分配的角色 ids
      *
-     * @param id 用户组 id
+     * @param ids 用户组 ids
      * @return 角色 ids
      */
-    List<Integer> getAssignedRoleIds(Integer id);
+    List<Integer> getAssignedRoleIds(List<Integer> ids);
 
     /**
      * 获取用户组所分配的资源 ids
      *
-     * @param id 用户组 id
+     * @param ids 用户组 ids
      * @return 资源 ids
      */
-    List<Integer> getAssignedResourceActionIds(Integer id);
+    List<Integer> getAssignedResourceActionIds(List<Integer> ids);
 
     /**
      * 获取用户组所分配的菜单 ids
      *
-     * @param id 用户组 id
+     * @param ids 用户组 ids
      * @return 菜单 ids
      */
-    List<Integer> getAssignedMenuIds(Integer id);
+    List<Integer> getAssignedMenuIds(List<Integer> ids);
 
     /**
      * 查找所有角色，以及用户组分配情况

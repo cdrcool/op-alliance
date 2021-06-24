@@ -63,10 +63,10 @@ public class UserGroupController {
         userGroupService.assignRoles(roleAssignDTO.getId(), roleAssignDTO.getRoleIds());
     }
 
-    @ApiOperation("分配资源")
-    @PostMapping("assignResources")
-    public void assignResources(@Valid @RequestBody ResourceAssignDTO resourceAssignDTO) {
-        userGroupService.assignRoles(resourceAssignDTO.getId(), resourceAssignDTO.getResourceIds());
+    @ApiOperation("分配资源动作")
+    @PostMapping("assignResourceActions")
+    public void assignResourceActions(@Valid @RequestBody ResourceAssignDTO resourceAssignDTO) {
+        userGroupService.assignResourceActions(resourceAssignDTO.getId(), resourceAssignDTO.getResourceIds());
     }
 
     @ApiOperation("分配菜单")

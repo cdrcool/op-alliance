@@ -197,19 +197,6 @@ public class ApiResponseAdvice implements ResponseBodyAdvice<Object> {
     }
 
     /**
-     * 500 异常
-     */
-    @ExceptionHandler(Throwable.class)
-    public ApiResponse<Object> handleError(Throwable e) {
-        log.error("Internal Server Error", e);
-        return ApiResponse
-                .builder()
-                .code(ResultCode.INTERNAL_SERVER_ERROR)
-                .message(e.getMessage())
-                .build();
-    }
-
-    /**
      * 业务异常
      */
     @ExceptionHandler(BusinessException.class)
@@ -218,6 +205,19 @@ public class ApiResponseAdvice implements ResponseBodyAdvice<Object> {
         return ApiResponse
                 .builder()
                 .code(e.getResultCode())
+                .message(e.getMessage())
+                .build();
+    }
+
+    /**
+     * 500 异常
+     */
+    @ExceptionHandler(Throwable.class)
+    public ApiResponse<Object> handleError(Throwable e) {
+        log.error("Internal Server Error", e);
+        return ApiResponse
+                .builder()
+                .code(ResultCode.INTERNAL_SERVER_ERROR)
                 .message(e.getMessage())
                 .build();
     }

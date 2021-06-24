@@ -179,7 +179,7 @@
                         <dependency>
                             <groupId>com.cdrcool.onepiece</groupId>
                             <artifactId>op-web-common</artifactId>
-                            <version>${project.version}</version>
+                            <version>${project.parent.version}</version>
                         </dependency>
                     </dependencies>
                 </plugin>

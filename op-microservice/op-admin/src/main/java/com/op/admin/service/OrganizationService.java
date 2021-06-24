@@ -61,12 +61,12 @@ public interface OrganizationService {
     void assignRoles(Integer id, List<Integer> roleIds);
 
     /**
-     * 分配资源
+     * 分配资源动作
      *
      * @param id                组织 id
      * @param resourceActionIds 资源动作 ids
      */
-    void assignResources(Integer id, List<Integer> resourceActionIds);
+    void assignResourceActions(Integer id, List<Integer> resourceActionIds);
 
     /**
      * 分配菜单

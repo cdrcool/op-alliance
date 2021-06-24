@@ -1,9 +1,6 @@
 package com.op.admin.service;
 
-import com.op.admin.dto.UserChangePasswordDTO;
-import com.op.admin.dto.UserCreateDTO;
-import com.op.admin.dto.UserPageQueryDTO;
-import com.op.admin.dto.UserUpdateDTO;
+import com.op.admin.dto.*;
 import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.RoleAssignVO;
@@ -65,6 +62,14 @@ public interface UserService {
     UserVO findById(Integer id);
 
     /**
+     * 根据用户名查找用户
+     *
+     * @param username 用户名
+     * @return 用户 vo
+     */
+    UserDTO findByUserName(String username);
+
+    /**
      * 分页查询用户
      *
      * @param pageable 分页对象
@@ -90,12 +95,12 @@ public interface UserService {
     void assignRoles(Integer id, List<Integer> roleIds);
 
     /**
-     * 分配资源
+     * 分配资源动作
      *
      * @param id                用户 id
      * @param resourceActionIds 资源动作 ids
      */
-    void assignResources(Integer id, List<Integer> resourceActionIds);
+    void assignResourceActions(Integer id, List<Integer> resourceActionIds);
 
     /**
      * 分配菜单
@@ -104,30 +109,6 @@ public interface UserService {
      * @param menuIds 菜单 ids
      */
     void assignMenus(Integer id, List<Integer> menuIds);
-
-    /**
-     * 获取用户所分配的角色 ids
-     *
-     * @param id 用户 id
-     * @return 角色 ids
-     */
-    List<Integer> getAssignedRoleIds(Integer id);
-
-    /**
-     * 获取用户所分配的资源动作 ids
-     *
-     * @param id 用户 id
-     * @return 资源动作 ids
-     */
-    List<Integer> getAssignedResourceActionIds(Integer id);
-
-    /**
-     * 获取用户所分配的菜单 ids
-     *
-     * @param id 用户 id
-     * @return 菜单 ids
-     */
-    List<Integer> getAssignedMenuIds(Integer id);
 
     /**
      * 查找所有角色，以及用户分配情况
