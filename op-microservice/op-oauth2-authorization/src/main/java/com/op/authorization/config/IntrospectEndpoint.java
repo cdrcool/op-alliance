@@ -32,7 +32,7 @@ public class IntrospectEndpoint {
     @ResponseBody
     public Map<String, Object> introspect(@RequestParam("token") String token) {
         OAuth2AccessToken accessToken = this.tokenStore.readAccessToken(token);
-        Map<String, Object> attributes = new HashMap<>(10);
+        Map<String, Object> attributes = new HashMap<>(5);
         if (accessToken == null || accessToken.isExpired()) {
             attributes.put("active", false);
             return attributes;
