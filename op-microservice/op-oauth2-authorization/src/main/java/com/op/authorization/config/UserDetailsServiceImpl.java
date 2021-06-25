@@ -30,7 +30,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         return new User(
                 userDTO.getUsername(),
-                userDTO.getUsername(),
+                userDTO.getPassword(),
                 Objects.equals(userDTO.getStatus(), 1),
                 !Objects.equals(userDTO.getStatus(), 2),
                 !Objects.equals(userDTO.getStatus(), 4),

@@ -6,14 +6,14 @@ import lombok.Builder;
 import lombok.Data;
 
 /**
- * Oauth2 Token Dto
+ * Oauth2 Token 请求响应对象
  *
  * @author cdrcool
  */
-@ApiModel("Oauth2 Token DTO")
+@ApiModel("Oauth2 Token 请求响应对象")
 @Builder
 @Data
-public class OauthTokenDTO {
+public class OauthTokenResponse {
     @ApiModelProperty("访问令牌")
     private String accessToken;
 

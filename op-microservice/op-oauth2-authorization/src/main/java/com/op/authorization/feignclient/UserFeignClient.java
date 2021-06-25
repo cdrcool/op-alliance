@@ -3,6 +3,7 @@ package com.op.authorization.feignclient;
 import com.op.authorization.feignclient.dto.UserDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * 用户 Feign Client
@@ -19,5 +20,5 @@ public interface UserFeignClient {
      * @return 用户 dto
      */
     @GetMapping("/user/getByUsername")
-    UserDTO getByUsername(String username);
+    UserDTO getByUsername(@RequestParam("username") String username);
 }

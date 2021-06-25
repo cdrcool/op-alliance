@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.op.authorization.feignclient.OauthClientFeignClient;
 import com.op.authorization.feignclient.dto.OauthClientDetailsDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.provider.ClientDetails;
@@ -45,22 +46,34 @@ public class ClientDetailsServiceImpl implements ClientDetailsService {
         BaseClientDetails clientDetails = new BaseClientDetails();
         clientDetails.setClientId(oauthClientDetails.getClientId());
         clientDetails.setClientSecret(oauthClientDetails.getClientSecret());
-        clientDetails.setAuthorizedGrantTypes(Arrays.stream(Optional.ofNullable(oauthClientDetails.getAuthorizedGrantTypes()).orElse("").split(",")).collect(Collectors.toList()));
-        clientDetails.setScope(Arrays.stream(Optional.ofNullable(oauthClientDetails.getScope()).orElse("").split(",")).collect(Collectors.toList()));
-        clientDetails.setRegisteredRedirectUri(Arrays.stream(Optional.ofNullable(oauthClientDetails.getWebServerRedirectUri()).orElse("").split(",")).collect(Collectors.toSet()));
-        clientDetails.setAuthorities(Arrays.stream(Optional.ofNullable(oauthClientDetails.getAuthorities()).orElse("").split(",")).map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
-        clientDetails.setResourceIds(Arrays.stream(Optional.ofNullable(oauthClientDetails.getResourceIds()).orElse("").split(",")).collect(Collectors.toList()));
+        Optional.ofNullable(oauthClientDetails.getAuthorizedGrantTypes()).ifPresent(grantTypes ->
+                clientDetails.setAuthorizedGrantTypes(Arrays.stream(grantTypes.split(",")).collect(Collectors.toList()))
+        );
+        Optional.ofNullable(oauthClientDetails.getScope()).ifPresent(scope ->
+                clientDetails.setScope(Arrays.stream(scope.split(",")).collect(Collectors.toList()))
+        );
+        Optional.ofNullable(oauthClientDetails.getWebServerRedirectUri()).ifPresent(redirectUri ->
+                clientDetails.setRegisteredRedirectUri(Arrays.stream(redirectUri.split(",")).collect(Collectors.toSet()))
+        );
+        Optional.ofNullable(oauthClientDetails.getResourceIds()).ifPresent(authorities ->
+                clientDetails.setAuthorities(Arrays.stream(authorities.split(",")).map(SimpleGrantedAuthority::new).collect(Collectors.toList()))
+        );
+        Optional.ofNullable(oauthClientDetails.getResourceIds()).ifPresent(resourceIds ->
+                clientDetails.setResourceIds(Arrays.stream(resourceIds.split(",")).collect(Collectors.toList()))
+        );
         clientDetails.setAccessTokenValiditySeconds(oauthClientDetails.getAccessTokenValidity());
         clientDetails.setRefreshTokenValiditySeconds(oauthClientDetails.getRefreshTokenValidity());
         clientDetails.setAutoApproveScopes("true".equals(oauthClientDetails.getAutoapprove()) ? clientDetails.getScope() : new HashSet<>());
 
         String additionalInformation = oauthClientDetails.getAdditionalInformation();
-        try {
-            Map<String, ?> additionalInformationMap = objectMapper.readValue(additionalInformation, new TypeReference<Map<String, ?>>() {
-            });
-            clientDetails.setAdditionalInformation(additionalInformationMap);
-        } catch (JsonProcessingException e) {
-            log.error("反序列化clientId为【" + clientId + "】的 oauth-client 异常", e);
+        if (StringUtils.isNotBlank(additionalInformation)) {
+            try {
+                Map<String, ?> additionalInformationMap = objectMapper.readValue(additionalInformation, new TypeReference<Map<String, ?>>() {
+                });
+                clientDetails.setAdditionalInformation(additionalInformationMap);
+            } catch (JsonProcessingException e) {
+                log.error("反序列化clientId为【" + clientId + "】的 oauth-client 异常", e);
+            }
         }
 
         return clientDetails;

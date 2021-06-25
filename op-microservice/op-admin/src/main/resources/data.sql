@@ -58,11 +58,10 @@ values (1, 1, '分页查询', 'page', 1, 'view'),
        (2, 1, '保存', 'list', 2, 'save');
 
 # 用户-资源动作关联
-INSERT INTO `admin_user_resource_action_relation` (`id`,
-                    `user_id`,
+INSERT INTO `admin_user_resource_action_relation` (`user_id`,
                     `action_id`)
-values (1, 1, 1),
-       (2, 1, 2);
+values (1, 1),
+       (1, 2);
 
 # oauth2-client
 INSERT INTO `admin_oauth_client_details` (`id`,
@@ -77,7 +76,7 @@ INSERT INTO `admin_oauth_client_details` (`id`,
                     `refresh_token_validity`,
                     `autoapprove`,
                     `additional_information`)
-values (1, 'client', '$2a$10$7u6zE28zIs.aLRJU9.0NkOM.PtYyooXE1lNjn/7OS4cAO2cuelHvW', 'client_credentials', null, null, null, null, '86400', null, null, null),
-       (2, 'implicit', '$2a$10$7u6zE28zIs.aLRJU9.0NkOM.PtYyooXE1lNjn/7OS4cAO2cuelHvW', 'implicit', null, 'https://www.baidu.com', null, null, '86400', null, null, null),
-       (3, 'password', '$2a$10$7u6zE28zIs.aLRJU9.0NkOM.PtYyooXE1lNjn/7OS4cAO2cuelHvW', 'password,refresh_token', null, null, null, null, '86400', '604800', null, null),
-       (4, 'code', '$2a$10$7u6zE28zIs.aLRJU9.0NkOM.PtYyooXE1lNjn/7OS4cAO2cuelHvW', 'authorization_code,refresh_token', null, 'http://localhost:8080/authorized', null, null, '86400', '604800', 'true', null);
+values (1, 'client', '$2a$10$kf.8Hx8PuBjpewOMnZ9z3uIcQuG5E1988NYNx3gHrEwrVyklphkLS', 'client_credentials', null, null, null, null, '86400', null, null, null),
+       (2, 'implicit', '$2a$10$kf.8Hx8PuBjpewOMnZ9z3uIcQuG5E1988NYNx3gHrEwrVyklphkLS', 'implicit', null, 'https://www.baidu.com', null, null, '86400', null, null, null),
+       (3, 'password', '$2a$10$kf.8Hx8PuBjpewOMnZ9z3uIcQuG5E1988NYNx3gHrEwrVyklphkLS', 'password,refresh_token', null, null, null, null, '86400', '604800', null, null),
+       (4, 'code', '$2a$10$kf.8Hx8PuBjpewOMnZ9z3uIcQuG5E1988NYNx3gHrEwrVyklphkLS', 'authorization_code,refresh_token', null, 'http://localhost:8080/authorized', null, null, '86400', '604800', 'true', null);
