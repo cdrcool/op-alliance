@@ -1,6 +1,48 @@
 @import '~antd/dist/antd.css';
 
-#components-layout-demo-custom-trigger .trigger {
+#root {
+  min-height: 100vh;
+}
+
+#root .logo {
+  height: 64px;
+  text-align: center;
+  overflow: hidden;
+  color: #000000d9;
+  font-size: 18px;
+  font-family: Avenir,-apple-system,BlinkMacSystemFont,segoe ui,Roboto,helvetica neue,Arial,noto sans,sans-serif,apple color emoji,segoe ui emoji,segoe ui symbol,noto color emoji,sans-serif;
+  line-height: 64px;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+#root .logo img {
+  position: relative;
+  top: -1.5px;
+  height: 32px;
+  margin-right: 6px;
+  vertical-align: middle;
+  border-style: none;
+}
+
+#root .logo h1 {
+  display: inline-block;
+  height: 32px;
+  margin: 0 0 0 6px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 32px;
+  vertical-align: middle;
+  animation: pro-layout-title-hide .3s;
+}
+
+.main .header {
+  background: #fff;
+  padding: 0;
+}
+
+.main .header .trigger {
   padding: 0 24px;
   font-size: 18px;
   line-height: 64px;
@@ -8,16 +50,26 @@
   transition: color 0.3s;
 }
 
-#components-layout-demo-custom-trigger .trigger:hover {
+.main .header .trigger:hover {
   color: #1890ff;
 }
 
-#components-layout-demo-custom-trigger .logo {
-  height: 32px;
-  margin: 16px;
-  background: rgba(255, 255, 255, 0.3);
+.info {
+  width: 400px;
 }
 
-.site-layout .site-layout-background {
+.main .content {
   background: #fff;
+  margin: 16px 0 0 16px;
+  padding: 16px;
+}
+
+.main .header .ant-menu-horizontal > .ant-menu-item::after,
+.main .header .ant-menu-horizontal > .ant-menu-submenu::after {
+  border-bottom: 0 !important;
+}
+
+.main .header .ant-menu-horizontal > .ant-menu-item:hover,
+.main .header .ant-menu-horizontal > .ant-menu-submenu:hover {
+  background: rgba(0,0,0,.025);
 }
