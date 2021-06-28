@@ -96,3 +96,26 @@ docker run -d `
     oliver006/redis_exporter `
     --redis.addr redis://host.docker.internal:6379
 --------------------------------------------------
+
+nacos
+--------------------------------------------------
+https://github.com/alibaba/nacos/blob/master/config/src/main/resources/META-INF/nacos-db.sql
+
+docker run -d `
+    --network op_net `
+    --hostname nacos `
+    --name nacos `
+    -p 8848:8848 -p 9848:9848 -p 9555:9555 `
+    -v /d/Workspace/IdeaProjects/onepiece/op-alliance/op-env/nacos-logs/:/home/nacos/logs `
+    -v /d/Workspace/IdeaProjects/onepiece/op-alliance/op-env/nacos.properties:/home/nacos/init.d/custom.properties `
+    -e PREFER_HOST_MODE=hostname `
+    -e MODE=standalone `
+    -e SPRING_DATASOURCE_PLATFORM=mysql `
+    -e MYSQL_SERVICE_HOST=host.docker.internal `
+    -e MYSQL_SERVICE_PORT=3306 `
+    -e MYSQL_SERVICE_DB_NAME=nacos `
+    -e MYSQL_SERVICE_USER=root `
+    -e MYSQL_SERVICE_PASSWORD=root `
+    -e MYSQL_SERVICE_DB_PARAM=characterEncoding=utf8"&"connectTimeout=1000"&"socketTimeout=3000"&"autoReconnect=true"&"useSSL=false `
+    nacos/nacos-server
+--------------------------------------------------

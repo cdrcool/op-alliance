@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  *
  * @author cdrcool
  */
-@FeignClient(value = "op-admin", contextId = "user", url = "http://localhost:8082")
+@FeignClient(value = "op-admin", contextId = "user")
 public interface UserFeignClient {
 
     /**

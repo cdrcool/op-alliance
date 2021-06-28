@@ -2,43 +2,33 @@ server:
   port: 8080
 
 spring:
+  profiles:
+    active: dev
+  cloud:
+    gateway:
+      routes:
+        - id: op-auth
+          #          uri: http://localhost:8081
+          uri: lb://op-auth
+          predicates:
+            - Path=/op-auth/**
+          filters:
+            - StripPrefix=1
+        - id: op-admin
+          #          uri: http://localhost:8082
+          uri: lb://op-admin
+          predicates:
+            - Path=/op-admin/**
+          filters:
+            - StripPrefix=1
   security:
     oauth2:
       resourceserver:
         jwt:
           # RSA 公钥访问地址
           #          jwk-set-uri: 'http://localhost:8081/oauth2/jwks'
-          jwk-set-uri: 'http://localhost:8081/.well-known/jwks.json'
+          jwk-set-uri: 'http://op-auth/.well-known/jwks.json'
   #          issuer-uri: 'http://localhost:8081'
-  cloud:
-    gateway:
-      routes:
-        - id: op-auth
-          uri: http://localhost:8081
-          predicates:
-            - Path=/op-auth/**
-          filters:
-            - StripPrefix=1
-        - id: op-admin
-          uri: http://localhost:8082
-          predicates:
-            - Path=/op-admin/**
-          filters:
-            - StripPrefix=1
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-  endpoint:
-    health:
-      show-details: always
-    logfile:
-      enabled: true
-  metrics:
-    tags:
-      application: ${spring.application.name}
 
 secure:
   white-list:

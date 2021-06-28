@@ -1,7 +1,6 @@
 package com.onepiece.gateway.config.security;
 
 import com.nimbusds.jose.JWSObject;
-import com.op.framework.web.common.api.response.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -38,7 +37,7 @@ public class SecurityContextFilter implements GlobalFilter, Ordered {
             exchange = exchange.mutate().request(request).build();
         } catch (ParseException e) {
             log.error("解析 token 异常", e);
-            throw new BusinessException("解析 token 异常", e);
+            throw new RuntimeException("解析 token 异常", e);
         }
         return chain.filter(exchange);
     }

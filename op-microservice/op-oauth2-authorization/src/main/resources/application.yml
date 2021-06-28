@@ -2,8 +2,8 @@ server:
   port: 8081
 
 spring:
-  application:
-    name: op-oauth2-authorization
+  profiles:
+    active: dev
 
 feign:
   client:
@@ -27,20 +27,6 @@ ${spring.applicationname}:
     # retryableStatusCodes: 500,404
     # 对所有的超时请求重试（包括 POST 等请求），默认值 false
     OkToRetryOnAllOperations: false
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-  endpoint:
-    health:
-      show-details: always
-    logfile:
-      enabled: true
-  metrics:
-    tags:
-      application: ${spring.application.name}
 
 encryption:
   key-store:
