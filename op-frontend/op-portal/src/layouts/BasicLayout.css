@@ -1,3 +1,5 @@
+@import '~antd/dist/antd.css';
+
 #root {
   min-height: 100vh;
 }
@@ -79,7 +81,7 @@
 
 .header .menu .ant-menu-horizontal > .ant-menu-item::after,
 .header .menu .ant-menu-horizontal > .ant-menu-submenu::after {
-  border-bottom: 0;
+  border-bottom: 0 !important;
 }
 
 .header .menu .ant-menu-horizontal > .ant-menu-item:hover:not(:first-child),
