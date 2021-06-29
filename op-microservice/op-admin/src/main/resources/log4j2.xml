@@ -70,6 +70,14 @@
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingFile>
+
+        <GELF name="Graylog" server="localhost" port="12201" hostName="graylog">
+            <PatternLayout pattern="${filePattern}"/>
+            <Filters>
+                <Filter type="MarkerFilter" marker="FLOW" onMatch=" DENY " onMismatch=" NEUTRAL "/>
+                <Filter type="MarkerFilter" marker="EXCEPTION" onMatch=" DENY " onMismatch=" ACCEPT "/>
+            </Filters>
+        </GELF>
     </Appenders>
 
     <!-- 只有定义了 Loggers 并引入了 Appender，Appender 才会生效 -->
@@ -81,6 +89,7 @@
         <Root level="INFO">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="RollingFile"/>
+            <AppenderRef ref="Graylog"/>
         </Root>
     </Loggers>
 </Configuration>

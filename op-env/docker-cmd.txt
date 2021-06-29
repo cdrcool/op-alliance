@@ -181,3 +181,31 @@ docker run -d `
     grafana/promtail `
     --config.file=/mnt/config/promtail-config.yaml
 --------------------------------------------------
+
+graylog
+--------------------------------------------------
+docker run -d `
+    --network op_net `
+    --hostname graylog `
+    --name graylog `
+    -p 9000:9000 `
+    -p 1514:1514 `
+    -p 1514:1514/udp `
+    -p 12201:12201 `
+    -p 12201:12201/udp `
+    -e GRAYLOG_HTTP_EXTERNAL_URI=http://host.docker.internal:9000/ `
+    -e GRAYLOG_ELASTICSEARCH_HOSTS=http://elasticsearch:9200 `
+    -e GRAYLOG_MONGODB_URI=mongodb://mongo:27017/graylog `
+    -e GRAYLOG_ROOT_TIMEZONE=Asia/Shanghai `
+    graylog/graylog:4.1
+--------------------------------------------------
+
+mongo
+--------------------------------------------------
+docker run -d `
+    --network op_net `
+    --hostname mongo `
+    --name mongo `
+    -p 7071:8081 `
+    mongo
+--------------------------------------------------
