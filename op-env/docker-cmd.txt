@@ -158,3 +158,26 @@ docker run -d `
     -e "SPRING_PROFILES_ACTIVE=dev" `
     -t onepiece/op-admin
 --------------------------------------------------
+
+loki
+--------------------------------------------------
+https://grafana.com/docs/loki/latest/installation/docker/
+
+docker run -d `
+    --network op_net `
+    --hostname loki `
+    --name loki `
+    -p 3100:3100 `
+    -v /d/Workspace/IdeaProjects/onepiece/op-alliance/op-env:/mnt/config `
+    grafana/loki `
+    --config.file=/mnt/config/loki-config.yaml
+
+docker run -d `
+    --network op_net `
+    --hostname promtail `
+    --name promtail `
+    -v /d/Workspace/IdeaProjects/onepiece/op-alliance/op-env:/mnt/config `
+    -v /d/Workspace/IdeaProjects/onepiece/op-alliance/loki-logs:/var/log `
+    grafana/promtail `
+    --config.file=/mnt/config/promtail-config.yaml
+--------------------------------------------------
