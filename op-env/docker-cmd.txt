@@ -1,4 +1,6 @@
 docker network create op_net
+
+host.docker.internal
 --------------------------------------------------
 
 mysql
@@ -80,9 +82,9 @@ mysqld-exporter
 docker run -d `
     --network op_net `
     --hostname mysqld-exporter `
-    --hostname mysqld-exporter `
+    --name mysqld-exporter `
     -p 9104:9104 `
-    -e DATA_SOURCE_NAME="root:root@(host.docker.internal:3306)/" `
+    -e DATA_SOURCE_NAME="root:root@(mysql:3306)/" `
     prom/mysqld-exporter
 --------------------------------------------------
 
@@ -91,10 +93,10 @@ redis_exporter
 docker run -d `
     --network op_net `
     --hostname redis_exporter `
-    --hostname redis_exporter `
+    --name redis_exporter `
     -p 9121:9121 `
     oliver006/redis_exporter `
-    --redis.addr redis://host.docker.internal:6379
+    --redis.addr redis://redis:6379
 --------------------------------------------------
 
 nacos
@@ -111,11 +113,31 @@ docker run -d `
     -e PREFER_HOST_MODE=hostname `
     -e MODE=standalone `
     -e SPRING_DATASOURCE_PLATFORM=mysql `
-    -e MYSQL_SERVICE_HOST=host.docker.internal `
+    -e MYSQL_SERVICE_HOST=mysql `
     -e MYSQL_SERVICE_PORT=3306 `
     -e MYSQL_SERVICE_DB_NAME=nacos `
     -e MYSQL_SERVICE_USER=root `
     -e MYSQL_SERVICE_PASSWORD=root `
     -e MYSQL_SERVICE_DB_PARAM=characterEncoding=utf8"&"connectTimeout=1000"&"socketTimeout=3000"&"autoReconnect=true"&"useSSL=false `
     nacos/nacos-server
+--------------------------------------------------
+
+skywalking
+--------------------------------------------------
+docker run -d `
+    --network op_net `
+    --hostname skywalking-oap `
+    --name skywalking-oap `
+    -p 11800:11800 -p 12800:12800 `
+    -e SW_STORAGE=elasticsearch7 `
+    -e SW_STORAGE_ES_CLUSTER_NODES=elasticsearch:9200 `
+    apache/skywalking-oap-server:8.6.0-es7
+
+docker run -d `
+    --network op_net `
+    --hostname skywalking-ui `
+    --name skywalking-ui `
+    -p 7070:8080 `
+    -e SW_OAP_ADDRESS=skywalking-oap:12800 `
+    apache/skywalking-ui
 --------------------------------------------------
