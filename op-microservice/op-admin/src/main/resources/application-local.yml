@@ -2,10 +2,10 @@ spring:
   boot:
     admin:
       client:
-        url: http://localhost:8080,http://localhost:8080
+        url: http://host.docker.internal:8080
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/onepiece?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false&useSSL=true&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://host.docker.internal:3306/onepiece?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false&useSSL=true&serverTimezone=Asia/Shanghai
     username: root
     password: root
     hikari:
@@ -23,7 +23,7 @@ spring:
     init:
       mode: never
   redis:
-    host: localhost
+    host: host.docker.internal
     port: 6379
     lettuce:
       pool:
@@ -54,4 +54,4 @@ swagger:
   app-name: Sdk Client Web Demo
   app-desc: Sdk Client Web Demo
   app-version: 1.0
-  try-host: http://localhost:${server.port}
+  try-host: http://host.docker.internal:${server.port}

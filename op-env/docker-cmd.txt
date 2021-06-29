@@ -140,4 +140,21 @@ docker run -d `
     -p 7070:8080 `
     -e SW_OAP_ADDRESS=skywalking-oap:12800 `
     apache/skywalking-ui
+
+http://skywalking.apache.org/downloads/
+
+IDEA:
+-javaagent:D:\Workspace\IdeaProjects\onepiece\apache-skywalking-apm-bin-es7\agent\skywalking-agent.jar
+-Dskywalking.agent.service_name=op-admin
+-Dskywalking.agent.collector.backend_service=127.0.0.1:11800
+
+Docker:
+docker build -t onepiece/op-admin .
+docker run -d `
+    --network op_net `
+    --hostname op-admin `
+    --name op-admin `
+    -p 8082:8082 `
+    -e "SPRING_PROFILES_ACTIVE=dev" `
+    -t onepiece/op-admin
 --------------------------------------------------
