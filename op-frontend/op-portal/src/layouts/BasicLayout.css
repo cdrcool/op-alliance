@@ -1,0 +1,88 @@
+#root {
+  min-height: 100vh;
+}
+
+.logo {
+  height: 64px;
+  text-align: center;
+  overflow: hidden;
+  color: #000000d9;
+  font-size: 18px;
+  font-family: Avenir,-apple-system,BlinkMacSystemFont,segoe ui,Roboto,helvetica neue,Arial,noto sans,sans-serif,apple color emoji,segoe ui emoji,segoe ui symbol,noto color emoji,sans-serif;
+  line-height: 64px;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.logo img {
+  position: relative;
+  top: -1.5px;
+  height: 32px;
+  margin-right: 6px;
+  vertical-align: middle;
+  border-style: none;
+}
+
+.logo h1 {
+  display: inline-block;
+  height: 32px;
+  margin: 0 0 0 6px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 32px;
+  vertical-align: middle;
+  animation: pro-layout-title-hide .3s;
+}
+
+.header {
+  background: #fff;
+  padding: 0;
+}
+
+.header .trigger {
+  padding: 0 24px;
+  font-size: 18px;
+  line-height: 64px;
+  cursor: pointer;
+  transition: color 0.3s;
+  float: left;
+}
+
+.header .trigger:hover {
+  color: #1890ff;
+}
+
+.header .breadcrumb {
+  font-size: 14px;
+  line-height: 64px;
+  float: left;
+}
+
+.header .menu {
+  float: right;
+  right: 0;
+  width: 500px;
+}
+
+.header .menu .avatar {
+  width: 24px;
+  height: 24px;
+  position: relative;
+  top: -3px;
+}
+
+.header .menu .avatar-text {
+  margin-left: 6px;
+  font-size: 14px;
+}
+
+.header .menu .ant-menu-horizontal > .ant-menu-item::after,
+.header .menu .ant-menu-horizontal > .ant-menu-submenu::after {
+  border-bottom: 0;
+}
+
+.header .menu .ant-menu-horizontal > .ant-menu-item:hover:not(:first-child),
+.header .menu .ant-menu-horizontal > .ant-menu-submenu:hover:not(:first-child) {
+  background: rgba(0,0,0,.025);
+}
