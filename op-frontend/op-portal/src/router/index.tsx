@@ -7,7 +7,6 @@ const routes  = [
     {
         path: "/",
         component: BasicLayout,
-        exact: true,
         routes: [
             {
                 path: "/",
@@ -18,6 +17,7 @@ const routes  = [
             },
             {
                 path: "/user",
+                exact: true,
                 component: UserPage,
             }
         ],

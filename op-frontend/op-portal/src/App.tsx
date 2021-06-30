@@ -1,6 +1,6 @@
 import React from 'react'
 import {renderRoutes} from 'react-router-config'
-import {HashRouter as Routers} from 'react-router-dom'
+import {BrowserRouter as Routers} from 'react-router-dom'
 import routes from './router'
 
 const App = () => {
