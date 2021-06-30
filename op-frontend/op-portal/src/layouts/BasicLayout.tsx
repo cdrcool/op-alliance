@@ -26,23 +26,23 @@ const BasicLayout: FC = (props) => {
 
                 <Menu theme="dark" mode="inline" defaultSelectedKeys={['workbench']}>
                     <Menu.Item key="workbench" icon={<DesktopOutlined/>}>
-                        工作台
+                        <Link to='/workbench'>工作台</Link>
                     </Menu.Item>
                     <SubMenu key="management" icon={<TeamOutlined/>} title="管理中心">
                         <Menu.Item key="organization">
-                            <Link to='/organization'>组织管理</Link>
+                            <Link to='/management/organization'>组织管理</Link>
                         </Menu.Item>
                         <Menu.Item key="user">
-                            <Link to='/user'>用户管理</Link>
+                            <Link to='/management/user'>用户管理</Link>
                         </Menu.Item>
                         <Menu.Item key="role">
-                            <Link to='/role'>角色管理</Link>
+                            <Link to='/management/role'>角色管理</Link>
                         </Menu.Item>
                         <Menu.Item key="resource">
-                            <Link to='/resource'>资源管理</Link>
+                            <Link to='/management/resource'>资源管理</Link>
                         </Menu.Item>
                         <Menu.Item key="menu">
-                            <Link to='/menu'>菜单管理</Link>
+                            <Link to='/management/menu'>菜单管理</Link>
                         </Menu.Item>
                     </SubMenu>
                     <Menu.Item key="statistics" icon={<AreaChartOutlined/>}>
@@ -54,8 +54,8 @@ const BasicLayout: FC = (props) => {
                     <Menu.Item key="monitor" icon={<PictureOutlined/>}>
                         <Link to='/monitor'>监控中心</Link>
                     </Menu.Item>
-                    <Menu.Item key="file" icon={<FileImageOutlined/>}>
-                        <Link to='/file'>附件中心</Link>
+                    <Menu.Item key="attachment" icon={<FileImageOutlined/>}>
+                        <Link to='/attachment'>附件中心</Link>
                     </Menu.Item>
                     <Menu.Item key="document" icon={<ReadOutlined/>}>
                         <Link to='/document'>文档中心</Link>
@@ -83,11 +83,11 @@ const BasicLayout: FC = (props) => {
                                 <Input prefix={<SearchOutlined/>} placeholder="搜索" bordered={false}/>
                             </Menu.Item>
 
-                            <Popover trigger="click" placement="bottomRight" content={<Notice/>}>
                                 <Menu.Item key="notice">
-                                    <Badge count={12}><BellOutlined style={{fontSize: 18, border: 0}}/></Badge>
+                                    <Popover trigger="click" placement="bottomRight" content={<Notice/>}>
+                                        <Badge count={12}><BellOutlined style={{fontSize: 18, border: 0}}/></Badge>
+                                    </Popover>
                                 </Menu.Item>
-                            </Popover>
 
                             <SubMenu key="avatar" icon={
                                 <>
@@ -107,11 +107,11 @@ const BasicLayout: FC = (props) => {
                                 </Menu.Item>
                             </SubMenu>
 
-                            <Tooltip title="开发文档" color="blue">
-                                <Menu.Item key="knowledge">
+                            <Menu.Item key="knowledge">
+                                <Tooltip title="开发文档" color="blue">
                                     <Link to='/knowledge'><BookOutlined/></Link>
-                                </Menu.Item>
-                            </Tooltip>
+                                </Tooltip>
+                            </Menu.Item>
                         </Menu>
                     </Header>
                 </Affix>

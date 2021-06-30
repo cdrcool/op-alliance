@@ -28,7 +28,7 @@ public class MenuSaveDTO {
     private String menuIcon;
 
     @ApiModelProperty(value = "菜单路由", required = true)
-    private String menuRouting;
+    private String menuRoute;
 
     @ApiModelProperty("菜单编号")
     private Integer menuNo;
@@ -37,5 +37,8 @@ public class MenuSaveDTO {
     private Boolean isDirectory;
 
     @ApiModelProperty(value = "是否隐藏", required = true)
-    private Boolean hidden;
+    private Boolean isHidden;
+
+    @ApiModelProperty("权限标识")
+    private String permission;
 }

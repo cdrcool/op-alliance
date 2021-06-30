@@ -224,7 +224,7 @@ const UserPage: FC = () => {
             <Card size="small" bordered={false} className="card">
                 <div style={{float: 'right', marginBottom: 6}}>
                     <Space>
-                        <Input placeholder="输入用户名、昵称、手机号或邮箱查询" suffix={<SearchOutlined/>} allowClear={true} style={{width: 300}}/>
+                        <Input placeholder="输入用户名、昵称、手机号或邮箱查询" suffix={<SearchOutlined/>} allowClear={true} style={{width: 400}}/>
                         <Button icon={expand ? <UpOutlined/> : <DownOutlined/>}
                                 onClick={() => {setExpand(!expand)}}>{expand ? '收起筛选' : '展开筛选'}
                         </Button>
@@ -295,7 +295,7 @@ const UserPage: FC = () => {
                     </Space>
 
                     <Space style={{marginBottom: 6}}>
-                        <Alert message="已选择 1 项" type="info" style={{width: 300, height: 32}}
+                        <Alert message="已选择 1 项" type="info" style={{width: 400, height: 32}}
                                action={<Button size="small" type="link">
                                    取消选择
                                </Button>}/>

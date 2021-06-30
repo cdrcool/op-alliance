@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.annotation.Generated;
+
 /**
  * 菜单 VO
  *
@@ -34,7 +36,7 @@ public class MenuVO extends BaseVo {
     private String menuIcon;
 
     @ApiModelProperty("菜单路由")
-    private String menuRouting;
+    private String menuRoute;
 
     @ApiModelProperty("菜单层级")
     private Integer menuLevel;
@@ -46,5 +48,8 @@ public class MenuVO extends BaseVo {
     private Boolean isDirectory;
 
     @ApiModelProperty("是否隐藏")
-    private Boolean hidden;
+    private Boolean isHidden;
+
+    @ApiModelProperty("权限标识")
+    private String permission;
 }

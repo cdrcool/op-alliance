@@ -175,6 +175,7 @@ CREATE TABLE `admin_menu`
     `menu_no`          int NULL DEFAULT NULL COMMENT '菜单编号',
     `is_directory`     tinyint(1) NULL DEFAULT NULL COMMENT '是否目录',
     `is_hidden`        tinyint(1) NULL DEFAULT NULL COMMENT '是否隐藏',
+    `permission`       varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '权限标识',
     `version`          int NULL DEFAULT NULL COMMENT '版本号',
     `deleted`          tinyint(1) NULL DEFAULT NULL COMMENT '是否逻辑删除',
     `creator_id`       int NULL DEFAULT NULL COMMENT '创建人id',
