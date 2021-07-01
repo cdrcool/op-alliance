@@ -1,11 +1,10 @@
 package com.op.admin.mapper;
 
-import static com.op.admin.mapper.UserGroupResourceActionRelationDynamicSqlSupport.*;
-
 import com.op.admin.entity.UserGroupResourceActionRelation;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Generated;
+
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Mapper;
@@ -36,7 +35,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 @Mapper
 public interface UserGroupResourceActionRelationMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(groupId, actionId, version, deleted, creatorId, createTime, lastModifierId, lastModifyTime, tenantId);
+    BasicColumn[] selectList = BasicColumn.columnList(UserGroupResourceActionRelationDynamicSqlSupport.groupId, UserGroupResourceActionRelationDynamicSqlSupport.actionId, UserGroupResourceActionRelationDynamicSqlSupport.version, UserGroupResourceActionRelationDynamicSqlSupport.deleted, UserGroupResourceActionRelationDynamicSqlSupport.creatorId, UserGroupResourceActionRelationDynamicSqlSupport.createTime, UserGroupResourceActionRelationDynamicSqlSupport.lastModifierId, UserGroupResourceActionRelationDynamicSqlSupport.lastModifyTime, UserGroupResourceActionRelationDynamicSqlSupport.tenantId);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -76,87 +75,87 @@ public interface UserGroupResourceActionRelationMapper {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default long count(CountDSLCompleter completer) {
-        return MyBatis3Utils.countFrom(this::count, userGroupResourceActionRelation, completer);
+        return MyBatis3Utils.countFrom(this::count, UserGroupResourceActionRelationDynamicSqlSupport.userGroupResourceActionRelation, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int delete(DeleteDSLCompleter completer) {
-        return MyBatis3Utils.deleteFrom(this::delete, userGroupResourceActionRelation, completer);
+        return MyBatis3Utils.deleteFrom(this::delete, UserGroupResourceActionRelationDynamicSqlSupport.userGroupResourceActionRelation, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int insert(UserGroupResourceActionRelation record) {
-        return MyBatis3Utils.insert(this::insert, record, userGroupResourceActionRelation, c ->
-            c.map(groupId).toProperty("groupId")
-            .map(actionId).toProperty("actionId")
-            .map(version).toProperty("version")
-            .map(deleted).toProperty("deleted")
-            .map(creatorId).toProperty("creatorId")
-            .map(createTime).toProperty("createTime")
-            .map(lastModifierId).toProperty("lastModifierId")
-            .map(lastModifyTime).toProperty("lastModifyTime")
-            .map(tenantId).toProperty("tenantId")
+        return MyBatis3Utils.insert(this::insert, record, UserGroupResourceActionRelationDynamicSqlSupport.userGroupResourceActionRelation, c ->
+            c.map(UserGroupResourceActionRelationDynamicSqlSupport.groupId).toProperty("groupId")
+            .map(UserGroupResourceActionRelationDynamicSqlSupport.actionId).toProperty("actionId")
+            .map(UserGroupResourceActionRelationDynamicSqlSupport.version).toProperty("version")
+            .map(UserGroupResourceActionRelationDynamicSqlSupport.deleted).toProperty("deleted")
+            .map(UserGroupResourceActionRelationDynamicSqlSupport.creatorId).toProperty("creatorId")
+            .map(UserGroupResourceActionRelationDynamicSqlSupport.createTime).toProperty("createTime")
+            .map(UserGroupResourceActionRelationDynamicSqlSupport.lastModifierId).toProperty("lastModifierId")
+            .map(UserGroupResourceActionRelationDynamicSqlSupport.lastModifyTime).toProperty("lastModifyTime")
+            .map(UserGroupResourceActionRelationDynamicSqlSupport.tenantId).toProperty("tenantId")
         );
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int insertSelective(UserGroupResourceActionRelation record) {
-        return MyBatis3Utils.insert(this::insert, record, userGroupResourceActionRelation, c ->
-            c.map(groupId).toPropertyWhenPresent("groupId", record::getGroupId)
-            .map(actionId).toPropertyWhenPresent("actionId", record::getActionId)
-            .map(version).toPropertyWhenPresent("version", record::getVersion)
-            .map(deleted).toPropertyWhenPresent("deleted", record::getDeleted)
-            .map(creatorId).toPropertyWhenPresent("creatorId", record::getCreatorId)
-            .map(createTime).toPropertyWhenPresent("createTime", record::getCreateTime)
-            .map(lastModifierId).toPropertyWhenPresent("lastModifierId", record::getLastModifierId)
-            .map(lastModifyTime).toPropertyWhenPresent("lastModifyTime", record::getLastModifyTime)
-            .map(tenantId).toPropertyWhenPresent("tenantId", record::getTenantId)
+        return MyBatis3Utils.insert(this::insert, record, UserGroupResourceActionRelationDynamicSqlSupport.userGroupResourceActionRelation, c ->
+            c.map(UserGroupResourceActionRelationDynamicSqlSupport.groupId).toPropertyWhenPresent("groupId", record::getGroupId)
+            .map(UserGroupResourceActionRelationDynamicSqlSupport.actionId).toPropertyWhenPresent("actionId", record::getActionId)
+            .map(UserGroupResourceActionRelationDynamicSqlSupport.version).toPropertyWhenPresent("version", record::getVersion)
+            .map(UserGroupResourceActionRelationDynamicSqlSupport.deleted).toPropertyWhenPresent("deleted", record::getDeleted)
+            .map(UserGroupResourceActionRelationDynamicSqlSupport.creatorId).toPropertyWhenPresent("creatorId", record::getCreatorId)
+            .map(UserGroupResourceActionRelationDynamicSqlSupport.createTime).toPropertyWhenPresent("createTime", record::getCreateTime)
+            .map(UserGroupResourceActionRelationDynamicSqlSupport.lastModifierId).toPropertyWhenPresent("lastModifierId", record::getLastModifierId)
+            .map(UserGroupResourceActionRelationDynamicSqlSupport.lastModifyTime).toPropertyWhenPresent("lastModifyTime", record::getLastModifyTime)
+            .map(UserGroupResourceActionRelationDynamicSqlSupport.tenantId).toPropertyWhenPresent("tenantId", record::getTenantId)
         );
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default Optional<UserGroupResourceActionRelation> selectOne(SelectDSLCompleter completer) {
-        return MyBatis3Utils.selectOne(this::selectOne, selectList, userGroupResourceActionRelation, completer);
+        return MyBatis3Utils.selectOne(this::selectOne, selectList, UserGroupResourceActionRelationDynamicSqlSupport.userGroupResourceActionRelation, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default List<UserGroupResourceActionRelation> select(SelectDSLCompleter completer) {
-        return MyBatis3Utils.selectList(this::selectMany, selectList, userGroupResourceActionRelation, completer);
+        return MyBatis3Utils.selectList(this::selectMany, selectList, UserGroupResourceActionRelationDynamicSqlSupport.userGroupResourceActionRelation, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default List<UserGroupResourceActionRelation> selectDistinct(SelectDSLCompleter completer) {
-        return MyBatis3Utils.selectDistinct(this::selectMany, selectList, userGroupResourceActionRelation, completer);
+        return MyBatis3Utils.selectDistinct(this::selectMany, selectList, UserGroupResourceActionRelationDynamicSqlSupport.userGroupResourceActionRelation, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int update(UpdateDSLCompleter completer) {
-        return MyBatis3Utils.update(this::update, userGroupResourceActionRelation, completer);
+        return MyBatis3Utils.update(this::update, UserGroupResourceActionRelationDynamicSqlSupport.userGroupResourceActionRelation, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     static UpdateDSL<UpdateModel> updateAllColumns(UserGroupResourceActionRelation record, UpdateDSL<UpdateModel> dsl) {
-        return dsl.set(groupId).equalTo(record::getGroupId)
-                .set(actionId).equalTo(record::getActionId)
-                .set(version).equalTo(record::getVersion)
-                .set(deleted).equalTo(record::getDeleted)
-                .set(creatorId).equalTo(record::getCreatorId)
-                .set(createTime).equalTo(record::getCreateTime)
-                .set(lastModifierId).equalTo(record::getLastModifierId)
-                .set(lastModifyTime).equalTo(record::getLastModifyTime)
-                .set(tenantId).equalTo(record::getTenantId);
+        return dsl.set(UserGroupResourceActionRelationDynamicSqlSupport.groupId).equalTo(record::getGroupId)
+                .set(UserGroupResourceActionRelationDynamicSqlSupport.actionId).equalTo(record::getActionId)
+                .set(UserGroupResourceActionRelationDynamicSqlSupport.version).equalTo(record::getVersion)
+                .set(UserGroupResourceActionRelationDynamicSqlSupport.deleted).equalTo(record::getDeleted)
+                .set(UserGroupResourceActionRelationDynamicSqlSupport.creatorId).equalTo(record::getCreatorId)
+                .set(UserGroupResourceActionRelationDynamicSqlSupport.createTime).equalTo(record::getCreateTime)
+                .set(UserGroupResourceActionRelationDynamicSqlSupport.lastModifierId).equalTo(record::getLastModifierId)
+                .set(UserGroupResourceActionRelationDynamicSqlSupport.lastModifyTime).equalTo(record::getLastModifyTime)
+                .set(UserGroupResourceActionRelationDynamicSqlSupport.tenantId).equalTo(record::getTenantId);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     static UpdateDSL<UpdateModel> updateSelectiveColumns(UserGroupResourceActionRelation record, UpdateDSL<UpdateModel> dsl) {
-        return dsl.set(groupId).equalToWhenPresent(record::getGroupId)
-                .set(actionId).equalToWhenPresent(record::getActionId)
-                .set(version).equalToWhenPresent(record::getVersion)
-                .set(deleted).equalToWhenPresent(record::getDeleted)
-                .set(creatorId).equalToWhenPresent(record::getCreatorId)
-                .set(createTime).equalToWhenPresent(record::getCreateTime)
-                .set(lastModifierId).equalToWhenPresent(record::getLastModifierId)
-                .set(lastModifyTime).equalToWhenPresent(record::getLastModifyTime)
-                .set(tenantId).equalToWhenPresent(record::getTenantId);
+        return dsl.set(UserGroupResourceActionRelationDynamicSqlSupport.groupId).equalToWhenPresent(record::getGroupId)
+                .set(UserGroupResourceActionRelationDynamicSqlSupport.actionId).equalToWhenPresent(record::getActionId)
+                .set(UserGroupResourceActionRelationDynamicSqlSupport.version).equalToWhenPresent(record::getVersion)
+                .set(UserGroupResourceActionRelationDynamicSqlSupport.deleted).equalToWhenPresent(record::getDeleted)
+                .set(UserGroupResourceActionRelationDynamicSqlSupport.creatorId).equalToWhenPresent(record::getCreatorId)
+                .set(UserGroupResourceActionRelationDynamicSqlSupport.createTime).equalToWhenPresent(record::getCreateTime)
+                .set(UserGroupResourceActionRelationDynamicSqlSupport.lastModifierId).equalToWhenPresent(record::getLastModifierId)
+                .set(UserGroupResourceActionRelationDynamicSqlSupport.lastModifyTime).equalToWhenPresent(record::getLastModifyTime)
+                .set(UserGroupResourceActionRelationDynamicSqlSupport.tenantId).equalToWhenPresent(record::getTenantId);
     }
 }

@@ -13,7 +13,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>op-admin</module>
-        <module>op-monitor</module>
         <module>op-oauth2-authorization</module>
         <module>op-gateway</module>
     </modules>

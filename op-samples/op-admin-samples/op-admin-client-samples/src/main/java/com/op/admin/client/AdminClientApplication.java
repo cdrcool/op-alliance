@@ -1,6 +1,5 @@
-package com.op.monitor;
+package com.op.admin.client;
 
-import de.codecentric.boot.admin.server.config.EnableAdminServer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -9,11 +8,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  * @author cdrcool
  */
-@EnableAdminServer
 @SpringBootApplication
-public class MonitorApplication {
+public class AdminClientApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(MonitorApplication.class, args);
+        SpringApplication.run(AdminClientApplication.class, args);
     }
 }

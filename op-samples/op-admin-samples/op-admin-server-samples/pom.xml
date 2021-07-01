@@ -3,13 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>op-microservice</artifactId>
+        <artifactId>op-admin-samples</artifactId>
         <groupId>com.cdrcool.onepiece</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>op-monitor</artifactId>
+    <artifactId>op-admin-server-samples</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -22,4 +22,5 @@
             <artifactId>spring-boot-admin-starter-server</artifactId>
         </dependency>
     </dependencies>
+
 </project>

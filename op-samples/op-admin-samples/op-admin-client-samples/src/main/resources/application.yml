@@ -1,0 +1,24 @@
+server:
+  port: 6062
+
+spring:
+  application:
+    name: op-admin-client
+  boot:
+    admin:
+      client:
+        url: http://localhost:6061
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+    logfile:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}

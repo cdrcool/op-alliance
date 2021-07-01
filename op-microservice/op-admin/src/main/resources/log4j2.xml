@@ -71,11 +71,13 @@
             </DefaultRolloverStrategy>
         </RollingFile>
 
-        <GELF name="Graylog" server="localhost" port="12201" hostName="host.docker.internal">
+        <GELF name="Graylog" server="localhost" port="12201" hostName="localhost">
             <PatternLayout pattern="${filePattern}"/>
             <Filters>
-                <Filter type="MarkerFilter" marker="FLOW" onMatch=" DENY " onMismatch=" NEUTRAL "/>
-                <Filter type="MarkerFilter" marker="EXCEPTION" onMatch=" DENY " onMismatch=" ACCEPT "/>
+                <Filter type="MarkerFilter" marker="FLOW" onMatch="DENY" onMismatch="NEUTRAL"/>
+                <Filter type="MarkerFilter" marker="EXCEPTION" onMatch="DENY" onMismatch="ACCEPT"/>
+
+                <KeyValuePair key="appName" value="op-admin"/>
             </Filters>
         </GELF>
     </Appenders>

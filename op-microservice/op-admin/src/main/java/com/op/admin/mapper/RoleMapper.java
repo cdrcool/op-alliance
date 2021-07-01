@@ -1,12 +1,12 @@
 package com.op.admin.mapper;
 
-import static com.op.admin.mapper.RoleDynamicSqlSupport.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import com.op.admin.entity.Role;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Generated;
+
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Mapper;
@@ -38,7 +38,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 @Mapper
 public interface RoleMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(id, roleName, roleCode, roleDesc, status, roleNo, userCount, version, deleted, creatorId, createTime, lastModifierId, lastModifyTime, tenantId);
+    BasicColumn[] selectList = BasicColumn.columnList(RoleDynamicSqlSupport.id, RoleDynamicSqlSupport.roleName, RoleDynamicSqlSupport.roleCode, RoleDynamicSqlSupport.roleDesc, RoleDynamicSqlSupport.status, RoleDynamicSqlSupport.roleNo, RoleDynamicSqlSupport.userCount, RoleDynamicSqlSupport.version, RoleDynamicSqlSupport.deleted, RoleDynamicSqlSupport.creatorId, RoleDynamicSqlSupport.createTime, RoleDynamicSqlSupport.lastModifierId, RoleDynamicSqlSupport.lastModifyTime, RoleDynamicSqlSupport.tenantId);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -84,157 +84,157 @@ public interface RoleMapper {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default long count(CountDSLCompleter completer) {
-        return MyBatis3Utils.countFrom(this::count, role, completer);
+        return MyBatis3Utils.countFrom(this::count, RoleDynamicSqlSupport.role, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int delete(DeleteDSLCompleter completer) {
-        return MyBatis3Utils.deleteFrom(this::delete, role, completer);
+        return MyBatis3Utils.deleteFrom(this::delete, RoleDynamicSqlSupport.role, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int deleteByPrimaryKey(Integer id_) {
         return delete(c -> 
-            c.where(id, isEqualTo(id_))
+            c.where(RoleDynamicSqlSupport.id, isEqualTo(id_))
         );
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int insert(Role record) {
-        return MyBatis3Utils.insert(this::insert, record, role, c ->
-            c.map(roleName).toProperty("roleName")
-            .map(roleCode).toProperty("roleCode")
-            .map(roleDesc).toProperty("roleDesc")
-            .map(status).toProperty("status")
-            .map(roleNo).toProperty("roleNo")
-            .map(userCount).toProperty("userCount")
-            .map(version).toProperty("version")
-            .map(deleted).toProperty("deleted")
-            .map(creatorId).toProperty("creatorId")
-            .map(createTime).toProperty("createTime")
-            .map(lastModifierId).toProperty("lastModifierId")
-            .map(lastModifyTime).toProperty("lastModifyTime")
-            .map(tenantId).toProperty("tenantId")
+        return MyBatis3Utils.insert(this::insert, record, RoleDynamicSqlSupport.role, c ->
+            c.map(RoleDynamicSqlSupport.roleName).toProperty("roleName")
+            .map(RoleDynamicSqlSupport.roleCode).toProperty("roleCode")
+            .map(RoleDynamicSqlSupport.roleDesc).toProperty("roleDesc")
+            .map(RoleDynamicSqlSupport.status).toProperty("status")
+            .map(RoleDynamicSqlSupport.roleNo).toProperty("roleNo")
+            .map(RoleDynamicSqlSupport.userCount).toProperty("userCount")
+            .map(RoleDynamicSqlSupport.version).toProperty("version")
+            .map(RoleDynamicSqlSupport.deleted).toProperty("deleted")
+            .map(RoleDynamicSqlSupport.creatorId).toProperty("creatorId")
+            .map(RoleDynamicSqlSupport.createTime).toProperty("createTime")
+            .map(RoleDynamicSqlSupport.lastModifierId).toProperty("lastModifierId")
+            .map(RoleDynamicSqlSupport.lastModifyTime).toProperty("lastModifyTime")
+            .map(RoleDynamicSqlSupport.tenantId).toProperty("tenantId")
         );
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int insertSelective(Role record) {
-        return MyBatis3Utils.insert(this::insert, record, role, c ->
-            c.map(roleName).toPropertyWhenPresent("roleName", record::getRoleName)
-            .map(roleCode).toPropertyWhenPresent("roleCode", record::getRoleCode)
-            .map(roleDesc).toPropertyWhenPresent("roleDesc", record::getRoleDesc)
-            .map(status).toPropertyWhenPresent("status", record::getStatus)
-            .map(roleNo).toPropertyWhenPresent("roleNo", record::getRoleNo)
-            .map(userCount).toPropertyWhenPresent("userCount", record::getUserCount)
-            .map(version).toPropertyWhenPresent("version", record::getVersion)
-            .map(deleted).toPropertyWhenPresent("deleted", record::getDeleted)
-            .map(creatorId).toPropertyWhenPresent("creatorId", record::getCreatorId)
-            .map(createTime).toPropertyWhenPresent("createTime", record::getCreateTime)
-            .map(lastModifierId).toPropertyWhenPresent("lastModifierId", record::getLastModifierId)
-            .map(lastModifyTime).toPropertyWhenPresent("lastModifyTime", record::getLastModifyTime)
-            .map(tenantId).toPropertyWhenPresent("tenantId", record::getTenantId)
+        return MyBatis3Utils.insert(this::insert, record, RoleDynamicSqlSupport.role, c ->
+            c.map(RoleDynamicSqlSupport.roleName).toPropertyWhenPresent("roleName", record::getRoleName)
+            .map(RoleDynamicSqlSupport.roleCode).toPropertyWhenPresent("roleCode", record::getRoleCode)
+            .map(RoleDynamicSqlSupport.roleDesc).toPropertyWhenPresent("roleDesc", record::getRoleDesc)
+            .map(RoleDynamicSqlSupport.status).toPropertyWhenPresent("status", record::getStatus)
+            .map(RoleDynamicSqlSupport.roleNo).toPropertyWhenPresent("roleNo", record::getRoleNo)
+            .map(RoleDynamicSqlSupport.userCount).toPropertyWhenPresent("userCount", record::getUserCount)
+            .map(RoleDynamicSqlSupport.version).toPropertyWhenPresent("version", record::getVersion)
+            .map(RoleDynamicSqlSupport.deleted).toPropertyWhenPresent("deleted", record::getDeleted)
+            .map(RoleDynamicSqlSupport.creatorId).toPropertyWhenPresent("creatorId", record::getCreatorId)
+            .map(RoleDynamicSqlSupport.createTime).toPropertyWhenPresent("createTime", record::getCreateTime)
+            .map(RoleDynamicSqlSupport.lastModifierId).toPropertyWhenPresent("lastModifierId", record::getLastModifierId)
+            .map(RoleDynamicSqlSupport.lastModifyTime).toPropertyWhenPresent("lastModifyTime", record::getLastModifyTime)
+            .map(RoleDynamicSqlSupport.tenantId).toPropertyWhenPresent("tenantId", record::getTenantId)
         );
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default Optional<Role> selectOne(SelectDSLCompleter completer) {
-        return MyBatis3Utils.selectOne(this::selectOne, selectList, role, completer);
+        return MyBatis3Utils.selectOne(this::selectOne, selectList, RoleDynamicSqlSupport.role, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default List<Role> select(SelectDSLCompleter completer) {
-        return MyBatis3Utils.selectList(this::selectMany, selectList, role, completer);
+        return MyBatis3Utils.selectList(this::selectMany, selectList, RoleDynamicSqlSupport.role, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default List<Role> selectDistinct(SelectDSLCompleter completer) {
-        return MyBatis3Utils.selectDistinct(this::selectMany, selectList, role, completer);
+        return MyBatis3Utils.selectDistinct(this::selectMany, selectList, RoleDynamicSqlSupport.role, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default Optional<Role> selectByPrimaryKey(Integer id_) {
         return selectOne(c ->
-            c.where(id, isEqualTo(id_))
+            c.where(RoleDynamicSqlSupport.id, isEqualTo(id_))
         );
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int update(UpdateDSLCompleter completer) {
-        return MyBatis3Utils.update(this::update, role, completer);
+        return MyBatis3Utils.update(this::update, RoleDynamicSqlSupport.role, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     static UpdateDSL<UpdateModel> updateAllColumns(Role record, UpdateDSL<UpdateModel> dsl) {
-        return dsl.set(roleName).equalTo(record::getRoleName)
-                .set(roleCode).equalTo(record::getRoleCode)
-                .set(roleDesc).equalTo(record::getRoleDesc)
-                .set(status).equalTo(record::getStatus)
-                .set(roleNo).equalTo(record::getRoleNo)
-                .set(userCount).equalTo(record::getUserCount)
-                .set(version).equalTo(record::getVersion)
-                .set(deleted).equalTo(record::getDeleted)
-                .set(creatorId).equalTo(record::getCreatorId)
-                .set(createTime).equalTo(record::getCreateTime)
-                .set(lastModifierId).equalTo(record::getLastModifierId)
-                .set(lastModifyTime).equalTo(record::getLastModifyTime)
-                .set(tenantId).equalTo(record::getTenantId);
+        return dsl.set(RoleDynamicSqlSupport.roleName).equalTo(record::getRoleName)
+                .set(RoleDynamicSqlSupport.roleCode).equalTo(record::getRoleCode)
+                .set(RoleDynamicSqlSupport.roleDesc).equalTo(record::getRoleDesc)
+                .set(RoleDynamicSqlSupport.status).equalTo(record::getStatus)
+                .set(RoleDynamicSqlSupport.roleNo).equalTo(record::getRoleNo)
+                .set(RoleDynamicSqlSupport.userCount).equalTo(record::getUserCount)
+                .set(RoleDynamicSqlSupport.version).equalTo(record::getVersion)
+                .set(RoleDynamicSqlSupport.deleted).equalTo(record::getDeleted)
+                .set(RoleDynamicSqlSupport.creatorId).equalTo(record::getCreatorId)
+                .set(RoleDynamicSqlSupport.createTime).equalTo(record::getCreateTime)
+                .set(RoleDynamicSqlSupport.lastModifierId).equalTo(record::getLastModifierId)
+                .set(RoleDynamicSqlSupport.lastModifyTime).equalTo(record::getLastModifyTime)
+                .set(RoleDynamicSqlSupport.tenantId).equalTo(record::getTenantId);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     static UpdateDSL<UpdateModel> updateSelectiveColumns(Role record, UpdateDSL<UpdateModel> dsl) {
-        return dsl.set(roleName).equalToWhenPresent(record::getRoleName)
-                .set(roleCode).equalToWhenPresent(record::getRoleCode)
-                .set(roleDesc).equalToWhenPresent(record::getRoleDesc)
-                .set(status).equalToWhenPresent(record::getStatus)
-                .set(roleNo).equalToWhenPresent(record::getRoleNo)
-                .set(userCount).equalToWhenPresent(record::getUserCount)
-                .set(version).equalToWhenPresent(record::getVersion)
-                .set(deleted).equalToWhenPresent(record::getDeleted)
-                .set(creatorId).equalToWhenPresent(record::getCreatorId)
-                .set(createTime).equalToWhenPresent(record::getCreateTime)
-                .set(lastModifierId).equalToWhenPresent(record::getLastModifierId)
-                .set(lastModifyTime).equalToWhenPresent(record::getLastModifyTime)
-                .set(tenantId).equalToWhenPresent(record::getTenantId);
+        return dsl.set(RoleDynamicSqlSupport.roleName).equalToWhenPresent(record::getRoleName)
+                .set(RoleDynamicSqlSupport.roleCode).equalToWhenPresent(record::getRoleCode)
+                .set(RoleDynamicSqlSupport.roleDesc).equalToWhenPresent(record::getRoleDesc)
+                .set(RoleDynamicSqlSupport.status).equalToWhenPresent(record::getStatus)
+                .set(RoleDynamicSqlSupport.roleNo).equalToWhenPresent(record::getRoleNo)
+                .set(RoleDynamicSqlSupport.userCount).equalToWhenPresent(record::getUserCount)
+                .set(RoleDynamicSqlSupport.version).equalToWhenPresent(record::getVersion)
+                .set(RoleDynamicSqlSupport.deleted).equalToWhenPresent(record::getDeleted)
+                .set(RoleDynamicSqlSupport.creatorId).equalToWhenPresent(record::getCreatorId)
+                .set(RoleDynamicSqlSupport.createTime).equalToWhenPresent(record::getCreateTime)
+                .set(RoleDynamicSqlSupport.lastModifierId).equalToWhenPresent(record::getLastModifierId)
+                .set(RoleDynamicSqlSupport.lastModifyTime).equalToWhenPresent(record::getLastModifyTime)
+                .set(RoleDynamicSqlSupport.tenantId).equalToWhenPresent(record::getTenantId);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int updateByPrimaryKey(Role record) {
         return update(c ->
-            c.set(roleName).equalTo(record::getRoleName)
-            .set(roleCode).equalTo(record::getRoleCode)
-            .set(roleDesc).equalTo(record::getRoleDesc)
-            .set(status).equalTo(record::getStatus)
-            .set(roleNo).equalTo(record::getRoleNo)
-            .set(userCount).equalTo(record::getUserCount)
-            .set(version).equalTo(record::getVersion)
-            .set(deleted).equalTo(record::getDeleted)
-            .set(creatorId).equalTo(record::getCreatorId)
-            .set(createTime).equalTo(record::getCreateTime)
-            .set(lastModifierId).equalTo(record::getLastModifierId)
-            .set(lastModifyTime).equalTo(record::getLastModifyTime)
-            .set(tenantId).equalTo(record::getTenantId)
-            .where(id, isEqualTo(record::getId))
+            c.set(RoleDynamicSqlSupport.roleName).equalTo(record::getRoleName)
+            .set(RoleDynamicSqlSupport.roleCode).equalTo(record::getRoleCode)
+            .set(RoleDynamicSqlSupport.roleDesc).equalTo(record::getRoleDesc)
+            .set(RoleDynamicSqlSupport.status).equalTo(record::getStatus)
+            .set(RoleDynamicSqlSupport.roleNo).equalTo(record::getRoleNo)
+            .set(RoleDynamicSqlSupport.userCount).equalTo(record::getUserCount)
+            .set(RoleDynamicSqlSupport.version).equalTo(record::getVersion)
+            .set(RoleDynamicSqlSupport.deleted).equalTo(record::getDeleted)
+            .set(RoleDynamicSqlSupport.creatorId).equalTo(record::getCreatorId)
+            .set(RoleDynamicSqlSupport.createTime).equalTo(record::getCreateTime)
+            .set(RoleDynamicSqlSupport.lastModifierId).equalTo(record::getLastModifierId)
+            .set(RoleDynamicSqlSupport.lastModifyTime).equalTo(record::getLastModifyTime)
+            .set(RoleDynamicSqlSupport.tenantId).equalTo(record::getTenantId)
+            .where(RoleDynamicSqlSupport.id, isEqualTo(record::getId))
         );
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int updateByPrimaryKeySelective(Role record) {
         return update(c ->
-            c.set(roleName).equalToWhenPresent(record::getRoleName)
-            .set(roleCode).equalToWhenPresent(record::getRoleCode)
-            .set(roleDesc).equalToWhenPresent(record::getRoleDesc)
-            .set(status).equalToWhenPresent(record::getStatus)
-            .set(roleNo).equalToWhenPresent(record::getRoleNo)
-            .set(userCount).equalToWhenPresent(record::getUserCount)
-            .set(version).equalToWhenPresent(record::getVersion)
-            .set(deleted).equalToWhenPresent(record::getDeleted)
-            .set(creatorId).equalToWhenPresent(record::getCreatorId)
-            .set(createTime).equalToWhenPresent(record::getCreateTime)
-            .set(lastModifierId).equalToWhenPresent(record::getLastModifierId)
-            .set(lastModifyTime).equalToWhenPresent(record::getLastModifyTime)
-            .set(tenantId).equalToWhenPresent(record::getTenantId)
-            .where(id, isEqualTo(record::getId))
+            c.set(RoleDynamicSqlSupport.roleName).equalToWhenPresent(record::getRoleName)
+            .set(RoleDynamicSqlSupport.roleCode).equalToWhenPresent(record::getRoleCode)
+            .set(RoleDynamicSqlSupport.roleDesc).equalToWhenPresent(record::getRoleDesc)
+            .set(RoleDynamicSqlSupport.status).equalToWhenPresent(record::getStatus)
+            .set(RoleDynamicSqlSupport.roleNo).equalToWhenPresent(record::getRoleNo)
+            .set(RoleDynamicSqlSupport.userCount).equalToWhenPresent(record::getUserCount)
+            .set(RoleDynamicSqlSupport.version).equalToWhenPresent(record::getVersion)
+            .set(RoleDynamicSqlSupport.deleted).equalToWhenPresent(record::getDeleted)
+            .set(RoleDynamicSqlSupport.creatorId).equalToWhenPresent(record::getCreatorId)
+            .set(RoleDynamicSqlSupport.createTime).equalToWhenPresent(record::getCreateTime)
+            .set(RoleDynamicSqlSupport.lastModifierId).equalToWhenPresent(record::getLastModifierId)
+            .set(RoleDynamicSqlSupport.lastModifyTime).equalToWhenPresent(record::getLastModifyTime)
+            .set(RoleDynamicSqlSupport.tenantId).equalToWhenPresent(record::getTenantId)
+            .where(RoleDynamicSqlSupport.id, isEqualTo(record::getId))
         );
     }
 }

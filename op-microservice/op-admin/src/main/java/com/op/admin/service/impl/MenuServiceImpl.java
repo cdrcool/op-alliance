@@ -1,13 +1,12 @@
 package com.op.admin.service.impl;
 
 import com.op.admin.dto.MenuListQueryDTO;
-import com.op.admin.dto.MenuSaveDTO;
-import com.op.admin.entity.Menu;
 import com.op.admin.mapper.MenuDynamicSqlSupport;
 import com.op.admin.mapper.MenuMapper;
-import com.op.admin.mapper.OrganizationDynamicSqlSupport;
 import com.op.admin.mapper.extend.MenuMapperExtend;
 import com.op.admin.mapping.MenuMapping;
+import com.op.admin.dto.MenuSaveDTO;
+import com.op.admin.entity.Menu;
 import com.op.admin.service.MenuService;
 import com.op.admin.utils.TreeUtils;
 import com.op.admin.vo.MenuAssignVO;
@@ -130,7 +129,7 @@ public class MenuServiceImpl implements MenuService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<MenuVO> queryList(MenuListQueryDTO queryDTO) {
-        SelectStatementProvider selectStatementProvider = select(MenuMapper.selectList)
+        SelectStatementProvider selectStatementProvider = SqlBuilder.select(MenuMapper.selectList)
                 .from(MenuDynamicSqlSupport.menu)
                 .where(MenuDynamicSqlSupport.menuName, isLikeWhenPresent(queryDTO.getSearchText()),
                         or(MenuDynamicSqlSupport.menuCode, isLikeWhenPresent(queryDTO.getSearchText())),

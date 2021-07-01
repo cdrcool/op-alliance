@@ -3,6 +3,7 @@ package com.op.admin.service;
 import com.op.admin.dto.OrganizationListQueryDTO;
 import com.op.admin.dto.OrganizationSaveDTO;
 import com.op.admin.dto.OrganizationTreeQueryDTO;
+import com.op.admin.server.vo.*;
 import com.op.admin.vo.*;
 
 import java.util.List;
