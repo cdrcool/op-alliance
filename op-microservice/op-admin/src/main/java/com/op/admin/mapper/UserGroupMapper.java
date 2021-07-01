@@ -4,11 +4,9 @@ import static com.op.admin.mapper.UserGroupDynamicSqlSupport.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import com.op.admin.entity.UserGroup;
-
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Generated;
-
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Mapper;
@@ -35,7 +33,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 /**
  * @author Mybatis Generator
- * @date 2021/06/24 03:12
+ * @date 2021/07/01 12:06
  */
 @Mapper
 public interface UserGroupMapper {

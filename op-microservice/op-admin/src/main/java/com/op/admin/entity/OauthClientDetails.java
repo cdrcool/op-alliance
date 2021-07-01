@@ -2,18 +2,14 @@ package com.op.admin.entity;
 
 import com.op.framework.web.common.persistence.entity.BaseEntity;
 import javax.annotation.Generated;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
  * @author Mybatis Generator
- * @date 2021/06/24 03:12
+ * @date 2021/07/01 12:06
  */
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -55,7 +51,7 @@ public class OauthClientDetails extends BaseEntity {
     private String webServerRedirectUri;
 
     /**
-     * 权限
+     * 权限（客户端/隐式模式需要配置）
      */
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String authorities;

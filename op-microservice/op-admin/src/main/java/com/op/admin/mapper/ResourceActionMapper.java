@@ -1,12 +1,12 @@
 package com.op.admin.mapper;
 
+import static com.op.admin.mapper.ResourceActionDynamicSqlSupport.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import com.op.admin.entity.ResourceAction;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Generated;
-
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Mapper;
@@ -33,12 +33,12 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 /**
  * @author Mybatis Generator
- * @date 2021/06/24 03:12
+ * @date 2021/07/01 12:06
  */
 @Mapper
 public interface ResourceActionMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(ResourceActionDynamicSqlSupport.id, ResourceActionDynamicSqlSupport.resourceId, ResourceActionDynamicSqlSupport.actionName, ResourceActionDynamicSqlSupport.actionPath, ResourceActionDynamicSqlSupport.actionDesc, ResourceActionDynamicSqlSupport.actionNo, ResourceActionDynamicSqlSupport.permissionName, ResourceActionDynamicSqlSupport.version, ResourceActionDynamicSqlSupport.deleted, ResourceActionDynamicSqlSupport.creatorId, ResourceActionDynamicSqlSupport.createTime, ResourceActionDynamicSqlSupport.lastModifierId, ResourceActionDynamicSqlSupport.lastModifyTime, ResourceActionDynamicSqlSupport.tenantId);
+    BasicColumn[] selectList = BasicColumn.columnList(id, resourceId, actionName, actionPath, actionDesc, actionNo, permissionName, version, deleted, creatorId, createTime, lastModifierId, lastModifyTime, tenantId);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -84,157 +84,157 @@ public interface ResourceActionMapper {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default long count(CountDSLCompleter completer) {
-        return MyBatis3Utils.countFrom(this::count, ResourceActionDynamicSqlSupport.resourceAction, completer);
+        return MyBatis3Utils.countFrom(this::count, resourceAction, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int delete(DeleteDSLCompleter completer) {
-        return MyBatis3Utils.deleteFrom(this::delete, ResourceActionDynamicSqlSupport.resourceAction, completer);
+        return MyBatis3Utils.deleteFrom(this::delete, resourceAction, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int deleteByPrimaryKey(Integer id_) {
         return delete(c -> 
-            c.where(ResourceActionDynamicSqlSupport.id, isEqualTo(id_))
+            c.where(id, isEqualTo(id_))
         );
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int insert(ResourceAction record) {
-        return MyBatis3Utils.insert(this::insert, record, ResourceActionDynamicSqlSupport.resourceAction, c ->
-            c.map(ResourceActionDynamicSqlSupport.resourceId).toProperty("resourceId")
-            .map(ResourceActionDynamicSqlSupport.actionName).toProperty("actionName")
-            .map(ResourceActionDynamicSqlSupport.actionPath).toProperty("actionPath")
-            .map(ResourceActionDynamicSqlSupport.actionDesc).toProperty("actionDesc")
-            .map(ResourceActionDynamicSqlSupport.actionNo).toProperty("actionNo")
-            .map(ResourceActionDynamicSqlSupport.permissionName).toProperty("permissionName")
-            .map(ResourceActionDynamicSqlSupport.version).toProperty("version")
-            .map(ResourceActionDynamicSqlSupport.deleted).toProperty("deleted")
-            .map(ResourceActionDynamicSqlSupport.creatorId).toProperty("creatorId")
-            .map(ResourceActionDynamicSqlSupport.createTime).toProperty("createTime")
-            .map(ResourceActionDynamicSqlSupport.lastModifierId).toProperty("lastModifierId")
-            .map(ResourceActionDynamicSqlSupport.lastModifyTime).toProperty("lastModifyTime")
-            .map(ResourceActionDynamicSqlSupport.tenantId).toProperty("tenantId")
+        return MyBatis3Utils.insert(this::insert, record, resourceAction, c ->
+            c.map(resourceId).toProperty("resourceId")
+            .map(actionName).toProperty("actionName")
+            .map(actionPath).toProperty("actionPath")
+            .map(actionDesc).toProperty("actionDesc")
+            .map(actionNo).toProperty("actionNo")
+            .map(permissionName).toProperty("permissionName")
+            .map(version).toProperty("version")
+            .map(deleted).toProperty("deleted")
+            .map(creatorId).toProperty("creatorId")
+            .map(createTime).toProperty("createTime")
+            .map(lastModifierId).toProperty("lastModifierId")
+            .map(lastModifyTime).toProperty("lastModifyTime")
+            .map(tenantId).toProperty("tenantId")
         );
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int insertSelective(ResourceAction record) {
-        return MyBatis3Utils.insert(this::insert, record, ResourceActionDynamicSqlSupport.resourceAction, c ->
-            c.map(ResourceActionDynamicSqlSupport.resourceId).toPropertyWhenPresent("resourceId", record::getResourceId)
-            .map(ResourceActionDynamicSqlSupport.actionName).toPropertyWhenPresent("actionName", record::getActionName)
-            .map(ResourceActionDynamicSqlSupport.actionPath).toPropertyWhenPresent("actionPath", record::getActionPath)
-            .map(ResourceActionDynamicSqlSupport.actionDesc).toPropertyWhenPresent("actionDesc", record::getActionDesc)
-            .map(ResourceActionDynamicSqlSupport.actionNo).toPropertyWhenPresent("actionNo", record::getActionNo)
-            .map(ResourceActionDynamicSqlSupport.permissionName).toPropertyWhenPresent("permissionName", record::getPermissionName)
-            .map(ResourceActionDynamicSqlSupport.version).toPropertyWhenPresent("version", record::getVersion)
-            .map(ResourceActionDynamicSqlSupport.deleted).toPropertyWhenPresent("deleted", record::getDeleted)
-            .map(ResourceActionDynamicSqlSupport.creatorId).toPropertyWhenPresent("creatorId", record::getCreatorId)
-            .map(ResourceActionDynamicSqlSupport.createTime).toPropertyWhenPresent("createTime", record::getCreateTime)
-            .map(ResourceActionDynamicSqlSupport.lastModifierId).toPropertyWhenPresent("lastModifierId", record::getLastModifierId)
-            .map(ResourceActionDynamicSqlSupport.lastModifyTime).toPropertyWhenPresent("lastModifyTime", record::getLastModifyTime)
-            .map(ResourceActionDynamicSqlSupport.tenantId).toPropertyWhenPresent("tenantId", record::getTenantId)
+        return MyBatis3Utils.insert(this::insert, record, resourceAction, c ->
+            c.map(resourceId).toPropertyWhenPresent("resourceId", record::getResourceId)
+            .map(actionName).toPropertyWhenPresent("actionName", record::getActionName)
+            .map(actionPath).toPropertyWhenPresent("actionPath", record::getActionPath)
+            .map(actionDesc).toPropertyWhenPresent("actionDesc", record::getActionDesc)
+            .map(actionNo).toPropertyWhenPresent("actionNo", record::getActionNo)
+            .map(permissionName).toPropertyWhenPresent("permissionName", record::getPermissionName)
+            .map(version).toPropertyWhenPresent("version", record::getVersion)
+            .map(deleted).toPropertyWhenPresent("deleted", record::getDeleted)
+            .map(creatorId).toPropertyWhenPresent("creatorId", record::getCreatorId)
+            .map(createTime).toPropertyWhenPresent("createTime", record::getCreateTime)
+            .map(lastModifierId).toPropertyWhenPresent("lastModifierId", record::getLastModifierId)
+            .map(lastModifyTime).toPropertyWhenPresent("lastModifyTime", record::getLastModifyTime)
+            .map(tenantId).toPropertyWhenPresent("tenantId", record::getTenantId)
         );
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default Optional<ResourceAction> selectOne(SelectDSLCompleter completer) {
-        return MyBatis3Utils.selectOne(this::selectOne, selectList, ResourceActionDynamicSqlSupport.resourceAction, completer);
+        return MyBatis3Utils.selectOne(this::selectOne, selectList, resourceAction, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default List<ResourceAction> select(SelectDSLCompleter completer) {
-        return MyBatis3Utils.selectList(this::selectMany, selectList, ResourceActionDynamicSqlSupport.resourceAction, completer);
+        return MyBatis3Utils.selectList(this::selectMany, selectList, resourceAction, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default List<ResourceAction> selectDistinct(SelectDSLCompleter completer) {
-        return MyBatis3Utils.selectDistinct(this::selectMany, selectList, ResourceActionDynamicSqlSupport.resourceAction, completer);
+        return MyBatis3Utils.selectDistinct(this::selectMany, selectList, resourceAction, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default Optional<ResourceAction> selectByPrimaryKey(Integer id_) {
         return selectOne(c ->
-            c.where(ResourceActionDynamicSqlSupport.id, isEqualTo(id_))
+            c.where(id, isEqualTo(id_))
         );
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int update(UpdateDSLCompleter completer) {
-        return MyBatis3Utils.update(this::update, ResourceActionDynamicSqlSupport.resourceAction, completer);
+        return MyBatis3Utils.update(this::update, resourceAction, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     static UpdateDSL<UpdateModel> updateAllColumns(ResourceAction record, UpdateDSL<UpdateModel> dsl) {
-        return dsl.set(ResourceActionDynamicSqlSupport.resourceId).equalTo(record::getResourceId)
-                .set(ResourceActionDynamicSqlSupport.actionName).equalTo(record::getActionName)
-                .set(ResourceActionDynamicSqlSupport.actionPath).equalTo(record::getActionPath)
-                .set(ResourceActionDynamicSqlSupport.actionDesc).equalTo(record::getActionDesc)
-                .set(ResourceActionDynamicSqlSupport.actionNo).equalTo(record::getActionNo)
-                .set(ResourceActionDynamicSqlSupport.permissionName).equalTo(record::getPermissionName)
-                .set(ResourceActionDynamicSqlSupport.version).equalTo(record::getVersion)
-                .set(ResourceActionDynamicSqlSupport.deleted).equalTo(record::getDeleted)
-                .set(ResourceActionDynamicSqlSupport.creatorId).equalTo(record::getCreatorId)
-                .set(ResourceActionDynamicSqlSupport.createTime).equalTo(record::getCreateTime)
-                .set(ResourceActionDynamicSqlSupport.lastModifierId).equalTo(record::getLastModifierId)
-                .set(ResourceActionDynamicSqlSupport.lastModifyTime).equalTo(record::getLastModifyTime)
-                .set(ResourceActionDynamicSqlSupport.tenantId).equalTo(record::getTenantId);
+        return dsl.set(resourceId).equalTo(record::getResourceId)
+                .set(actionName).equalTo(record::getActionName)
+                .set(actionPath).equalTo(record::getActionPath)
+                .set(actionDesc).equalTo(record::getActionDesc)
+                .set(actionNo).equalTo(record::getActionNo)
+                .set(permissionName).equalTo(record::getPermissionName)
+                .set(version).equalTo(record::getVersion)
+                .set(deleted).equalTo(record::getDeleted)
+                .set(creatorId).equalTo(record::getCreatorId)
+                .set(createTime).equalTo(record::getCreateTime)
+                .set(lastModifierId).equalTo(record::getLastModifierId)
+                .set(lastModifyTime).equalTo(record::getLastModifyTime)
+                .set(tenantId).equalTo(record::getTenantId);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     static UpdateDSL<UpdateModel> updateSelectiveColumns(ResourceAction record, UpdateDSL<UpdateModel> dsl) {
-        return dsl.set(ResourceActionDynamicSqlSupport.resourceId).equalToWhenPresent(record::getResourceId)
-                .set(ResourceActionDynamicSqlSupport.actionName).equalToWhenPresent(record::getActionName)
-                .set(ResourceActionDynamicSqlSupport.actionPath).equalToWhenPresent(record::getActionPath)
-                .set(ResourceActionDynamicSqlSupport.actionDesc).equalToWhenPresent(record::getActionDesc)
-                .set(ResourceActionDynamicSqlSupport.actionNo).equalToWhenPresent(record::getActionNo)
-                .set(ResourceActionDynamicSqlSupport.permissionName).equalToWhenPresent(record::getPermissionName)
-                .set(ResourceActionDynamicSqlSupport.version).equalToWhenPresent(record::getVersion)
-                .set(ResourceActionDynamicSqlSupport.deleted).equalToWhenPresent(record::getDeleted)
-                .set(ResourceActionDynamicSqlSupport.creatorId).equalToWhenPresent(record::getCreatorId)
-                .set(ResourceActionDynamicSqlSupport.createTime).equalToWhenPresent(record::getCreateTime)
-                .set(ResourceActionDynamicSqlSupport.lastModifierId).equalToWhenPresent(record::getLastModifierId)
-                .set(ResourceActionDynamicSqlSupport.lastModifyTime).equalToWhenPresent(record::getLastModifyTime)
-                .set(ResourceActionDynamicSqlSupport.tenantId).equalToWhenPresent(record::getTenantId);
+        return dsl.set(resourceId).equalToWhenPresent(record::getResourceId)
+                .set(actionName).equalToWhenPresent(record::getActionName)
+                .set(actionPath).equalToWhenPresent(record::getActionPath)
+                .set(actionDesc).equalToWhenPresent(record::getActionDesc)
+                .set(actionNo).equalToWhenPresent(record::getActionNo)
+                .set(permissionName).equalToWhenPresent(record::getPermissionName)
+                .set(version).equalToWhenPresent(record::getVersion)
+                .set(deleted).equalToWhenPresent(record::getDeleted)
+                .set(creatorId).equalToWhenPresent(record::getCreatorId)
+                .set(createTime).equalToWhenPresent(record::getCreateTime)
+                .set(lastModifierId).equalToWhenPresent(record::getLastModifierId)
+                .set(lastModifyTime).equalToWhenPresent(record::getLastModifyTime)
+                .set(tenantId).equalToWhenPresent(record::getTenantId);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int updateByPrimaryKey(ResourceAction record) {
         return update(c ->
-            c.set(ResourceActionDynamicSqlSupport.resourceId).equalTo(record::getResourceId)
-            .set(ResourceActionDynamicSqlSupport.actionName).equalTo(record::getActionName)
-            .set(ResourceActionDynamicSqlSupport.actionPath).equalTo(record::getActionPath)
-            .set(ResourceActionDynamicSqlSupport.actionDesc).equalTo(record::getActionDesc)
-            .set(ResourceActionDynamicSqlSupport.actionNo).equalTo(record::getActionNo)
-            .set(ResourceActionDynamicSqlSupport.permissionName).equalTo(record::getPermissionName)
-            .set(ResourceActionDynamicSqlSupport.version).equalTo(record::getVersion)
-            .set(ResourceActionDynamicSqlSupport.deleted).equalTo(record::getDeleted)
-            .set(ResourceActionDynamicSqlSupport.creatorId).equalTo(record::getCreatorId)
-            .set(ResourceActionDynamicSqlSupport.createTime).equalTo(record::getCreateTime)
-            .set(ResourceActionDynamicSqlSupport.lastModifierId).equalTo(record::getLastModifierId)
-            .set(ResourceActionDynamicSqlSupport.lastModifyTime).equalTo(record::getLastModifyTime)
-            .set(ResourceActionDynamicSqlSupport.tenantId).equalTo(record::getTenantId)
-            .where(ResourceActionDynamicSqlSupport.id, isEqualTo(record::getId))
+            c.set(resourceId).equalTo(record::getResourceId)
+            .set(actionName).equalTo(record::getActionName)
+            .set(actionPath).equalTo(record::getActionPath)
+            .set(actionDesc).equalTo(record::getActionDesc)
+            .set(actionNo).equalTo(record::getActionNo)
+            .set(permissionName).equalTo(record::getPermissionName)
+            .set(version).equalTo(record::getVersion)
+            .set(deleted).equalTo(record::getDeleted)
+            .set(creatorId).equalTo(record::getCreatorId)
+            .set(createTime).equalTo(record::getCreateTime)
+            .set(lastModifierId).equalTo(record::getLastModifierId)
+            .set(lastModifyTime).equalTo(record::getLastModifyTime)
+            .set(tenantId).equalTo(record::getTenantId)
+            .where(id, isEqualTo(record::getId))
         );
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int updateByPrimaryKeySelective(ResourceAction record) {
         return update(c ->
-            c.set(ResourceActionDynamicSqlSupport.resourceId).equalToWhenPresent(record::getResourceId)
-            .set(ResourceActionDynamicSqlSupport.actionName).equalToWhenPresent(record::getActionName)
-            .set(ResourceActionDynamicSqlSupport.actionPath).equalToWhenPresent(record::getActionPath)
-            .set(ResourceActionDynamicSqlSupport.actionDesc).equalToWhenPresent(record::getActionDesc)
-            .set(ResourceActionDynamicSqlSupport.actionNo).equalToWhenPresent(record::getActionNo)
-            .set(ResourceActionDynamicSqlSupport.permissionName).equalToWhenPresent(record::getPermissionName)
-            .set(ResourceActionDynamicSqlSupport.version).equalToWhenPresent(record::getVersion)
-            .set(ResourceActionDynamicSqlSupport.deleted).equalToWhenPresent(record::getDeleted)
-            .set(ResourceActionDynamicSqlSupport.creatorId).equalToWhenPresent(record::getCreatorId)
-            .set(ResourceActionDynamicSqlSupport.createTime).equalToWhenPresent(record::getCreateTime)
-            .set(ResourceActionDynamicSqlSupport.lastModifierId).equalToWhenPresent(record::getLastModifierId)
-            .set(ResourceActionDynamicSqlSupport.lastModifyTime).equalToWhenPresent(record::getLastModifyTime)
-            .set(ResourceActionDynamicSqlSupport.tenantId).equalToWhenPresent(record::getTenantId)
-            .where(ResourceActionDynamicSqlSupport.id, isEqualTo(record::getId))
+            c.set(resourceId).equalToWhenPresent(record::getResourceId)
+            .set(actionName).equalToWhenPresent(record::getActionName)
+            .set(actionPath).equalToWhenPresent(record::getActionPath)
+            .set(actionDesc).equalToWhenPresent(record::getActionDesc)
+            .set(actionNo).equalToWhenPresent(record::getActionNo)
+            .set(permissionName).equalToWhenPresent(record::getPermissionName)
+            .set(version).equalToWhenPresent(record::getVersion)
+            .set(deleted).equalToWhenPresent(record::getDeleted)
+            .set(creatorId).equalToWhenPresent(record::getCreatorId)
+            .set(createTime).equalToWhenPresent(record::getCreateTime)
+            .set(lastModifierId).equalToWhenPresent(record::getLastModifierId)
+            .set(lastModifyTime).equalToWhenPresent(record::getLastModifyTime)
+            .set(tenantId).equalToWhenPresent(record::getTenantId)
+            .where(id, isEqualTo(record::getId))
         );
     }
 }

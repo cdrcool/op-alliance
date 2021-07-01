@@ -44,6 +44,9 @@ public final class MenuDynamicSqlSupport {
     public static final SqlColumn<Boolean> isHidden = menu.isHidden;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<String> permission = menu.permission;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Integer> version = menu.version;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -87,6 +90,8 @@ public final class MenuDynamicSqlSupport {
         public final SqlColumn<Boolean> isDirectory = column("is_directory", JDBCType.BIT);
 
         public final SqlColumn<Boolean> isHidden = column("is_hidden", JDBCType.BIT);
+
+        public final SqlColumn<String> permission = column("permission", JDBCType.VARCHAR);
 
         public final SqlColumn<Integer> version = column("version", JDBCType.INTEGER);
 

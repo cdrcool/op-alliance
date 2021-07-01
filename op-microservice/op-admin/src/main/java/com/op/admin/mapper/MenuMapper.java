@@ -1,12 +1,12 @@
 package com.op.admin.mapper;
 
+import static com.op.admin.mapper.MenuDynamicSqlSupport.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import com.op.admin.entity.Menu;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Generated;
-
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Mapper;
@@ -33,12 +33,12 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 /**
  * @author Mybatis Generator
- * @date 2021/06/24 03:12
+ * @date 2021/07/01 12:06
  */
 @Mapper
 public interface MenuMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(MenuDynamicSqlSupport.id, MenuDynamicSqlSupport.pid, MenuDynamicSqlSupport.parentIds, MenuDynamicSqlSupport.menuName, MenuDynamicSqlSupport.menuCode, MenuDynamicSqlSupport.menuIcon, MenuDynamicSqlSupport.menuRoute, MenuDynamicSqlSupport.menuLevel, MenuDynamicSqlSupport.menuNo, MenuDynamicSqlSupport.isDirectory, MenuDynamicSqlSupport.isHidden, MenuDynamicSqlSupport.version, MenuDynamicSqlSupport.deleted, MenuDynamicSqlSupport.creatorId, MenuDynamicSqlSupport.createTime, MenuDynamicSqlSupport.lastModifierId, MenuDynamicSqlSupport.lastModifyTime, MenuDynamicSqlSupport.tenantId);
+    BasicColumn[] selectList = BasicColumn.columnList(id, pid, parentIds, menuName, menuCode, menuIcon, menuRoute, menuLevel, menuNo, isDirectory, isHidden, permission, version, deleted, creatorId, createTime, lastModifierId, lastModifyTime, tenantId);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -72,6 +72,7 @@ public interface MenuMapper {
         @Result(column="menu_no", property="menuNo", jdbcType=JdbcType.INTEGER),
         @Result(column="is_directory", property="isDirectory", jdbcType=JdbcType.BIT),
         @Result(column="is_hidden", property="isHidden", jdbcType=JdbcType.BIT),
+        @Result(column="permission", property="permission", jdbcType=JdbcType.VARCHAR),
         @Result(column="version", property="version", jdbcType=JdbcType.INTEGER),
         @Result(column="deleted", property="deleted", jdbcType=JdbcType.BIT),
         @Result(column="creator_id", property="creatorId", jdbcType=JdbcType.INTEGER),
@@ -88,181 +89,187 @@ public interface MenuMapper {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default long count(CountDSLCompleter completer) {
-        return MyBatis3Utils.countFrom(this::count, MenuDynamicSqlSupport.menu, completer);
+        return MyBatis3Utils.countFrom(this::count, menu, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int delete(DeleteDSLCompleter completer) {
-        return MyBatis3Utils.deleteFrom(this::delete, MenuDynamicSqlSupport.menu, completer);
+        return MyBatis3Utils.deleteFrom(this::delete, menu, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int deleteByPrimaryKey(Integer id_) {
         return delete(c -> 
-            c.where(MenuDynamicSqlSupport.id, isEqualTo(id_))
+            c.where(id, isEqualTo(id_))
         );
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int insert(Menu record) {
-        return MyBatis3Utils.insert(this::insert, record, MenuDynamicSqlSupport.menu, c ->
-            c.map(MenuDynamicSqlSupport.pid).toProperty("pid")
-            .map(MenuDynamicSqlSupport.parentIds).toProperty("parentIds")
-            .map(MenuDynamicSqlSupport.menuName).toProperty("menuName")
-            .map(MenuDynamicSqlSupport.menuCode).toProperty("menuCode")
-            .map(MenuDynamicSqlSupport.menuIcon).toProperty("menuIcon")
-            .map(MenuDynamicSqlSupport.menuRoute).toProperty("menuRoute")
-            .map(MenuDynamicSqlSupport.menuLevel).toProperty("menuLevel")
-            .map(MenuDynamicSqlSupport.menuNo).toProperty("menuNo")
-            .map(MenuDynamicSqlSupport.isDirectory).toProperty("isDirectory")
-            .map(MenuDynamicSqlSupport.isHidden).toProperty("isHidden")
-            .map(MenuDynamicSqlSupport.version).toProperty("version")
-            .map(MenuDynamicSqlSupport.deleted).toProperty("deleted")
-            .map(MenuDynamicSqlSupport.creatorId).toProperty("creatorId")
-            .map(MenuDynamicSqlSupport.createTime).toProperty("createTime")
-            .map(MenuDynamicSqlSupport.lastModifierId).toProperty("lastModifierId")
-            .map(MenuDynamicSqlSupport.lastModifyTime).toProperty("lastModifyTime")
-            .map(MenuDynamicSqlSupport.tenantId).toProperty("tenantId")
+        return MyBatis3Utils.insert(this::insert, record, menu, c ->
+            c.map(pid).toProperty("pid")
+            .map(parentIds).toProperty("parentIds")
+            .map(menuName).toProperty("menuName")
+            .map(menuCode).toProperty("menuCode")
+            .map(menuIcon).toProperty("menuIcon")
+            .map(menuRoute).toProperty("menuRoute")
+            .map(menuLevel).toProperty("menuLevel")
+            .map(menuNo).toProperty("menuNo")
+            .map(isDirectory).toProperty("isDirectory")
+            .map(isHidden).toProperty("isHidden")
+            .map(permission).toProperty("permission")
+            .map(version).toProperty("version")
+            .map(deleted).toProperty("deleted")
+            .map(creatorId).toProperty("creatorId")
+            .map(createTime).toProperty("createTime")
+            .map(lastModifierId).toProperty("lastModifierId")
+            .map(lastModifyTime).toProperty("lastModifyTime")
+            .map(tenantId).toProperty("tenantId")
         );
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int insertSelective(Menu record) {
-        return MyBatis3Utils.insert(this::insert, record, MenuDynamicSqlSupport.menu, c ->
-            c.map(MenuDynamicSqlSupport.pid).toPropertyWhenPresent("pid", record::getPid)
-            .map(MenuDynamicSqlSupport.parentIds).toPropertyWhenPresent("parentIds", record::getParentIds)
-            .map(MenuDynamicSqlSupport.menuName).toPropertyWhenPresent("menuName", record::getMenuName)
-            .map(MenuDynamicSqlSupport.menuCode).toPropertyWhenPresent("menuCode", record::getMenuCode)
-            .map(MenuDynamicSqlSupport.menuIcon).toPropertyWhenPresent("menuIcon", record::getMenuIcon)
-            .map(MenuDynamicSqlSupport.menuRoute).toPropertyWhenPresent("menuRoute", record::getMenuRoute)
-            .map(MenuDynamicSqlSupport.menuLevel).toPropertyWhenPresent("menuLevel", record::getMenuLevel)
-            .map(MenuDynamicSqlSupport.menuNo).toPropertyWhenPresent("menuNo", record::getMenuNo)
-            .map(MenuDynamicSqlSupport.isDirectory).toPropertyWhenPresent("isDirectory", record::getIsDirectory)
-            .map(MenuDynamicSqlSupport.isHidden).toPropertyWhenPresent("isHidden", record::getIsHidden)
-            .map(MenuDynamicSqlSupport.version).toPropertyWhenPresent("version", record::getVersion)
-            .map(MenuDynamicSqlSupport.deleted).toPropertyWhenPresent("deleted", record::getDeleted)
-            .map(MenuDynamicSqlSupport.creatorId).toPropertyWhenPresent("creatorId", record::getCreatorId)
-            .map(MenuDynamicSqlSupport.createTime).toPropertyWhenPresent("createTime", record::getCreateTime)
-            .map(MenuDynamicSqlSupport.lastModifierId).toPropertyWhenPresent("lastModifierId", record::getLastModifierId)
-            .map(MenuDynamicSqlSupport.lastModifyTime).toPropertyWhenPresent("lastModifyTime", record::getLastModifyTime)
-            .map(MenuDynamicSqlSupport.tenantId).toPropertyWhenPresent("tenantId", record::getTenantId)
+        return MyBatis3Utils.insert(this::insert, record, menu, c ->
+            c.map(pid).toPropertyWhenPresent("pid", record::getPid)
+            .map(parentIds).toPropertyWhenPresent("parentIds", record::getParentIds)
+            .map(menuName).toPropertyWhenPresent("menuName", record::getMenuName)
+            .map(menuCode).toPropertyWhenPresent("menuCode", record::getMenuCode)
+            .map(menuIcon).toPropertyWhenPresent("menuIcon", record::getMenuIcon)
+            .map(menuRoute).toPropertyWhenPresent("menuRoute", record::getMenuRoute)
+            .map(menuLevel).toPropertyWhenPresent("menuLevel", record::getMenuLevel)
+            .map(menuNo).toPropertyWhenPresent("menuNo", record::getMenuNo)
+            .map(isDirectory).toPropertyWhenPresent("isDirectory", record::getIsDirectory)
+            .map(isHidden).toPropertyWhenPresent("isHidden", record::getIsHidden)
+            .map(permission).toPropertyWhenPresent("permission", record::getPermission)
+            .map(version).toPropertyWhenPresent("version", record::getVersion)
+            .map(deleted).toPropertyWhenPresent("deleted", record::getDeleted)
+            .map(creatorId).toPropertyWhenPresent("creatorId", record::getCreatorId)
+            .map(createTime).toPropertyWhenPresent("createTime", record::getCreateTime)
+            .map(lastModifierId).toPropertyWhenPresent("lastModifierId", record::getLastModifierId)
+            .map(lastModifyTime).toPropertyWhenPresent("lastModifyTime", record::getLastModifyTime)
+            .map(tenantId).toPropertyWhenPresent("tenantId", record::getTenantId)
         );
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default Optional<Menu> selectOne(SelectDSLCompleter completer) {
-        return MyBatis3Utils.selectOne(this::selectOne, selectList, MenuDynamicSqlSupport.menu, completer);
+        return MyBatis3Utils.selectOne(this::selectOne, selectList, menu, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default List<Menu> select(SelectDSLCompleter completer) {
-        return MyBatis3Utils.selectList(this::selectMany, selectList, MenuDynamicSqlSupport.menu, completer);
+        return MyBatis3Utils.selectList(this::selectMany, selectList, menu, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default List<Menu> selectDistinct(SelectDSLCompleter completer) {
-        return MyBatis3Utils.selectDistinct(this::selectMany, selectList, MenuDynamicSqlSupport.menu, completer);
+        return MyBatis3Utils.selectDistinct(this::selectMany, selectList, menu, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default Optional<Menu> selectByPrimaryKey(Integer id_) {
         return selectOne(c ->
-            c.where(MenuDynamicSqlSupport.id, isEqualTo(id_))
+            c.where(id, isEqualTo(id_))
         );
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int update(UpdateDSLCompleter completer) {
-        return MyBatis3Utils.update(this::update, MenuDynamicSqlSupport.menu, completer);
+        return MyBatis3Utils.update(this::update, menu, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     static UpdateDSL<UpdateModel> updateAllColumns(Menu record, UpdateDSL<UpdateModel> dsl) {
-        return dsl.set(MenuDynamicSqlSupport.pid).equalTo(record::getPid)
-                .set(MenuDynamicSqlSupport.parentIds).equalTo(record::getParentIds)
-                .set(MenuDynamicSqlSupport.menuName).equalTo(record::getMenuName)
-                .set(MenuDynamicSqlSupport.menuCode).equalTo(record::getMenuCode)
-                .set(MenuDynamicSqlSupport.menuIcon).equalTo(record::getMenuIcon)
-                .set(MenuDynamicSqlSupport.menuRoute).equalTo(record::getMenuRoute)
-                .set(MenuDynamicSqlSupport.menuLevel).equalTo(record::getMenuLevel)
-                .set(MenuDynamicSqlSupport.menuNo).equalTo(record::getMenuNo)
-                .set(MenuDynamicSqlSupport.isDirectory).equalTo(record::getIsDirectory)
-                .set(MenuDynamicSqlSupport.isHidden).equalTo(record::getIsHidden)
-                .set(MenuDynamicSqlSupport.version).equalTo(record::getVersion)
-                .set(MenuDynamicSqlSupport.deleted).equalTo(record::getDeleted)
-                .set(MenuDynamicSqlSupport.creatorId).equalTo(record::getCreatorId)
-                .set(MenuDynamicSqlSupport.createTime).equalTo(record::getCreateTime)
-                .set(MenuDynamicSqlSupport.lastModifierId).equalTo(record::getLastModifierId)
-                .set(MenuDynamicSqlSupport.lastModifyTime).equalTo(record::getLastModifyTime)
-                .set(MenuDynamicSqlSupport.tenantId).equalTo(record::getTenantId);
+        return dsl.set(pid).equalTo(record::getPid)
+                .set(parentIds).equalTo(record::getParentIds)
+                .set(menuName).equalTo(record::getMenuName)
+                .set(menuCode).equalTo(record::getMenuCode)
+                .set(menuIcon).equalTo(record::getMenuIcon)
+                .set(menuRoute).equalTo(record::getMenuRoute)
+                .set(menuLevel).equalTo(record::getMenuLevel)
+                .set(menuNo).equalTo(record::getMenuNo)
+                .set(isDirectory).equalTo(record::getIsDirectory)
+                .set(isHidden).equalTo(record::getIsHidden)
+                .set(permission).equalTo(record::getPermission)
+                .set(version).equalTo(record::getVersion)
+                .set(deleted).equalTo(record::getDeleted)
+                .set(creatorId).equalTo(record::getCreatorId)
+                .set(createTime).equalTo(record::getCreateTime)
+                .set(lastModifierId).equalTo(record::getLastModifierId)
+                .set(lastModifyTime).equalTo(record::getLastModifyTime)
+                .set(tenantId).equalTo(record::getTenantId);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     static UpdateDSL<UpdateModel> updateSelectiveColumns(Menu record, UpdateDSL<UpdateModel> dsl) {
-        return dsl.set(MenuDynamicSqlSupport.pid).equalToWhenPresent(record::getPid)
-                .set(MenuDynamicSqlSupport.parentIds).equalToWhenPresent(record::getParentIds)
-                .set(MenuDynamicSqlSupport.menuName).equalToWhenPresent(record::getMenuName)
-                .set(MenuDynamicSqlSupport.menuCode).equalToWhenPresent(record::getMenuCode)
-                .set(MenuDynamicSqlSupport.menuIcon).equalToWhenPresent(record::getMenuIcon)
-                .set(MenuDynamicSqlSupport.menuRoute).equalToWhenPresent(record::getMenuRoute)
-                .set(MenuDynamicSqlSupport.menuLevel).equalToWhenPresent(record::getMenuLevel)
-                .set(MenuDynamicSqlSupport.menuNo).equalToWhenPresent(record::getMenuNo)
-                .set(MenuDynamicSqlSupport.isDirectory).equalToWhenPresent(record::getIsDirectory)
-                .set(MenuDynamicSqlSupport.isHidden).equalToWhenPresent(record::getIsHidden)
-                .set(MenuDynamicSqlSupport.version).equalToWhenPresent(record::getVersion)
-                .set(MenuDynamicSqlSupport.deleted).equalToWhenPresent(record::getDeleted)
-                .set(MenuDynamicSqlSupport.creatorId).equalToWhenPresent(record::getCreatorId)
-                .set(MenuDynamicSqlSupport.createTime).equalToWhenPresent(record::getCreateTime)
-                .set(MenuDynamicSqlSupport.lastModifierId).equalToWhenPresent(record::getLastModifierId)
-                .set(MenuDynamicSqlSupport.lastModifyTime).equalToWhenPresent(record::getLastModifyTime)
-                .set(MenuDynamicSqlSupport.tenantId).equalToWhenPresent(record::getTenantId);
+        return dsl.set(pid).equalToWhenPresent(record::getPid)
+                .set(parentIds).equalToWhenPresent(record::getParentIds)
+                .set(menuName).equalToWhenPresent(record::getMenuName)
+                .set(menuCode).equalToWhenPresent(record::getMenuCode)
+                .set(menuIcon).equalToWhenPresent(record::getMenuIcon)
+                .set(menuRoute).equalToWhenPresent(record::getMenuRoute)
+                .set(menuLevel).equalToWhenPresent(record::getMenuLevel)
+                .set(menuNo).equalToWhenPresent(record::getMenuNo)
+                .set(isDirectory).equalToWhenPresent(record::getIsDirectory)
+                .set(isHidden).equalToWhenPresent(record::getIsHidden)
+                .set(permission).equalToWhenPresent(record::getPermission)
+                .set(version).equalToWhenPresent(record::getVersion)
+                .set(deleted).equalToWhenPresent(record::getDeleted)
+                .set(creatorId).equalToWhenPresent(record::getCreatorId)
+                .set(createTime).equalToWhenPresent(record::getCreateTime)
+                .set(lastModifierId).equalToWhenPresent(record::getLastModifierId)
+                .set(lastModifyTime).equalToWhenPresent(record::getLastModifyTime)
+                .set(tenantId).equalToWhenPresent(record::getTenantId);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int updateByPrimaryKey(Menu record) {
         return update(c ->
-            c.set(MenuDynamicSqlSupport.pid).equalTo(record::getPid)
-            .set(MenuDynamicSqlSupport.parentIds).equalTo(record::getParentIds)
-            .set(MenuDynamicSqlSupport.menuName).equalTo(record::getMenuName)
-            .set(MenuDynamicSqlSupport.menuCode).equalTo(record::getMenuCode)
-            .set(MenuDynamicSqlSupport.menuIcon).equalTo(record::getMenuIcon)
-            .set(MenuDynamicSqlSupport.menuRoute).equalTo(record::getMenuRoute)
-            .set(MenuDynamicSqlSupport.menuLevel).equalTo(record::getMenuLevel)
-            .set(MenuDynamicSqlSupport.menuNo).equalTo(record::getMenuNo)
-            .set(MenuDynamicSqlSupport.isDirectory).equalTo(record::getIsDirectory)
-            .set(MenuDynamicSqlSupport.isHidden).equalTo(record::getIsHidden)
-            .set(MenuDynamicSqlSupport.version).equalTo(record::getVersion)
-            .set(MenuDynamicSqlSupport.deleted).equalTo(record::getDeleted)
-            .set(MenuDynamicSqlSupport.creatorId).equalTo(record::getCreatorId)
-            .set(MenuDynamicSqlSupport.createTime).equalTo(record::getCreateTime)
-            .set(MenuDynamicSqlSupport.lastModifierId).equalTo(record::getLastModifierId)
-            .set(MenuDynamicSqlSupport.lastModifyTime).equalTo(record::getLastModifyTime)
-            .set(MenuDynamicSqlSupport.tenantId).equalTo(record::getTenantId)
-            .where(MenuDynamicSqlSupport.id, isEqualTo(record::getId))
+            c.set(pid).equalTo(record::getPid)
+            .set(parentIds).equalTo(record::getParentIds)
+            .set(menuName).equalTo(record::getMenuName)
+            .set(menuCode).equalTo(record::getMenuCode)
+            .set(menuIcon).equalTo(record::getMenuIcon)
+            .set(menuRoute).equalTo(record::getMenuRoute)
+            .set(menuLevel).equalTo(record::getMenuLevel)
+            .set(menuNo).equalTo(record::getMenuNo)
+            .set(isDirectory).equalTo(record::getIsDirectory)
+            .set(isHidden).equalTo(record::getIsHidden)
+            .set(permission).equalTo(record::getPermission)
+            .set(version).equalTo(record::getVersion)
+            .set(deleted).equalTo(record::getDeleted)
+            .set(creatorId).equalTo(record::getCreatorId)
+            .set(createTime).equalTo(record::getCreateTime)
+            .set(lastModifierId).equalTo(record::getLastModifierId)
+            .set(lastModifyTime).equalTo(record::getLastModifyTime)
+            .set(tenantId).equalTo(record::getTenantId)
+            .where(id, isEqualTo(record::getId))
         );
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int updateByPrimaryKeySelective(Menu record) {
         return update(c ->
-            c.set(MenuDynamicSqlSupport.pid).equalToWhenPresent(record::getPid)
-            .set(MenuDynamicSqlSupport.parentIds).equalToWhenPresent(record::getParentIds)
-            .set(MenuDynamicSqlSupport.menuName).equalToWhenPresent(record::getMenuName)
-            .set(MenuDynamicSqlSupport.menuCode).equalToWhenPresent(record::getMenuCode)
-            .set(MenuDynamicSqlSupport.menuIcon).equalToWhenPresent(record::getMenuIcon)
-            .set(MenuDynamicSqlSupport.menuRoute).equalToWhenPresent(record::getMenuRoute)
-            .set(MenuDynamicSqlSupport.menuLevel).equalToWhenPresent(record::getMenuLevel)
-            .set(MenuDynamicSqlSupport.menuNo).equalToWhenPresent(record::getMenuNo)
-            .set(MenuDynamicSqlSupport.isDirectory).equalToWhenPresent(record::getIsDirectory)
-            .set(MenuDynamicSqlSupport.isHidden).equalToWhenPresent(record::getIsHidden)
-            .set(MenuDynamicSqlSupport.version).equalToWhenPresent(record::getVersion)
-            .set(MenuDynamicSqlSupport.deleted).equalToWhenPresent(record::getDeleted)
-            .set(MenuDynamicSqlSupport.creatorId).equalToWhenPresent(record::getCreatorId)
-            .set(MenuDynamicSqlSupport.createTime).equalToWhenPresent(record::getCreateTime)
-            .set(MenuDynamicSqlSupport.lastModifierId).equalToWhenPresent(record::getLastModifierId)
-            .set(MenuDynamicSqlSupport.lastModifyTime).equalToWhenPresent(record::getLastModifyTime)
-            .set(MenuDynamicSqlSupport.tenantId).equalToWhenPresent(record::getTenantId)
-            .where(MenuDynamicSqlSupport.id, isEqualTo(record::getId))
+            c.set(pid).equalToWhenPresent(record::getPid)
+            .set(parentIds).equalToWhenPresent(record::getParentIds)
+            .set(menuName).equalToWhenPresent(record::getMenuName)
+            .set(menuCode).equalToWhenPresent(record::getMenuCode)
+            .set(menuIcon).equalToWhenPresent(record::getMenuIcon)
+            .set(menuRoute).equalToWhenPresent(record::getMenuRoute)
+            .set(menuLevel).equalToWhenPresent(record::getMenuLevel)
+            .set(menuNo).equalToWhenPresent(record::getMenuNo)
+            .set(isDirectory).equalToWhenPresent(record::getIsDirectory)
+            .set(isHidden).equalToWhenPresent(record::getIsHidden)
+            .set(permission).equalToWhenPresent(record::getPermission)
+            .set(version).equalToWhenPresent(record::getVersion)
+            .set(deleted).equalToWhenPresent(record::getDeleted)
+            .set(creatorId).equalToWhenPresent(record::getCreatorId)
+            .set(createTime).equalToWhenPresent(record::getCreateTime)
+            .set(lastModifierId).equalToWhenPresent(record::getLastModifierId)
+            .set(lastModifyTime).equalToWhenPresent(record::getLastModifyTime)
+            .set(tenantId).equalToWhenPresent(record::getTenantId)
+            .where(id, isEqualTo(record::getId))
         );
     }
 }
