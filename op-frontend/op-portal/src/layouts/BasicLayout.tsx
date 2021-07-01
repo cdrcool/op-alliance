@@ -7,6 +7,7 @@ import {AreaChartOutlined, BellOutlined, BookOutlined, DatabaseOutlined, Desktop
 import Notice from "./Notice";
 
 import './BasicLayout.css';
+import avatar from '../assets/avatar.png';
 
 const {Sider, Header, Content} = Layout;
 const {SubMenu} = Menu;
@@ -91,7 +92,7 @@ const BasicLayout: FC = (props) => {
 
                             <SubMenu key="avatar" icon={
                                 <>
-                                    <Avatar src="avatar.png" className="avatar"/>
+                                    <Avatar src={avatar} className="avatar"/>
                                     <span className="avatar-text">管理员</span>
                                 </>
                             }>
