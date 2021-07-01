@@ -1,9 +1,10 @@
 import React from 'react';
 import {Redirect} from 'react-router-dom';
 import BasicLayout from '../layouts/BasicLayout';
-import UserPage from "../pages/User/list";
+import UserPage from "../pages/user/list";
 import NoFoundPage from "../pages/404";
-import MenuPage from "../pages/Menu/list";
+import MenuPage from "../pages/menu/list";
+import ResourcePage from "../pages/resource/list";
 
 const routes  = [
     {
@@ -14,7 +15,7 @@ const routes  = [
                 path: "/",
                 exact: true,
                 render: () => (
-                    <Redirect to={"/management/user"}/>
+                    <Redirect to={"/management/resource"}/>
                 )
             },
             {
@@ -26,6 +27,11 @@ const routes  = [
                 path: "/management/menu",
                 exact: true,
                 component: MenuPage,
+            },
+            {
+                path: "/management/resource",
+                exact: true,
+                component: ResourcePage,
             },
             {
                 component: NoFoundPage,
