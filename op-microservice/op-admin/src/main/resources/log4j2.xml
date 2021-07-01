@@ -71,7 +71,7 @@
             </DefaultRolloverStrategy>
         </RollingFile>
 
-        <GELF name="Graylog" server="localhost" port="12201" hostName="graylog">
+        <GELF name="Graylog" server="localhost" port="12201" hostName="host.docker.internal">
             <PatternLayout pattern="${filePattern}"/>
             <Filters>
                 <Filter type="MarkerFilter" marker="FLOW" onMatch=" DENY " onMismatch=" NEUTRAL "/>

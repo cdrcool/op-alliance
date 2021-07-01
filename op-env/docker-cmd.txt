@@ -189,8 +189,8 @@ docker run -d `
     --hostname graylog `
     --name graylog `
     -p 9000:9000 `
-    -p 1514:1514 `
-    -p 1514:1514/udp `
+    -p 15140:1514 `
+    -p 15140:1514/udp `
     -p 12201:12201 `
     -p 12201:12201/udp `
     -e GRAYLOG_HTTP_EXTERNAL_URI=http://host.docker.internal:9000/ `
