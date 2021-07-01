@@ -4,50 +4,117 @@ import {SettingOutlined, EditOutlined, EllipsisOutlined, MinusOutlined, SearchOu
 
 import './index.css';
 
+const { Meta } = Card;
+
 const ResourcePage: FC = () => {
-    const dataSource = [
-        {
-            id: '1',
-            title: '管理中心',
-        },
-        {
-            id: '2',
-            title: '统计中心',
-        },
-        {
-            id: '3',
-            title: '日志中心',
-        },
-        {
-            id: '4',
-            title: '监控中心',
-        },
-        {
-            id: '5',
-            title: '文档中心',
-        },
-    ];
 
     return (
-            <Card className="card">
-                <Row gutter={16}>
-                    <Col span={8}>
-                        <Card title="Card title" bordered={false}>
-                            Card content
-                        </Card>
-                    </Col>
-                    <Col span={8}>
-                        <Card title="Card title" bordered={false}>
-                            Card content
-                        </Card>
-                    </Col>
-                    <Col span={8}>
-                        <Card title="Card title" bordered={false}>
-                            Card content
-                        </Card>
-                    </Col>
-                </Row>
-            </Card>
+            <>
+                <Card className="card">
+                    <Row gutter={16}>
+                        <Col span={8}>
+                            <Card title="管理中心" hoverable={true}
+                                  extra={
+                                      <Space>
+                                          <Button icon={<EditOutlined/>} type="link">修改</Button>
+                                          <Button icon={<MinusOutlined/>} type="link">删除</Button>
+                                      </Space>
+                                  }
+                            >
+                                <Meta
+                                    avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+                                    title="Card title"
+                                    description="This is the description"
+                                />
+                            </Card>
+                        </Col>
+                        <Col span={8}>
+                            <Card title="统计中心" hoverable={true}
+                                  extra={
+                                      <Space>
+                                          <Button icon={<EditOutlined/>} type="link">修改</Button>
+                                          <Button icon={<MinusOutlined/>} type="link">删除</Button>
+                                      </Space>
+                                  }
+                            >
+                                <Meta
+                                    avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+                                    title="Card title"
+                                    description="This is the description"
+                                />
+                            </Card>
+                        </Col>
+                        <Col span={8}>
+                            <Card title="日志中心" hoverable={true}
+                                  extra={
+                                      <Space>
+                                          <Button icon={<EditOutlined/>} type="link">修改</Button>
+                                          <Button icon={<MinusOutlined/>} type="link">删除</Button>
+                                      </Space>
+                                  }
+                              >
+                                <Meta
+                                    avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+                                    title="Card title"
+                                    description="This is the description"
+                                />
+                            </Card>
+                        </Col>
+                    </Row>
+                </Card>
+                <Card className="card">
+                    <Row gutter={16}>
+                        <Col span={8}>
+                            <Card title="监控中心" hoverable={true}
+                                  extra={
+                                      <Space>
+                                          <Button icon={<EditOutlined/>} type="link">修改</Button>
+                                          <Button icon={<MinusOutlined/>} type="link">删除</Button>
+                                      </Space>
+                                  }
+                            >
+                                <Meta
+                                    avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+                                    title="Card title"
+                                    description="This is the description"
+                                />
+                            </Card>
+                        </Col>
+                        <Col span={8}>
+                            <Card title="附件中心" hoverable={true}
+                                  extra={
+                                      <Space>
+                                          <Button icon={<EditOutlined/>} type="link">修改</Button>
+                                          <Button icon={<MinusOutlined/>} type="link">删除</Button>
+                                      </Space>
+                                  }
+                            >
+                                <Meta
+                                    avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+                                    title="Card title"
+                                    description="This is the description"
+                                />
+                            </Card>
+                        </Col>
+                        <Col span={8}>
+                            <Card title="文档中心" hoverable={true}
+                                  extra={
+                                      <Space>
+                                          <Button icon={<EditOutlined/>} type="link">修改</Button>
+                                          <Button icon={<MinusOutlined/>} type="link">删除</Button>
+                                      </Space>
+                                  }
+                            >
+                                <Meta
+                                    avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+                                    title="Card title"
+                                    description="This is the description"
+                                />
+                            </Card>
+                        </Col>
+                    </Row>
+                </Card>
+            </>
     )
 };
 
