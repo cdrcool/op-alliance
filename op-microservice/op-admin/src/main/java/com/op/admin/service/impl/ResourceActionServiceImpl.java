@@ -125,10 +125,10 @@ public class ResourceActionServiceImpl implements ResourceActionService {
     @Override
     public List<String> getPermissions(List<Integer> ids) {
         SelectStatementProvider selectStatementProvider =
-                select(ResourceActionDynamicSqlSupport.permissionName)
+                select(ResourceActionDynamicSqlSupport.permission)
                         .from(ResourceActionDynamicSqlSupport.resourceAction)
                         .build().render(RenderingStrategies.MYBATIS3);
         List<ResourceAction> actions = resourceActionMapper.selectMany(selectStatementProvider);
-        return actions.stream().map(ResourceAction::getPermissionName).collect(Collectors.toList());
+        return actions.stream().map(ResourceAction::getPermission).collect(Collectors.toList());
     }
 }

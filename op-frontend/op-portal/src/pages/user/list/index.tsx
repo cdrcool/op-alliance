@@ -18,11 +18,11 @@ const UserPage: FC = () => {
     const [form] = Form.useForm();
 
     const columns = [
-        {
+       /* {
             title: '编号',
             dataIndex: 'userNo',
             key: 'userNo',
-        },
+        },*/
         {
             title: '用户名',
             dataIndex: 'username',
@@ -82,7 +82,7 @@ const UserPage: FC = () => {
 
     const dataSource = [
         {
-            key: '1',
+            id: '1',
             userNo: '1',
             username: 'admin',
             nickname: '管理员',
@@ -94,7 +94,7 @@ const UserPage: FC = () => {
             orgName: '一公司',
         },
         {
-            key: '2',
+            id: '2',
             userNo: '2',
             username: 'guest',
             nickname: '游客',
@@ -106,7 +106,7 @@ const UserPage: FC = () => {
             orgName: '二公司',
         },
         {
-            key: '3',
+            id: '3',
             userNo: '3',
             username: 'limeng',
             nickname: '李萌',
@@ -118,7 +118,7 @@ const UserPage: FC = () => {
             orgName: '三公司',
         },
         {
-            key: '4',
+            id: '4',
             userNo: '4',
             username: 'admin',
             nickname: '管理员',
@@ -130,7 +130,7 @@ const UserPage: FC = () => {
             orgName: '一公司',
         },
         {
-            key: '5',
+            id: '5',
             userNo: '5',
             username: 'guest',
             nickname: '游客',
@@ -142,7 +142,7 @@ const UserPage: FC = () => {
             orgName: '二公司',
         },
         {
-            key: '6',
+            id: '6',
             userNo: '6',
             username: 'limeng',
             nickname: '李萌',
@@ -154,7 +154,7 @@ const UserPage: FC = () => {
             orgName: '三公司',
         },
         {
-            key: '7',
+            id: '7',
             userNo: '7',
             username: 'admin',
             nickname: '管理员',
@@ -166,7 +166,7 @@ const UserPage: FC = () => {
             orgName: '一公司',
         },
         {
-            key: '8',
+            id: '8',
             userNo: '8',
             username: 'guest',
             nickname: '游客',
@@ -178,7 +178,7 @@ const UserPage: FC = () => {
             orgName: '二公司',
         },
         {
-            key: '9',
+            id: '9',
             userNo: '9',
             username: 'limeng',
             nickname: '李萌',
@@ -190,7 +190,7 @@ const UserPage: FC = () => {
             orgName: '三公司',
         },
         {
-            key: '10',
+            id: '10',
             userNo: '10',
             username: 'admin',
             nickname: '管理员',
@@ -202,7 +202,7 @@ const UserPage: FC = () => {
             orgName: '一公司',
         },
         {
-            key: '11',
+            id: '11',
             userNo: '11',
             username: 'guest',
             nickname: '游客',
@@ -214,7 +214,7 @@ const UserPage: FC = () => {
             orgName: '二公司',
         },
         {
-            key: '12',
+            id: '12',
             userNo: '12',
             username: 'limeng',
             nickname: '李萌',
@@ -322,6 +322,7 @@ const UserPage: FC = () => {
                 </div>
 
                 <Table columns={columns} dataSource={dataSource}
+                   rowKey="id"
                     rowSelection={{
                         type: "checkbox",
                         onChange: (selectedRowKeys: React.Key[], selectedRows: any[]) => {

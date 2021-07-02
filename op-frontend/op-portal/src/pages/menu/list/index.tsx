@@ -12,11 +12,11 @@ import {
 const MenuPage: FC = () => {
 
     const columns = [
-        {
+       /* {
             title: '编号',
             dataIndex: 'menuNo',
             key: 'menuNo',
-        },
+        },*/
         {
             title: '菜单名称',
             dataIndex: 'menuName',

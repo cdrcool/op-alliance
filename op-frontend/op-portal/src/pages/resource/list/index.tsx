@@ -6,11 +6,11 @@ import './index.css';
 
 const ResourcePage: FC = () => {
     const columns = [
-        {
+        /*{
             title: '编号',
             dataIndex: 'resourceNo',
             key: 'resourceNo',
-        },
+        },*/
         {
             title: '资源名称',
             dataIndex: 'resourceName',
@@ -77,6 +77,58 @@ const ResourcePage: FC = () => {
         },
     ];
 
+    const expandedRowRender = (record: { id: number, resourceNo: number, resourceName: string, resourcePath: string, resourceDesc: string|null }) => {
+        const columns = [
+            {title: '动作名称', dataIndex: 'actionName', key: 'actionName'},
+            {title: '动作路径', dataIndex: 'actionPath', key: 'actionPath'},
+            {title: '动作描述', dataIndex: 'actionDesc', key: 'actionDesc'},
+            {title: '权限名', dataIndex: 'permission', key: 'permission'},
+            {
+                title: '草错',
+                dataIndex: 'operation',
+                key: 'operation',
+                render: () => (
+                    <Space>
+                        <a>编辑</a>
+                        <a>删除</a>
+                    </Space>
+                ),
+            },
+        ];
+
+        const data = [
+            {
+                id: record.id + "-" + 1,
+                actionName: '查看',
+                actionPath: 'view',
+                actionDesc: null,
+                permission: 'view',
+            },
+            {
+                id: record.id + "-" + 2,
+                actionName: '保存',
+                actionPath: 'save',
+                actionDesc: null,
+                permission: 'save',
+            },
+            {
+                id: record.id + "-" + 3,
+                actionName: '删除',
+                actionPath: 'delete',
+                actionDesc: null,
+                permission: 'delete',
+            },
+            {
+                id: record.id + "-" + 4,
+                actionName: '导出',
+                actionPath: 'export',
+                actionDesc: null,
+                permission: 'export',
+            },
+        ];
+        return <Table columns={columns} dataSource={data} rowKey="id"/>;
+    };
+
     return (
         <>
             <Card size="small" className="card">
@@ -119,12 +171,14 @@ const ResourcePage: FC = () => {
                 </div>
 
                 <Table columns={columns} dataSource={dataSource}
+                       rowKey="id"
                        rowSelection={{
                            type: "checkbox",
                            onChange: (selectedRowKeys: React.Key[], selectedRows: any[]) => {
                                console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
                            }
                        }}
+                       expandable={{expandedRowRender}}
                 />
             </Card>
         </>
