@@ -40,7 +40,7 @@ const BasicLayout: FC = (props) => {
                             <Link to='/management/role'>角色管理</Link>
                         </Menu.Item>
                         <Menu.Item key="resource">
-                            <Link to='/management/resource'>资源管理</Link>
+                            <Link to='/management/resourceCategory'>资源管理</Link>
                         </Menu.Item>
                         <Menu.Item key="menu">
                             <Link to='/management/menu'>菜单管理</Link>
@@ -74,10 +74,10 @@ const BasicLayout: FC = (props) => {
                             })
                         }
 
-                        <Breadcrumb className="breadcrumb">
+                        {/*<Breadcrumb className="breadcrumb">
                             <Breadcrumb.Item>管理中心</Breadcrumb.Item>
                             <Breadcrumb.Item>用户管理</Breadcrumb.Item>
-                        </Breadcrumb>
+                        </Breadcrumb>*/}
 
                         <Menu theme="light" mode="horizontal" className="menu">
                             <Menu.Item key="search" className="search">

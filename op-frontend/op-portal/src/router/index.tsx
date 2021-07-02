@@ -4,6 +4,7 @@ import BasicLayout from '../layouts/BasicLayout';
 import UserPage from "../pages/user/list";
 import NoFoundPage from "../pages/404";
 import MenuPage from "../pages/menu/list";
+import ResourceCategoryPage from "../pages/resourcecategory/list";
 import ResourcePage from "../pages/resource/list";
 
 const routes  = [
@@ -15,7 +16,7 @@ const routes  = [
                 path: "/",
                 exact: true,
                 render: () => (
-                    <Redirect to={"/management/resource"}/>
+                    <Redirect to={"/management/resourceCategory"}/>
                 )
             },
             {
@@ -27,6 +28,11 @@ const routes  = [
                 path: "/management/menu",
                 exact: true,
                 component: MenuPage,
+            },
+            {
+                path: "/management/resourceCategory",
+                exact: true,
+                component: ResourceCategoryPage,
             },
             {
                 path: "/management/resource",

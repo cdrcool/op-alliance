@@ -1,13 +1,15 @@
-import React, {FC, useState} from "react";
-import {Alert, Button, Card, Col, Divider, Form, Input, Row, Select, Space, Table, Tag} from "antd";
-import {DownOutlined, ExportOutlined, MinusOutlined, PlusOutlined, SearchOutlined, UpOutlined} from "@ant-design/icons";
-
-const {Option} = Select;
+import React, {FC} from "react";
+import {Alert, Breadcrumb, Button, Card, Input, Space, Table} from "antd";
+import {
+    ArrowLeftOutlined,
+    ExportOutlined,
+    MinusOutlined,
+    PlusOutlined,
+    SearchOutlined,
+    UpOutlined
+} from "@ant-design/icons";
 
 const MenuPage: FC = () => {
-    const [expand, setExpand] = useState<boolean>(false);
-
-    const [form] = Form.useForm();
 
     const columns = [
         {
@@ -208,15 +210,23 @@ const MenuPage: FC = () => {
 
     return (
         <>
-            <Card size="small" bordered={false} className="card">
-                <div style={{float: 'right', marginBottom: 6}}>
+            <Card size="small" className="card">
+                <Space className="breadcrumb">
+                    <ArrowLeftOutlined/>
+                    <Breadcrumb>
+                        <Breadcrumb.Item>管理中心</Breadcrumb.Item>
+                        <Breadcrumb.Item>菜单管理</Breadcrumb.Item>
+                    </Breadcrumb>
+                </Space>
+
+                <div style={{float: 'right', marginBottom: 4}}>
                     <Space>
                         <Input placeholder="输入菜单名称、菜单编码或菜单路由查询" suffix={<SearchOutlined/>} allowClear={true} style={{width: 400}}/>
                     </Space>
                 </div>
             </Card>
 
-            <Card size="small" bordered={false} className="card">
+            <Card className="card">
                 <div>
                     <Space style={{float: 'right'}}>
                         <Button key="add" type="primary" icon={<PlusOutlined/>}>
@@ -242,9 +252,6 @@ const MenuPage: FC = () => {
                     columns={columns}
                     dataSource={dataSource}
                     pagination={false}
-                    expandable={{
-                        defaultExpandAllRows: true,
-                    }}
                     rowKey="id"
                     rowSelection={{
                         type: "checkbox",
