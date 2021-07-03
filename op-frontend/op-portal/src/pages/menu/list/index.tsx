@@ -1,22 +1,15 @@
 import React, {FC} from "react";
-import {Alert, Breadcrumb, Button, Card, Input, Space, Table} from "antd";
-import {
-    ArrowLeftOutlined,
-    ExportOutlined,
-    MinusOutlined,
-    PlusOutlined,
-    SearchOutlined,
-    UpOutlined
-} from "@ant-design/icons";
+import {Alert, Button, Card, Input, Space, Table} from "antd";
+import {ExportOutlined, MinusOutlined, PlusOutlined, SearchOutlined} from "@ant-design/icons";
 
-const MenuPage: FC = () => {
+const MenuListPage: FC = () => {
 
     const columns = [
-       /* {
-            title: '编号',
-            dataIndex: 'menuNo',
-            key: 'menuNo',
-        },*/
+        /* {
+             title: '编号',
+             dataIndex: 'menuNo',
+             key: 'menuNo',
+         },*/
         {
             title: '菜单名称',
             dataIndex: 'menuName',
@@ -211,17 +204,10 @@ const MenuPage: FC = () => {
     return (
         <>
             <Card size="small" className="card">
-                <Space className="breadcrumb">
-                    <ArrowLeftOutlined/>
-                    <Breadcrumb>
-                        <Breadcrumb.Item>管理中心</Breadcrumb.Item>
-                        <Breadcrumb.Item>菜单管理</Breadcrumb.Item>
-                    </Breadcrumb>
-                </Space>
-
                 <div style={{float: 'right', marginBottom: 4}}>
                     <Space>
-                        <Input placeholder="输入菜单名称、菜单编码或菜单路由查询" suffix={<SearchOutlined/>} allowClear={true} style={{width: 400}}/>
+                        <Input placeholder="输入菜单名称、菜单编码或菜单路由查询" suffix={<SearchOutlined/>} allowClear={true}
+                               style={{width: 400}}/>
                     </Space>
                 </div>
             </Card>
@@ -265,4 +251,4 @@ const MenuPage: FC = () => {
     )
 };
 
-export default MenuPage;
+export default MenuListPage;

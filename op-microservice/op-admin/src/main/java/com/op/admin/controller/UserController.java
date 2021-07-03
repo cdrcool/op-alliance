@@ -1,7 +1,7 @@
 package com.op.admin.controller;
 
 import com.op.admin.dto.*;
-import com.op.admin.server.dto.*;
+import com.op.admin.dto.*;
 import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.RoleAssignVO;
@@ -73,7 +73,7 @@ public class UserController {
 
     @ApiOperation("分页查询用户")
     @PostMapping("page")
-    public Page<UserVO> queryPage(@PageableDefault(sort = "userNo", direction = Sort.Direction.ASC) Pageable pageable,
+    public Page<UserVO> queryPage(@PageableDefault(sort = "user_no", direction = Sort.Direction.ASC) Pageable pageable,
                                   @Valid @RequestBody UserPageQueryDTO queryDTO) {
         return userService.queryPage(pageable, queryDTO);
     }

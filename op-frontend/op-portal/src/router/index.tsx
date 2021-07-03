@@ -1,11 +1,14 @@
 import React from 'react';
 import {Redirect} from 'react-router-dom';
 import BasicLayout from '../layouts/BasicLayout';
-import UserPage from "../pages/user/list";
+import UserListPage from "../pages/user/list";
 import NoFoundPage from "../pages/404";
-import MenuPage from "../pages/menu/list";
+import MenuListPage from "../pages/menu/list";
 import ResourceCategoryPage from "../pages/resourcecategory/list";
-import ResourcePage from "../pages/resource/list";
+import ResourceListPage from "../pages/resource/list";
+import RoleListPage from "../pages/role/list";
+import RoleEditPage from "../pages/role/edit";
+import RoleDetailPage from "../pages/role/detail";
 
 const routes  = [
     {
@@ -16,18 +19,33 @@ const routes  = [
                 path: "/",
                 exact: true,
                 render: () => (
-                    <Redirect to={"/management/resourceCategory"}/>
+                    <Redirect to={"/management/role-detail/1"}/>
                 )
             },
             {
                 path: "/management/user",
                 exact: true,
-                component: UserPage,
+                component: UserListPage,
+            },
+            {
+                path: "/management/role",
+                exact: true,
+                component: RoleListPage,
+            },
+            {
+                path: "/management/role-edit/:id?",
+                exact: true,
+                component: RoleEditPage,
+            },
+            {
+                path: "/management/role-detail/:id",
+                exact: true,
+                component: RoleDetailPage,
             },
             {
                 path: "/management/menu",
                 exact: true,
-                component: MenuPage,
+                component: MenuListPage,
             },
             {
                 path: "/management/resourceCategory",
@@ -37,7 +55,7 @@ const routes  = [
             {
                 path: "/management/resource",
                 exact: true,
-                component: ResourcePage,
+                component: ResourceListPage,
             },
             {
                 component: NoFoundPage,

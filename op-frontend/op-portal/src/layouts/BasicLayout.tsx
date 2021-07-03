@@ -8,6 +8,7 @@ import Notice from "./Notice";
 
 import './BasicLayout.css';
 import avatar from '../assets/avatar.png';
+import logo from '../assets/logo.svg';
 
 const {Sider, Header, Content} = Layout;
 const {SubMenu} = Menu;
@@ -20,7 +21,7 @@ const BasicLayout: FC = (props) => {
             <Sider trigger={null} collapsible collapsed={collapsed}>
                 <div className="logo">
                     <a>
-                        <img src="../logo.svg" alt="logo"/>
+                        <img src={logo} alt="logo"/>
                         <h1 style={collapsed ? {display: "none"} : {display: "inline-block"}}>OnePiece</h1>
                     </a>
                 </div>
@@ -74,10 +75,10 @@ const BasicLayout: FC = (props) => {
                             })
                         }
 
-                        {/*<Breadcrumb className="breadcrumb">
+                        <Breadcrumb className="breadcrumb">
                             <Breadcrumb.Item>管理中心</Breadcrumb.Item>
                             <Breadcrumb.Item>用户管理</Breadcrumb.Item>
-                        </Breadcrumb>*/}
+                        </Breadcrumb>
 
                         <Menu theme="light" mode="horizontal" className="menu">
                             <Menu.Item key="search" className="search">

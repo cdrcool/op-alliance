@@ -53,7 +53,7 @@ INSERT INTO `admin_resource_action` (`id`,
                     `action_name`,
                     `action_path`,
                     `action_no`,
-                    `permission_name`)
+                    `permission`)
 values (1, 1, '分页查询', 'page', 1, 'view'),
        (2, 1, '保存', 'list', 2, 'save');
 

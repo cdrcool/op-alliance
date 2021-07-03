@@ -1,10 +1,10 @@
 import React, {FC} from "react";
-import {Alert, Breadcrumb, Button, Card, Input, Space, Table} from "antd";
-import {ArrowLeftOutlined, ExportOutlined, MinusOutlined, PlusOutlined, SearchOutlined} from "@ant-design/icons";
+import {Alert, Button, Card, Input, Space, Table} from "antd";
+import {ExportOutlined, MinusOutlined, PlusOutlined, SearchOutlined} from "@ant-design/icons";
 
 import './index.css';
 
-const ResourcePage: FC = () => {
+const ResourceListPage: FC = () => {
     const columns = [
         /*{
             title: '编号',
@@ -77,14 +77,14 @@ const ResourcePage: FC = () => {
         },
     ];
 
-    const expandedRowRender = (record: { id: number, resourceNo: number, resourceName: string, resourcePath: string, resourceDesc: string|null }) => {
+    const expandedRowRender = (record: { id: number, resourceNo: number, resourceName: string, resourcePath: string, resourceDesc: string | null }) => {
         const columns = [
             {title: '动作名称', dataIndex: 'actionName', key: 'actionName'},
             {title: '动作路径', dataIndex: 'actionPath', key: 'actionPath'},
             {title: '动作描述', dataIndex: 'actionDesc', key: 'actionDesc'},
             {title: '权限名', dataIndex: 'permission', key: 'permission'},
             {
-                title: '草错',
+                title: '操作',
                 dataIndex: 'operation',
                 key: 'operation',
                 render: () => (
@@ -132,14 +132,6 @@ const ResourcePage: FC = () => {
     return (
         <>
             <Card size="small" className="card">
-                <Space className="breadcrumb">
-                    <ArrowLeftOutlined/>
-                    <Breadcrumb>
-                        <Breadcrumb.Item>管理中心</Breadcrumb.Item>
-                        <Breadcrumb.Item>资源管理</Breadcrumb.Item>
-                    </Breadcrumb>
-                </Space>
-
                 <div style={{float: 'right', marginBottom: 4}}>
                     <Space>
                         <Input placeholder="输入资源名称或资源路径查询" suffix={<SearchOutlined/>} allowClear={true}
@@ -185,4 +177,4 @@ const ResourcePage: FC = () => {
     )
 };
 
-export default ResourcePage;
+export default ResourceListPage;

@@ -1,28 +1,20 @@
 import React, {FC, useState} from "react";
-import {Alert, Breadcrumb, Button, Card, Col, Divider, Form, Input, Row, Select, Space, Table, Tag} from "antd";
-import {
-    ArrowLeftOutlined,
-    DownOutlined,
-    ExportOutlined,
-    MinusOutlined,
-    PlusOutlined,
-    SearchOutlined,
-    UpOutlined
-} from "@ant-design/icons";
+import {Alert, Button, Card, Col, Divider, Form, Input, Row, Select, Space, Table, Tag} from "antd";
+import {DownOutlined, ExportOutlined, MinusOutlined, PlusOutlined, SearchOutlined, UpOutlined} from "@ant-design/icons";
 
 const {Option} = Select;
 
-const UserPage: FC = () => {
+const UserListPage: FC = () => {
     const [expand, setExpand] = useState<boolean>(false);
 
     const [form] = Form.useForm();
 
     const columns = [
-       /* {
-            title: '编号',
-            dataIndex: 'userNo',
-            key: 'userNo',
-        },*/
+        /* {
+             title: '编号',
+             dataIndex: 'userNo',
+             key: 'userNo',
+         },*/
         {
             title: '用户名',
             dataIndex: 'username',
@@ -230,19 +222,14 @@ const UserPage: FC = () => {
     return (
         <>
             <Card size="small" className="card">
-                <Space className="breadcrumb">
-                    <ArrowLeftOutlined/>
-                    <Breadcrumb>
-                        <Breadcrumb.Item>管理中心</Breadcrumb.Item>
-                        <Breadcrumb.Item>用户管理</Breadcrumb.Item>
-                    </Breadcrumb>
-                </Space>
-
                 <div style={{float: 'right', marginBottom: 4}}>
                     <Space>
-                        <Input placeholder="输入用户名、昵称、手机号或邮箱查询" suffix={<SearchOutlined/>} allowClear={true} style={{width: 400}}/>
+                        <Input placeholder="输入用户名、昵称、手机号或邮箱查询" suffix={<SearchOutlined/>} allowClear={true}
+                               style={{width: 400}}/>
                         <Button icon={expand ? <UpOutlined/> : <DownOutlined/>}
-                                onClick={() => {setExpand(!expand)}}>{expand ? '收起筛选' : '展开筛选'}
+                                onClick={() => {
+                                    setExpand(!expand)
+                                }}>{expand ? '收起筛选' : '展开筛选'}
                         </Button>
                     </Space>
                 </div>
@@ -288,7 +275,9 @@ const UserPage: FC = () => {
                                             <Button type="primary" htmlType="submit">
                                                 查询
                                             </Button>
-                                            <Button onClick={() => {form.resetFields()}}>
+                                            <Button onClick={() => {
+                                                form.resetFields()
+                                            }}>
                                                 重置
                                             </Button>
                                         </Space>
@@ -322,17 +311,17 @@ const UserPage: FC = () => {
                 </div>
 
                 <Table columns={columns} dataSource={dataSource}
-                   rowKey="id"
-                    rowSelection={{
-                        type: "checkbox",
-                        onChange: (selectedRowKeys: React.Key[], selectedRows: any[]) => {
-                            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-                        }
-                    }}
+                       rowKey="id"
+                       rowSelection={{
+                           type: "checkbox",
+                           onChange: (selectedRowKeys: React.Key[], selectedRows: any[]) => {
+                               console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+                           }
+                       }}
                 />
             </Card>
         </>
     )
 };
 
-export default UserPage;
+export default UserListPage;

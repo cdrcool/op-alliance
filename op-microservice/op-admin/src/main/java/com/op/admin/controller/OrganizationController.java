@@ -1,8 +1,8 @@
 package com.op.admin.controller;
 
 import com.op.admin.dto.*;
-import com.op.admin.server.dto.*;
-import com.op.admin.server.vo.*;
+import com.op.admin.dto.*;
+import com.op.admin.vo.*;
 import com.op.admin.service.OrganizationService;
 import com.op.admin.vo.*;
 import io.swagger.annotations.Api;

@@ -49,7 +49,7 @@ public class ResourceActionController {
 
     @ApiOperation("分页查询资源动作")
     @PostMapping("page")
-    public Page<ResourceActionVO> queryPage(@PageableDefault(sort = "actionNo", direction = Sort.Direction.ASC) Pageable pageable,
+    public Page<ResourceActionVO> queryPage(@PageableDefault(sort = "action_no", direction = Sort.Direction.ASC) Pageable pageable,
                                             @Valid @RequestBody ResourceActionPageQueryDTO queryDTO) {
         return resourceActionService.queryPage(pageable, queryDTO);
     }

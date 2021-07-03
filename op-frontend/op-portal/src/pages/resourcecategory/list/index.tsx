@@ -1,9 +1,8 @@
 import React, {FC} from "react";
 import {useHistory} from "react-router-dom";
-import {Breadcrumb, Button, Card, Col, Input, Pagination, Row, Space} from "antd";
+import {Button, Card, Col, Input, Pagination, Row, Space} from "antd";
 import {
     AreaChartOutlined,
-    ArrowLeftOutlined,
     DatabaseOutlined,
     FileImageOutlined,
     PictureOutlined,
@@ -16,20 +15,12 @@ import './index.css';
 
 const {Meta} = Card;
 
-const ResourcePage: FC = () => {
+const ResourceCategoryListPage: FC = () => {
     const history = useHistory();
 
     return (
         <>
             <Card size="small" className="card">
-                <Space className="breadcrumb">
-                    <ArrowLeftOutlined/>
-                    <Breadcrumb>
-                        <Breadcrumb.Item>管理中心</Breadcrumb.Item>
-                        <Breadcrumb.Item>资源管理</Breadcrumb.Item>
-                    </Breadcrumb>
-                </Space>
-
                 <div style={{float: 'right', marginBottom: 4}}>
                     <Space>
                         <Input placeholder="输入资源分类名称查询" suffix={<SearchOutlined/>} allowClear={true}
@@ -130,4 +121,4 @@ const ResourcePage: FC = () => {
     )
 };
 
-export default ResourcePage;
+export default ResourceCategoryListPage;
