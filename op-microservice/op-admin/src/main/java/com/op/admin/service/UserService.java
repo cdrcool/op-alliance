@@ -89,10 +89,10 @@ public interface UserService {
     /**
      * 启用/禁用用户
      *
-     * @param id     用户 id
+     * @param ids     用户 ids
      * @param enable 启用 or 禁用
      */
-    void changeEnabled(Integer id, boolean enable);
+    void changeEnabled(List<Integer> ids, boolean enable);
 
     /**
      * 分配角色

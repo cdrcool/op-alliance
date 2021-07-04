@@ -52,9 +52,9 @@ export async function queryRolePage(page: number, size: number, searchText?: str
 /**
  * 启用/禁用角色
  *
- * @param id 角色 id
+ * @param ids 角色 ids
  * @param enable 是否启用
  */
-export async function changeRoleEnabled(id: number, enable: boolean) {
-    return request.post(`/api/role/changeEnabled?id=${id}&enable=${enable}`);
+export async function changeRolesEnabled(ids: number[], enable: boolean) {
+    return request.post(`/api/role/changeEnabled`, {ids, enable});
 }

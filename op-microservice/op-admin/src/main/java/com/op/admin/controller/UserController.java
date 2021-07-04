@@ -86,8 +86,8 @@ public class UserController {
 
     @ApiOperation("启用/禁用用户")
     @PostMapping("changeEnabled")
-    public void changeEnabled(@RequestParam Integer id, @RequestParam boolean enable) {
-        userService.changeEnabled(id, enable);
+    public void changeEnabled(@Valid @RequestBody UserChangeEnabledDTO changeEnabledDTO) {
+        userService.changeEnabled(changeEnabledDTO.getIds(), changeEnabledDTO.getEnable());
     }
 
     @ApiOperation("分配角色")

@@ -1,10 +1,10 @@
 import React, {FC, useEffect, useState} from "react";
 import {useHistory} from "react-router-dom";
-import {Alert, Button, Card, Input, Popconfirm, Space, Table, Tag} from "antd";
+import {Alert, Button, Card, Dropdown, Input, Menu, Popconfirm, Space, Table, Tag} from "antd";
 import {ExportOutlined, MinusOutlined, PlusOutlined, SearchOutlined} from "@ant-design/icons";
 import {Role} from "../../../models/Role";
 import {ColumnsType} from "antd/es/table";
-import {queryRolePage, deleteRoles} from "../../../services/role";
+import {queryRolePage, deleteRoles, changeRolesEnabled} from "../../../services/role";
 import defaultPage, {Page} from "../../../models/Page";
 
 const {Search} = Input;
@@ -28,9 +28,12 @@ const RoleListPage: FC = () => {
         });
     }, [pageInfo.number, pageInfo.size]);
 
-
     const onDeleteRoles = (ids: number[]) => {
         deleteRoles(ids).then(() => fetchData(defaultPage.number, defaultPage.size));
+    }
+
+    const onChangeRolesEnabled = (ids: number[], enable: boolean) => {
+        changeRolesEnabled(ids, enable).then(() => fetchData(defaultPage.number, defaultPage.size));
     }
 
     const columns: ColumnsType<Role> = [
@@ -67,6 +70,10 @@ const RoleListPage: FC = () => {
                         onConfirm={() => onDeleteRoles([record.id] as number[])}
                     >
                         <Button type="link">删除</Button>
+                        <Button type="link"
+                                onClick={() => onChangeRolesEnabled([record.id] as number[], record.status === 0)}>
+                            {record.status === 1 ? '禁用' : '启用'}
+                        </Button>
                     </Popconfirm>
                 </Space>
             ),
@@ -123,6 +130,15 @@ const RoleListPage: FC = () => {
                                         批量删除
                                     </Button>
                                 </Popconfirm>
+                                <Dropdown.Button overlay={
+                                    <Menu onClick={(menuInfo) => onChangeRolesEnabled(selectedRowKeys as number[], parseInt(menuInfo.key) === 1)}>
+                                        <Menu.Item key={1}>启用</Menu.Item>
+                                        <Menu.Item key={0}>禁用</Menu.Item>
+                                    </Menu>
+                                }
+                                >
+                                    启用|禁用
+                                </Dropdown.Button>
                             </Space> : null
                     }
                 </div>
@@ -138,8 +154,9 @@ const RoleListPage: FC = () => {
                        pagination={
                            {
                                current: pageInfo.number + 1,
-                               total: pageInfo.totalElements,
                                pageSize: pageInfo.size,
+                               total: pageInfo.totalElements,
+                               showTotal: total => `总共 ${total} 条数据`,
                                onChange: (page, pageSize) => {
                                    setPageInfo(pre => Object.assign({}, {...pre}, {number:page - 1, size: pageSize}));
                                }

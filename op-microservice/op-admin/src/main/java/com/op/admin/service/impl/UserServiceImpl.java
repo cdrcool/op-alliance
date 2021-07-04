@@ -296,10 +296,10 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void changeEnabled(Integer id, boolean enable) {
+    public void changeEnabled(List<Integer> ids, boolean enable) {
         UpdateStatementProvider updateStatement = SqlBuilder.update(UserDynamicSqlSupport.user)
                 .set(UserDynamicSqlSupport.status).equalTo(enable ? 1 : 0)
-                .where(UserDynamicSqlSupport.id, isEqualTo(id))
+                .where(UserDynamicSqlSupport.id, isIn(ids))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 

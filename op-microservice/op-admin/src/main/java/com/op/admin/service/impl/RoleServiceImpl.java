@@ -194,10 +194,10 @@ public class RoleServiceImpl implements RoleService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void changeEnabled(Integer id, boolean enable) {
+    public void changeEnabled(List<Integer> ids, boolean enable) {
         UpdateStatementProvider updateStatement = SqlBuilder.update(RoleDynamicSqlSupport.role)
                 .set(RoleDynamicSqlSupport.status).equalTo(enable ? 1 : 0)
-                .where(RoleDynamicSqlSupport.id, isEqualTo(id))
+                .where(RoleDynamicSqlSupport.id, isIn(ids))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 

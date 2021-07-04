@@ -1,9 +1,6 @@
 package com.op.admin.controller;
 
-import com.op.admin.dto.MenuAssignDTO;
-import com.op.admin.dto.ResourceAssignDTO;
-import com.op.admin.dto.RolePageQueryDTO;
-import com.op.admin.dto.RoleSaveDTO;
+import com.op.admin.dto.*;
 import com.op.admin.service.RoleService;
 import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.ResourceCategoryAssignVO;
@@ -67,8 +64,8 @@ public class RoleController {
 
     @ApiOperation("启用/禁用角色")
     @PostMapping("changeEnabled")
-    public void changeEnabled(@RequestParam Integer id, @RequestParam boolean enable) {
-        roleService.changeEnabled(id, enable);
+    public void changeEnabled(@Valid @RequestBody RoleChangeEnabledDTO changeEnabledDTO) {
+        roleService.changeEnabled(changeEnabledDTO.getIds(), changeEnabledDTO.getEnable());
     }
 
     @ApiOperation("分配资源动作")

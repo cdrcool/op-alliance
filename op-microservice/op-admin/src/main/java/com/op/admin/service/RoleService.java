@@ -66,10 +66,10 @@ public interface RoleService {
     /**
      * 启用/禁用角色
      *
-     * @param id     角色 id
+     * @param ids     角色 ids
      * @param enable 启用 or 禁用
      */
-    void changeEnabled(Integer id, boolean enable);
+    void changeEnabled(List<Integer> ids, boolean enable);
 
     /**
      * 分配资源动作
