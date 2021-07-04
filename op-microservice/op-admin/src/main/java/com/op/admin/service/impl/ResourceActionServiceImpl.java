@@ -12,6 +12,7 @@ import com.op.admin.vo.ResourceActionAssignVO;
 import com.op.admin.vo.ResourceActionVO;
 import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
+import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
@@ -77,7 +78,8 @@ public class ResourceActionServiceImpl implements ResourceActionService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public ResourceActionVO findById(Integer id) {
-        ResourceAction resource = resourceActionMapper.selectByPrimaryKey(id).orElse(new ResourceAction());
+        ResourceAction resource = resourceActionMapper.selectByPrimaryKey(id)
+                .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的资源动作"));
         return resourceActionMapping.toResourceActionVO(resource);
     }
 
@@ -95,8 +97,10 @@ public class ResourceActionServiceImpl implements ResourceActionService {
 
         SelectStatementProvider selectStatementProvider = select(ResourceActionMapper.selectList)
                 .from(ResourceActionDynamicSqlSupport.resourceAction)
-                .where(ResourceActionDynamicSqlSupport.actionName, isLikeWhenPresent(queryDTO.getSearchText()),
-                        or(ResourceActionDynamicSqlSupport.actionPath, isLikeWhenPresent(queryDTO.getSearchText())))
+                .where(ResourceActionDynamicSqlSupport.actionName, isLike(queryDTO.getSearchText())
+                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"),
+                        or(ResourceActionDynamicSqlSupport.actionPath, isLike(queryDTO.getSearchText())
+                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")))
                 .orderBy(specifications)
                 .build().render(RenderingStrategies.MYBATIS3);
 

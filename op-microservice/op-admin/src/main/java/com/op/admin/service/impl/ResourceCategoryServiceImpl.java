@@ -14,6 +14,7 @@ import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.ResourceCategoryVO;
 import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
+import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SimpleSortSpecification;
@@ -72,7 +73,8 @@ public class ResourceCategoryServiceImpl implements ResourceCategoryService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public ResourceCategoryVO findById(Integer id) {
-        ResourceCategory resourceCategory = resourceCategoryMapper.selectByPrimaryKey(id).orElse(new ResourceCategory());
+        ResourceCategory resourceCategory = resourceCategoryMapper.selectByPrimaryKey(id)
+                .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的资源分类"));
         return resourceCategoryMapping.toResourceCategoryVO(resourceCategory);
     }
 
@@ -90,8 +92,10 @@ public class ResourceCategoryServiceImpl implements ResourceCategoryService {
 
         SelectStatementProvider selectStatementProvider = select(ResourceCategoryMapper.selectList)
                 .from(ResourceCategoryDynamicSqlSupport.resourceCategory)
-                .where(ResourceCategoryDynamicSqlSupport.categoryName, isLikeWhenPresent(queryDTO.getSearchText()),
-                        or(ResourceCategoryDynamicSqlSupport.serverName, isLikeWhenPresent(queryDTO.getSearchText())))
+                .where(ResourceCategoryDynamicSqlSupport.categoryName, isLike(queryDTO.getSearchText())
+                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"),
+                        or(ResourceCategoryDynamicSqlSupport.serverName, isLike(queryDTO.getSearchText())
+                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")))
                 .orderBy(specifications)
                 .build().render(RenderingStrategies.MYBATIS3);
 

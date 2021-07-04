@@ -1,4 +1,4 @@
-import request from "../utils/request";
+import request from "../utils/instance";
 import {Role} from "../models/Role";
 import {Page} from "../models/Page";
 
@@ -8,8 +8,10 @@ import {Page} from "../models/Page";
  * @param role 角色
  */
 export async function saveRole(role: Role) {
-    return request.post('/api/role/save', {
-        ...role
+    return request({
+        url: '/api/role/save',
+        method: 'POST',
+        data: {...role},
     });
 }
 
@@ -19,7 +21,10 @@ export async function saveRole(role: Role) {
  * @param id 角色 id
  */
 export async function deleteRole(id: number) {
-    return request.post(`/api/role/delete?id=${id}`);
+    return request({
+        url: `/api/role/delete?id=${id}`,
+        method: 'POST',
+    });
 }
 
 /**
@@ -28,19 +33,24 @@ export async function deleteRole(id: number) {
  * @param id 角色 id
  */
 export async function getRole(id: number) {
-    return request.get('/api/role/get', {
-        params: {id}
+    return request({
+        url: `/api/role/get?id=${id}`,
+        method: 'GET',
     });
 }
 
 /**
  * 分页查询角色
  *
+ * @param pageNumber 当前页索引
+ * @param pageSize 页大小
  * @param searchText 搜索文本
  */
-export async function queryRolePage(searchText?: string): Promise<Page<Role>> {
-    return request.post('/api/role/page', {
-        searchText
+export async function queryRolePage(pageNumber: number, pageSize: number, searchText?: string): Promise<Page<Role>> {
+    return request({
+        url: `/api/role/page?page=${pageNumber}&size=${pageSize}`,
+        method: 'POST',
+        data: {searchText},
     });
 }
 
@@ -51,5 +61,8 @@ export async function queryRolePage(searchText?: string): Promise<Page<Role>> {
  * @param enable 是否启用
  */
 export async function changeRoleEnabled(id: number, enable: boolean) {
-    return request.post(`/api/role/changeEnabled?id=${id}&enable=${enable}`);
+    return request({
+        url: `/api/role/changeEnabled?id=${id}&enable=${enable}`,
+        method: 'GET',
+    });
 }

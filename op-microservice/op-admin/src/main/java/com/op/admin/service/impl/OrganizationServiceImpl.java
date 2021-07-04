@@ -183,7 +183,8 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public OrganizationVO findById(Integer id) {
-        Organization organization = organizationMapper.selectByPrimaryKey(id).orElse(new Organization());
+        Organization organization = organizationMapper.selectByPrimaryKey(id)
+                .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的组织"));
         return organizationMapping.toOrganizationVO(organization);
     }
 
@@ -216,8 +217,10 @@ public class OrganizationServiceImpl implements OrganizationService {
     public List<OrganizationVO> queryList(OrganizationListQueryDTO queryDTO) {
         SelectStatementProvider selectStatementProvider = select(OrganizationMapper.selectList)
                 .from(OrganizationDynamicSqlSupport.organization)
-                .where(OrganizationDynamicSqlSupport.orgName, isLikeWhenPresent(queryDTO.getSearchText()),
-                        or(OrganizationDynamicSqlSupport.orgCode, isLikeWhenPresent(queryDTO.getSearchText())))
+                .where(OrganizationDynamicSqlSupport.orgName, isLike(queryDTO.getSearchText())
+                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"),
+                        or(OrganizationDynamicSqlSupport.orgCode, isLike(queryDTO.getSearchText())
+                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")))
                 .and(OrganizationDynamicSqlSupport.pid, isEqualToWhenPresent(queryDTO.getPid()))
                 .build().render(RenderingStrategies.MYBATIS3);
         List<Organization> organizations = organizationMapper.selectMany(selectStatementProvider);

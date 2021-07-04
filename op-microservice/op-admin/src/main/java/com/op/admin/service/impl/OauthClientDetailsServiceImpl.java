@@ -12,6 +12,7 @@ import com.op.admin.vo.OauthClientDetailsVO;
 import com.op.admin.service.OauthClientDetailsService;
 import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
+import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SimpleSortSpecification;
@@ -63,7 +64,8 @@ public class OauthClientDetailsServiceImpl implements OauthClientDetailsService 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public OauthClientDetailsVO findById(Integer id) {
-        OauthClientDetails resource = oauthClientDetailsMapper.selectByPrimaryKey(id).orElse(new OauthClientDetails());
+        OauthClientDetails resource = oauthClientDetailsMapper.selectByPrimaryKey(id)
+                .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的 oauth2-client"));
         return oauthClientDetailsMapping.toOauthClientDetailsVO(resource);
     }
 
@@ -93,7 +95,8 @@ public class OauthClientDetailsServiceImpl implements OauthClientDetailsService 
 
         SelectStatementProvider selectStatementProvider = select(OauthClientDetailsMapper.selectList)
                 .from(OauthClientDetailsDynamicSqlSupport.oauthClientDetails)
-                .where(OauthClientDetailsDynamicSqlSupport.clientId, isLikeWhenPresent(queryDTO.getSearchText()))
+                .where(OauthClientDetailsDynamicSqlSupport.clientId, isLike(queryDTO.getSearchText())
+                        .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"))
                 .orderBy(specifications)
                 .build().render(RenderingStrategies.MYBATIS3);
 

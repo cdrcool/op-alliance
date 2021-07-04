@@ -114,7 +114,8 @@ public class MenuServiceImpl implements MenuService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public MenuVO findById(Integer id) {
-        Menu menu = menuMapper.selectByPrimaryKey(id).orElse(new Menu());
+        Menu menu = menuMapper.selectByPrimaryKey(id)
+                .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的菜单"));
         return menuMapping.toMenuVO(menu);
     }
 
@@ -131,9 +132,12 @@ public class MenuServiceImpl implements MenuService {
     public List<MenuVO> queryList(MenuListQueryDTO queryDTO) {
         SelectStatementProvider selectStatementProvider = SqlBuilder.select(MenuMapper.selectList)
                 .from(MenuDynamicSqlSupport.menu)
-                .where(MenuDynamicSqlSupport.menuName, isLikeWhenPresent(queryDTO.getSearchText()),
-                        or(MenuDynamicSqlSupport.menuCode, isLikeWhenPresent(queryDTO.getSearchText())),
-                        or(MenuDynamicSqlSupport.menuRoute, isLikeWhenPresent(queryDTO.getSearchText())))
+                .where(MenuDynamicSqlSupport.menuName, isLike(queryDTO.getSearchText())
+                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"),
+                        or(MenuDynamicSqlSupport.menuCode, isLike(queryDTO.getSearchText())
+                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")),
+                        or(MenuDynamicSqlSupport.menuRoute, isLike(queryDTO.getSearchText())
+                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")))
                 .build().render(RenderingStrategies.MYBATIS3);
         List<Menu> menus = menuMapper.selectMany(selectStatementProvider);
 

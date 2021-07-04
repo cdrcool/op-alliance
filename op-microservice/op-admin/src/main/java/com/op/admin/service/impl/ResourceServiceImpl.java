@@ -14,6 +14,7 @@ import com.op.admin.vo.ResourceAssignVO;
 import com.op.admin.vo.ResourceVO;
 import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
+import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
@@ -83,7 +84,8 @@ public class ResourceServiceImpl implements ResourceService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public ResourceVO findById(Integer id) {
-        Resource resource = resourceMapper.selectByPrimaryKey(id).orElse(new Resource());
+        Resource resource = resourceMapper.selectByPrimaryKey(id)
+                .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的资源"));
         return resourceMapping.toResourceVO(resource);
     }
 
@@ -101,8 +103,10 @@ public class ResourceServiceImpl implements ResourceService {
 
         SelectStatementProvider selectStatementProvider = select(ResourceMapper.selectList)
                 .from(ResourceDynamicSqlSupport.resource)
-                .where(ResourceDynamicSqlSupport.resourceName, isLikeWhenPresent(queryDTO.getSearchText()),
-                        or(ResourceDynamicSqlSupport.resourcePath, isLikeWhenPresent(queryDTO.getSearchText())))
+                .where(ResourceDynamicSqlSupport.resourceName, isLike(queryDTO.getSearchText())
+                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"),
+                        or(ResourceDynamicSqlSupport.resourcePath, isLike(queryDTO.getSearchText())
+                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")))
                 .orderBy(specifications)
                 .build().render(RenderingStrategies.MYBATIS3);
 

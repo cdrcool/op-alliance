@@ -5,26 +5,34 @@ import {ExportOutlined, MinusOutlined, PlusOutlined, SearchOutlined} from "@ant-
 import {Role} from "../../../models/Role";
 import {ColumnsType} from "antd/es/table";
 import {queryRolePage} from "../../../services/role";
+import defaultPage, {Page} from "../../../models/Page";
 
-function deleteRoles(ids: React.Key[]) {
-    console.log('ids', ids);
-}
+const {Search} = Input;
 
 const RoleListPage: FC = () => {
-    const [dataSource, setDataSource] = useState<Role[]>([]);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            const page = await queryRolePage();
-            setDataSource(page.content);
-        }
-
-        fetchData();
-    }, []);
-
     const history = useHistory();
 
+    const [loading, setLoading] = useState<boolean>(true);
+    const [searchText, setSearchText] = useState<string>('');
+    const [pageInfo, setPageInfo] = useState<Page<Role>>(defaultPage);
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
+    const fetchData = async () => {
+        const result = await queryRolePage(pageInfo.number, pageInfo.size, searchText);
+        setPageInfo(result || defaultPage);
+        setLoading(false);
+    }
+
+    useEffect(() => {
+        setLoading(true);
+        fetchData().then(() => {
+        });
+    }, [pageInfo.number, pageInfo.size, searchText]);
+
+
+    const deleteRoles = (ids: React.Key[]) => {
+        console.log('ids', ids);
+    }
 
     const columns: ColumnsType<Role> = [
         {
@@ -70,9 +78,13 @@ const RoleListPage: FC = () => {
         <>
             <Card size="small" className="card">
                 <div style={{float: 'right', marginBottom: 4}}>
+
                     <Space>
-                        <Input placeholder="输入角色名、角色编码或角色描述查询" suffix={<SearchOutlined/>} allowClear={true}
-                               style={{width: 400}}/>
+                        <Search
+                            placeholder="输入角色名、角色编码或角色描述查询"
+                            onSearch={(value) => setSearchText(value)}
+                            style={{width: 400}}
+                        />
                     </Space>
                 </div>
             </Card>
@@ -115,7 +127,7 @@ const RoleListPage: FC = () => {
                     }
                 </div>
 
-                <Table rowKey="id" columns={columns} dataSource={dataSource}
+                <Table rowKey="id" loading={loading} columns={columns} dataSource={pageInfo.content}
                        rowSelection={{
                            type: "checkbox",
                            selectedRowKeys: selectedRowKeys,
@@ -123,6 +135,16 @@ const RoleListPage: FC = () => {
                                setSelectedRowKeys(selectedRowKeys);
                            }
                        }}
+                       pagination={
+                           {
+                               current: pageInfo.number + 1,
+                               total: pageInfo.totalElements,
+                               pageSize: pageInfo.size,
+                               onChange: (page, pageSize) => {
+                                   setPageInfo(pre => Object.assign({}, {...pre}, {number:page - 1, size: pageSize}));
+                               }
+                           }
+                       }
                 />
             </Card>
         </>

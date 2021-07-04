@@ -18,6 +18,7 @@ import com.op.admin.service.MenuService;
 import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
@@ -139,7 +140,8 @@ public class RoleServiceImpl implements RoleService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public RoleVO findById(Integer id) {
-        Role role = roleMapper.selectByPrimaryKey(id).orElse(new Role());
+        Role role = roleMapper.selectByPrimaryKey(id)
+                .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的角色"));
         return roleMapping.toRoleVO(role);
     }
 
@@ -157,13 +159,13 @@ public class RoleServiceImpl implements RoleService {
 
         SelectStatementProvider selectStatementProvider = select(RoleMapper.selectList)
                 .from(RoleDynamicSqlSupport.role)
-                .where(RoleDynamicSqlSupport.roleName, isLikeWhenPresent(queryDTO.getSearchText()),
-                        or(RoleDynamicSqlSupport.roleCode, isLikeWhenPresent(queryDTO.getSearchText())))
+                .where(RoleDynamicSqlSupport.roleName, isLike(queryDTO.getSearchText()).filter(StringUtils::isNotBlank),
+                        or(RoleDynamicSqlSupport.roleCode, isLike(queryDTO.getSearchText()).filter(StringUtils::isNotBlank)))
                 .orderBy(specifications)
                 .build().render(RenderingStrategies.MYBATIS3);
 
         com.github.pagehelper.Page<Role> result = PageHelper
-                .startPage(pageable.getPageNumber(), pageable.getPageSize())
+                .startPage(pageable.getPageNumber()  + 1, pageable.getPageSize())
                 .doSelectPage(() -> roleMapper.selectMany(selectStatementProvider));
 
         return new PageImpl<>(roleMapping.toRoleVOList(result.getResult()), pageable, result.getTotal());

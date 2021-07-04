@@ -17,6 +17,7 @@ import com.op.admin.service.*;
 import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
@@ -194,7 +195,8 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public UserVO findById(Integer id) {
-        User user = userMapper.selectByPrimaryKey(id).orElse(new User());
+        User user = userMapper.selectByPrimaryKey(id)
+                .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的用户"));
         return userMapping.toUserVo(user);
     }
 
@@ -268,10 +270,14 @@ public class UserServiceImpl implements UserService {
                 .where(UserDynamicSqlSupport.orgId, isEqualToWhenPresent(queryDTO.getOrgId()))
                 .and(UserDynamicSqlSupport.gender, isEqualToWhenPresent(queryDTO.getGender()))
                 .and(UserDynamicSqlSupport.status, isInWhenPresent(queryDTO.getStatus()))
-                .and(UserDynamicSqlSupport.username, isLikeWhenPresent(queryDTO.getSearchText()),
-                        or(UserDynamicSqlSupport.nickname, isLikeWhenPresent(queryDTO.getSearchText())),
-                        or(UserDynamicSqlSupport.phone, isLikeWhenPresent(queryDTO.getSearchText())),
-                        or(UserDynamicSqlSupport.email, isLikeWhenPresent(queryDTO.getSearchText())))
+                .and(UserDynamicSqlSupport.username, isLike(queryDTO.getSearchText())
+                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"),
+                        or(UserDynamicSqlSupport.nickname, isLike(queryDTO.getSearchText())
+                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")),
+                        or(UserDynamicSqlSupport.phone, isLike(queryDTO.getSearchText())
+                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")),
+                        or(UserDynamicSqlSupport.email, isLike(queryDTO.getSearchText())
+                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")))
                 .orderBy(specifications)
                 .build().render(RenderingStrategies.MYBATIS3);
 
