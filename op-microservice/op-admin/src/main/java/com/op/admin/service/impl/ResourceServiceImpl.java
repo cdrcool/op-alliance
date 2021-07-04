@@ -104,7 +104,6 @@ public class ResourceServiceImpl implements ResourceService {
                 .where(ResourceDynamicSqlSupport.resourceName, isLikeWhenPresent(queryDTO.getSearchText()),
                         or(ResourceDynamicSqlSupport.resourcePath, isLikeWhenPresent(queryDTO.getSearchText())))
                 .orderBy(specifications)
-                .limit(pageable.getPageSize()).offset(pageable.getOffset())
                 .build().render(RenderingStrategies.MYBATIS3);
 
         com.github.pagehelper.Page<ResourceVO> result = PageHelper

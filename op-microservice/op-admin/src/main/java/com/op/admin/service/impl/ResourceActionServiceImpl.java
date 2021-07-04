@@ -98,7 +98,6 @@ public class ResourceActionServiceImpl implements ResourceActionService {
                 .where(ResourceActionDynamicSqlSupport.actionName, isLikeWhenPresent(queryDTO.getSearchText()),
                         or(ResourceActionDynamicSqlSupport.actionPath, isLikeWhenPresent(queryDTO.getSearchText())))
                 .orderBy(specifications)
-                .limit(pageable.getPageSize()).offset(pageable.getOffset())
                 .build().render(RenderingStrategies.MYBATIS3);
 
         com.github.pagehelper.Page<ResourceActionVO> result = PageHelper

@@ -273,7 +273,6 @@ public class UserServiceImpl implements UserService {
                         or(UserDynamicSqlSupport.phone, isLikeWhenPresent(queryDTO.getSearchText())),
                         or(UserDynamicSqlSupport.email, isLikeWhenPresent(queryDTO.getSearchText())))
                 .orderBy(specifications)
-                .limit(pageable.getPageSize()).offset(pageable.getOffset())
                 .build().render(RenderingStrategies.MYBATIS3);
 
         com.github.pagehelper.Page<UserVO> result = PageHelper

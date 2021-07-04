@@ -160,14 +160,13 @@ public class RoleServiceImpl implements RoleService {
                 .where(RoleDynamicSqlSupport.roleName, isLikeWhenPresent(queryDTO.getSearchText()),
                         or(RoleDynamicSqlSupport.roleCode, isLikeWhenPresent(queryDTO.getSearchText())))
                 .orderBy(specifications)
-                .limit(pageable.getPageSize()).offset(pageable.getOffset())
                 .build().render(RenderingStrategies.MYBATIS3);
 
-        com.github.pagehelper.Page<RoleVO> result = PageHelper
+        com.github.pagehelper.Page<Role> result = PageHelper
                 .startPage(pageable.getPageNumber(), pageable.getPageSize())
-                .doSelectPage(() -> roleMapping.toRoleVOList(roleMapper.selectMany(selectStatementProvider)));
+                .doSelectPage(() -> roleMapper.selectMany(selectStatementProvider));
 
-        return new PageImpl<>(result.getResult(), pageable, result.getTotal());
+        return new PageImpl<>(roleMapping.toRoleVOList(result.getResult()), pageable, result.getTotal());
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)

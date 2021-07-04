@@ -161,7 +161,6 @@ public class UserGroupServiceImpl implements UserGroupService {
                 .from(UserGroupDynamicSqlSupport.userGroup)
                 .where(UserGroupDynamicSqlSupport.groupName, isLikeWhenPresent(queryDTO.getSearchText()))
                 .orderBy(specifications)
-                .limit(pageable.getPageSize()).offset(pageable.getOffset())
                 .build().render(RenderingStrategies.MYBATIS3);
 
         com.github.pagehelper.Page<UserGroupVO> result = PageHelper
