@@ -13,6 +13,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 资源分类 Controller
@@ -39,6 +40,12 @@ public class ResourceCategoryController {
     @PostMapping("delete")
     public void delete(@RequestParam Integer id) {
         resourceCategoryService.deleteById(id);
+    }
+
+    @ApiOperation("批量删除资源分类")
+    @PostMapping("batchDelete")
+    public void batchDelete(@RequestBody List<Integer> ids) {
+        resourceCategoryService.deleteByIds(ids);
     }
 
     @ApiOperation("查看资源分类详情")

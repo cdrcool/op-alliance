@@ -39,6 +39,12 @@ public class MenuController {
         menuService.deleteById(id);
     }
 
+    @ApiOperation("批量删除菜单")
+    @PostMapping("batchDelete")
+    public void batchDelete(@RequestBody List<Integer> ids) {
+        menuService.deleteByIds(ids);
+    }
+
     @ApiOperation("查看菜单详情")
     @GetMapping("get")
     public MenuVO get(@RequestParam Integer id) {

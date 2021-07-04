@@ -32,6 +32,13 @@ public interface ResourceActionService {
     void deleteById(Integer id);
 
     /**
+     * 批量删除资源动作
+     *
+     * @param ids 资源动作 ids
+     */
+    void deleteByIds(List<Integer> ids);
+
+    /**
      * 删除资源下所有的资源动作
      *
      * @param resourceId 资源动作 id

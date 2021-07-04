@@ -39,6 +39,12 @@ public class OrganizationController {
         organizationService.deleteById(id);
     }
 
+    @ApiOperation("批量删除组织")
+    @PostMapping("batchDelete")
+    public void batchDelete(@RequestBody List<Integer> ids) {
+        organizationService.deleteByIds(ids);
+    }
+
     @ApiOperation("查看组织详情")
     @GetMapping("get")
     public OrganizationVO get(@RequestParam Integer id) {

@@ -7,6 +7,8 @@ import com.op.admin.vo.OauthClientDetailsVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 /**
  * oauth2-client Service
  *
@@ -27,6 +29,13 @@ public interface OauthClientDetailsService {
      * @param id oauth2-client id
      */
     void deleteById(Integer id);
+
+    /**
+     * 批量删除 oauth2-client
+     *
+     * @param ids oauth2-client ids
+     */
+    void deleteByIds(List<Integer> ids);
 
     /**
      * 查找 oauth2-client

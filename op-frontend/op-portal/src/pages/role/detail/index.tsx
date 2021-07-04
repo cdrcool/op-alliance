@@ -31,17 +31,16 @@ const RoleDetailPage = () => {
             <PageHeader title="角色详情"
                         extra={
                             <Space>
-                                <Button disabled={!role.id}
-                                        onClick={() => history.push(`/management/role-edit/${id}`)}>编辑</Button>
+                                <Button onClick={() => history.push(`/management/role-edit/${id}`)}>编辑</Button>
                                 <Popconfirm
                                     title="确定要删除吗？"
                                     okText="确定"
                                     cancelText="取消"
                                     onConfirm={() => handleDelete(id)}
                                 >
-                                    <Button disabled={!role.id}>删除</Button>
+                                    <Button>删除</Button>
                                 </Popconfirm>
-                                <Button disabled={!role.id}>打印</Button>
+                                <Button>打印</Button>
                             </Space>
                         }
                         onBack={() => history.push('/management/role')}

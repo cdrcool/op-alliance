@@ -23,6 +23,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 /**
@@ -59,6 +61,12 @@ public class OauthClientDetailsServiceImpl implements OauthClientDetailsService 
     @Override
     public void deleteById(Integer id) {
         oauthClientDetailsMapper.deleteByPrimaryKey(id);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void deleteByIds(List<Integer> ids) {
+        ids.forEach(this::deleteById);
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)

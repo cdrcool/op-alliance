@@ -1,6 +1,6 @@
-import request from "../utils/instance";
 import {Role} from "../models/Role";
 import {Page} from "../models/Page";
+import request from "../utils/request";
 
 /**
  * 保存角色
@@ -8,11 +8,7 @@ import {Page} from "../models/Page";
  * @param role 角色
  */
 export async function saveRole(role: Role) {
-    return request({
-        url: '/api/role/save',
-        method: 'POST',
-        data: {...role},
-    });
+    return request.post('/api/role/save', role);
 }
 
 /**
@@ -21,10 +17,16 @@ export async function saveRole(role: Role) {
  * @param id 角色 id
  */
 export async function deleteRole(id: number) {
-    return request({
-        url: `/api/role/delete?id=${id}`,
-        method: 'POST',
-    });
+    return request.post(`/api/role/delete?id=${id}`);
+}
+
+/**
+ * 批量删除角色
+ *
+ * @param ids 角色 ids
+ */
+export async function deleteRoles(ids: number[]) {
+    return request.post(`/api/role/batchDelete`, ids);
 }
 
 /**
@@ -33,25 +35,18 @@ export async function deleteRole(id: number) {
  * @param id 角色 id
  */
 export async function getRole(id: number) {
-    return request({
-        url: `/api/role/get?id=${id}`,
-        method: 'GET',
-    });
+    return request.get(`/api/role/get?id=${id}`);
 }
 
 /**
  * 分页查询角色
  *
- * @param pageNumber 当前页索引
- * @param pageSize 页大小
+ * @param page 当前页索引
+ * @param size 页大小
  * @param searchText 搜索文本
  */
-export async function queryRolePage(pageNumber: number, pageSize: number, searchText?: string): Promise<Page<Role>> {
-    return request({
-        url: `/api/role/page?page=${pageNumber}&size=${pageSize}`,
-        method: 'POST',
-        data: {searchText},
-    });
+export async function queryRolePage(page: number, size: number, searchText?: string): Promise<Page<Role>> {
+    return request.post(`/api/role/page?page=${page}&size=${size}`, {searchText});
 }
 
 /**
@@ -61,8 +56,5 @@ export async function queryRolePage(pageNumber: number, pageSize: number, search
  * @param enable 是否启用
  */
 export async function changeRoleEnabled(id: number, enable: boolean) {
-    return request({
-        url: `/api/role/changeEnabled?id=${id}&enable=${enable}`,
-        method: 'GET',
-    });
+    return request.post(`/api/role/changeEnabled?id=${id}&enable=${enable}`);
 }

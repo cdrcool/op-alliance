@@ -15,6 +15,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * oauth2-client Controller
@@ -41,6 +42,12 @@ public class OauthClientDetailsController {
     @PostMapping("delete")
     public void delete(@RequestParam Integer id) {
         oauthClientDetailsService.deleteById(id);
+    }
+
+    @ApiOperation("批量删除 oauth2-client")
+    @PostMapping("batchDelete")
+    public void batchDelete(@RequestBody List<Integer> ids) {
+        oauthClientDetailsService.deleteByIds(ids);
     }
 
     @ApiOperation("查看 oauth2-client 详情")

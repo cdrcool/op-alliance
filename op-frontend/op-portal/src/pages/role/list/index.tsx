@@ -4,7 +4,7 @@ import {Alert, Button, Card, Input, Popconfirm, Space, Table, Tag} from "antd";
 import {ExportOutlined, MinusOutlined, PlusOutlined, SearchOutlined} from "@ant-design/icons";
 import {Role} from "../../../models/Role";
 import {ColumnsType} from "antd/es/table";
-import {queryRolePage} from "../../../services/role";
+import {queryRolePage, deleteRoles} from "../../../services/role";
 import defaultPage, {Page} from "../../../models/Page";
 
 const {Search} = Input;
@@ -13,25 +13,24 @@ const RoleListPage: FC = () => {
     const history = useHistory();
 
     const [loading, setLoading] = useState<boolean>(true);
-    const [searchText, setSearchText] = useState<string>('');
     const [pageInfo, setPageInfo] = useState<Page<Role>>(defaultPage);
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
-    const fetchData = async () => {
-        const result = await queryRolePage(pageInfo.number, pageInfo.size, searchText);
+    const fetchData = async (page: number, size: number, searchText?: string) => {
+        setLoading(true);
+        const result = await queryRolePage(page, size, searchText);
         setPageInfo(result || defaultPage);
         setLoading(false);
     }
 
     useEffect(() => {
-        setLoading(true);
-        fetchData().then(() => {
+        fetchData(pageInfo.number, pageInfo.size).then(() => {
         });
-    }, [pageInfo.number, pageInfo.size, searchText]);
+    }, [pageInfo.number, pageInfo.size]);
 
 
-    const deleteRoles = (ids: React.Key[]) => {
-        console.log('ids', ids);
+    const onDeleteRoles = (ids: number[]) => {
+        deleteRoles(ids).then(() => fetchData(defaultPage.number, defaultPage.size));
     }
 
     const columns: ColumnsType<Role> = [
@@ -65,7 +64,7 @@ const RoleListPage: FC = () => {
                         title="确定要删除吗？"
                         okText="确定"
                         cancelText="取消"
-                        onConfirm={() => deleteRoles([record.id] as React.Key[])}
+                        onConfirm={() => onDeleteRoles([record.id] as number[])}
                     >
                         <Button type="link">删除</Button>
                     </Popconfirm>
@@ -78,12 +77,13 @@ const RoleListPage: FC = () => {
         <>
             <Card size="small" className="card">
                 <div style={{float: 'right', marginBottom: 4}}>
-
                     <Space>
                         <Search
-                            placeholder="输入角色名、角色编码或角色描述查询"
-                            onSearch={(value) => setSearchText(value)}
                             style={{width: 400}}
+                            placeholder="输入角色名、角色编码或角色描述查询"
+                            allowClear
+                            enterButton
+                            onSearch={(value) => fetchData(defaultPage.number, defaultPage.size, value)}
                         />
                     </Space>
                 </div>
@@ -115,7 +115,7 @@ const RoleListPage: FC = () => {
                                     okText="确定"
                                     cancelText="取消"
                                     onConfirm={() => {
-                                        deleteRoles(selectedRowKeys);
+                                        onDeleteRoles(selectedRowKeys as number[]);
                                         setSelectedRowKeys([]);
                                     }}
                                 >

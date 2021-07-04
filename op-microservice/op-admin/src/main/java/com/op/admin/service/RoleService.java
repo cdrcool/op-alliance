@@ -33,6 +33,13 @@ public interface RoleService {
     void deleteById(Integer id);
 
     /**
+     * 批量删除角色
+     *
+     * @param ids 角色 ids
+     */
+    void deleteByIds(List<Integer> ids);
+
+    /**
      * 查找角色
      *
      * @param id 角色 id

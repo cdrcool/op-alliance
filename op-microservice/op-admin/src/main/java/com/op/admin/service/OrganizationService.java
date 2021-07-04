@@ -30,6 +30,13 @@ public interface OrganizationService {
     void deleteById(Integer id);
 
     /**
+     * 批量删除组织
+     *
+     * @param ids 组织 ids
+     */
+    void deleteByIds(List<Integer> ids);
+
+    /**
      * 查找组织
      *
      * @param id 组织 id

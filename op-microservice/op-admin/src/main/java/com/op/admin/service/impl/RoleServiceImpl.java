@@ -137,6 +137,12 @@ public class RoleServiceImpl implements RoleService {
         roleMenuRelationMapper.delete(roleMenuRelationProvider);
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void deleteByIds(List<Integer> ids) {
+        ids.forEach(this::deleteById);
+    }
+
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public RoleVO findById(Integer id) {
@@ -159,8 +165,10 @@ public class RoleServiceImpl implements RoleService {
 
         SelectStatementProvider selectStatementProvider = select(RoleMapper.selectList)
                 .from(RoleDynamicSqlSupport.role)
-                .where(RoleDynamicSqlSupport.roleName, isLike(queryDTO.getSearchText()).filter(StringUtils::isNotBlank),
-                        or(RoleDynamicSqlSupport.roleCode, isLike(queryDTO.getSearchText()).filter(StringUtils::isNotBlank)))
+                .where(RoleDynamicSqlSupport.roleName, isLike(queryDTO.getSearchText())
+                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"),
+                        or(RoleDynamicSqlSupport.roleCode, isLike(queryDTO.getSearchText())
+                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")))
                 .orderBy(specifications)
                 .build().render(RenderingStrategies.MYBATIS3);
 

@@ -58,6 +58,12 @@ public class UserController {
         userService.deleteById(id);
     }
 
+    @ApiOperation("批量删除用户")
+    @PostMapping("batchDelete")
+    public void batchDelete(@RequestBody List<Integer> ids) {
+        userService.deleteByIds(ids);
+    }
+
     @ApiOperation("查看用户详情")
     @GetMapping("get")
     public UserVO get(@RequestParam Integer id) {

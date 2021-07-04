@@ -180,6 +180,12 @@ public class OrganizationServiceImpl implements OrganizationService {
         organizationMenuRelationMapper.delete(organizationMenuRelationProvider);
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void deleteByIds(List<Integer> ids) {
+        ids.forEach(this::deleteById);
+    }
+
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public OrganizationVO findById(Integer id) {

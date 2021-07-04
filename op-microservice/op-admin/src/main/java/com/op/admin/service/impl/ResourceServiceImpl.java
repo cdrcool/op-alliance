@@ -67,9 +67,15 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void deleteById(Integer id) {
-        resourceMapper.deleteByPrimaryKey(id);
-        resourceActionService.deleteByResourceId(id);
+    public void deleteById(Integer ids) {
+        resourceMapper.deleteByPrimaryKey(ids);
+        resourceActionService.deleteByResourceId(ids);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void deleteByIds(List<Integer> ids) {
+        ids.forEach(this::deleteById);
     }
 
     @Transactional(rollbackFor = Exception.class)

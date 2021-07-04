@@ -139,6 +139,12 @@ public class UserGroupServiceImpl implements UserGroupService {
         userGroupMenuRelationMapper.delete(userGroupMenuRelationProvider);
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void deleteByIds(List<Integer> ids) {
+        ids.forEach(this::deleteById);
+    }
+
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public UserGroupVO findById(Integer id) {

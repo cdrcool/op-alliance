@@ -182,6 +182,12 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
+    public void deleteByIds(List<Integer> ids) {
+        ids.forEach(this::deleteById);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
     public void deleteByOrgIds(List<Integer> orgIds) {
         SelectStatementProvider selectStatementProvider = select(UserDynamicSqlSupport.id)
                 .from(UserDynamicSqlSupport.user)

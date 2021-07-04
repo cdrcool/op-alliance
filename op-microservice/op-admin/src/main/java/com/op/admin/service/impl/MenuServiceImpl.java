@@ -111,6 +111,12 @@ public class MenuServiceImpl implements MenuService {
         menuMapper.deleteById(id);
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void deleteByIds(List<Integer> ids) {
+        ids.forEach(this::deleteById);
+    }
+
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public MenuVO findById(Integer id) {

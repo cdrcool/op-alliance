@@ -68,6 +68,12 @@ public class ResourceActionServiceImpl implements ResourceActionService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
+    public void deleteByIds(List<Integer> ids) {
+        ids.forEach(this::deleteById);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
     public void deleteByResourceId(Integer categoryId) {
         DeleteStatementProvider deleteStatementProvider = deleteFrom(ResourceActionDynamicSqlSupport.resourceAction)
                 .where(ResourceActionDynamicSqlSupport.resourceId, isEqualTo(categoryId))

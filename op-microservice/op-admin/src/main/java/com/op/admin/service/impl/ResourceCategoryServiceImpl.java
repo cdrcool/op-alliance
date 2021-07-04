@@ -70,6 +70,12 @@ public class ResourceCategoryServiceImpl implements ResourceCategoryService {
         resourceService.deleteByCategoryId(id);
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void deleteByIds(List<Integer> ids) {
+        ids.forEach(this::deleteById);
+    }
+
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public ResourceCategoryVO findById(Integer id) {

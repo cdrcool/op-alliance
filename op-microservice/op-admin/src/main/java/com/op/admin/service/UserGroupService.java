@@ -33,6 +33,13 @@ public interface UserGroupService {
     void deleteById(Integer id);
 
     /**
+     * 批量删除用户组
+     *
+     * @param ids 用户组 ids
+     */
+    void deleteByIds(List<Integer> ids);
+
+    /**
      * 查找用户组
      *
      * @param id 用户组 id

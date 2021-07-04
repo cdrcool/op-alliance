@@ -45,6 +45,12 @@ public class UserGroupController {
         userGroupService.deleteById(id);
     }
 
+    @ApiOperation("批量删除用户组")
+    @PostMapping("batchDelete")
+    public void batchDelete(@RequestBody List<Integer> ids) {
+        userGroupService.deleteByIds(ids);
+    }
+
     @ApiOperation("查看用户组详情")
     @GetMapping("get")
     public UserGroupVO get(@RequestParam Integer id) {

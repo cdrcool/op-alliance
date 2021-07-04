@@ -46,6 +46,12 @@ public class RoleController {
         roleService.deleteById(id);
     }
 
+    @ApiOperation("批量删除角色")
+    @PostMapping("batchDelete")
+    public void batchDelete(@RequestBody List<Integer> ids) {
+        roleService.deleteByIds(ids);
+    }
+
     @ApiOperation("查看角色详情")
     @GetMapping("get")
     public RoleVO get(@RequestParam Integer id) {
