@@ -23,9 +23,10 @@ request.interceptors.response.use(
         const {code, message: msg, data} = response.data;
         if (code !== 200) {
             message.error(msg, 1);
+            return Promise.reject(code);
         }
 
-        return {...data};
+        return Promise.resolve({...data});
     },
     error => {
         const status = error.response.status;

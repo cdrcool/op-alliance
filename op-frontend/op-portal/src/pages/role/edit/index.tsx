@@ -21,13 +21,16 @@ const RoleEditPage = () => {
                 setLoading(false);
             }
 
-            fetchData().then(() => {});
+            fetchData().then(() => {
+            });
         }
     }, []);
 
 
     const onFinish = (role: Role) => {
-        saveRole(role).then(() => history.push('/management/role'));
+        saveRole(role).then(() => {
+            history.push('/management/role');
+        });
     };
 
     const onFinishFailed = (errorInfo: any) => {
@@ -58,7 +61,8 @@ const RoleEditPage = () => {
                         <Form.Item label="角色描述" name="roleDesc">
                             <TextArea/>
                         </Form.Item>
-                        <Form.Item label="是否启用" name="status" initialValue={0} rules={[{required: true, message: '请勾选是否启用'}]}>
+                        <Form.Item label="是否启用" name="status" initialValue={0}
+                                   rules={[{required: true, message: '请勾选是否启用'}]}>
                             <Radio.Group>
                                 <Radio value={1}>是</Radio>
                                 <Radio value={0}>否</Radio>
