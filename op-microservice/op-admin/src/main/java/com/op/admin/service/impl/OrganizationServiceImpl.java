@@ -11,9 +11,8 @@ import com.op.admin.mapper.*;
 import com.op.admin.mapper.extend.OrganizationMapperExtend;
 import com.op.admin.mapping.OrganizationMapping;
 import com.op.admin.utils.TreeUtils;
-import com.op.admin.server.vo.*;
-import com.op.admin.service.*;
 import com.op.admin.vo.*;
+import com.op.admin.service.*;
 import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.apache.commons.collections4.CollectionUtils;
@@ -181,10 +180,17 @@ public class OrganizationServiceImpl implements OrganizationService {
         organizationMenuRelationMapper.delete(organizationMenuRelationProvider);
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void deleteByIds(List<Integer> ids) {
+        ids.forEach(this::deleteById);
+    }
+
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public OrganizationVO findById(Integer id) {
-        Organization organization = organizationMapper.selectByPrimaryKey(id).orElse(new Organization());
+        Organization organization = organizationMapper.selectByPrimaryKey(id)
+                .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的组织"));
         return organizationMapping.toOrganizationVO(organization);
     }
 
@@ -217,8 +223,10 @@ public class OrganizationServiceImpl implements OrganizationService {
     public List<OrganizationVO> queryList(OrganizationListQueryDTO queryDTO) {
         SelectStatementProvider selectStatementProvider = select(OrganizationMapper.selectList)
                 .from(OrganizationDynamicSqlSupport.organization)
-                .where(OrganizationDynamicSqlSupport.orgName, isLikeWhenPresent(queryDTO.getSearchText()),
-                        or(OrganizationDynamicSqlSupport.orgCode, isLikeWhenPresent(queryDTO.getSearchText())))
+                .where(OrganizationDynamicSqlSupport.orgName, isLike(queryDTO.getSearchText())
+                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"),
+                        or(OrganizationDynamicSqlSupport.orgCode, isLike(queryDTO.getSearchText())
+                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")))
                 .and(OrganizationDynamicSqlSupport.pid, isEqualToWhenPresent(queryDTO.getPid()))
                 .build().render(RenderingStrategies.MYBATIS3);
         List<Organization> organizations = organizationMapper.selectMany(selectStatementProvider);

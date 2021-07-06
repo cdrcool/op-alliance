@@ -32,6 +32,13 @@ public interface ResourceService {
     void deleteById(Integer id);
 
     /**
+     * 批量删除资源
+     *
+     * @param ids 资源 id
+     */
+    void deleteByIds(List<Integer> ids);
+
+    /**
      * 删除资源分类下所有的资源
      *
      * @param categoryId 资源分类 id

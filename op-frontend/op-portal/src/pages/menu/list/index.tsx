@@ -1,20 +1,15 @@
-import React, {FC, useState} from "react";
-import {Alert, Button, Card, Col, Divider, Form, Input, Row, Select, Space, Table, Tag} from "antd";
-import {DownOutlined, ExportOutlined, MinusOutlined, PlusOutlined, SearchOutlined, UpOutlined} from "@ant-design/icons";
+import React, {FC} from "react";
+import {Alert, Button, Card, Input, Space, Table} from "antd";
+import {ExportOutlined, MinusOutlined, PlusOutlined, SearchOutlined} from "@ant-design/icons";
 
-const {Option} = Select;
-
-const MenuPage: FC = () => {
-    const [expand, setExpand] = useState<boolean>(false);
-
-    const [form] = Form.useForm();
+const MenuListPage: FC = () => {
 
     const columns = [
-        {
-            title: '编号',
-            dataIndex: 'menuNo',
-            key: 'menuNo',
-        },
+        /* {
+             title: '编号',
+             dataIndex: 'menuNo',
+             key: 'menuNo',
+         },*/
         {
             title: '菜单名称',
             dataIndex: 'menuName',
@@ -208,15 +203,16 @@ const MenuPage: FC = () => {
 
     return (
         <>
-            <Card size="small" bordered={false} className="card">
-                <div style={{float: 'right', marginBottom: 6}}>
+            <Card size="small" className="card">
+                <div style={{float: 'right', marginBottom: 4}}>
                     <Space>
-                        <Input placeholder="输入菜单名称、菜单编码或菜单路由查询" suffix={<SearchOutlined/>} allowClear={true} style={{width: 400}}/>
+                        <Input placeholder="输入菜单名称、菜单编码或菜单路由查询" suffix={<SearchOutlined/>} allowClear={true}
+                               style={{width: 400}}/>
                     </Space>
                 </div>
             </Card>
 
-            <Card size="small" bordered={false} className="card">
+            <Card className="card">
                 <div>
                     <Space style={{float: 'right'}}>
                         <Button key="add" type="primary" icon={<PlusOutlined/>}>
@@ -242,9 +238,6 @@ const MenuPage: FC = () => {
                     columns={columns}
                     dataSource={dataSource}
                     pagination={false}
-                    expandable={{
-                        defaultExpandAllRows: true,
-                    }}
                     rowKey="id"
                     rowSelection={{
                         type: "checkbox",
@@ -258,4 +251,4 @@ const MenuPage: FC = () => {
     )
 };
 
-export default MenuPage;
+export default MenuListPage;

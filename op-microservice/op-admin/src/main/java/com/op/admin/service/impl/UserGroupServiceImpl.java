@@ -20,6 +20,7 @@ import com.op.admin.vo.UserGroupVO;
 import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
@@ -138,10 +139,17 @@ public class UserGroupServiceImpl implements UserGroupService {
         userGroupMenuRelationMapper.delete(userGroupMenuRelationProvider);
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void deleteByIds(List<Integer> ids) {
+        ids.forEach(this::deleteById);
+    }
+
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public UserGroupVO findById(Integer id) {
-        UserGroup userGroup = userGroupMapper.selectByPrimaryKey(id).orElse(new UserGroup());
+        UserGroup userGroup = userGroupMapper.selectByPrimaryKey(id)
+                .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的用户组"));
         return userGroupMapping.toUserGroupVO(userGroup);
     }
 
@@ -159,9 +167,9 @@ public class UserGroupServiceImpl implements UserGroupService {
 
         SelectStatementProvider selectStatementProvider = select(UserGroupMapper.selectList)
                 .from(UserGroupDynamicSqlSupport.userGroup)
-                .where(UserGroupDynamicSqlSupport.groupName, isLikeWhenPresent(queryDTO.getSearchText()))
+                .where(UserGroupDynamicSqlSupport.groupName, isLike(queryDTO.getSearchText())
+                        .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"))
                 .orderBy(specifications)
-                .limit(pageable.getPageSize()).offset(pageable.getOffset())
                 .build().render(RenderingStrategies.MYBATIS3);
 
         com.github.pagehelper.Page<UserGroupVO> result = PageHelper

@@ -1,9 +1,6 @@
 package com.op.admin.controller;
 
-import com.op.admin.dto.MenuAssignDTO;
-import com.op.admin.dto.ResourceAssignDTO;
-import com.op.admin.dto.RolePageQueryDTO;
-import com.op.admin.dto.RoleSaveDTO;
+import com.op.admin.dto.*;
 import com.op.admin.service.RoleService;
 import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.ResourceCategoryAssignVO;
@@ -46,6 +43,12 @@ public class RoleController {
         roleService.deleteById(id);
     }
 
+    @ApiOperation("批量删除角色")
+    @PostMapping("batchDelete")
+    public void batchDelete(@RequestBody List<Integer> ids) {
+        roleService.deleteByIds(ids);
+    }
+
     @ApiOperation("查看角色详情")
     @GetMapping("get")
     public RoleVO get(@RequestParam Integer id) {
@@ -54,15 +57,15 @@ public class RoleController {
 
     @ApiOperation("分页查询角色")
     @PostMapping("page")
-    public Page<RoleVO> queryPage(@PageableDefault(sort = "roleNo", direction = Sort.Direction.ASC) Pageable pageable,
+    public Page<RoleVO> queryPage(@PageableDefault(sort = "role_no", direction = Sort.Direction.ASC) Pageable pageable,
                                   @Valid @RequestBody RolePageQueryDTO queryDTO) {
         return roleService.queryPage(pageable, queryDTO);
     }
 
     @ApiOperation("启用/禁用角色")
     @PostMapping("changeEnabled")
-    public void changeEnabled(@RequestParam Integer id, @RequestParam boolean enable) {
-        roleService.changeEnabled(id, enable);
+    public void changeEnabled(@Valid @RequestBody RoleChangeEnabledDTO changeEnabledDTO) {
+        roleService.changeEnabled(changeEnabledDTO.getIds(), changeEnabledDTO.getEnable());
     }
 
     @ApiOperation("分配资源动作")

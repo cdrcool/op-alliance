@@ -3,7 +3,7 @@ server:
 
 spring:
   profiles:
-    active: dev
+    active: local
 
 management:
   endpoints:
@@ -23,3 +23,9 @@ mybatis:
   configuration:
     database-id: mysql
     map-underscore-to-camel-case: true
+
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql

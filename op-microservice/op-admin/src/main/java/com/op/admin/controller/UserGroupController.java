@@ -1,7 +1,7 @@
 package com.op.admin.controller;
 
 import com.op.admin.dto.*;
-import com.op.admin.server.dto.*;
+import com.op.admin.dto.*;
 import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.RoleAssignVO;
@@ -45,6 +45,12 @@ public class UserGroupController {
         userGroupService.deleteById(id);
     }
 
+    @ApiOperation("批量删除用户组")
+    @PostMapping("batchDelete")
+    public void batchDelete(@RequestBody List<Integer> ids) {
+        userGroupService.deleteByIds(ids);
+    }
+
     @ApiOperation("查看用户组详情")
     @GetMapping("get")
     public UserGroupVO get(@RequestParam Integer id) {
@@ -53,7 +59,7 @@ public class UserGroupController {
 
     @ApiOperation("分页查询用户组")
     @PostMapping("page")
-    public Page<UserGroupVO> queryPage(@PageableDefault(sort = "groupNo", direction = Sort.Direction.ASC) Pageable pageable,
+    public Page<UserGroupVO> queryPage(@PageableDefault(sort = "group_no", direction = Sort.Direction.ASC) Pageable pageable,
                                        @Valid @RequestBody UserGroupPageQueryDTO queryDTO) {
         return userGroupService.queryPage(pageable, queryDTO);
     }

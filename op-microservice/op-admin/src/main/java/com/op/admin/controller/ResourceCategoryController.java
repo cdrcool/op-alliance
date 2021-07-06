@@ -13,6 +13,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 资源分类 Controller
@@ -41,6 +42,12 @@ public class ResourceCategoryController {
         resourceCategoryService.deleteById(id);
     }
 
+    @ApiOperation("批量删除资源分类")
+    @PostMapping("batchDelete")
+    public void batchDelete(@RequestBody List<Integer> ids) {
+        resourceCategoryService.deleteByIds(ids);
+    }
+
     @ApiOperation("查看资源分类详情")
     @GetMapping("get")
     public ResourceCategoryVO get(@RequestParam Integer id) {
@@ -49,7 +56,7 @@ public class ResourceCategoryController {
 
     @ApiOperation("分页查询资源分类")
     @PostMapping("page")
-    public Page<ResourceCategoryVO> queryPage(@PageableDefault(sort = "categoryNo", direction = Sort.Direction.ASC) Pageable pageable,
+    public Page<ResourceCategoryVO> queryPage(@PageableDefault(sort = "category_no", direction = Sort.Direction.ASC) Pageable pageable,
                                               @Valid @RequestBody ResourceCategoryPageQueryDTO queryDTO) {
         return resourceCategoryService.queryPage(pageable, queryDTO);
     }

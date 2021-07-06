@@ -12,6 +12,7 @@ import com.op.admin.vo.OauthClientDetailsVO;
 import com.op.admin.service.OauthClientDetailsService;
 import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
+import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SimpleSortSpecification;
@@ -21,6 +22,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
@@ -60,10 +63,17 @@ public class OauthClientDetailsServiceImpl implements OauthClientDetailsService 
         oauthClientDetailsMapper.deleteByPrimaryKey(id);
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void deleteByIds(List<Integer> ids) {
+        ids.forEach(this::deleteById);
+    }
+
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public OauthClientDetailsVO findById(Integer id) {
-        OauthClientDetails resource = oauthClientDetailsMapper.selectByPrimaryKey(id).orElse(new OauthClientDetails());
+        OauthClientDetails resource = oauthClientDetailsMapper.selectByPrimaryKey(id)
+                .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的 oauth2-client"));
         return oauthClientDetailsMapping.toOauthClientDetailsVO(resource);
     }
 
@@ -93,9 +103,9 @@ public class OauthClientDetailsServiceImpl implements OauthClientDetailsService 
 
         SelectStatementProvider selectStatementProvider = select(OauthClientDetailsMapper.selectList)
                 .from(OauthClientDetailsDynamicSqlSupport.oauthClientDetails)
-                .where(OauthClientDetailsDynamicSqlSupport.clientId, isLikeWhenPresent(queryDTO.getSearchText()))
+                .where(OauthClientDetailsDynamicSqlSupport.clientId, isLike(queryDTO.getSearchText())
+                        .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"))
                 .orderBy(specifications)
-                .limit(pageable.getPageSize()).offset(pageable.getOffset())
                 .build().render(RenderingStrategies.MYBATIS3);
 
         com.github.pagehelper.Page<OauthClientDetailsVO> result = PageHelper

@@ -31,5 +31,5 @@ public class ResourceActionSaveDTO {
     private Integer actionNo;
 
     @ApiModelProperty("权限名")
-    private String permissionName;
+    private String permission;
 }

@@ -30,6 +30,13 @@ public interface MenuService {
     void deleteById(Integer id);
 
     /**
+     * 批量删除菜单
+     *
+     * @param ids 菜单 ids
+     */
+    void deleteByIds(List<Integer> ids);
+
+    /**
      * 查找菜单
      *
      * @param id 菜单 id

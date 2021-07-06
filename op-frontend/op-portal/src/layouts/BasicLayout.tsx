@@ -1,5 +1,5 @@
 import React, {FC, useState} from 'react';
-import {renderRoutes, matchRoutes} from 'react-router-config';
+import {renderRoutes} from 'react-router-config';
 import {Link} from "react-router-dom";
 import {Affix, Avatar, Badge, Breadcrumb, Input, Layout, Menu, Popover, Tooltip} from "antd";
 import {AreaChartOutlined, BellOutlined, BookOutlined, DatabaseOutlined, DesktopOutlined, FileImageOutlined,
@@ -8,6 +8,7 @@ import Notice from "./Notice";
 
 import './BasicLayout.css';
 import avatar from '../assets/avatar.png';
+import logo from '../assets/logo.svg';
 
 const {Sider, Header, Content} = Layout;
 const {SubMenu} = Menu;
@@ -20,7 +21,7 @@ const BasicLayout: FC = (props) => {
             <Sider trigger={null} collapsible collapsed={collapsed}>
                 <div className="logo">
                     <a>
-                        <img src="../logo.svg" alt="logo"/>
+                        <img src={logo} alt="logo"/>
                         <h1 style={collapsed ? {display: "none"} : {display: "inline-block"}}>OnePiece</h1>
                     </a>
                 </div>
@@ -40,7 +41,7 @@ const BasicLayout: FC = (props) => {
                             <Link to='/management/role'>角色管理</Link>
                         </Menu.Item>
                         <Menu.Item key="resource">
-                            <Link to='/management/resource'>资源管理</Link>
+                            <Link to='/management/resourceCategory'>资源管理</Link>
                         </Menu.Item>
                         <Menu.Item key="menu">
                             <Link to='/management/menu'>菜单管理</Link>

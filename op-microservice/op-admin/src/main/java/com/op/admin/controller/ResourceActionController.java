@@ -13,6 +13,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 资源动作 Controller
@@ -41,6 +42,12 @@ public class ResourceActionController {
         resourceActionService.deleteById(id);
     }
 
+    @ApiOperation("批量删除资源动作")
+    @PostMapping("batchDelete")
+    public void batchDelete(@RequestBody List<Integer> ids) {
+        resourceActionService.deleteByIds(ids);
+    }
+
     @ApiOperation("查看资源动作详情")
     @GetMapping("get")
     public ResourceActionVO get(@RequestParam Integer id) {
@@ -49,7 +56,7 @@ public class ResourceActionController {
 
     @ApiOperation("分页查询资源动作")
     @PostMapping("page")
-    public Page<ResourceActionVO> queryPage(@PageableDefault(sort = "actionNo", direction = Sort.Direction.ASC) Pageable pageable,
+    public Page<ResourceActionVO> queryPage(@PageableDefault(sort = "action_no", direction = Sort.Direction.ASC) Pageable pageable,
                                             @Valid @RequestBody ResourceActionPageQueryDTO queryDTO) {
         return resourceActionService.queryPage(pageable, queryDTO);
     }

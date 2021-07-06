@@ -1,7 +1,7 @@
 package com.op.admin.controller;
 
 import com.op.admin.dto.*;
-import com.op.admin.server.dto.*;
+import com.op.admin.dto.*;
 import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.RoleAssignVO;
@@ -58,6 +58,12 @@ public class UserController {
         userService.deleteById(id);
     }
 
+    @ApiOperation("批量删除用户")
+    @PostMapping("batchDelete")
+    public void batchDelete(@RequestBody List<Integer> ids) {
+        userService.deleteByIds(ids);
+    }
+
     @ApiOperation("查看用户详情")
     @GetMapping("get")
     public UserVO get(@RequestParam Integer id) {
@@ -73,15 +79,15 @@ public class UserController {
 
     @ApiOperation("分页查询用户")
     @PostMapping("page")
-    public Page<UserVO> queryPage(@PageableDefault(sort = "userNo", direction = Sort.Direction.ASC) Pageable pageable,
+    public Page<UserVO> queryPage(@PageableDefault(sort = "user_no", direction = Sort.Direction.ASC) Pageable pageable,
                                   @Valid @RequestBody UserPageQueryDTO queryDTO) {
         return userService.queryPage(pageable, queryDTO);
     }
 
     @ApiOperation("启用/禁用用户")
     @PostMapping("changeEnabled")
-    public void changeEnabled(@RequestParam Integer id, @RequestParam boolean enable) {
-        userService.changeEnabled(id, enable);
+    public void changeEnabled(@Valid @RequestBody UserChangeEnabledDTO changeEnabledDTO) {
+        userService.changeEnabled(changeEnabledDTO.getIds(), changeEnabledDTO.getEnable());
     }
 
     @ApiOperation("分配角色")

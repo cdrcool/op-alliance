@@ -4,8 +4,8 @@ import com.github.pagehelper.PageHelper;
 import com.op.admin.dto.*;
 import com.op.admin.entity.*;
 import com.op.admin.mapper.*;
-import com.op.admin.server.dto.*;
-import com.op.admin.server.entity.*;
+import com.op.admin.dto.*;
+import com.op.admin.entity.*;
 import com.op.admin.mapping.UserMapping;
 import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.ResourceCategoryAssignVO;
@@ -17,6 +17,7 @@ import com.op.admin.service.*;
 import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
@@ -181,6 +182,12 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
+    public void deleteByIds(List<Integer> ids) {
+        ids.forEach(this::deleteById);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
     public void deleteByOrgIds(List<Integer> orgIds) {
         SelectStatementProvider selectStatementProvider = select(UserDynamicSqlSupport.id)
                 .from(UserDynamicSqlSupport.user)
@@ -194,7 +201,8 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public UserVO findById(Integer id) {
-        User user = userMapper.selectByPrimaryKey(id).orElse(new User());
+        User user = userMapper.selectByPrimaryKey(id)
+                .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的用户"));
         return userMapping.toUserVo(user);
     }
 
@@ -268,12 +276,15 @@ public class UserServiceImpl implements UserService {
                 .where(UserDynamicSqlSupport.orgId, isEqualToWhenPresent(queryDTO.getOrgId()))
                 .and(UserDynamicSqlSupport.gender, isEqualToWhenPresent(queryDTO.getGender()))
                 .and(UserDynamicSqlSupport.status, isInWhenPresent(queryDTO.getStatus()))
-                .and(UserDynamicSqlSupport.username, isLikeWhenPresent(queryDTO.getSearchText()),
-                        or(UserDynamicSqlSupport.nickname, isLikeWhenPresent(queryDTO.getSearchText())),
-                        or(UserDynamicSqlSupport.phone, isLikeWhenPresent(queryDTO.getSearchText())),
-                        or(UserDynamicSqlSupport.email, isLikeWhenPresent(queryDTO.getSearchText())))
+                .and(UserDynamicSqlSupport.username, isLike(queryDTO.getSearchText())
+                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"),
+                        or(UserDynamicSqlSupport.nickname, isLike(queryDTO.getSearchText())
+                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")),
+                        or(UserDynamicSqlSupport.phone, isLike(queryDTO.getSearchText())
+                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")),
+                        or(UserDynamicSqlSupport.email, isLike(queryDTO.getSearchText())
+                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")))
                 .orderBy(specifications)
-                .limit(pageable.getPageSize()).offset(pageable.getOffset())
                 .build().render(RenderingStrategies.MYBATIS3);
 
         com.github.pagehelper.Page<UserVO> result = PageHelper
@@ -285,10 +296,10 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void changeEnabled(Integer id, boolean enable) {
+    public void changeEnabled(List<Integer> ids, boolean enable) {
         UpdateStatementProvider updateStatement = SqlBuilder.update(UserDynamicSqlSupport.user)
                 .set(UserDynamicSqlSupport.status).equalTo(enable ? 1 : 0)
-                .where(UserDynamicSqlSupport.id, isEqualTo(id))
+                .where(UserDynamicSqlSupport.id, isIn(ids))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 

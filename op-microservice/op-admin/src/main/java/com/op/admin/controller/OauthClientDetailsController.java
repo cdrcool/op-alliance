@@ -15,6 +15,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * oauth2-client Controller
@@ -43,6 +44,12 @@ public class OauthClientDetailsController {
         oauthClientDetailsService.deleteById(id);
     }
 
+    @ApiOperation("批量删除 oauth2-client")
+    @PostMapping("batchDelete")
+    public void batchDelete(@RequestBody List<Integer> ids) {
+        oauthClientDetailsService.deleteByIds(ids);
+    }
+
     @ApiOperation("查看 oauth2-client 详情")
     @GetMapping("get")
     public OauthClientDetailsVO getByClientId(@RequestParam Integer id) {
@@ -58,7 +65,7 @@ public class OauthClientDetailsController {
 
     @ApiOperation("分页查询 oauth2-client")
     @PostMapping("page")
-    public Page<OauthClientDetailsVO> queryPage(@PageableDefault(sort = "createTime", direction = Sort.Direction.DESC) Pageable pageable,
+    public Page<OauthClientDetailsVO> queryPage(@PageableDefault(sort = "create_time", direction = Sort.Direction.DESC) Pageable pageable,
                                                 @Valid @RequestBody OauthClientDetailsPageQueryDTO queryDTO) {
         return oauthClientDetailsService.queryPage(pageable, queryDTO);
     }

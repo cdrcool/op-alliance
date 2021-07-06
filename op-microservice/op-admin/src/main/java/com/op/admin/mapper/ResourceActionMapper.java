@@ -38,7 +38,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 @Mapper
 public interface ResourceActionMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(id, resourceId, actionName, actionPath, actionDesc, actionNo, permissionName, version, deleted, creatorId, createTime, lastModifierId, lastModifyTime, tenantId);
+    BasicColumn[] selectList = BasicColumn.columnList(id, resourceId, actionName, actionPath, actionDesc, actionNo, permission, version, deleted, creatorId, createTime, lastModifierId, lastModifyTime, tenantId);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -67,7 +67,7 @@ public interface ResourceActionMapper {
         @Result(column="action_path", property="actionPath", jdbcType=JdbcType.VARCHAR),
         @Result(column="action_desc", property="actionDesc", jdbcType=JdbcType.VARCHAR),
         @Result(column="action_no", property="actionNo", jdbcType=JdbcType.INTEGER),
-        @Result(column="permission_name", property="permissionName", jdbcType=JdbcType.VARCHAR),
+        @Result(column="permission", property="permission", jdbcType=JdbcType.VARCHAR),
         @Result(column="version", property="version", jdbcType=JdbcType.INTEGER),
         @Result(column="deleted", property="deleted", jdbcType=JdbcType.BIT),
         @Result(column="creator_id", property="creatorId", jdbcType=JdbcType.INTEGER),
@@ -107,7 +107,7 @@ public interface ResourceActionMapper {
             .map(actionPath).toProperty("actionPath")
             .map(actionDesc).toProperty("actionDesc")
             .map(actionNo).toProperty("actionNo")
-            .map(permissionName).toProperty("permissionName")
+            .map(permission).toProperty("permission")
             .map(version).toProperty("version")
             .map(deleted).toProperty("deleted")
             .map(creatorId).toProperty("creatorId")
@@ -126,7 +126,7 @@ public interface ResourceActionMapper {
             .map(actionPath).toPropertyWhenPresent("actionPath", record::getActionPath)
             .map(actionDesc).toPropertyWhenPresent("actionDesc", record::getActionDesc)
             .map(actionNo).toPropertyWhenPresent("actionNo", record::getActionNo)
-            .map(permissionName).toPropertyWhenPresent("permissionName", record::getPermissionName)
+            .map(permission).toPropertyWhenPresent("permission", record::getPermission)
             .map(version).toPropertyWhenPresent("version", record::getVersion)
             .map(deleted).toPropertyWhenPresent("deleted", record::getDeleted)
             .map(creatorId).toPropertyWhenPresent("creatorId", record::getCreatorId)
@@ -171,7 +171,7 @@ public interface ResourceActionMapper {
                 .set(actionPath).equalTo(record::getActionPath)
                 .set(actionDesc).equalTo(record::getActionDesc)
                 .set(actionNo).equalTo(record::getActionNo)
-                .set(permissionName).equalTo(record::getPermissionName)
+                .set(permission).equalTo(record::getPermission)
                 .set(version).equalTo(record::getVersion)
                 .set(deleted).equalTo(record::getDeleted)
                 .set(creatorId).equalTo(record::getCreatorId)
@@ -188,7 +188,7 @@ public interface ResourceActionMapper {
                 .set(actionPath).equalToWhenPresent(record::getActionPath)
                 .set(actionDesc).equalToWhenPresent(record::getActionDesc)
                 .set(actionNo).equalToWhenPresent(record::getActionNo)
-                .set(permissionName).equalToWhenPresent(record::getPermissionName)
+                .set(permission).equalToWhenPresent(record::getPermission)
                 .set(version).equalToWhenPresent(record::getVersion)
                 .set(deleted).equalToWhenPresent(record::getDeleted)
                 .set(creatorId).equalToWhenPresent(record::getCreatorId)
@@ -206,7 +206,7 @@ public interface ResourceActionMapper {
             .set(actionPath).equalTo(record::getActionPath)
             .set(actionDesc).equalTo(record::getActionDesc)
             .set(actionNo).equalTo(record::getActionNo)
-            .set(permissionName).equalTo(record::getPermissionName)
+            .set(permission).equalTo(record::getPermission)
             .set(version).equalTo(record::getVersion)
             .set(deleted).equalTo(record::getDeleted)
             .set(creatorId).equalTo(record::getCreatorId)
@@ -226,7 +226,7 @@ public interface ResourceActionMapper {
             .set(actionPath).equalToWhenPresent(record::getActionPath)
             .set(actionDesc).equalToWhenPresent(record::getActionDesc)
             .set(actionNo).equalToWhenPresent(record::getActionNo)
-            .set(permissionName).equalToWhenPresent(record::getPermissionName)
+            .set(permission).equalToWhenPresent(record::getPermission)
             .set(version).equalToWhenPresent(record::getVersion)
             .set(deleted).equalToWhenPresent(record::getDeleted)
             .set(creatorId).equalToWhenPresent(record::getCreatorId)

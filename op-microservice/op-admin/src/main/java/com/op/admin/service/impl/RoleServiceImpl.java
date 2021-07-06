@@ -18,6 +18,7 @@ import com.op.admin.service.MenuService;
 import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
@@ -136,10 +137,17 @@ public class RoleServiceImpl implements RoleService {
         roleMenuRelationMapper.delete(roleMenuRelationProvider);
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void deleteByIds(List<Integer> ids) {
+        ids.forEach(this::deleteById);
+    }
+
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public RoleVO findById(Integer id) {
-        Role role = roleMapper.selectByPrimaryKey(id).orElse(new Role());
+        Role role = roleMapper.selectByPrimaryKey(id)
+                .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的角色"));
         return roleMapping.toRoleVO(role);
     }
 
@@ -157,17 +165,18 @@ public class RoleServiceImpl implements RoleService {
 
         SelectStatementProvider selectStatementProvider = select(RoleMapper.selectList)
                 .from(RoleDynamicSqlSupport.role)
-                .where(RoleDynamicSqlSupport.roleName, isLikeWhenPresent(queryDTO.getSearchText()),
-                        or(RoleDynamicSqlSupport.roleCode, isLikeWhenPresent(queryDTO.getSearchText())))
+                .where(RoleDynamicSqlSupport.roleName, isLike(queryDTO.getSearchText())
+                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"),
+                        or(RoleDynamicSqlSupport.roleCode, isLike(queryDTO.getSearchText())
+                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")))
                 .orderBy(specifications)
-                .limit(pageable.getPageSize()).offset(pageable.getOffset())
                 .build().render(RenderingStrategies.MYBATIS3);
 
-        com.github.pagehelper.Page<RoleVO> result = PageHelper
-                .startPage(pageable.getPageNumber(), pageable.getPageSize())
-                .doSelectPage(() -> roleMapping.toRoleVOList(roleMapper.selectMany(selectStatementProvider)));
+        com.github.pagehelper.Page<Role> result = PageHelper
+                .startPage(pageable.getPageNumber()  + 1, pageable.getPageSize())
+                .doSelectPage(() -> roleMapper.selectMany(selectStatementProvider));
 
-        return new PageImpl<>(result.getResult(), pageable, result.getTotal());
+        return new PageImpl<>(roleMapping.toRoleVOList(result.getResult()), pageable, result.getTotal());
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -185,10 +194,10 @@ public class RoleServiceImpl implements RoleService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void changeEnabled(Integer id, boolean enable) {
+    public void changeEnabled(List<Integer> ids, boolean enable) {
         UpdateStatementProvider updateStatement = SqlBuilder.update(RoleDynamicSqlSupport.role)
                 .set(RoleDynamicSqlSupport.status).equalTo(enable ? 1 : 0)
-                .where(RoleDynamicSqlSupport.id, isEqualTo(id))
+                .where(RoleDynamicSqlSupport.id, isIn(ids))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 

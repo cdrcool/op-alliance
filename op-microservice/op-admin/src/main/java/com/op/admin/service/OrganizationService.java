@@ -3,7 +3,7 @@ package com.op.admin.service;
 import com.op.admin.dto.OrganizationListQueryDTO;
 import com.op.admin.dto.OrganizationSaveDTO;
 import com.op.admin.dto.OrganizationTreeQueryDTO;
-import com.op.admin.server.vo.*;
+import com.op.admin.vo.*;
 import com.op.admin.vo.*;
 
 import java.util.List;
@@ -28,6 +28,13 @@ public interface OrganizationService {
      * @param id 组织 id
      */
     void deleteById(Integer id);
+
+    /**
+     * 批量删除组织
+     *
+     * @param ids 组织 ids
+     */
+    void deleteByIds(List<Integer> ids);
 
     /**
      * 查找组织

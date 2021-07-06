@@ -1,8 +1,8 @@
 package com.op.admin.controller;
 
 import com.op.admin.dto.*;
-import com.op.admin.server.dto.*;
-import com.op.admin.server.vo.*;
+import com.op.admin.dto.*;
+import com.op.admin.vo.*;
 import com.op.admin.service.OrganizationService;
 import com.op.admin.vo.*;
 import io.swagger.annotations.Api;
@@ -37,6 +37,12 @@ public class OrganizationController {
     @PostMapping("delete")
     public void delete(@RequestParam Integer id) {
         organizationService.deleteById(id);
+    }
+
+    @ApiOperation("批量删除组织")
+    @PostMapping("batchDelete")
+    public void batchDelete(@RequestBody List<Integer> ids) {
+        organizationService.deleteByIds(ids);
     }
 
     @ApiOperation("查看组织详情")

@@ -1,7 +1,7 @@
 package com.op.admin.service;
 
 import com.op.admin.dto.*;
-import com.op.admin.server.dto.*;
+import com.op.admin.dto.*;
 import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.RoleAssignVO;
@@ -48,6 +48,13 @@ public interface UserService {
     void deleteById(Integer id);
 
     /**
+     * 批量删除用户
+     *
+     * @param ids 用户 ids
+     */
+    void deleteByIds(List<Integer> ids);
+
+    /**
      * 删除组织下所有的用户
      *
      * @param orgIds 组织 ids
@@ -82,10 +89,10 @@ public interface UserService {
     /**
      * 启用/禁用用户
      *
-     * @param id     用户 id
+     * @param ids     用户 ids
      * @param enable 启用 or 禁用
      */
-    void changeEnabled(Integer id, boolean enable);
+    void changeEnabled(List<Integer> ids, boolean enable);
 
     /**
      * 分配角色

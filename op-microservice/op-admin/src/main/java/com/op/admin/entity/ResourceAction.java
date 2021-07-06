@@ -54,5 +54,5 @@ public class ResourceAction extends BaseEntity {
      * 权限名
      */
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String permissionName;
+    private String permission;
 }
