@@ -1,67 +1,145 @@
 import React, {FC} from "react";
-import {Alert, Button, Card, Input, Space, Table} from "antd";
-import {ExportOutlined, MinusOutlined, PlusOutlined, SearchOutlined} from "@ant-design/icons";
+import {Button, Card, Dropdown, Menu, Popconfirm, Space} from "antd";
+import {ExportOutlined, MinusOutlined, PlusOutlined} from "@ant-design/icons";
+
+import type {ProColumns} from '@ant-design/pro-table';
+import ProTable from '@ant-design/pro-table';
+import {queryRolePage} from "../../../services/role";
+import {User} from "../../../models/User";
+import {Menus} from "../../../models/Menus";
+
+const columns: ProColumns<User>[] = [
+    {
+        title: '菜单名称',
+        dataIndex: 'menuName',
+    },
+    {
+        title: '菜单编码',
+        dataIndex: 'menuCode',
+    },
+
+    {
+        title: '菜单路由',
+        dataIndex: 'menuRoute',
+    },
+    {
+        title: '菜单图标',
+        dataIndex: 'menuIcon',
+    },
+    {
+        title: '是否目录',
+        dataIndex: 'isDirectory',
+        valueEnum: {
+            1: {text: '是'},
+            0: {text: '否'},
+        },
+    },
+    {
+        title: '是否隐藏',
+        dataIndex: 'isHidden',
+        valueEnum: {
+            1: {text: '是'},
+            0: {text: '否'},
+        },
+    },
+    {
+        title: '权限标识',
+        dataIndex: 'orgName',
+        valueType: 'select',
+    },
+    {
+        title: '操作',
+        valueType: 'option',
+        render: (text, record, _, action) => [
+            <a key="edit" onClick={() => {
+            }}>
+                编辑
+            </a>,
+            <Popconfirm
+                title="确定要删除吗？"
+                okText="确定"
+                cancelText="取消"
+                onConfirm={() => {
+                }}
+            >
+                <a key="delete">
+                    删除
+                </a>
+            </Popconfirm>,
+            <a key="view">
+                查看
+            </a>,
+        ],
+    },
+];
 
 const MenuListPage: FC = () => {
+    return (
+        <Card size="small" className="card">
+            <ProTable<Menus>
+                rowKey="id"
+                search={false}
+                headerTitle="菜单列表"
+                options={{
+                    search: {
+                        placeholder: "输入菜单名称、菜单编码、菜单路由、权限标识查询",
+                        style: {width: 400},
+                    },
+                    fullScreen: true,
+                }}
+                columns={columns}
+                request={async ({current, pageSize}, sort, filter) => {
+                    console.log('sort: ', JSON.stringify(sort));
+                    console.log('filter: ', JSON.stringify(filter));
+                    const result = await queryRolePage(
+                        current || 0,
+                        pageSize || 10,
+                    );
+                    return {
+                        data: result.content,
+                        success: true,
+                        total: result.totalElements,
+                    };
+                }}
+                pagination={{
+                    pageSize: 10,
+                }}
+                rowSelection={{}}
+                toolBarRender={() => [
+                    <Button key="button" icon={<PlusOutlined/>} type="primary">
+                        新建
+                    </Button>,
+                    <Button key="button" icon={<ExportOutlined/>}>
+                        导出
+                    </Button>,
+                ]}
+                tableAlertOptionRender={() => {
+                    return (
+                        <Space>
+                            <Popconfirm
+                                title="确定要删除吗？"
+                                okText="确定"
+                                cancelText="取消"
+                                onConfirm={() => {
+                                }}
+                            >
+                                <Button key="batchDelete" icon={<MinusOutlined/>}>
+                                    批量删除
+                                </Button>
+                            </Popconfirm>
+                        </Space>
+                    );
+                }}
+            />
+        </Card>
+    )
+};
 
-    const columns = [
-        /* {
-             title: '编号',
-             dataIndex: 'menuNo',
-             key: 'menuNo',
-         },*/
-        {
-            title: '菜单名称',
-            dataIndex: 'menuName',
-            key: 'menuName',
-            render: (value: string) => <a>{value}</a>,
-        },
-        {
-            title: '菜单编码',
-            dataIndex: 'menuCode',
-            key: 'menuCode',
-        },
-        {
-            title: '菜单路由',
-            dataIndex: 'menuRoute',
-            key: 'menuRoute',
-        },
-        {
-            title: '菜单图标',
-            dataIndex: 'menuIcon',
-            key: 'menuIcon',
-        },
-        {
-            title: '是否目录',
-            dataIndex: 'isDirectory',
-            key: 'isDirectory',
-            render: (value: number) => value === 1 ? '是' : '否',
-        },
-        {
-            title: '是否隐藏',
-            dataIndex: 'isHidden',
-            key: 'isHidden',
-            render: (value: number) => value === 1 ? '是' : '否',
-        },
-        {
-            title: '权限标识',
-            dataIndex: 'permission',
-            key: 'permission',
-        },
-        {
-            title: '操作',
-            key: 'action',
-            render: (text: string, record: object) => (
-                <Space>
-                    <a>编辑</a>
-                    <a>删除</a>
-                </Space>
-            ),
-        },
-    ];
+export default MenuListPage;
 
-    const dataSource = [
-        {
+/**
+ * const dataSource = [
+ {
             id: 1,
             menuNo: 1,
             menuName: '工作台',
@@ -72,7 +150,7 @@ const MenuListPage: FC = () => {
             isHidden: 0,
             permission: 'workbench:view',
         },
-        {
+ {
             id: 2,
             menuNo: 2,
             menuName: '管理中心',
@@ -144,7 +222,7 @@ const MenuListPage: FC = () => {
                 },
             ],
         },
-        {
+ {
             id: 3,
             menuNo: 3,
             menuName: '统计中心',
@@ -155,7 +233,7 @@ const MenuListPage: FC = () => {
             isHidden: 1,
             permission: 'statistics:view',
         },
-        {
+ {
             id: 4,
             menuNo: 4,
             menuName: '日志中心',
@@ -166,7 +244,7 @@ const MenuListPage: FC = () => {
             isHidden: 1,
             permission: 'logging:view',
         },
-        {
+ {
             id: 5,
             menuNo: 5,
             menuName: '监控中心',
@@ -177,7 +255,7 @@ const MenuListPage: FC = () => {
             isHidden: 1,
             permission: 'monitor:view',
         },
-        {
+ {
             id: 6,
             menuNo: 6,
             menuName: '附件中心',
@@ -188,7 +266,7 @@ const MenuListPage: FC = () => {
             isHidden: 1,
             permission: 'attachment:view',
         },
-        {
+ {
             id: 7,
             menuNo: 7,
             menuName: '文档中心',
@@ -199,56 +277,5 @@ const MenuListPage: FC = () => {
             isHidden: 1,
             permission: 'document:view',
         },
-    ];
-
-    return (
-        <>
-            <Card size="small" className="card">
-                <div style={{float: 'right', marginBottom: 4}}>
-                    <Space>
-                        <Input placeholder="输入菜单名称、菜单编码或菜单路由查询" suffix={<SearchOutlined/>} allowClear={true}
-                               style={{width: 400}}/>
-                    </Space>
-                </div>
-            </Card>
-
-            <Card className="card">
-                <div>
-                    <Space style={{float: 'right'}}>
-                        <Button key="add" type="primary" icon={<PlusOutlined/>}>
-                            新增
-                        </Button>
-                        <Button key="export" icon={<ExportOutlined/>}>
-                            导出
-                        </Button>
-                    </Space>
-
-                    <Space style={{marginBottom: 6}}>
-                        <Alert message="已选择 1 项" type="info" style={{width: 400, height: 32}}
-                               action={<Button size="small" type="link">
-                                   取消选择
-                               </Button>}/>
-                        <Button key="batchDelete" icon={<MinusOutlined/>}>
-                            批量删除
-                        </Button>
-                    </Space>
-                </div>
-
-                <Table
-                    columns={columns}
-                    dataSource={dataSource}
-                    pagination={false}
-                    rowKey="id"
-                    rowSelection={{
-                        type: "checkbox",
-                        onChange: (selectedRowKeys: React.Key[], selectedRows: any[]) => {
-                            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-                        }
-                    }}
-                />
-            </Card>
-        </>
-    )
-};
-
-export default MenuListPage;
+ ]
+ */

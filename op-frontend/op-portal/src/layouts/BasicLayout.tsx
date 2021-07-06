@@ -2,8 +2,20 @@ import React, {FC, useState} from 'react';
 import {renderRoutes} from 'react-router-config';
 import {Link} from "react-router-dom";
 import {Affix, Avatar, Badge, Breadcrumb, Input, Layout, Menu, Popover, Tooltip} from "antd";
-import {AreaChartOutlined, BellOutlined, BookOutlined, DatabaseOutlined, DesktopOutlined, FileImageOutlined,
-    MenuFoldOutlined, MenuUnfoldOutlined, PictureOutlined, ReadOutlined, SearchOutlined, TeamOutlined} from "@ant-design/icons";
+import {
+    AreaChartOutlined,
+    BellOutlined,
+    BookOutlined,
+    DatabaseOutlined,
+    DesktopOutlined,
+    FileImageOutlined,
+    MenuFoldOutlined,
+    MenuUnfoldOutlined,
+    PictureOutlined,
+    ReadOutlined,
+    SearchOutlined,
+    TeamOutlined
+} from "@ant-design/icons";
 import Notice from "./Notice";
 
 import './BasicLayout.css';
@@ -19,50 +31,52 @@ const BasicLayout: FC = (props) => {
     return (
         <Layout id="root">
             <Sider trigger={null} collapsible collapsed={collapsed}>
-                <div className="logo">
-                    <a>
-                        <img src={logo} alt="logo"/>
-                        <h1 style={collapsed ? {display: "none"} : {display: "inline-block"}}>OnePiece</h1>
-                    </a>
-                </div>
+                <div className="left">
+                    <div className="logo">
+                        <a>
+                            <img src={logo} alt="logo"/>
+                            <h1 style={collapsed ? {display: "none"} : {display: "inline-block"}}>OnePiece</h1>
+                        </a>
+                    </div>
 
-                <Menu theme="dark" mode="inline" defaultSelectedKeys={['workbench']}>
-                    <Menu.Item key="workbench" icon={<DesktopOutlined/>}>
-                        <Link to='/workbench'>工作台</Link>
-                    </Menu.Item>
-                    <SubMenu key="management" icon={<TeamOutlined/>} title="管理中心">
-                        <Menu.Item key="organization">
-                            <Link to='/management/organization'>组织管理</Link>
+                    <Menu theme="dark" mode="inline" defaultSelectedKeys={['workbench']}>
+                        <Menu.Item key="workbench" icon={<DesktopOutlined/>}>
+                            <Link to='/workbench'>工作台</Link>
                         </Menu.Item>
-                        <Menu.Item key="user">
-                            <Link to='/management/user'>用户管理</Link>
+                        <SubMenu key="management" icon={<TeamOutlined/>} title="管理中心">
+                            <Menu.Item key="organization">
+                                <Link to='/management/organization'>组织管理</Link>
+                            </Menu.Item>
+                            <Menu.Item key="user">
+                                <Link to='/management/user'>用户管理</Link>
+                            </Menu.Item>
+                            <Menu.Item key="role">
+                                <Link to='/management/role'>角色管理</Link>
+                            </Menu.Item>
+                            <Menu.Item key="resource">
+                                <Link to='/management/resourceCategory'>资源管理</Link>
+                            </Menu.Item>
+                            <Menu.Item key="menu">
+                                <Link to='/management/menu'>菜单管理</Link>
+                            </Menu.Item>
+                        </SubMenu>
+                        <Menu.Item key="statistics" icon={<AreaChartOutlined/>}>
+                            <Link to='/statistics'>统计中心</Link>
                         </Menu.Item>
-                        <Menu.Item key="role">
-                            <Link to='/management/role'>角色管理</Link>
+                        <Menu.Item key="logging" icon={<DatabaseOutlined/>}>
+                            <Link to='/logging'>日志中心</Link>
                         </Menu.Item>
-                        <Menu.Item key="resource">
-                            <Link to='/management/resourceCategory'>资源管理</Link>
+                        <Menu.Item key="monitor" icon={<PictureOutlined/>}>
+                            <Link to='/monitor'>监控中心</Link>
                         </Menu.Item>
-                        <Menu.Item key="menu">
-                            <Link to='/management/menu'>菜单管理</Link>
+                        <Menu.Item key="attachment" icon={<FileImageOutlined/>}>
+                            <Link to='/attachment'>附件中心</Link>
                         </Menu.Item>
-                    </SubMenu>
-                    <Menu.Item key="statistics" icon={<AreaChartOutlined/>}>
-                        <Link to='/statistics'>统计中心</Link>
-                    </Menu.Item>
-                    <Menu.Item key="logging" icon={<DatabaseOutlined/>}>
-                        <Link to='/logging'>日志中心</Link>
-                    </Menu.Item>
-                    <Menu.Item key="monitor" icon={<PictureOutlined/>}>
-                        <Link to='/monitor'>监控中心</Link>
-                    </Menu.Item>
-                    <Menu.Item key="attachment" icon={<FileImageOutlined/>}>
-                        <Link to='/attachment'>附件中心</Link>
-                    </Menu.Item>
-                    <Menu.Item key="document" icon={<ReadOutlined/>}>
-                        <Link to='/document'>文档中心</Link>
-                    </Menu.Item>
-                </Menu>
+                        <Menu.Item key="document" icon={<ReadOutlined/>}>
+                            <Link to='/document'>文档中心</Link>
+                        </Menu.Item>
+                    </Menu>
+                </div>
             </Sider>
 
             <Layout className="main">
@@ -85,11 +99,11 @@ const BasicLayout: FC = (props) => {
                                 <Input prefix={<SearchOutlined/>} placeholder="搜索" bordered={false}/>
                             </Menu.Item>
 
-                                <Menu.Item key="notice">
-                                    <Popover trigger="click" placement="bottomRight" content={<Notice/>}>
-                                        <Badge count={12}><BellOutlined style={{fontSize: 18, border: 0}}/></Badge>
-                                    </Popover>
-                                </Menu.Item>
+                            <Menu.Item key="notice">
+                                <Popover trigger="click" placement="bottomRight" content={<Notice/>}>
+                                    <Badge count={12}><BellOutlined style={{fontSize: 18, border: 0}}/></Badge>
+                                </Popover>
+                            </Menu.Item>
 
                             <SubMenu key="avatar" icon={
                                 <>
