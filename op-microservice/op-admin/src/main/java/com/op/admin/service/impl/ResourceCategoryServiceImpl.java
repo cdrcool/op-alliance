@@ -98,9 +98,9 @@ public class ResourceCategoryServiceImpl implements ResourceCategoryService {
 
         SelectStatementProvider selectStatementProvider = select(ResourceCategoryMapper.selectList)
                 .from(ResourceCategoryDynamicSqlSupport.resourceCategory)
-                .where(ResourceCategoryDynamicSqlSupport.categoryName, isLike(queryDTO.getSearchText())
+                .where(ResourceCategoryDynamicSqlSupport.categoryName, isLike(queryDTO.getKeyword())
                                 .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"),
-                        or(ResourceCategoryDynamicSqlSupport.serverName, isLike(queryDTO.getSearchText())
+                        or(ResourceCategoryDynamicSqlSupport.serverName, isLike(queryDTO.getKeyword())
                                 .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")))
                 .orderBy(specifications)
                 .build().render(RenderingStrategies.MYBATIS3);

@@ -103,9 +103,9 @@ public class ResourceActionServiceImpl implements ResourceActionService {
 
         SelectStatementProvider selectStatementProvider = select(ResourceActionMapper.selectList)
                 .from(ResourceActionDynamicSqlSupport.resourceAction)
-                .where(ResourceActionDynamicSqlSupport.actionName, isLike(queryDTO.getSearchText())
+                .where(ResourceActionDynamicSqlSupport.actionName, isLike(queryDTO.getKeyword())
                                 .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"),
-                        or(ResourceActionDynamicSqlSupport.actionPath, isLike(queryDTO.getSearchText())
+                        or(ResourceActionDynamicSqlSupport.actionPath, isLike(queryDTO.getKeyword())
                                 .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")))
                 .orderBy(specifications)
                 .build().render(RenderingStrategies.MYBATIS3);

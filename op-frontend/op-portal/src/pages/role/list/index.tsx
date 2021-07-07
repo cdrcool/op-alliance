@@ -83,19 +83,23 @@ const RoleListPage: FC = () => {
                     fullScreen: true,
                 }}
                 columns={columns}
-                request={async ({current, pageSize}, sort, filter) => {
-                    console.log('sort: ', JSON.stringify(sort));
-                    console.log('filter: ', JSON.stringify(filter));
-                    const result = await queryRolePage(
-                        (current || 1) - 1,
-                        pageSize || 10,
-                    );
-                    return {
-                        data: result.content,
-                        success: true,
-                        total: result.totalElements,
-                    };
-                }}
+                request={
+                    async (params, sort, filter) => {
+                        const {current, pageSize, keyword} = params;
+                        const result = await queryRolePage(
+                            (current || 1) - 1,
+                            pageSize || 10,
+                            {
+                                keyword,
+                                ...filter
+                            }
+                        );
+                        return {
+                            data: result.content,
+                            success: true,
+                            total: result.totalElements,
+                        };
+                    }}
                 pagination={{
                     pageSize: 10,
                 }}

@@ -12,6 +12,6 @@ import lombok.Data;
 @ApiModel(description = "资源动作分页查询 DTO")
 @Data
 public class ResourceActionPageQueryDTO {
-    @ApiModelProperty("搜索文本（根据动作名称或动作路径查询）")
-    private String searchText;
+    @ApiModelProperty("关键字（根据动作名称或动作路径查询）")
+    private String keyword;
 }

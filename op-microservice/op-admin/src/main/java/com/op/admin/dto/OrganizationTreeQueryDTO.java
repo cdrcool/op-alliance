@@ -14,4 +14,7 @@ import lombok.Data;
 public class OrganizationTreeQueryDTO {
     @ApiModelProperty("上级组织id")
     private Integer pid;
+
+    @ApiModelProperty("关键字")
+    private String keyword;
 }

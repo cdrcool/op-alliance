@@ -167,7 +167,7 @@ public class UserGroupServiceImpl implements UserGroupService {
 
         SelectStatementProvider selectStatementProvider = select(UserGroupMapper.selectList)
                 .from(UserGroupDynamicSqlSupport.userGroup)
-                .where(UserGroupDynamicSqlSupport.groupName, isLike(queryDTO.getSearchText())
+                .where(UserGroupDynamicSqlSupport.groupName, isLike(queryDTO.getKeyword())
                         .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"))
                 .orderBy(specifications)
                 .build().render(RenderingStrategies.MYBATIS3);

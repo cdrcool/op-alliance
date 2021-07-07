@@ -9,6 +9,8 @@ import ResourceListPage from "../pages/resource/list";
 import RoleListPage from "../pages/role/list";
 import RoleEditPage from "../pages/role/edit";
 import RoleDetailPage from "../pages/role/detail";
+import UserEditPage from "../pages/user/edit";
+import UserDetailPage from "../pages/user/detail";
 
 const routes  = [
     {
@@ -26,6 +28,16 @@ const routes  = [
                 path: "/management/user",
                 exact: true,
                 component: UserListPage,
+            },
+            {
+                path: "/management/user-edit/:id?",
+                exact: true,
+                component: UserEditPage,
+            },
+            {
+                path: "/management/user-detail/:id",
+                exact: true,
+                component: UserDetailPage,
             },
             {
                 path: "/management/role",

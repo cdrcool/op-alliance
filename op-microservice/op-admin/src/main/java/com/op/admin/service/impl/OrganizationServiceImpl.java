@@ -141,7 +141,7 @@ public class OrganizationServiceImpl implements OrganizationService {
             Organization pOrg = organizationMapper.selectByPrimaryKey(pid)
                     .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + pid + "】的上级组织"));
             String orgCodeLink = pOrg.getOrgCodeLink();
-            orgCodeLink = StringUtils.isNoneBlank(orgCodeLink) ? orgCodeLink + "," + organization.getOrgCode() : organization.getOrgCode();
+            orgCodeLink = StringUtils.isNoneBlank(orgCodeLink) ? orgCodeLink + "." + organization.getOrgCode() : organization.getOrgCode();
             organization.setOrgCodeLink(orgCodeLink);
         }
     }
@@ -198,24 +198,28 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public OrganizationTreeVO queryTree(OrganizationTreeQueryDTO queryDTO) {
         Integer pid = queryDTO.getPid() == null ? -1 : queryDTO.getPid();
-        Organization organization = organizationMapper.selectByPrimaryKey(pid)
-                .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + pid + "】的上级组织"));
+        SelectStatementProvider rootSelectStatementProvider = select(OrganizationMapper.selectList)
+                .from(OrganizationDynamicSqlSupport.organization)
+                .where(OrganizationDynamicSqlSupport.pid, isEqualTo(pid))
+                .build().render(RenderingStrategies.MYBATIS3);
+        Organization organization = organizationMapper.selectOne(rootSelectStatementProvider)
+                .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到pid为【" + pid + "】的组织"));
 
         SelectStatementProvider selectStatementProvider = select(OrganizationMapper.selectList)
                 .from(OrganizationDynamicSqlSupport.organization)
-                .where(OrganizationDynamicSqlSupport.orgCodeLink, isLike(organization.getOrgCodeLink()))
+                .where(OrganizationDynamicSqlSupport.orgCodeLink, isLike(organization.getOrgCodeLink()).map(v -> v + "%"))
                 .build().render(RenderingStrategies.MYBATIS3);
         List<Organization> organizations = organizationMapper.selectMany(selectStatementProvider);
 
-        List<OrganizationTreeVO> organizationTreeVOList = TreeUtils.buildTree(
+        List<OrganizationTreeVO> treeList = TreeUtils.buildTree(
                 organizations,
                 organizationMapping::toOrganizationTreeVO,
                 OrganizationTreeVO::getPid,
                 OrganizationTreeVO::getId,
-                (menu, children) -> menu.setChildren(children.stream()
+                (parent, children) -> parent.setChildren(children.stream()
                         .sorted(Comparator.comparing(OrganizationTreeVO::getOrgCode))
                         .collect(Collectors.toList())), pid);
-        return organizationTreeVOList.get(0);
+        return treeList.get(0);
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -223,9 +227,9 @@ public class OrganizationServiceImpl implements OrganizationService {
     public List<OrganizationVO> queryList(OrganizationListQueryDTO queryDTO) {
         SelectStatementProvider selectStatementProvider = select(OrganizationMapper.selectList)
                 .from(OrganizationDynamicSqlSupport.organization)
-                .where(OrganizationDynamicSqlSupport.orgName, isLike(queryDTO.getSearchText())
+                .where(OrganizationDynamicSqlSupport.orgName, isLike(queryDTO.getKeyword())
                                 .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"),
-                        or(OrganizationDynamicSqlSupport.orgCode, isLike(queryDTO.getSearchText())
+                        or(OrganizationDynamicSqlSupport.orgCode, isLike(queryDTO.getKeyword())
                                 .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")))
                 .and(OrganizationDynamicSqlSupport.pid, isEqualToWhenPresent(queryDTO.getPid()))
                 .build().render(RenderingStrategies.MYBATIS3);

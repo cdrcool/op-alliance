@@ -43,10 +43,10 @@ export async function getRole(id: number) {
  *
  * @param page 当前页索引
  * @param size 页大小
- * @param searchText 搜索文本
+ * @param params 查询参数
  */
-export async function queryRolePage(page: number, size: number, searchText?: string): Promise<PageResult<Role>> {
-    return request.post(`/api/role/page?page=${page}&size=${size}`, {searchText});
+export async function queryRolePage(page: number, size: number, params: object): Promise<PageResult<Role>> {
+    return request.post(`/api/role/page?page=${page}&size=${size}`, params);
 }
 
 /**

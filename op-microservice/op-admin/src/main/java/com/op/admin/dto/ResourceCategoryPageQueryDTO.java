@@ -12,6 +12,6 @@ import lombok.Data;
 @ApiModel(description = "资源分类分页查询 DTO")
 @Data
 public class ResourceCategoryPageQueryDTO {
-    @ApiModelProperty("搜索文本（根据分类名称或服务名称查询）")
-    private String searchText;
+    @ApiModelProperty("关键字（根据分类名称或服务名称查询）")
+    private String keyword;
 }

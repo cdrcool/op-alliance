@@ -130,7 +130,7 @@ public class MenuServiceImpl implements MenuService {
     public List<MenuTreeVO> queryTreeList() {
         List<Menu> menus = menuMapper.select(SelectDSLCompleter.allRows());
         return TreeUtils.buildTree(menus, menuMapping::toMenuTreeVO, MenuTreeVO::getPid, MenuTreeVO::getId,
-                (menu, children) -> menu.setChildren(children.stream().sorted(Comparator.comparing(MenuTreeVO::getMenuNo)).collect(Collectors.toList())), -1);
+                (parent, children) -> parent.setChildren(children.stream().sorted(Comparator.comparing(MenuTreeVO::getMenuNo)).collect(Collectors.toList())), -1);
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -138,11 +138,11 @@ public class MenuServiceImpl implements MenuService {
     public List<MenuVO> queryList(MenuListQueryDTO queryDTO) {
         SelectStatementProvider selectStatementProvider = SqlBuilder.select(MenuMapper.selectList)
                 .from(MenuDynamicSqlSupport.menu)
-                .where(MenuDynamicSqlSupport.menuName, isLike(queryDTO.getSearchText())
+                .where(MenuDynamicSqlSupport.menuName, isLike(queryDTO.getKeyword())
                                 .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"),
-                        or(MenuDynamicSqlSupport.menuCode, isLike(queryDTO.getSearchText())
+                        or(MenuDynamicSqlSupport.menuCode, isLike(queryDTO.getKeyword())
                                 .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")),
-                        or(MenuDynamicSqlSupport.menuRoute, isLike(queryDTO.getSearchText())
+                        or(MenuDynamicSqlSupport.menuRoute, isLike(queryDTO.getKeyword())
                                 .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")))
                 .build().render(RenderingStrategies.MYBATIS3);
         List<Menu> menus = menuMapper.selectMany(selectStatementProvider);

@@ -12,6 +12,6 @@ import lombok.Data;
 @ApiModel(description = "oauth2-client 分页查询 DTO")
 @Data
 public class OauthClientDetailsPageQueryDTO {
-    @ApiModelProperty("搜索文本（根据客户端标识查询）")
-    private String searchText;
+    @ApiModelProperty("关键字（根据客户端标识查询）")
+    private String keyword;
 }

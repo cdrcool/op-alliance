@@ -1,5 +1,8 @@
 package com.op.admin.utils;
 
+import org.apache.commons.collections4.CollectionUtils;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -32,9 +35,17 @@ public class TreeUtils {
                                            Function<V, Integer> idFunction,
                                            BiConsumer<V, List<V>> childrenConsumer,
                                            Integer ancestorId) {
-        Map<Integer, List<V>> map = entities.stream().map(voFunction).collect(Collectors.groupingBy(pidFunction));
-        List<V> roots = map.get(ancestorId);
-        roots.forEach(item -> childrenConsumer.accept(item, map.get(idFunction.apply(item))));
-        return roots;
+        List<V> voList =  entities.stream().map(voFunction).collect(Collectors.toList());
+        Map<Integer, V> idMap = voList.stream().collect(Collectors.toMap(idFunction, o -> o));
+        Map<Integer, List<V>> pidMap = voList.stream().collect(Collectors.groupingBy(pidFunction));
+
+        pidMap.forEach((k, v) -> {
+            V parent = idMap.get(k);
+            if (parent != null) {
+                childrenConsumer.accept(parent, v);
+            }
+        });
+
+        return pidMap.get(ancestorId);
     }
 }

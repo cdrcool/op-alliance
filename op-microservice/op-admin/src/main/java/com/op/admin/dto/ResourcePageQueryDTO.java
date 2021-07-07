@@ -12,6 +12,6 @@ import lombok.Data;
 @ApiModel(description = "资源分页查询 DTO")
 @Data
 public class ResourcePageQueryDTO {
-    @ApiModelProperty("搜索文本（根据资源名称或资源路径查询）")
-    private String searchText;
+    @ApiModelProperty("关键字（根据资源名称或资源路径查询）")
+    private String keyword;
 }

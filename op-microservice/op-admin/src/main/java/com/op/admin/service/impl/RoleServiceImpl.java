@@ -165,9 +165,10 @@ public class RoleServiceImpl implements RoleService {
 
         SelectStatementProvider selectStatementProvider = select(RoleMapper.selectList)
                 .from(RoleDynamicSqlSupport.role)
-                .where(RoleDynamicSqlSupport.roleName, isLike(queryDTO.getSearchText())
+                .where(RoleDynamicSqlSupport.status, isInWhenPresent(queryDTO.getStatus()))
+                .and(RoleDynamicSqlSupport.roleName, isLike(queryDTO.getKeyword())
                                 .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"),
-                        or(RoleDynamicSqlSupport.roleCode, isLike(queryDTO.getSearchText())
+                        or(RoleDynamicSqlSupport.roleCode, isLike(queryDTO.getKeyword())
                                 .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")))
                 .orderBy(specifications)
                 .build().render(RenderingStrategies.MYBATIS3);

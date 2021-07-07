@@ -15,6 +15,6 @@ public class OrganizationListQueryDTO {
     @ApiModelProperty("上级组织id")
     private Integer pid;
 
-    @ApiModelProperty("搜索文本（根据组织名称或组织编码查询）")
-    private String searchText;
+    @ApiModelProperty("关键字（根据组织名称或组织编码查询）")
+    private String keyword;
 }

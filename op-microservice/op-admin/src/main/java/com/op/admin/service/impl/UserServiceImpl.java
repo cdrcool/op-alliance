@@ -4,8 +4,6 @@ import com.github.pagehelper.PageHelper;
 import com.op.admin.dto.*;
 import com.op.admin.entity.*;
 import com.op.admin.mapper.*;
-import com.op.admin.dto.*;
-import com.op.admin.entity.*;
 import com.op.admin.mapping.UserMapping;
 import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.ResourceCategoryAssignVO;
@@ -276,13 +274,13 @@ public class UserServiceImpl implements UserService {
                 .where(UserDynamicSqlSupport.orgId, isEqualToWhenPresent(queryDTO.getOrgId()))
                 .and(UserDynamicSqlSupport.gender, isEqualToWhenPresent(queryDTO.getGender()))
                 .and(UserDynamicSqlSupport.status, isInWhenPresent(queryDTO.getStatus()))
-                .and(UserDynamicSqlSupport.username, isLike(queryDTO.getSearchText())
+                .and(UserDynamicSqlSupport.username, isLike(queryDTO.getKeyword())
                                 .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"),
-                        or(UserDynamicSqlSupport.nickname, isLike(queryDTO.getSearchText())
+                        or(UserDynamicSqlSupport.nickname, isLike(queryDTO.getKeyword())
                                 .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")),
-                        or(UserDynamicSqlSupport.phone, isLike(queryDTO.getSearchText())
+                        or(UserDynamicSqlSupport.phone, isLike(queryDTO.getKeyword())
                                 .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")),
-                        or(UserDynamicSqlSupport.email, isLike(queryDTO.getSearchText())
+                        or(UserDynamicSqlSupport.email, isLike(queryDTO.getKeyword())
                                 .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")))
                 .orderBy(specifications)
                 .build().render(RenderingStrategies.MYBATIS3);

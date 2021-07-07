@@ -1,168 +1,217 @@
-import React, {FC} from "react";
+import React, {useRef} from 'react';
+import ProCard from '@ant-design/pro-card';
 import {Button, Card, Dropdown, Menu, Popconfirm, Space} from "antd";
 import {ExportOutlined, MinusOutlined, PlusOutlined} from "@ant-design/icons";
-
-import type {ProColumns} from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
-import {queryRolePage} from "../../../services/role";
+import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
+import {useHistory} from "react-router-dom";
 import {User} from "../../../models/User";
+import {queryOrganizationTree} from "../../../services/organization";
+import {Organization} from "../../../models/Organization";
+import {changeUsersEnabled, queryUserPage} from "../../../services/user";
 
-const columns: ProColumns<User>[] = [
-    {
-        title: '角色名',
-        dataIndex: 'username',
-        search: false,
-    },
-    {
-        title: '昵称',
-        dataIndex: 'nickname',
-        search: false,
-    },
+export default () => {
+    const history = useHistory();
+    const ref = useRef<ActionType>();
 
-    {
-        title: '手机号',
-        dataIndex: 'phone',
-        search: false,
-    },
-    {
-        title: '邮箱',
-        dataIndex: 'email',
-        search: false,
-    },
-    {
-        title: '性别',
-        dataIndex: 'gender',
-        valueEnum: {
-            1: {text: '男'},
-            2: {text: '女'},
+    const orgColumns: ProColumns<User>[] = [
+        {
+            title: '组织名称',
+            dataIndex: 'orgName',
         },
-        filters: true,
-        onFilter: true,
-        search: false,
-    },
-    {
-        title: '出生日期',
-        dataIndex: 'birthday',
-        valueType: 'date',
-        search: false,
-    },
-    {
-        title: '帐号状态',
-        dataIndex: 'status',
-        valueEnum: {
-            0: {text: '禁用', status: 'Error'},
-            1: {text: '启用', status: 'Success'},
-            2: {text: '过期', status: 'Success'},
-            3: {text: '锁定', status: 'Success'},
-            4: {text: '密码过期', status: 'Success'},
-        },
-        filters: true,
-        onFilter: true,
-        search: false,
-    },
-    {
-        title: '组织',
-        dataIndex: 'orgName',
-        valueType: 'select',
-    },
-    {
-        title: '操作',
-        valueType: 'option',
-        render: (text, record, _, action) => [
-            <a key="edit" onClick={() => {
-            }}>
-                编辑
-            </a>,
-            <Popconfirm
-                title="确定要删除吗？"
-                okText="确定"
-                cancelText="取消"
-                onConfirm={() => {
-                }}
-            >
-                <a key="delete">
-                    删除
-                </a>
-            </Popconfirm>,
-            <a key="enable">
-                启用
-            </a>,
-            <a key="view">
-                查看
-            </a>,
-        ],
-    },
-];
+    ];
 
-const UserListPage: FC = () => {
+    const onDeleteUsers = (ids: number[]) => {
+        // @ts-ignore
+        deleteUsers(ids).then(() => ref.current.reloadAndRest());
+    }
+
+    const onChangeRolesEnabled = (ids: number[], enable: boolean) => {
+        // @ts-ignore
+        changeUsersEnabled(ids, enable).then(() => ref.current.reload());
+    }
+
+    const userColumns: ProColumns<User>[] = [
+        {
+            title: '用户名',
+            dataIndex: 'username',
+        },
+        {
+            title: '昵称',
+            dataIndex: 'nickname',
+        },
+        {
+            title: '手机号',
+            dataIndex: 'phone',
+        },
+        {
+            title: '邮箱',
+            dataIndex: 'email',
+        },
+        {
+            title: '性别',
+            dataIndex: 'gender',
+            valueEnum: {
+                1: {text: '男'},
+                2: {text: '女'},
+            },
+            filters: true,
+            onFilter: true,
+        },
+        {
+            title: '出生日期',
+            dataIndex: 'birthday',
+        },
+        {
+            title: '帐号状态',
+            dataIndex: 'status',
+            valueEnum: {
+                0: {text: '禁用', status: 'Error'},
+                1: {text: '启用', status: 'Success'},
+                2: {text: '过期', status: 'Error'},
+                3: {text: '锁定', status: 'Error'},
+                4: {text: '密码过期', status: 'Error'},
+            },
+            filters: true,
+            onFilter: true,
+        },
+        {
+            title: '操作',
+            valueType: 'option',
+            render: (text, record, _, action) => [
+                <a key="edit" onClick={() => history.push(`/management/user-edit/${record.id}`)}>
+                    编辑
+                </a>,
+                <Popconfirm
+                    title="确定要删除吗？"
+                    okText="确定"
+                    cancelText="取消"
+                    onConfirm={() => onDeleteUsers([record.id] as number[])}
+                >
+                    <a key="delete">
+                        删除
+                    </a>
+                </Popconfirm>,
+                <a key="view" onClick={() => history.push(`/management/user-detail/${record.id}`)}>
+                    查看
+                </a>,
+                <a key="enable" onClick={() => onChangeRolesEnabled([record.id] as number[], record.status === 0)}>
+                    {record.status === 1 ? '禁用' : '启用'}
+                </a>,
+            ],
+        },
+    ];
+
     return (
         <Card size="small" className="card">
-            <ProTable<User>
-                rowKey="id"
-                headerTitle="用户列表"
-                options={{
-                    search: {
-                        placeholder: "输入用户名、昵称、手机号或邮箱查询",
-                        style: {width: 400},
-                    },
-                    fullScreen: true,
-                }}
-                columns={columns}
-                request={async ({current, pageSize}, sort, filter) => {
-                    console.log('sort: ', JSON.stringify(sort));
-                    console.log('filter: ', JSON.stringify(filter));
-                    const result = await queryRolePage(
-                        current || 0,
-                        pageSize || 10,
-                    );
-                    return {
-                        data: result.content,
-                        success: true,
-                        total: result.totalElements,
-                    };
-                }}
-                pagination={{
-                    pageSize: 10,
-                }}
-                rowSelection={{}}
-                toolBarRender={() => [
-                    <Button key="button" icon={<PlusOutlined/>} type="primary">
-                        新建
-                    </Button>,
-                    <Button key="button" icon={<ExportOutlined/>}>
-                        导出
-                    </Button>,
-                ]}
-                tableAlertOptionRender={() => {
-                    return (
-                        <Space>
-                            <Popconfirm
-                                title="确定要删除吗？"
-                                okText="确定"
-                                cancelText="取消"
-                                onConfirm={() => {
-                                }}
-                            >
-                                <Button key="batchDelete" icon={<MinusOutlined/>}>
-                                    批量删除
-                                </Button>
-                            </Popconfirm>
-                            <Dropdown.Button overlay={
-                                <Menu onClick={(menuInfo) => {
-                                }}>
-                                    <Menu.Item key={1}>批量启用</Menu.Item>
-                                    <Menu.Item key={0}>批量禁用</Menu.Item>
-                                </Menu>
+            <ProCard split="vertical">
+                <ProCard title="组织机构" colSpan={6}>
+                    <ProTable<Organization>
+                        rowKey="id"
+                        search={false}
+                        options={{
+                            search: {
+                                placeholder: "输入组织名称查询",
+                                style: {width: 260},
+                            },
+                            fullScreen: false,
+                            setting: false,
+                            density: false,
+                        }}
+                        expandable={
+                            {
+                                defaultExpandedRowKeys: [1],
                             }
-                            >
-                                启用 | 禁用
-                            </Dropdown.Button>
-                        </Space>
-                    );
-                }}
-            />
+                        }
+                        columns={orgColumns}
+                        request={
+                            async (params) => {
+                                const {keyword} = params;
+                                const result = await queryOrganizationTree(
+                                    {
+                                        keyword,
+                                    }
+                                );
+                                console.log('result', JSON.stringify(result))
+                                return {
+                                    data: [result],
+                                    success: true,
+                                };
+                            }}
+                        pagination={false}
+                    />
+                </ProCard>
+                <ProCard title="用户列表">
+                    <ProTable<User>
+                        actionRef={ref}
+                        rowKey="id"
+                        search={false}
+                        options={{
+                            search: {
+                                placeholder: "输入用户名、昵称、手机号或邮箱查询",
+                                style: {width: 400},
+                            },
+                            fullScreen: true,
+                        }}
+                        columns={userColumns}
+                        request={
+                            async (params, sort, filter) => {
+                                const {current, pageSize, keyword} = params;
+                                const result = await queryUserPage(
+                                    (current || 1) - 1,
+                                    pageSize || 10,
+                                    {
+                                        keyword,
+                                        ...filter
+                                    }
+                                );
+                                return {
+                                    data: result.content,
+                                    success: true,
+                                    total: result.totalElements,
+                                };
+                            }}
+                        pagination={{
+                            pageSize: 10,
+                        }}
+                        rowSelection={{}}
+                        toolBarRender={() => [
+                            <Button key="button" type="primary" icon={<PlusOutlined/>}
+                                    onClick={() => history.push('/management/user-edit')}>
+                                新建
+                            </Button>,
+                            <Button key="button" icon={<ExportOutlined/>}>
+                                导出
+                            </Button>,
+                        ]}
+                        tableAlertOptionRender={({selectedRowKeys}) => {
+                            return (
+                                <Space>
+                                    <Popconfirm
+                                        title="确定要删除吗？"
+                                        okText="确定"
+                                        cancelText="取消"
+                                        onConfirm={() => onDeleteUsers(selectedRowKeys as number[])}
+                                    >
+                                        <Button key="batchDelete" icon={<MinusOutlined/>}>
+                                            批量删除
+                                        </Button>
+                                    </Popconfirm>
+                                    <Dropdown.Button overlay={
+                                        <Menu
+                                            onClick={(menuInfo) => onChangeRolesEnabled(selectedRowKeys as number[], parseInt(menuInfo.key) === 1)}>
+                                            <Menu.Item key={1}>批量启用</Menu.Item>
+                                            <Menu.Item key={0}>批量禁用</Menu.Item>
+                                        </Menu>
+                                    }
+                                    >
+                                        启用 | 禁用
+                                    </Dropdown.Button>
+                                </Space>
+                            );
+                        }}
+                    />
+                </ProCard>
+            </ProCard>
         </Card>
-    )
+    );
 };
-
-export default UserListPage;

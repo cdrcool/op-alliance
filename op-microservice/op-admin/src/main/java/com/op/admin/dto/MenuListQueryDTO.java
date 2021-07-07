@@ -12,6 +12,6 @@ import lombok.Data;
 @ApiModel(description = "菜单列表查询 DTO")
 @Data
 public class MenuListQueryDTO {
-    @ApiModelProperty("搜索文本（根据菜单名称、菜单编码或菜单路由查询）")
-    private String searchText;
+    @ApiModelProperty("关键字（根据菜单名称、菜单编码或菜单路由查询）")
+    private String keyword;
 }

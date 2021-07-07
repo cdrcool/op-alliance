@@ -103,7 +103,7 @@ public class OauthClientDetailsServiceImpl implements OauthClientDetailsService 
 
         SelectStatementProvider selectStatementProvider = select(OauthClientDetailsMapper.selectList)
                 .from(OauthClientDetailsDynamicSqlSupport.oauthClientDetails)
-                .where(OauthClientDetailsDynamicSqlSupport.clientId, isLike(queryDTO.getSearchText())
+                .where(OauthClientDetailsDynamicSqlSupport.clientId, isLike(queryDTO.getKeyword())
                         .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"))
                 .orderBy(specifications)
                 .build().render(RenderingStrategies.MYBATIS3);

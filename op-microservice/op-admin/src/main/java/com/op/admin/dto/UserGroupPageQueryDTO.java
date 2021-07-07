@@ -15,6 +15,6 @@ public class UserGroupPageQueryDTO {
     @ApiModelProperty("用户组名称")
     private String groupName;
 
-    @ApiModelProperty("搜索文本（根据用户组名称查询）")
-    private String searchText;
+    @ApiModelProperty("关键字（根据用户组名称查询）")
+    private String keyword;
 }
