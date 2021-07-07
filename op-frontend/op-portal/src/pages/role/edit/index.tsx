@@ -1,4 +1,4 @@
-import {Button, Form, Input, InputNumber, PageHeader, Radio, Spin} from 'antd';
+import {Button, Form, Input, InputNumber, PageHeader, Radio, Space, Spin} from 'antd';
 import {useHistory, useParams} from "react-router-dom";
 import {getRole, saveRole} from "../../../services/role";
 import {Role} from "../../../models/Role";
@@ -40,7 +40,7 @@ const RoleEditPage = () => {
     return (
         <div className="card">
             <PageHeader
-                title={`${id ? '编辑' : '新增'}角色`}
+                title={<span className="title">{`${id ? '编辑' : '新增'}角色`}</span>}
                 onBack={() => history.push('/management/role')}
             >
                 <Spin spinning={loading}>
@@ -61,7 +61,7 @@ const RoleEditPage = () => {
                         <Form.Item label="角色描述" name="roleDesc">
                             <TextArea/>
                         </Form.Item>
-                        <Form.Item label="是否启用" name="status" initialValue={0}
+                        <Form.Item label="是否启用" name="status" initialValue={1}
                                    rules={[{required: true, message: '请勾选是否启用'}]}>
                             <Radio.Group>
                                 <Radio value={1}>是</Radio>
@@ -72,9 +72,14 @@ const RoleEditPage = () => {
                             <InputNumber/>
                         </Form.Item>
                         <Form.Item wrapperCol={{offset: 8, span: 8}}>
-                            <Button type="primary" htmlType="submit">
-                                保存
-                            </Button>
+                            <Space>
+                                <Button onClick={() => history.push('/management/role')}>
+                                    取消
+                                </Button>
+                                <Button type="primary" htmlType="submit">
+                                    保存
+                                </Button>
+                            </Space>
                         </Form.Item>
                     </Form>
                 </Spin>

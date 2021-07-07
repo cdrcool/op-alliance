@@ -28,22 +28,23 @@ const RoleDetailPage = () => {
 
     return (
         <div className="card">
-            <PageHeader title="角色详情"
-                        extra={
-                            <Space>
-                                <Button onClick={() => history.push(`/management/role-edit/${id}`)}>编辑</Button>
-                                <Popconfirm
-                                    title="确定要删除吗？"
-                                    okText="确定"
-                                    cancelText="取消"
-                                    onConfirm={() => handleDelete(id)}
-                                >
-                                    <Button>删除</Button>
-                                </Popconfirm>
-                                <Button>打印</Button>
-                            </Space>
-                        }
-                        onBack={() => history.push('/management/role')}
+            <PageHeader
+                title={<span className="title">角色详情</span>}
+                extra={
+                    <Space>
+                        <Button type="primary" onClick={() => history.push(`/management/role-edit/${id}`)}>编辑</Button>
+                        <Popconfirm
+                            title="确定要删除吗？"
+                            okText="确定"
+                            cancelText="取消"
+                            onConfirm={() => handleDelete(id)}
+                        >
+                            <Button>删除</Button>
+                        </Popconfirm>
+                        <Button>打印</Button>
+                    </Space>
+                }
+                onBack={() => history.push('/management/role')}
             >
                 <Spin spinning={loading}>
                     <Descriptions>

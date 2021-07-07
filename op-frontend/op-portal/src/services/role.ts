@@ -1,5 +1,5 @@
 import {Role} from "../models/Role";
-import {Page} from "../models/Page";
+import {PageResult} from "../models/PageResult";
 import request from "../utils/request";
 
 /**
@@ -45,7 +45,7 @@ export async function getRole(id: number) {
  * @param size 页大小
  * @param searchText 搜索文本
  */
-export async function queryRolePage(page: number, size: number, searchText?: string): Promise<Page<Role>> {
+export async function queryRolePage(page: number, size: number, searchText?: string): Promise<PageResult<Role>> {
     return request.post(`/api/role/page?page=${page}&size=${size}`, {searchText});
 }
 
