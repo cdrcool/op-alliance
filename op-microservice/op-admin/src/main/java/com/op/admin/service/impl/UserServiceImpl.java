@@ -271,7 +271,7 @@ public class UserServiceImpl implements UserService {
 
         SelectStatementProvider selectStatementProvider = select(UserMapper.selectList)
                 .from(UserDynamicSqlSupport.user)
-                .where(UserDynamicSqlSupport.orgId, isEqualToWhenPresent(queryDTO.getOrgId()))
+                .where(UserDynamicSqlSupport.orgId, isIn(organizationService.getChildrenIds(queryDTO.getOrgId())))
                 .and(UserDynamicSqlSupport.gender, isEqualToWhenPresent(queryDTO.getGender()))
                 .and(UserDynamicSqlSupport.status, isInWhenPresent(queryDTO.getStatus()))
                 .and(UserDynamicSqlSupport.username, isLike(queryDTO.getKeyword())
@@ -285,11 +285,11 @@ public class UserServiceImpl implements UserService {
                 .orderBy(specifications)
                 .build().render(RenderingStrategies.MYBATIS3);
 
-        com.github.pagehelper.Page<UserVO> result = PageHelper
-                .startPage(pageable.getPageNumber(), pageable.getPageSize())
-                .doSelectPage(() -> userMapping.toUserVOList(userMapper.selectMany(selectStatementProvider)));
+        com.github.pagehelper.Page<User> result = PageHelper
+                .startPage(pageable.getPageNumber() + 1, pageable.getPageSize())
+                .doSelectPage(() -> userMapper.selectMany(selectStatementProvider));
 
-        return new PageImpl<>(result.getResult(), pageable, result.getTotal());
+        return new PageImpl<>(userMapping.toUserVOList(result.getResult()), pageable, result.getTotal());
     }
 
     @Transactional(rollbackFor = Exception.class)

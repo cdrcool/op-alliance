@@ -485,4 +485,16 @@ public class OrganizationServiceImpl implements OrganizationService {
             }
         });
     }
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public List<Integer> getParentsIds(Integer id) {
+        return organizationMapper.getParentsIds(id);
+    }
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public List<Integer> getChildrenIds(Integer id) {
+        return organizationMapper.getChildrenIds(id);
+    }
 }

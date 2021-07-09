@@ -116,11 +116,11 @@ public class ResourceServiceImpl implements ResourceService {
                 .orderBy(specifications)
                 .build().render(RenderingStrategies.MYBATIS3);
 
-        com.github.pagehelper.Page<ResourceVO> result = PageHelper
-                .startPage(pageable.getPageNumber(), pageable.getPageSize())
-                .doSelectPage(() -> resourceMapping.toResourceVOList(resourceMapper.selectMany(selectStatementProvider)));
+        com.github.pagehelper.Page<Resource> result = PageHelper
+                .startPage(pageable.getPageNumber() + 1, pageable.getPageSize())
+                .doSelectPage(() -> resourceMapper.selectMany(selectStatementProvider));
 
-        return new PageImpl<>(result.getResult(), pageable, result.getTotal());
+        return new PageImpl<>(resourceMapping.toResourceVOList(result.getResult()), pageable, result.getTotal());
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)

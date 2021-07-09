@@ -3,8 +3,10 @@ package com.op.admin.service;
 import com.op.admin.dto.OrganizationListQueryDTO;
 import com.op.admin.dto.OrganizationSaveDTO;
 import com.op.admin.dto.OrganizationTreeQueryDTO;
+import com.op.admin.entity.Organization;
 import com.op.admin.vo.*;
 import com.op.admin.vo.*;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -131,4 +133,20 @@ public interface OrganizationService {
      * @return 菜单分配 VO 列表
      */
     List<MenuAssignVO> loadMenus(Integer id);
+
+    /**
+     * 获取本上级 ids
+     *
+     * @param id 组织 id
+     * @return 本上级 ids
+     */
+    List<Integer> getParentsIds(Integer id);
+
+    /**
+     * 获取本下级 ids
+     *
+     * @param id 组织 id
+     * @return 本下级 ids
+     */
+    List<Integer> getChildrenIds(Integer id);
 }

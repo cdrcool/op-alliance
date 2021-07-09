@@ -108,10 +108,10 @@ public class OauthClientDetailsServiceImpl implements OauthClientDetailsService 
                 .orderBy(specifications)
                 .build().render(RenderingStrategies.MYBATIS3);
 
-        com.github.pagehelper.Page<OauthClientDetailsVO> result = PageHelper
-                .startPage(pageable.getPageNumber(), pageable.getPageSize())
-                .doSelectPage(() -> oauthClientDetailsMapping.toOauthClientDetailsVOList(oauthClientDetailsMapper.selectMany(selectStatementProvider)));
+        com.github.pagehelper.Page<OauthClientDetails> result = PageHelper
+                .startPage(pageable.getPageNumber() + 1, pageable.getPageSize())
+                .doSelectPage(() -> oauthClientDetailsMapper.selectMany(selectStatementProvider));
 
-        return new PageImpl<>(result.getResult(), pageable, result.getTotal());
+        return new PageImpl<>(oauthClientDetailsMapping.toOauthClientDetailsVOList(result.getResult()), pageable, result.getTotal());
     }
 }

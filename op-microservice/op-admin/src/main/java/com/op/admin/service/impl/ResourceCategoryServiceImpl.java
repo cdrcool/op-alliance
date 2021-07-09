@@ -105,11 +105,11 @@ public class ResourceCategoryServiceImpl implements ResourceCategoryService {
                 .orderBy(specifications)
                 .build().render(RenderingStrategies.MYBATIS3);
 
-        com.github.pagehelper.Page<ResourceCategoryVO> result = PageHelper
-                .startPage(pageable.getPageNumber(), pageable.getPageSize())
-                .doSelectPage(() -> resourceCategoryMapping.toResourceCategoryVOList(resourceCategoryMapper.selectMany(selectStatementProvider)));
+        com.github.pagehelper.Page<ResourceCategory> result = PageHelper
+                .startPage(pageable.getPageNumber() + 1, pageable.getPageSize())
+                .doSelectPage(() -> resourceCategoryMapper.selectMany(selectStatementProvider));
 
-        return new PageImpl<>(result.getResult(), pageable, result.getTotal());
+        return new PageImpl<>(resourceCategoryMapping.toResourceCategoryVOList(result.getResult()), pageable, result.getTotal());
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)

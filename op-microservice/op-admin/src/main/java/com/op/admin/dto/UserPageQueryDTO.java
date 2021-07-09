@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -15,6 +16,7 @@ import java.util.List;
 @Data
 public class UserPageQueryDTO {
     @ApiModelProperty("组织id")
+    @NotNull
     private Integer orgId;
 
     @ApiModelProperty(value = "性别（1-男；2-女）", allowableValues = "1, 2")

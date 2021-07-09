@@ -22,9 +22,8 @@ public interface OrganizationMapperExtend extends OrganizationMapper {
      * @param id 组织 id
      * @return 本上级 ids
      */
-    @Select(" SELECT o1.id FROM admin_organization o1" +
-            " INNER JOIN admin_organization o2 ON FIND_INSET(o1.org_code, o2.org_code_link)" +
-            " WHERE 02.id = #{id}")
+    @Select(" SELECT id FROM admin_organization\n" +
+            " WHERE (SELECT org_code_link FROM admin_organization WHERE id = #{id}) LIKE  CONCAT(org_code_link, '%')")
     List<Integer> getParentsIds(Integer id);
 
     /**
@@ -33,9 +32,8 @@ public interface OrganizationMapperExtend extends OrganizationMapper {
      * @param id 组织 id
      * @return 本下级 ids
      */
-    @Select(" SELECT o1.id FROM admin_organization o1" +
-            " INNER JOIN admin_organization o2 ON FIND_INSET(o2.org_code, o1.org_code_link)" +
-            " WHERE 02.id = #{id}")
+    @Select(" SELECT id FROM admin_organization\n" +
+            " WHERE org_code_link LIKE  CONCAT((SELECT org_code_link FROM admin_organization WHERE id = #{id}), '%')")
     List<Integer> getChildrenIds(Integer id);
 
     /**
@@ -45,6 +43,6 @@ public interface OrganizationMapperExtend extends OrganizationMapper {
      * @return 链路中所有组织
      */
     @Select(" SELECT * FROM admin_organization" +
-            " WHERE org_code_link LIKE CONCAT('%', #{orgCodeLink}, '%') OR #{orgCodeLink} LIKE CONCAT('%', org_code_link, '%') ")
+            " WHERE org_code_link LIKE CONCAT(#{orgCodeLink}, '%') OR #{orgCodeLink} LIKE CONCAT(org_code_link, '%') ")
     List<Organization> findAllInPath(String orgCodeLink);
 }
