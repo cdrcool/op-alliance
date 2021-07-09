@@ -24,6 +24,7 @@ const OrganizationTree: React.FC<OrganizationTreeProps> = (props) => {
         },
     ];
 
+    const [rowIndex, setRowIndex] = useState<number | undefined>();
     return (
         <ProTable<Organization>
             rowKey="id"
@@ -42,16 +43,19 @@ const OrganizationTree: React.FC<OrganizationTreeProps> = (props) => {
                     defaultExpandedRowKeys: [orgId],
                 }
             }
+            scroll={{ y: document.body.offsetHeight - 200 }}
             columns={orgColumns}
             pagination={false}
             onRow={
                 (record, rowIndex) => {
                     return {
                         onClick: event => {
+                            setRowIndex(rowIndex);
                             onChange(record.id as number);
                         }
                     };
                 }}
+            rowClassName={(record, index) => {return rowIndex === index ? "rowSelected" : "rowUnSelected"}}
             request={
                 async (params) => {
                     const {keyword} = params;
