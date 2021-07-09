@@ -1,8 +1,9 @@
-import {Button, Form, Input, DatePicker, PageHeader, Space, Spin} from 'antd';
+import {Button, DatePicker, Form, Input, InputNumber, PageHeader, Radio, Space, Spin} from 'antd';
 import {useHistory, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import {User} from "../../../models/User";
 import {getUser, updateUser} from "../../../services/user";
+import moment from "moment";
 
 const UserEditPage = () => {
     const history = useHistory();
@@ -15,6 +16,8 @@ const UserEditPage = () => {
         if (id) {
             const fetchData = async () => {
                 const user = await getUser(parseInt(id));
+                // @ts-ignore
+                user.birthday = moment(user.birthday, 'YYYY-MM-DD');
                 form.setFieldsValue(user);
                 setLoading(false);
             }
@@ -26,6 +29,8 @@ const UserEditPage = () => {
 
 
     const onFinish = (user: User) => {
+        // @ts-ignore
+        user.birthday = user.birthday.format('YYYY-MM-DD');
         updateUser(user).then(() => {
             history.push('/management/user');
         });
@@ -50,6 +55,7 @@ const UserEditPage = () => {
                         onFinishFailed={onFinishFailed}
                     >
                         <Form.Item name="id" hidden={true}/>
+                        <Form.Item name="orgId" hidden={true}/>
                         <Form.Item label="用户名" name="username" rules={[{required: true, message: '请输入用户名'}]}>
                             <Input/>
                         </Form.Item>
@@ -62,8 +68,24 @@ const UserEditPage = () => {
                         <Form.Item label="邮箱" name="email">
                             <Input/>
                         </Form.Item>
+                        <Form.Item label="性别" name="gender" initialValue={1}>
+                            <Radio.Group>
+                                <Radio value={1}>男</Radio>
+                                <Radio value={2}>女</Radio>
+                            </Radio.Group>
+                        </Form.Item>
                         <Form.Item label="出生日期" name="birthday">
                             <DatePicker/>
+                        </Form.Item>
+                        <Form.Item label="是否启用" name="status" initialValue={1}
+                                   rules={[{required: true, message: '请勾选是否启用'}]}>
+                            <Radio.Group>
+                                <Radio value={1}>是</Radio>
+                                <Radio value={0}>否</Radio>
+                            </Radio.Group>
+                        </Form.Item>
+                        <Form.Item label="用户编号" name="userNo">
+                            <InputNumber/>
                         </Form.Item>
                         <Form.Item wrapperCol={{offset: 8, span: 8}}>
                             <Space>

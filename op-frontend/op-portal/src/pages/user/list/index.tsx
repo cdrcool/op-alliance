@@ -9,6 +9,8 @@ import {queryOrganizationTree} from "../../../services/organization";
 import {Organization} from "../../../models/Organization";
 import {changeUsersEnabled, queryUserPage} from "../../../services/user";
 
+import './index.css';
+
 type OrganizationTreeProps = {
     orgId: number;
     onChange: (id: number) => void;
@@ -24,7 +26,7 @@ const OrganizationTree: React.FC<OrganizationTreeProps> = (props) => {
         },
     ];
 
-    const [rowIndex, setRowIndex] = useState<number | undefined>();
+    const [rowKey, setRowKey] = useState<number>(1);
     return (
         <ProTable<Organization>
             rowKey="id"
@@ -32,9 +34,10 @@ const OrganizationTree: React.FC<OrganizationTreeProps> = (props) => {
             options={{
                 search: {
                     placeholder: "输入组织名称查询",
-                    style: {width: 260},
+                    style: {width: 200},
                 },
                 fullScreen: false,
+                reload: false,
                 setting: false,
                 density: false,
             }}
@@ -50,12 +53,12 @@ const OrganizationTree: React.FC<OrganizationTreeProps> = (props) => {
                 (record, rowIndex) => {
                     return {
                         onClick: event => {
-                            setRowIndex(rowIndex);
+                            setRowKey(record.id as number);
                             onChange(record.id as number);
                         }
                     };
                 }}
-            rowClassName={(record, index) => {return rowIndex === index ? "rowSelected" : "rowUnSelected"}}
+            rowClassName={(record, index) => {return record.id === rowKey ? "rowSelected" : "rowUnSelected"}}
             request={
                 async (params) => {
                     const {keyword} = params;
@@ -247,9 +250,9 @@ const UserListPage: FC = () => {
     const [orgId, setOrgId] = useState<number>(1);
 
     return (
-        <Card size="small" className="card">
+        <Card size="small" className="card" id="user-page">
             <ProCard split="vertical">
-                <ProCard title="组织机构" colSpan={6}>
+                <ProCard title="组织机构" colSpan={6} className="left">
                     <OrganizationTree orgId={orgId} onChange={(id) => setOrgId(id)}/>
                 </ProCard>
                 <ProCard title="用户列表">

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -52,6 +53,9 @@ public class UserUpdateDTO {
     @ApiModelProperty("出生日期")
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private LocalDate birthday;
+
+    @ApiModelProperty(value = "启用状态（0-禁用；1-启用）", allowableValues = "0, 1", required = true)
+    private Integer status;
 
     @ApiModelProperty("用户编号")
     private Integer userNo;
