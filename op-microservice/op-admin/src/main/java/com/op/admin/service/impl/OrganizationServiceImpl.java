@@ -17,6 +17,7 @@ import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
@@ -26,10 +27,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -219,22 +217,19 @@ public class OrganizationServiceImpl implements OrganizationService {
 
             organizations = organizationMapper.selectMany(selectStatementProvider);
         } else {
-            SelectStatementProvider partSelectStatementProvider = select(OrganizationDynamicSqlSupport.orgCode)
+            SelectStatementProvider partSelectStatementProvider = select(OrganizationDynamicSqlSupport.orgCodeLink)
                     .from(OrganizationDynamicSqlSupport.organization)
                     .where(OrganizationDynamicSqlSupport.orgName, isLike(queryDTO.getKeyword()).map(v -> "%" + v + "%"))
                     .build().render(RenderingStrategies.MYBATIS3);
-            List<String> orgCodes = organizationMapper.selectMany(partSelectStatementProvider).stream()
-                    .map(Organization::getOrgCode).collect(Collectors.toList());
+            List<String> orgCodeLinks = organizationMapper.selectMany(partSelectStatementProvider).stream()
+                    .map(Organization::getOrgCodeLink).collect(Collectors.toList());
 
-            if (CollectionUtils.isNotEmpty(orgCodes)) {
-                QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder expressionWhereBuilder = select(OrganizationMapper.selectList)
-                        .from(OrganizationDynamicSqlSupport.organization)
-                        .where(OrganizationDynamicSqlSupport.orgCodeLink, isLike(orgCodes.get(0)).map(v -> "%" + v + "%"));
-                IntStream.range(0, orgCodes.size())
-                        .forEach(orgCode -> expressionWhereBuilder.or(OrganizationDynamicSqlSupport.orgCode, isLike(orgCode).map(v -> "%" + v + "%")));
-                SelectStatementProvider selectStatementProvider = expressionWhereBuilder.build().render(RenderingStrategies.MYBATIS3);
-
-                organizations = organizationMapper.selectMany(selectStatementProvider);
+            if (CollectionUtils.isNotEmpty(orgCodeLinks)) {
+                organizations = orgCodeLinks.stream()
+                        .map(organizationMapper::findAllInPath)
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.collectingAndThen(Collectors.toCollection(() ->
+                                new TreeSet<>(Comparator.comparing(Organization::getOrgCodeLink))), ArrayList::new));
             }
         }
 
@@ -246,7 +241,7 @@ public class OrganizationServiceImpl implements OrganizationService {
                 (parent, children) -> parent.setChildren(children.stream()
                         .sorted(Comparator.comparing(OrganizationTreeVO::getOrgCode))
                         .collect(Collectors.toList())), pid);
-        return treeList.get(0);
+        return CollectionUtils.isNotEmpty(treeList) ? treeList.get(0) : new OrganizationTreeVO();
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
