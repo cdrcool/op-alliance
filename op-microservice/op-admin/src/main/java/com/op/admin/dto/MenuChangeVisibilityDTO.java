@@ -10,18 +10,18 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
- * 用户启用/禁用 DTO
+ * 菜单显示/隐藏 DTO
  *
  * @author cdrcool
  */
-@ApiModel(description = "用户启用/禁用 DTO")
+@ApiModel(description = "菜单显示/隐藏 DTO")
 @Data
-public class UserChangeEnabledDTO {
-    @ApiModelProperty(value = "用户 ids")
+public class MenuChangeVisibilityDTO {
+    @ApiModelProperty(value = "菜单 ids")
     @NotEmpty
     private List<Integer> ids;
 
-    @ApiModelProperty(value = "是否启用（0-禁用；1-启用）", allowableValues = "0, 1")
+    @ApiModelProperty(value = "是否显示（1-显示；1-隐藏）", allowableValues = "0, 1")
     @NotNull
-    private Boolean enable;
+    private Boolean show;
 }

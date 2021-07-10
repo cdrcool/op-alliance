@@ -1,7 +1,6 @@
 package com.op.admin.service;
 
 import com.op.admin.dto.*;
-import com.op.admin.dto.*;
 import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.RoleAssignVO;
@@ -36,9 +35,9 @@ public interface UserService {
     /**
      * 更新用户
      *
-     * @param updateDTO 用户更新 dto
+     * @param saveDTO 用户保存 dto
      */
-    void update(UserUpdateDTO updateDTO);
+    void save(UserSaveDTO saveDTO);
 
     /**
      * 删除用户
@@ -111,14 +110,6 @@ public interface UserService {
     void assignResourceActions(Integer id, List<Integer> resourceActionIds);
 
     /**
-     * 分配菜单
-     *
-     * @param id      用户 id
-     * @param menuIds 菜单 ids
-     */
-    void assignMenus(Integer id, List<Integer> menuIds);
-
-    /**
      * 查找所有角色，以及用户分配情况
      *
      * @param id 用户 id
@@ -133,12 +124,4 @@ public interface UserService {
      * @return 资源分类分配 VO 列表
      */
     List<ResourceCategoryAssignVO> loadResources(Integer id);
-
-    /**
-     * 查找所有菜单，以及用户分配情况
-     *
-     * @param id 用户 id
-     * @return 菜单分配 VO 列表
-     */
-    List<MenuAssignVO> loadMenus(Integer id);
 }

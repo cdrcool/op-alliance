@@ -1,13 +1,18 @@
-import {Button, DatePicker, Form, Input, InputNumber, PageHeader, Radio, Space, Spin} from 'antd';
+import {Button, Card, DatePicker, Form, Input, InputNumber, Radio, Space, Spin} from 'antd';
 import {useHistory, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import {User} from "../../../models/User";
-import {getUser, updateUser} from "../../../services/user";
+import {getUser, saveUser} from "../../../services/user";
 import moment from "moment";
+import {PageContainer} from "@ant-design/pro-layout";
+
+const {TextArea} = Input;
 
 const UserEditPage = () => {
     const history = useHistory();
     const {id} = useParams<{ id?: string }>();
+    // @ts-ignore
+    const {orgId} = history.location.state || {};
 
     const [loading, setLoading] = useState<boolean>(!!id);
     const [form] = Form.useForm();
@@ -17,35 +22,42 @@ const UserEditPage = () => {
             const fetchData = async () => {
                 const user = await getUser(parseInt(id));
                 // @ts-ignore
-                user.birthday = moment(user.birthday, 'YYYY-MM-DD');
+                user.birthday = user.birthday && moment(user.birthday, 'YYYY-MM-DD');
                 form.setFieldsValue(user);
                 setLoading(false);
             }
 
             fetchData().then(() => {
             });
+        } else {
+            form.setFieldsValue({orgId});
         }
     }, []);
 
 
     const onFinish = (user: User) => {
         // @ts-ignore
-        user.birthday = user.birthday.format('YYYY-MM-DD');
-        updateUser(user).then(() => {
-            history.push('/management/user');
+        user.birthday = user.birthday && user.birthday.format('YYYY-MM-DD');
+        saveUser(user).then(() => {
+            history.push('/admin/user');
         });
     };
 
     const onFinishFailed = (errorInfo: any) => {
-        console.log('提交表单失败:', errorInfo);
+        console.log('保存用户失败:', errorInfo);
     };
 
     return (
-        <div className="card">
-            <PageHeader
-                title={<span className="title">{`${id ? '编辑' : '新增'}用户`}</span>}
-                onBack={() => history.push('/management/user')}
-            >
+        <PageContainer
+            className="page-container"
+            title={`${id ? '编辑' : '新增'}用户`}
+            header={{
+                breadcrumb: {},
+            }}
+            onBack={() => history.push('/admin/user')}
+
+        >
+            <Card>
                 <Spin spinning={loading}>
                     <Form
                         form={form}
@@ -77,6 +89,9 @@ const UserEditPage = () => {
                         <Form.Item label="出生日期" name="birthday">
                             <DatePicker/>
                         </Form.Item>
+                        <Form.Item label="个性签名" name="signature">
+                            <TextArea/>
+                        </Form.Item>
                         <Form.Item label="是否启用" name="status" initialValue={1}
                                    rules={[{required: true, message: '请勾选是否启用'}]}>
                             <Radio.Group>
@@ -89,7 +104,7 @@ const UserEditPage = () => {
                         </Form.Item>
                         <Form.Item wrapperCol={{offset: 8, span: 8}}>
                             <Space>
-                                <Button onClick={() => history.push('/management/user')}>
+                                <Button onClick={() => history.push('/admin/user')}>
                                     取消
                                 </Button>
                                 <Button type="primary" htmlType="submit">
@@ -99,8 +114,8 @@ const UserEditPage = () => {
                         </Form.Item>
                     </Form>
                 </Spin>
-            </PageHeader>
-        </div>
+            </Card>
+        </PageContainer>
     );
 };
 

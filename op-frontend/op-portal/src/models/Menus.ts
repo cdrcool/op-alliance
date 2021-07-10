@@ -1,10 +1,12 @@
 export interface Menus {
     id?: number;
-    username?: string;
-    nickname?: string;
-    phone?: string;
-    email?: string;
-    birthday?: string;
-    status?: number;
-    orgName?: string;
+    pid?: number;
+    menuName?: string;
+    menuIcon?: string;
+    menuPath?: string;
+    isHidden?: boolean;
+    permission?: string;
+    menuNo?: number;
+    menuLevel?: number;
+    children?: Menus[];
 }

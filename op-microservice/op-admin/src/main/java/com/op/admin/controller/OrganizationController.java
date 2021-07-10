@@ -75,12 +75,6 @@ public class OrganizationController {
         organizationService.assignResourceActions(resourceAssignDTO.getId(), resourceAssignDTO.getResourceIds());
     }
 
-    @ApiOperation("分配菜单")
-    @PostMapping("assignMenus")
-    public void assignMenus(@Valid @RequestBody MenuAssignDTO menuAssignDTO) {
-        organizationService.assignMenus(menuAssignDTO.getId(), menuAssignDTO.getMenuIds());
-    }
-
     @ApiOperation("查找所有角色，以及组织分配情况")
     @GetMapping("loadRoles")
     public List<RoleAssignVO> loadRoles(@RequestParam Integer id) {
@@ -91,11 +85,5 @@ public class OrganizationController {
     @GetMapping("loadResources")
     public List<ResourceCategoryAssignVO> loadResources(@RequestParam Integer id) {
         return organizationService.loadResources(id);
-    }
-
-    @ApiOperation("查找所有菜单，以及组织分配情况")
-    @GetMapping("loadMenus")
-    public List<MenuAssignVO> loadMenus(@RequestParam Integer id) {
-        return organizationService.loadMenus(id);
     }
 }

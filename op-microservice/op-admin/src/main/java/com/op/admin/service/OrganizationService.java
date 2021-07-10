@@ -79,14 +79,6 @@ public interface OrganizationService {
     void assignResourceActions(Integer id, List<Integer> resourceActionIds);
 
     /**
-     * 分配菜单
-     *
-     * @param id      组织 id
-     * @param menuIds 菜单 ids
-     */
-    void assignMenus(Integer id, List<Integer> menuIds);
-
-    /**
      * 获取组织所分配的角色 ids
      *
      * @param id 组织 id
@@ -103,14 +95,6 @@ public interface OrganizationService {
     List<Integer> getAssignedResourceActionIds(Integer id);
 
     /**
-     * 获取组织所分配的菜单 ids
-     *
-     * @param id 组织 id
-     * @return 菜单 ids
-     */
-    List<Integer> getAssignedMenuIds(Integer id);
-
-    /**
      * 查找所有角色，以及组织分配情况
      *
      * @param id 组织 id
@@ -125,14 +109,6 @@ public interface OrganizationService {
      * @return 资源分类分配 VO 列表
      */
     List<ResourceCategoryAssignVO> loadResources(Integer id);
-
-    /**
-     * 查找所有菜单，以及组织分配情况
-     *
-     * @param id 组织 id
-     * @return 菜单分配 VO 列表
-     */
-    List<MenuAssignVO> loadMenus(Integer id);
 
     /**
      * 获取本上级 ids

@@ -2,20 +2,18 @@ package com.op.admin.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.op.admin.dto.UserGroupPageQueryDTO;
+import com.op.admin.dto.UserGroupSaveDTO;
 import com.op.admin.entity.UserGroup;
-import com.op.admin.entity.UserGroupMenuRelation;
 import com.op.admin.entity.UserGroupResourceActionRelation;
 import com.op.admin.entity.UserGroupRoleRelation;
 import com.op.admin.mapper.*;
 import com.op.admin.mapping.UserGroupMapping;
-import com.op.admin.dto.UserGroupSaveDTO;
 import com.op.admin.service.MenuService;
 import com.op.admin.service.ResourceCategoryService;
 import com.op.admin.service.RoleService;
-import com.op.admin.vo.MenuAssignVO;
+import com.op.admin.service.UserGroupService;
 import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.RoleAssignVO;
-import com.op.admin.service.UserGroupService;
 import com.op.admin.vo.UserGroupVO;
 import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
@@ -50,7 +48,6 @@ public class UserGroupServiceImpl implements UserGroupService {
     private final UserGroupUserRelationMapper userGroupUserRelationMapper;
     private final UserGroupRoleRelationMapper userGroupRoleRelationMapper;
     private final UserGroupResourceActionRelationMapper userGroupResourceActionRelationMapper;
-    private final UserGroupMenuRelationMapper userGroupMenuRelationMapper;
     private final RoleService roleService;
     private final ResourceCategoryService resourceCategoryService;
     private final MenuService menuService;
@@ -59,7 +56,6 @@ public class UserGroupServiceImpl implements UserGroupService {
                                 UserGroupUserRelationMapper userGroupUserRelationMapper,
                                 UserGroupRoleRelationMapper userGroupRoleRelationMapper,
                                 UserGroupResourceActionRelationMapper userGroupResourceActionRelationMapper,
-                                UserGroupMenuRelationMapper userGroupMenuRelationMapper,
                                 RoleService roleService,
                                 ResourceCategoryService resourceCategoryService,
                                 MenuService menuService) {
@@ -68,7 +64,6 @@ public class UserGroupServiceImpl implements UserGroupService {
         this.userGroupUserRelationMapper = userGroupUserRelationMapper;
         this.userGroupRoleRelationMapper = userGroupRoleRelationMapper;
         this.userGroupResourceActionRelationMapper = userGroupResourceActionRelationMapper;
-        this.userGroupMenuRelationMapper = userGroupMenuRelationMapper;
         this.roleService = roleService;
         this.resourceCategoryService = resourceCategoryService;
         this.menuService = menuService;
@@ -124,19 +119,13 @@ public class UserGroupServiceImpl implements UserGroupService {
         DeleteStatementProvider userGroupRoleRelationProvider = deleteFrom(UserGroupRoleRelationDynamicSqlSupport.userGroupRoleRelation)
                 .where(UserGroupRoleRelationDynamicSqlSupport.groupId, isEqualTo(id))
                 .build().render(RenderingStrategies.MYBATIS3);
-        userGroupMenuRelationMapper.delete(userGroupRoleRelationProvider);
+        userGroupRoleRelationMapper.delete(userGroupRoleRelationProvider);
 
         // 删除用户组-资源动作关联列表
         DeleteStatementProvider userGroupResourceActionRelationProvider = deleteFrom(UserGroupResourceActionRelationDynamicSqlSupport.userGroupResourceActionRelation)
                 .where(UserGroupResourceActionRelationDynamicSqlSupport.groupId, isEqualTo(id))
                 .build().render(RenderingStrategies.MYBATIS3);
         userGroupResourceActionRelationMapper.delete(userGroupResourceActionRelationProvider);
-
-        // 删除用户组-菜单关联列表
-        DeleteStatementProvider userGroupMenuRelationProvider = deleteFrom(UserGroupMenuRelationDynamicSqlSupport.userGroupMenuRelation)
-                .where(UserGroupMenuRelationDynamicSqlSupport.groupId, isEqualTo(id))
-                .build().render(RenderingStrategies.MYBATIS3);
-        userGroupMenuRelationMapper.delete(userGroupMenuRelationProvider);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -247,41 +236,6 @@ public class UserGroupServiceImpl implements UserGroupService {
         }
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public void assignMenus(Integer id, List<Integer> menuIds) {
-        // 获取已建立关联的菜单 ids
-        List<Integer> preMenuIds = this.getAssignedMenuIds(Collections.singletonList(id));
-
-        // 获取要新建关联的菜单 ids
-        List<Integer> toAddMenuIds = menuIds.stream()
-                .filter(menuId -> !preMenuIds.contains(menuId)).collect(Collectors.toList());
-
-        // 获取要删除关联的菜单 ids
-        List<Integer> toDelMenuIds = preMenuIds.stream()
-                .filter(menuId -> !menuIds.contains(menuId)).collect(Collectors.toList());
-
-        // 插入要新建的用户组-菜单关联
-        List<UserGroupMenuRelation> relations = toAddMenuIds.stream()
-                .map(menuId -> {
-                    UserGroupMenuRelation relation = new UserGroupMenuRelation();
-                    relation.setGroupId(id);
-                    relation.setMenuId(menuId);
-
-                    return relation;
-                }).collect(Collectors.toList());
-        relations.forEach(userGroupMenuRelationMapper::insert);
-
-        // 删除要删除的用户组-菜单关联
-        if (!CollectionUtils.isEmpty(toDelMenuIds)) {
-            DeleteStatementProvider deleteStatementProvider = deleteFrom(UserGroupMenuRelationDynamicSqlSupport.userGroupMenuRelation)
-                    .where(UserGroupMenuRelationDynamicSqlSupport.groupId, isEqualTo(id))
-                    .and(UserGroupMenuRelationDynamicSqlSupport.menuId, isIn(toDelMenuIds))
-                    .build().render(RenderingStrategies.MYBATIS3);
-            userGroupMenuRelationMapper.delete(deleteStatementProvider);
-        }
-    }
-
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<Integer> getAssignedRoleIds(List<Integer> ids) {
@@ -302,17 +256,6 @@ public class UserGroupServiceImpl implements UserGroupService {
                 .build().render(RenderingStrategies.MYBATIS3);
         return userGroupResourceActionRelationMapper.selectMany(selectStatementProvider).stream()
                 .map(UserGroupResourceActionRelation::getActionId).collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
-    @Override
-    public List<Integer> getAssignedMenuIds(List<Integer> ids) {
-        SelectStatementProvider selectStatementProvider = select(UserGroupMenuRelationDynamicSqlSupport.menuId)
-                .from(UserGroupMenuRelationDynamicSqlSupport.userGroupMenuRelation)
-                .where(UserGroupMenuRelationDynamicSqlSupport.groupId, isIn(ids))
-                .build().render(RenderingStrategies.MYBATIS3);
-        return userGroupMenuRelationMapper.selectMany(selectStatementProvider).stream()
-                .map(UserGroupMenuRelation::getMenuId).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -343,34 +286,5 @@ public class UserGroupServiceImpl implements UserGroupService {
                         })));
 
         return categories;
-    }
-
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
-    @Override
-    public List<MenuAssignVO> loadMenus(Integer id) {
-        List<Integer> assignedMenuIds = this.getAssignedMenuIds(Collections.singletonList(id));
-
-        List<MenuAssignVO> menus = menuService.findAllForAssign();
-        setMenuItems(menus, assignedMenuIds);
-
-        return menus;
-    }
-
-
-    /**
-     * 设置菜单项的选中和是否可以取消选中状态
-     *
-     * @param menus           菜单列表
-     * @param assignedMenuIds 用户组所分配的菜单 ids
-     */
-    private void setMenuItems(List<MenuAssignVO> menus, List<Integer> assignedMenuIds) {
-        menus.forEach(menu -> {
-            menu.setChecked(assignedMenuIds.contains(menu.getId()));
-            menu.setEnableUncheck(true);
-
-            if (!CollectionUtils.isEmpty(menu.getChildren())) {
-                setMenuItems(menu.getChildren(), assignedMenuIds);
-            }
-        });
     }
 }

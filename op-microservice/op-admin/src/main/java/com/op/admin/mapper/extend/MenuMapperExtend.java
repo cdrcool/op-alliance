@@ -17,6 +17,6 @@ public interface MenuMapperExtend extends MenuMapper {
      *
      * @param id 菜单 id
      */
-    @Delete("DELETE FROM admin_menu WHERE id = #{id} OR FIND_INSET(#{id}, parentIds)")
+    @Delete("DELETE FROM admin_menu WHERE id = #{id} OR FIND_IN_SET(#{id}, parent_ids)")
     void deleteById(Integer id);
 }

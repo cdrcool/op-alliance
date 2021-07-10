@@ -26,7 +26,7 @@ request.interceptors.response.use(
             return Promise.reject(code);
         }
 
-        return Promise.resolve({...data});
+        return Promise.resolve(data);
     },
     error => {
         const status = error.response.status;

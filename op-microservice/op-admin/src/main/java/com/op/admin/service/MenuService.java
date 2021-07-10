@@ -69,8 +69,8 @@ public interface MenuService {
     /**
      * 显示/隐藏菜单
      *
-     * @param id   菜单 id
+     * @param ids   菜单 ids
      * @param show 显示 or 隐藏
      */
-    void changeVisibility(Integer id, boolean show);
+    void changeVisibility(List<Integer> ids, boolean show);
 }

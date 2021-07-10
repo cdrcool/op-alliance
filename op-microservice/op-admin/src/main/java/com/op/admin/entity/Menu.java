@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author Mybatis Generator
- * @date 2021/07/01 12:06
+ * @date 2021/07/10 11:11
  */
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
@@ -39,40 +39,16 @@ public class Menu extends BaseEntity {
     private String menuName;
 
     /**
-     * 菜单编码
-     */
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String menuCode;
-
-    /**
      * 菜单图标
      */
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String menuIcon;
 
     /**
-     * 菜单路由
+     * 菜单路径
      */
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String menuRoute;
-
-    /**
-     * 菜单层级
-     */
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Integer menuLevel;
-
-    /**
-     * 菜单编号
-     */
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Integer menuNo;
-
-    /**
-     * 是否目录
-     */
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Boolean isDirectory;
+    private String menuPath;
 
     /**
      * 是否隐藏
@@ -85,4 +61,16 @@ public class Menu extends BaseEntity {
      */
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String permission;
+
+    /**
+     * 菜单编号
+     */
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private Integer menuNo;
+
+    /**
+     * 菜单层级
+     */
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private Integer menuLevel;
 }

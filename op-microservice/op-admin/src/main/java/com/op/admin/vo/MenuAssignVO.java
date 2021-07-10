@@ -23,9 +23,6 @@ public class MenuAssignVO {
     @ApiModelProperty("菜单名称")
     private String menuName;
 
-    @ApiModelProperty("菜单编码")
-    private String menuCode;
-
     @ApiModelProperty("菜单编号")
     private Integer menuNo;
 

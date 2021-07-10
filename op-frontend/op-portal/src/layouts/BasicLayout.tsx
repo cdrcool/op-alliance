@@ -43,21 +43,21 @@ const BasicLayout: FC = (props) => {
                         <Menu.Item key="workbench" icon={<DesktopOutlined/>}>
                             <Link to='/workbench'>工作台</Link>
                         </Menu.Item>
-                        <SubMenu key="management" icon={<TeamOutlined/>} title="管理中心">
+                        <SubMenu key="admin" icon={<TeamOutlined/>} title="管理中心">
                             <Menu.Item key="organization">
-                                <Link to='/management/organization'>组织管理</Link>
+                                <Link to='/admin/organization'>组织管理</Link>
                             </Menu.Item>
                             <Menu.Item key="user">
-                                <Link to='/management/user'>用户管理</Link>
+                                <Link to='/admin/user'>用户管理</Link>
                             </Menu.Item>
                             <Menu.Item key="role">
-                                <Link to='/management/role'>角色管理</Link>
+                                <Link to='/admin/role'>角色管理</Link>
                             </Menu.Item>
                             <Menu.Item key="resource">
-                                <Link to='/management/resourceCategory'>资源管理</Link>
+                                <Link to='/admin/resourceCategory'>资源管理</Link>
                             </Menu.Item>
                             <Menu.Item key="menu">
-                                <Link to='/management/menu'>菜单管理</Link>
+                                <Link to='/admin/menu'>菜单管理</Link>
                             </Menu.Item>
                         </SubMenu>
                         <Menu.Item key="statistics" icon={<AreaChartOutlined/>}>

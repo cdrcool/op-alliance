@@ -34,7 +34,7 @@ export async function deleteRoles(ids: number[]) {
  *
  * @param id 角色 id
  */
-export async function getRole(id: number) {
+export async function getRole(id: number): Promise<Role> {
     return request.get(`/api/role/get?id=${id}`);
 }
 

@@ -3,7 +3,7 @@ package com.op.admin.mapping;
 import com.op.admin.dto.UserChangePasswordDTO;
 import com.op.admin.dto.UserCreateDTO;
 import com.op.admin.dto.UserDTO;
-import com.op.admin.dto.UserUpdateDTO;
+import com.op.admin.dto.UserSaveDTO;
 import com.op.admin.entity.User;
 import com.op.admin.vo.UserVO;
 import org.mapstruct.Mapper;
@@ -36,12 +36,20 @@ public interface UserMapping {
     void update(UserChangePasswordDTO changePasswordDto, @MappingTarget User user);
 
     /**
+     * 用户保存 dto -> 用户
+     *
+     * @param saveDTO 用户保存 dto
+     * @return 用户
+     */
+    User toUser(UserSaveDTO saveDTO);
+
+    /**
      * 根据用户更新 dto 更新用户
      *
      * @param updateDTO 用户更新 dto
      * @param user      用户
      */
-    void update(UserUpdateDTO updateDTO, @MappingTarget User user);
+    void update(UserSaveDTO updateDTO, @MappingTarget User user);
 
     /**
      * 用户 -> 用户 vo

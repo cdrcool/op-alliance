@@ -40,7 +40,7 @@ const ResourceCategoryListPage: FC = () => {
                                   </>
                               }
                               onClick={() => {
-                                  history.push('/management/resource')
+                                  history.push('/admin/resource')
                               }}
                         >
                             <Meta

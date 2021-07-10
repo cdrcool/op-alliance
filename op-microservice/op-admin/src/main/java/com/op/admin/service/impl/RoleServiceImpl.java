@@ -3,18 +3,19 @@ package com.op.admin.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.op.admin.dto.RolePageQueryDTO;
 import com.op.admin.dto.RoleSaveDTO;
-import com.op.admin.entity.RoleMenuRelation;
-import com.op.admin.mapper.*;
 import com.op.admin.entity.Role;
 import com.op.admin.entity.RoleResourceActionRelation;
+import com.op.admin.mapper.RoleDynamicSqlSupport;
+import com.op.admin.mapper.RoleMapper;
+import com.op.admin.mapper.RoleResourceActionRelationDynamicSqlSupport;
+import com.op.admin.mapper.RoleResourceActionRelationMapper;
 import com.op.admin.mapping.RoleMapping;
+import com.op.admin.service.MenuService;
 import com.op.admin.service.ResourceCategoryService;
 import com.op.admin.service.RoleService;
-import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.RoleAssignVO;
 import com.op.admin.vo.RoleVO;
-import com.op.admin.service.MenuService;
 import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.apache.commons.collections4.CollectionUtils;
@@ -48,19 +49,16 @@ public class RoleServiceImpl implements RoleService {
     private final RoleMapper roleMapper;
     private final RoleMapping roleMapping;
     private final RoleResourceActionRelationMapper roleResourceActionRelationMapper;
-    private final RoleMenuRelationMapper roleMenuRelationMapper;
     private final ResourceCategoryService resourceCategoryService;
     private final MenuService menuService;
 
     public RoleServiceImpl(RoleMapper roleMapper, RoleMapping roleMapping,
                            RoleResourceActionRelationMapper roleResourceActionRelationMapper,
-                           RoleMenuRelationMapper roleMenuRelationMapper,
                            ResourceCategoryService resourceCategoryService,
                            MenuService menuService) {
         this.roleMapper = roleMapper;
         this.roleMapping = roleMapping;
         this.roleResourceActionRelationMapper = roleResourceActionRelationMapper;
-        this.roleMenuRelationMapper = roleMenuRelationMapper;
         this.resourceCategoryService = resourceCategoryService;
         this.menuService = menuService;
     }
@@ -88,7 +86,7 @@ public class RoleServiceImpl implements RoleService {
     /**
      * 校验角色名是否重复
      *
-     * @param id 主键
+     * @param id       主键
      * @param roleName 角色名
      */
     private void validateRoleName(Integer id, String roleName) {
@@ -105,7 +103,7 @@ public class RoleServiceImpl implements RoleService {
     /**
      * 校验角色编码是否重复
      *
-     * @param id 主键
+     * @param id       主键
      * @param roleCode 角色编码
      */
     private void validateRoleCode(Integer id, String roleCode) {
@@ -129,12 +127,6 @@ public class RoleServiceImpl implements RoleService {
                 .where(RoleResourceActionRelationDynamicSqlSupport.roleId, isEqualTo(id))
                 .build().render(RenderingStrategies.MYBATIS3);
         roleResourceActionRelationMapper.delete(roleResourceActionRelationProvider);
-
-        // 删除角色-菜单关联列表
-        DeleteStatementProvider roleMenuRelationProvider = deleteFrom(RoleMenuRelationDynamicSqlSupport.roleMenuRelation)
-                .where(RoleMenuRelationDynamicSqlSupport.roleId, isEqualTo(id))
-                .build().render(RenderingStrategies.MYBATIS3);
-        roleMenuRelationMapper.delete(roleMenuRelationProvider);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -174,7 +166,7 @@ public class RoleServiceImpl implements RoleService {
                 .build().render(RenderingStrategies.MYBATIS3);
 
         com.github.pagehelper.Page<Role> result = PageHelper
-                .startPage(pageable.getPageNumber()  + 1, pageable.getPageSize())
+                .startPage(pageable.getPageNumber() + 1, pageable.getPageSize())
                 .doSelectPage(() -> roleMapper.selectMany(selectStatementProvider));
 
         return new PageImpl<>(roleMapping.toRoleVOList(result.getResult()), pageable, result.getTotal());
@@ -240,41 +232,6 @@ public class RoleServiceImpl implements RoleService {
         }
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public void assignMenus(Integer id, List<Integer> menuIds) {
-        // 获取已建立关联的菜单 ids
-        List<Integer> preMenuIds = this.getAssignedMenuIds(Collections.singletonList(id));
-
-        // 获取要新建关联的菜单 ids
-        List<Integer> toAddMenuIds = menuIds.stream()
-                .filter(menuId -> !preMenuIds.contains(menuId)).collect(Collectors.toList());
-
-        // 获取要删除关联的菜单 ids
-        List<Integer> toDelMenuIds = preMenuIds.stream()
-                .filter(menuId -> !menuIds.contains(menuId)).collect(Collectors.toList());
-
-        // 插入要新建的角色-菜单关联
-        List<RoleMenuRelation> relations = toAddMenuIds.stream()
-                .map(menuId -> {
-                    RoleMenuRelation relation = new RoleMenuRelation();
-                    relation.setRoleId(id);
-                    relation.setMenuId(menuId);
-
-                    return relation;
-                }).collect(Collectors.toList());
-        relations.forEach(roleMenuRelationMapper::insert);
-
-        // 删除要删除的角色-菜单关联
-        if (!CollectionUtils.isEmpty(toDelMenuIds)) {
-            DeleteStatementProvider deleteStatementProvider = deleteFrom(RoleMenuRelationDynamicSqlSupport.roleMenuRelation)
-                    .where(RoleMenuRelationDynamicSqlSupport.roleId, isEqualTo(id))
-                    .and(RoleMenuRelationDynamicSqlSupport.menuId, isIn(toDelMenuIds))
-                    .build().render(RenderingStrategies.MYBATIS3);
-            roleMenuRelationMapper.delete(deleteStatementProvider);
-        }
-    }
-
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<Integer> getAssignedResourceActionIds(List<Integer> ids) {
@@ -284,17 +241,6 @@ public class RoleServiceImpl implements RoleService {
                 .build().render(RenderingStrategies.MYBATIS3);
         return roleResourceActionRelationMapper.selectMany(selectStatementProvider).stream()
                 .map(RoleResourceActionRelation::getActionId).collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
-    @Override
-    public List<Integer> getAssignedMenuIds(List<Integer> ids) {
-        SelectStatementProvider selectStatementProvider = select(RoleMenuRelationDynamicSqlSupport.menuId)
-                .from(RoleMenuRelationDynamicSqlSupport.roleMenuRelation)
-                .where(RoleMenuRelationDynamicSqlSupport.roleId, isIn(ids))
-                .build().render(RenderingStrategies.MYBATIS3);
-        return roleMenuRelationMapper.selectMany(selectStatementProvider).stream()
-                .map(RoleMenuRelation::getMenuId).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -311,33 +257,5 @@ public class RoleServiceImpl implements RoleService {
                         })));
 
         return categories;
-    }
-
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
-    @Override
-    public List<MenuAssignVO> loadMenus(Integer id) {
-        List<Integer> assignedMenuIds = this.getAssignedMenuIds(Collections.singletonList(id));
-
-        List<MenuAssignVO> menus = menuService.findAllForAssign();
-        setMenuItems(menus, assignedMenuIds);
-
-        return menus;
-    }
-
-    /**
-     * 设置菜单项的选中和是否可以取消选中状态
-     *
-     * @param menus                菜单列表
-     * @param assignedMenuIds      角色所分配的菜单 ids
-     */
-    private void setMenuItems(List<MenuAssignVO> menus, List<Integer> assignedMenuIds) {
-        menus.forEach(menu -> {
-            menu.setChecked(assignedMenuIds.contains(menu.getId()));
-            menu.setEnableUncheck(true);
-
-            if (!CollectionUtils.isEmpty(menu.getChildren())) {
-                setMenuItems(menu.getChildren(), assignedMenuIds);
-            }
-        });
     }
 }

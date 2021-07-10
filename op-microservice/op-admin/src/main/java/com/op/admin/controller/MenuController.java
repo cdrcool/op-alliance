@@ -1,5 +1,6 @@
 package com.op.admin.controller;
 
+import com.op.admin.dto.MenuChangeVisibilityDTO;
 import com.op.admin.dto.MenuListQueryDTO;
 import com.op.admin.dto.MenuSaveDTO;
 import com.op.admin.service.MenuService;
@@ -65,7 +66,7 @@ public class MenuController {
 
     @ApiOperation("显示/隐藏菜单")
     @PostMapping("changeVisibility")
-    public void changeVisibility(@RequestParam Integer id, @RequestParam boolean show) {
-        menuService.changeVisibility(id, show);
+    public void changeVisibility(@Valid @RequestBody MenuChangeVisibilityDTO changeVisibilityDTO) {
+        menuService.changeVisibility(changeVisibilityDTO.getIds(), changeVisibilityDTO.getShow());
     }
 }

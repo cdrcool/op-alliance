@@ -21,12 +21,12 @@ export async function changePassword(user: User) {
 }
 
 /**
- * 修改用户资料
+ * 保存用户
  *
  * @param user 用户
  */
-export async function updateUser(user: User) {
-    return request.post('/api/user/update', user);
+export async function saveUser(user: User) {
+    return request.post('/api/user/save', user);
 }
 
 /**

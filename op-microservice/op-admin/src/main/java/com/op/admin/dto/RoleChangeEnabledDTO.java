@@ -21,7 +21,7 @@ public class RoleChangeEnabledDTO {
     @NotEmpty
     private List<Integer> ids;
 
-    @ApiModelProperty(value = "是否（0-禁用；1-启用）", allowableValues = "0, 1")
+    @ApiModelProperty(value = "是否启用（0-禁用；1-启用）", allowableValues = "0, 1")
     @NotNull
     private Boolean enable;
 }

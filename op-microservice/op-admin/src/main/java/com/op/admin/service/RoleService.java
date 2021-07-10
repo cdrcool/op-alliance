@@ -80,14 +80,6 @@ public interface RoleService {
     void assignResourceActions(Integer id, List<Integer> resourceActionIds);
 
     /**
-     * 分配菜单
-     *
-     * @param id      角色 id
-     * @param menuIds 菜单 ids
-     */
-    void assignMenus(Integer id, List<Integer> menuIds);
-
-    /**
      * 获取角色所分配的资源动作 ids
      *
      * @param ids 角色 ids
@@ -96,26 +88,10 @@ public interface RoleService {
     List<Integer> getAssignedResourceActionIds(List<Integer> ids);
 
     /**
-     * 获取角色所分配的菜单 ids
-     *
-     * @param ids 角色 ids
-     * @return 菜单 ids
-     */
-    List<Integer> getAssignedMenuIds(List<Integer> ids);
-
-    /**
      * 查找所有资源，以及角色分配情况
      *
      * @param id 角色 id
      * @return 资源分类分配 VO 列表
      */
     List<ResourceCategoryAssignVO> loadResources(Integer id);
-
-    /**
-     * 查找所有菜单，以及角色分配情况
-     *
-     * @param id 角色 id
-     * @return 菜单分配 VO 列表
-     */
-    List<MenuAssignVO> loadMenus(Integer id);
 }

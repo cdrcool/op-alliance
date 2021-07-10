@@ -1,21 +1,21 @@
 import {Button, Card, Descriptions, Popconfirm, Space, Spin} from 'antd';
 import {useHistory, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
-import {deleteRole, getRole} from "../../../services/role";
-import {Role} from "../../../models/Role";
 import {PageContainer} from "@ant-design/pro-layout";
+import {deleteMenu, getMenu} from "../../../services/menu";
+import {Menus} from "../../../models/Menus";
 
-const RoleDetailPage = () => {
+const MenuDetailPage = () => {
     const history = useHistory();
     const {id} = useParams<{ id: string }>();
 
     const [loading, setLoading] = useState<boolean>(true);
-    const [role, setRole] = useState<Role>({});
+    const [menu, setMenu] = useState<Menus>({});
 
     useEffect(() => {
         const fetchData = async () => {
-            const role = await getRole(parseInt(id));
-            setRole(role || {});
+            const menu = await getMenu(parseInt(id));
+            setMenu(menu || {});
             setLoading(false);
         }
 
@@ -23,43 +23,44 @@ const RoleDetailPage = () => {
         });
     }, []);
 
-    const onDeleteRole = (id: string) => {
-        deleteRole(parseInt(id)).then(() => history.push('/admin/role'));
+    const onDeleteMenu = (id: string) => {
+        deleteMenu(parseInt(id)).then(() => history.push('/admin/menu'));
     }
 
     return (
         <PageContainer
             className="page-container"
-            title="角色详情"
+            title="菜单详情"
             header={{
                 breadcrumb: {},
             }}
             extra={
                 <Space>
-                    <Button type="primary" onClick={() => history.push(`/admin/role/edit/${id}`)}>编辑</Button>
+                    <Button type="primary" onClick={() => history.push(`/admin/menu/edit/${id}`)}>编辑</Button>
                     <Popconfirm
                         title="确定要删除吗？"
                         okText="确定"
                         cancelText="取消"
-                        onConfirm={() => onDeleteRole(id)}
+                        onConfirm={() => onDeleteMenu(id)}
                     >
                         <Button>删除</Button>
                     </Popconfirm>
                     <Button>打印</Button>
                 </Space>
             }
-            onBack={() => history.push('/admin/role')}
+            onBack={() => history.push('/admin/menu')}
 
         >
             <Card>
                 <Spin spinning={loading}>
                     <Descriptions>
-                        <Descriptions.Item label="角色名">{role.roleName}</Descriptions.Item>
-                        <Descriptions.Item label="角色编码">{role.roleCode}</Descriptions.Item>
-                        <Descriptions.Item label="角色描述">{role.roleDesc}</Descriptions.Item>
+                        <Descriptions.Item label="菜单名">{menu.menuName}</Descriptions.Item>
+                        <Descriptions.Item label="菜单图标">{menu.menuIcon}</Descriptions.Item>
+                        <Descriptions.Item label="菜单路径">{menu.menuPath}</Descriptions.Item>
                         <Descriptions.Item
-                            label="是否启用">{role.status && (role.status === 1 ? '启用' : '禁用')}</Descriptions.Item>
-                        <Descriptions.Item label="角色编号">{role.roleNo}</Descriptions.Item>
+                            label="是否隐藏">{menu.isHidden === true ? '是' : (menu.isHidden === false ? '否' : null)}</Descriptions.Item>
+                        <Descriptions.Item label="权限标识">{menu.permission}</Descriptions.Item>
+                        <Descriptions.Item label="菜单编号">{menu.menuNo}</Descriptions.Item>
                     </Descriptions>
                 </Spin>
             </Card>
@@ -67,4 +68,4 @@ const RoleDetailPage = () => {
     );
 };
 
-export default RoleDetailPage;
+export default MenuDetailPage;

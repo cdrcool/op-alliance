@@ -1,7 +1,6 @@
 package com.op.admin.controller;
 
 import com.op.admin.dto.*;
-import com.op.admin.dto.*;
 import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.RoleAssignVO;
@@ -46,10 +45,10 @@ public class UserController {
         userService.changePassword(changePasswordDTO);
     }
 
-    @ApiOperation("修改用户资料")
-    @PostMapping("update")
-    public void update(@Valid @RequestBody UserUpdateDTO updateDTO) {
-        userService.update(updateDTO);
+    @ApiOperation("保存")
+    @PostMapping("save")
+    public void save(@Valid @RequestBody UserSaveDTO saveDTO) {
+        userService.save(saveDTO);
     }
 
     @ApiOperation("删除用户")
@@ -102,12 +101,6 @@ public class UserController {
         userService.assignResourceActions(resourceAssignDTO.getId(), resourceAssignDTO.getResourceIds());
     }
 
-    @ApiOperation("分配菜单")
-    @PostMapping("assignMenus")
-    public void assignMenus(@Valid @RequestBody MenuAssignDTO menuAssignDTO) {
-        userService.assignMenus(menuAssignDTO.getId(), menuAssignDTO.getMenuIds());
-    }
-
     @ApiOperation("查找所有角色，以及用户分配情况")
     @GetMapping("loadRoles")
     public List<RoleAssignVO> loadRoles(@RequestParam Integer id) {
@@ -118,11 +111,5 @@ public class UserController {
     @GetMapping("loadResources")
     public List<ResourceCategoryAssignVO> loadResources(@RequestParam Integer id) {
         return userService.loadResources(id);
-    }
-
-    @ApiOperation("查找所有菜单，以及用户分配情况")
-    @GetMapping("loadMenus")
-    public List<MenuAssignVO> loadMenus(@RequestParam Integer id) {
-        return userService.loadMenus(id);
     }
 }

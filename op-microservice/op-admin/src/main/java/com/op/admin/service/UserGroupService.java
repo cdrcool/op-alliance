@@ -73,14 +73,6 @@ public interface UserGroupService {
     void assignResourceActions(Integer id, List<Integer> resourceActionIds);
 
     /**
-     * 分配菜单
-     *
-     * @param id      用户组 id
-     * @param menuIds 菜单 ids
-     */
-    void assignMenus(Integer id, List<Integer> menuIds);
-
-    /**
      * 获取用户组所分配的角色 ids
      *
      * @param ids 用户组 ids
@@ -97,14 +89,6 @@ public interface UserGroupService {
     List<Integer> getAssignedResourceActionIds(List<Integer> ids);
 
     /**
-     * 获取用户组所分配的菜单 ids
-     *
-     * @param ids 用户组 ids
-     * @return 菜单 ids
-     */
-    List<Integer> getAssignedMenuIds(List<Integer> ids);
-
-    /**
      * 查找所有角色，以及用户组分配情况
      *
      * @param id 用户组 id
@@ -119,12 +103,4 @@ public interface UserGroupService {
      * @return 资源分类分配 VO 列表
      */
     List<ResourceCategoryAssignVO> loadResources(Integer id);
-
-    /**
-     * 查找所有菜单，以及用户组分配情况
-     *
-     * @param id 用户组 id
-     * @return 菜单分配 VO 列表
-     */
-    List<MenuAssignVO> loadMenus(Integer id);
 }

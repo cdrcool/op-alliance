@@ -12,15 +12,14 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 /**
- * 用户更新 DTO
+ * 用户保存 DTO
  *
  * @author cdrcool
  */
-@ApiModel(description = "用户更新 DTO")
+@ApiModel(description = "用户保存 DTO")
 @Data
-public class UserUpdateDTO {
+public class UserSaveDTO {
     @ApiModelProperty(value = "用户id", required = true)
-    @NotNull
     private Integer id;
 
     @ApiModelProperty(value = "组织id", required = true)

@@ -21,24 +21,18 @@ public class MenuSaveDTO {
     @ApiModelProperty(value = "菜单名称", required = true)
     private String menuName;
 
-    @ApiModelProperty(value = "菜单编码", required = true)
-    private String menuCode;
-
     @ApiModelProperty(value = "菜单图标", required = true)
     private String menuIcon;
 
-    @ApiModelProperty(value = "菜单路由", required = true)
-    private String menuRoute;
-
-    @ApiModelProperty("菜单编号")
-    private Integer menuNo;
-
-    @ApiModelProperty(value = "是否目录", required = true)
-    private Boolean isDirectory;
+    @ApiModelProperty(value = "菜单路径", required = true)
+    private String menuPath;
 
     @ApiModelProperty(value = "是否隐藏", required = true)
     private Boolean isHidden;
 
     @ApiModelProperty("权限标识")
     private String permission;
+
+    @ApiModelProperty("菜单编号")
+    private Integer menuNo;
 }

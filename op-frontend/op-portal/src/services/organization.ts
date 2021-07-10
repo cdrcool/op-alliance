@@ -1,5 +1,4 @@
 import {Organization} from "../models/Organization";
-import {PageResult} from "../models/PageResult";
 import request from "../utils/request";
 
 /**
@@ -34,7 +33,7 @@ export async function deleteOrganizations(ids: number[]) {
  *
  * @param id 组织 id
  */
-export async function getOrganization(id: number) {
+export async function getOrganization(id: number): Promise<Organization> {
     return request.get(`/api/organization/get?id=${id}`);
 }
 

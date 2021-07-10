@@ -29,27 +29,21 @@ public class MenuVO extends BaseVo {
     @ApiModelProperty("菜单名称")
     private String menuName;
 
-    @ApiModelProperty("菜单编码")
-    private String menuCode;
-
     @ApiModelProperty("菜单图标")
     private String menuIcon;
 
-    @ApiModelProperty("菜单路由")
-    private String menuRoute;
-
-    @ApiModelProperty("菜单层级")
-    private Integer menuLevel;
-
-    @ApiModelProperty("菜单编号")
-    private Integer menuNo;
-
-    @ApiModelProperty("是否目录")
-    private Boolean isDirectory;
+    @ApiModelProperty("菜单路径")
+    private String menuPath;
 
     @ApiModelProperty("是否隐藏")
     private Boolean isHidden;
 
     @ApiModelProperty("权限标识")
     private String permission;
+
+    @ApiModelProperty("菜单编号")
+    private Integer menuNo;
+
+    @ApiModelProperty("菜单层级")
+    private Integer menuLevel;
 }

@@ -1,6 +1,7 @@
 package com.op.admin.service.impl;
 
 import com.op.admin.dto.MenuListQueryDTO;
+import com.op.admin.entity.Organization;
 import com.op.admin.mapper.MenuDynamicSqlSupport;
 import com.op.admin.mapper.MenuMapper;
 import com.op.admin.mapper.extend.MenuMapperExtend;
@@ -12,8 +13,10 @@ import com.op.admin.utils.TreeUtils;
 import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.MenuTreeVO;
 import com.op.admin.vo.MenuVO;
+import com.op.admin.vo.OrganizationTreeVO;
 import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
@@ -23,8 +26,10 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
@@ -48,7 +53,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public void save(MenuSaveDTO saveDTO) {
         // 校验同一菜单下，子菜单名称是否重复
-        validateMenuName(saveDTO.getPid(), saveDTO.getPid(), saveDTO.getMenuName());
+        validateMenuName(saveDTO.getPid(), saveDTO.getId(), saveDTO.getMenuName());
 
         if (saveDTO.getId() == null) {
             Menu menu = menuMapping.toMenu(saveDTO);
@@ -58,8 +63,8 @@ public class MenuServiceImpl implements MenuService {
             Integer id = saveDTO.getId();
             Menu menu = menuMapper.selectByPrimaryKey(id)
                     .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的菜单"));
-            setMenuProps(menu, saveDTO.getPid());
             menuMapping.update(saveDTO, menu);
+            setMenuProps(menu, saveDTO.getPid());
             menuMapper.updateByPrimaryKey(menu);
         }
     }
@@ -92,16 +97,16 @@ public class MenuServiceImpl implements MenuService {
     private void setMenuProps(Menu menu, Integer pid) {
         if (pid == null) {
             menu.setPid(-1);
-            menu.setParentIds("");
             menu.setMenuLevel(1);
-        } else if (!pid.equals(menu.getPid())) {
+        } else {
             Menu pMenu = menuMapper.selectByPrimaryKey(pid)
                     .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + pid + "】的父菜单"));
             String parentIds = pMenu.getParentIds();
-            parentIds = StringUtils.isNoneBlank(parentIds) ? parentIds + "," + pid : String.valueOf(pid);
+            parentIds = StringUtils.isNotBlank(parentIds) ? parentIds + "," + pid : String.valueOf(pid);
             menu.setParentIds(parentIds);
             menu.setMenuLevel(pMenu.getMenuLevel() + 1);
         }
+        menu.setMenuNo(Optional.ofNullable(menu.getMenuNo()).orElse(999));
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -129,8 +134,11 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public List<MenuTreeVO> queryTreeList() {
         List<Menu> menus = menuMapper.select(SelectDSLCompleter.allRows());
-        return TreeUtils.buildTree(menus, menuMapping::toMenuTreeVO, MenuTreeVO::getPid, MenuTreeVO::getId,
-                (parent, children) -> parent.setChildren(children.stream().sorted(Comparator.comparing(MenuTreeVO::getMenuNo)).collect(Collectors.toList())), -1);
+        List<MenuTreeVO> treeList = TreeUtils.buildTree(menus, menuMapping::toMenuTreeVO, MenuTreeVO::getPid, MenuTreeVO::getId,
+                (parent, children) -> parent.setChildren(children.stream()
+                        .sorted(Comparator.comparing(MenuTreeVO::getMenuNo))
+                        .collect(Collectors.toList())), -1);
+        return CollectionUtils.isNotEmpty(treeList) ? treeList : new ArrayList<>();
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -140,9 +148,7 @@ public class MenuServiceImpl implements MenuService {
                 .from(MenuDynamicSqlSupport.menu)
                 .where(MenuDynamicSqlSupport.menuName, isLike(queryDTO.getKeyword())
                                 .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"),
-                        or(MenuDynamicSqlSupport.menuCode, isLike(queryDTO.getKeyword())
-                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")),
-                        or(MenuDynamicSqlSupport.menuRoute, isLike(queryDTO.getKeyword())
+                        or(MenuDynamicSqlSupport.menuPath, isLike(queryDTO.getKeyword())
                                 .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")))
                 .build().render(RenderingStrategies.MYBATIS3);
         List<Menu> menus = menuMapper.selectMany(selectStatementProvider);
@@ -158,12 +164,12 @@ public class MenuServiceImpl implements MenuService {
                 (menu, children) -> menu.setChildren(children.stream().sorted(Comparator.comparing(MenuAssignVO::getMenuNo)).collect(Collectors.toList())), -1);
     }
 
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     @Override
-    public void changeVisibility(Integer id, boolean show) {
+    public void changeVisibility(List<Integer> ids, boolean show) {
         UpdateStatementProvider updateStatement = SqlBuilder.update(MenuDynamicSqlSupport.menu)
                 .set(MenuDynamicSqlSupport.isHidden).equalTo(!show)
-                .where(MenuDynamicSqlSupport.id, isEqualTo(id))
+                .where(MenuDynamicSqlSupport.id, isIn(ids))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 

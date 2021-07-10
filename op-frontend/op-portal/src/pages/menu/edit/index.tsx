@@ -1,15 +1,15 @@
 import {Button, Card, Form, Input, InputNumber, Radio, Space, Spin} from 'antd';
 import {useHistory, useParams} from "react-router-dom";
-import {getRole, saveRole} from "../../../services/role";
-import {Role} from "../../../models/Role";
 import React, {useEffect, useState} from "react";
 import {PageContainer} from "@ant-design/pro-layout";
+import {getMenu, saveMenu} from "../../../services/menu";
+import {Menus} from "../../../models/Menus";
 
-const {TextArea} = Input;
-
-const RoleEditPage = () => {
+const MenuEditPage = () => {
     const history = useHistory();
     const {id} = useParams<{ id?: string }>();
+    // @ts-ignore
+    const {pid, pName} = history.location.state || {};
 
     const [loading, setLoading] = useState<boolean>(!!id);
     const [form] = Form.useForm();
@@ -17,35 +17,37 @@ const RoleEditPage = () => {
     useEffect(() => {
         if (id) {
             const fetchData = async () => {
-                const role = await getRole(parseInt(id));
-                form.setFieldsValue(role);
+                const menu = await getMenu(parseInt(id));
+                form.setFieldsValue(menu);
                 setLoading(false);
             }
 
             fetchData().then(() => {
             });
+        } else {
+            form.setFieldsValue({pid});
         }
     }, []);
 
 
-    const onFinish = (role: Role) => {
-        saveRole(role).then(() => {
-            history.push('/admin/role');
+    const onFinish = (menu: Menus) => {
+        saveMenu(menu).then(() => {
+            history.push('/admin/menu');
         });
     };
 
     const onFinishFailed = (errorInfo: any) => {
-        console.log('保存角色失败:', errorInfo);
+        console.log('保存菜单失败:', errorInfo);
     };
 
     return (
         <PageContainer
             className="page-container"
-            title={`${id ? '编辑' : '新增'}角色`}
+            title={`${id ? '编辑' : '新增'}菜单`}
             header={{
                 breadcrumb: {},
             }}
-            onBack={() => history.push('/admin/role')}
+            onBack={() => history.push('/admin/menu')}
 
         >
             <Card>
@@ -58,28 +60,35 @@ const RoleEditPage = () => {
                         onFinishFailed={onFinishFailed}
                     >
                         <Form.Item name="id" hidden={true}/>
-                        <Form.Item label="角色名" name="roleName" rules={[{required: true, message: '请输入角色名'}]}>
+                        <Form.Item name="pid" hidden={true}/>
+                        <Form.Item label="上级菜单" >
+                            {pName}
+                        </Form.Item>
+                        <Form.Item label="菜单名" name="menuName" rules={[{required: true, message: '请输入菜单名'}]}>
                             <Input/>
                         </Form.Item>
-                        <Form.Item label="角色编码" name="roleCode" rules={[{required: true, message: '请输入角色编码'}]}>
+                        <Form.Item label="菜单图标" name="menuIcon">
                             <Input/>
                         </Form.Item>
-                        <Form.Item label="角色描述" name="roleDesc">
-                            <TextArea/>
+                        <Form.Item label="菜单路径" name="menuPath">
+                            <Input/>
                         </Form.Item>
-                        <Form.Item label="是否启用" name="status" initialValue={1}
-                                   rules={[{required: true, message: '请勾选是否启用'}]}>
+                        <Form.Item label="是否隐藏" name="isHidden" initialValue={false}
+                                   rules={[{required: true, message: '请勾选是否隐藏'}]}>
                             <Radio.Group>
-                                <Radio value={1}>是</Radio>
-                                <Radio value={0}>否</Radio>
+                                <Radio value={true}>是</Radio>
+                                <Radio value={false}>否</Radio>
                             </Radio.Group>
                         </Form.Item>
-                        <Form.Item label="角色编号" name="roleNo">
+                        <Form.Item label="权限标识" name="permission">
+                            <Input/>
+                        </Form.Item>
+                        <Form.Item label="菜单编号" name="menuNo">
                             <InputNumber/>
                         </Form.Item>
                         <Form.Item wrapperCol={{offset: 8, span: 8}}>
                             <Space>
-                                <Button onClick={() => history.push('/admin/role')}>
+                                <Button onClick={() => history.push('/admin/menu')}>
                                     取消
                                 </Button>
                                 <Button type="primary" htmlType="submit">
@@ -94,4 +103,4 @@ const RoleEditPage = () => {
     );
 };
 
-export default RoleEditPage;
+export default MenuEditPage;

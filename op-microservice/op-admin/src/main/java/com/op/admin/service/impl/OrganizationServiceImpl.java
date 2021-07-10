@@ -4,24 +4,23 @@ import com.op.admin.dto.OrganizationListQueryDTO;
 import com.op.admin.dto.OrganizationSaveDTO;
 import com.op.admin.dto.OrganizationTreeQueryDTO;
 import com.op.admin.entity.Organization;
-import com.op.admin.entity.OrganizationMenuRelation;
 import com.op.admin.entity.OrganizationResourceActionRelation;
 import com.op.admin.entity.OrganizationRoleRelation;
 import com.op.admin.mapper.*;
 import com.op.admin.mapper.extend.OrganizationMapperExtend;
 import com.op.admin.mapping.OrganizationMapping;
-import com.op.admin.utils.TreeUtils;
-import com.op.admin.vo.*;
 import com.op.admin.service.*;
+import com.op.admin.utils.TreeUtils;
+import com.op.admin.vo.OrganizationTreeVO;
+import com.op.admin.vo.OrganizationVO;
+import com.op.admin.vo.ResourceCategoryAssignVO;
+import com.op.admin.vo.RoleAssignVO;
 import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
-import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
-import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -29,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
@@ -44,7 +42,6 @@ public class OrganizationServiceImpl implements OrganizationService {
     private final OrganizationMapping organizationMapping;
     private final OrganizationRoleRelationMapper organizationRoleRelationMapper;
     private final OrganizationResourceActionRelationMapper organizationResourceActionRelationMapper;
-    private final OrganizationMenuRelationMapper organizationMenuRelationMapper;
     private final UserService userService;
     private final RoleService roleService;
     private final ResourceCategoryService resourceCategoryService;
@@ -53,7 +50,6 @@ public class OrganizationServiceImpl implements OrganizationService {
     public OrganizationServiceImpl(OrganizationMapperExtend organizationMapper, OrganizationMapping organizationMapping,
                                    OrganizationRoleRelationMapper organizationRoleRelationMapper,
                                    OrganizationResourceActionRelationMapper organizationResourceActionRelationMapper,
-                                   OrganizationMenuRelationMapper organizationMenuRelationMapper,
                                    @Lazy UserService userService,
                                    RoleService roleService,
                                    ResourceCategoryService resourceCategoryService,
@@ -62,7 +58,6 @@ public class OrganizationServiceImpl implements OrganizationService {
         this.organizationMapping = organizationMapping;
         this.organizationRoleRelationMapper = organizationRoleRelationMapper;
         this.organizationResourceActionRelationMapper = organizationResourceActionRelationMapper;
-        this.organizationMenuRelationMapper = organizationMenuRelationMapper;
         this.userService = userService;
         this.roleService = roleService;
         this.resourceCategoryService = resourceCategoryService;
@@ -130,7 +125,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     /**
-     * 设置组织 pid、orgCodeLink 等属性
+     * 设置组织的 pid、orgCodeLink 等属性
      *
      * @param organization 组织
      * @param pid          上级组织 id
@@ -139,7 +134,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         if (pid == null) {
             organization.setPid(-1);
             organization.setOrgCodeLink("");
-        } else if (!pid.equals(organization.getPid())) {
+        } else {
             Organization pOrg = organizationMapper.selectByPrimaryKey(pid)
                     .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + pid + "】的上级组织"));
             String orgCodeLink = pOrg.getOrgCodeLink();
@@ -174,12 +169,6 @@ public class OrganizationServiceImpl implements OrganizationService {
                 .where(OrganizationRoleRelationDynamicSqlSupport.orgId, isIn(childrenIds))
                 .build().render(RenderingStrategies.MYBATIS3);
         organizationResourceActionRelationMapper.delete(organizationResourceActionRelationProvider);
-
-        // 删除本下级组织的组织-菜单关联列表
-        DeleteStatementProvider organizationMenuRelationProvider = deleteFrom(OrganizationMenuRelationDynamicSqlSupport.organizationMenuRelation)
-                .where(OrganizationRoleRelationDynamicSqlSupport.orgId, isIn(childrenIds))
-                .build().render(RenderingStrategies.MYBATIS3);
-        organizationMenuRelationMapper.delete(organizationMenuRelationProvider);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -199,7 +188,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public OrganizationTreeVO queryTree(OrganizationTreeQueryDTO queryDTO) {
-        Integer pid = queryDTO.getPid() == null ? -1 : queryDTO.getPid();
+        Integer pid = Optional.ofNullable(queryDTO.getPid()).orElse(-1);
 
         List<Organization> organizations = new ArrayList<>();
         if (StringUtils.isBlank(queryDTO.getKeyword())) {
@@ -207,15 +196,15 @@ public class OrganizationServiceImpl implements OrganizationService {
                     .from(OrganizationDynamicSqlSupport.organization)
                     .where(OrganizationDynamicSqlSupport.pid, isEqualTo(pid))
                     .build().render(RenderingStrategies.MYBATIS3);
-            Organization organization = organizationMapper.selectOne(rootSelectStatementProvider)
-                    .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到pid为【" + pid + "】的组织"));
+            Optional<Organization> optional = organizationMapper.selectOne(rootSelectStatementProvider);
+            optional.ifPresent(organization -> {
+                SelectStatementProvider selectStatementProvider = select(OrganizationMapper.selectList)
+                        .from(OrganizationDynamicSqlSupport.organization)
+                        .where(OrganizationDynamicSqlSupport.orgCodeLink, isLike(organization.getOrgCodeLink()).map(v -> v + "%"))
+                        .build().render(RenderingStrategies.MYBATIS3);
 
-            SelectStatementProvider selectStatementProvider = select(OrganizationMapper.selectList)
-                    .from(OrganizationDynamicSqlSupport.organization)
-                    .where(OrganizationDynamicSqlSupport.orgCodeLink, isLike(organization.getOrgCodeLink()).map(v -> v + "%"))
-                    .build().render(RenderingStrategies.MYBATIS3);
-
-            organizations = organizationMapper.selectMany(selectStatementProvider);
+                organizations.addAll(organizationMapper.selectMany(selectStatementProvider));
+            });
         } else {
             SelectStatementProvider partSelectStatementProvider = select(OrganizationDynamicSqlSupport.orgCodeLink)
                     .from(OrganizationDynamicSqlSupport.organization)
@@ -225,11 +214,11 @@ public class OrganizationServiceImpl implements OrganizationService {
                     .map(Organization::getOrgCodeLink).collect(Collectors.toList());
 
             if (CollectionUtils.isNotEmpty(orgCodeLinks)) {
-                organizations = orgCodeLinks.stream()
+                organizations.addAll(orgCodeLinks.stream()
                         .map(organizationMapper::findAllInPath)
                         .flatMap(Collection::stream)
                         .collect(Collectors.collectingAndThen(Collectors.toCollection(() ->
-                                new TreeSet<>(Comparator.comparing(Organization::getOrgCodeLink))), ArrayList::new));
+                                new TreeSet<>(Comparator.comparing(Organization::getOrgCodeLink))), ArrayList::new)));
             }
         }
 
@@ -332,42 +321,6 @@ public class OrganizationServiceImpl implements OrganizationService {
         }
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public void assignMenus(Integer id, List<Integer> menuIds) {
-        // 获取已建立关联的菜单 ids
-        List<Integer> preMenuIds = this.getAssignedMenuIds(id);
-
-        // 获取要新建关联的菜单 ids
-        List<Integer> toAddMenuIds = menuIds.stream()
-                .filter(menuId -> !preMenuIds.contains(menuId)).collect(Collectors.toList());
-
-        // 获取要删除关联的菜单 ids
-        List<Integer> toDelMenuIds = preMenuIds.stream()
-                .filter(menuId -> !menuIds.contains(menuId)).collect(Collectors.toList());
-
-        // 插入要新建的角色-菜单关联
-        List<OrganizationMenuRelation> relations = toAddMenuIds.stream()
-                .map(menuId -> {
-                    OrganizationMenuRelation relation = new OrganizationMenuRelation();
-                    relation.setOrgId(id);
-                    relation.setMenuId(menuId);
-
-                    return relation;
-                }).collect(Collectors.toList());
-        relations.forEach(organizationMenuRelationMapper::insert);
-
-        // 删除要删除的角色-菜单关联
-        if (!CollectionUtils.isEmpty(toDelMenuIds)) {
-            DeleteStatementProvider deleteStatementProvider =
-                    deleteFrom(OrganizationMenuRelationDynamicSqlSupport.organizationMenuRelation)
-                            .where(OrganizationMenuRelationDynamicSqlSupport.orgId, isEqualTo(id))
-                            .and(OrganizationMenuRelationDynamicSqlSupport.menuId, isIn(toDelMenuIds))
-                            .build().render(RenderingStrategies.MYBATIS3);
-            organizationMenuRelationMapper.delete(deleteStatementProvider);
-        }
-    }
-
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<Integer> getAssignedRoleIds(Integer id) {
@@ -388,17 +341,6 @@ public class OrganizationServiceImpl implements OrganizationService {
                 .build().render(RenderingStrategies.MYBATIS3);
         return organizationResourceActionRelationMapper.selectMany(selectStatementProvider).stream()
                 .map(OrganizationResourceActionRelation::getActionId).collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
-    @Override
-    public List<Integer> getAssignedMenuIds(Integer id) {
-        SelectStatementProvider selectStatementProvider = select(OrganizationMenuRelationDynamicSqlSupport.menuId)
-                .from(OrganizationMenuRelationDynamicSqlSupport.organizationMenuRelation)
-                .where(OrganizationMenuRelationDynamicSqlSupport.orgId, isEqualTo(id))
-                .build().render(RenderingStrategies.MYBATIS3);
-        return organizationMenuRelationMapper.selectMany(selectStatementProvider).stream()
-                .map(OrganizationMenuRelation::getMenuId).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -451,39 +393,6 @@ public class OrganizationServiceImpl implements OrganizationService {
                         })));
 
         return categories;
-    }
-
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
-    @Override
-    public List<MenuAssignVO> loadMenus(Integer id) {
-        List<Integer> parentIds = organizationMapper.getParentsIds(id);
-
-        SelectStatementProvider selectStatementProvider =
-                select(OrganizationMenuRelationDynamicSqlSupport.orgId, OrganizationMenuRelationDynamicSqlSupport.menuId)
-                        .from(OrganizationMenuRelationDynamicSqlSupport.organizationMenuRelation)
-                        .where(OrganizationMenuRelationDynamicSqlSupport.orgId, isIn(parentIds))
-                        .build().render(RenderingStrategies.MYBATIS3);
-        List<OrganizationMenuRelation> relations = organizationMenuRelationMapper.selectMany(selectStatementProvider);
-        Map<Integer, List<OrganizationMenuRelation>> relationsMap = relations.stream()
-                .collect(Collectors.groupingBy(OrganizationMenuRelation::getMenuId));
-
-        List<MenuAssignVO> menus = menuService.findAllForAssign();
-        setMenuItems(menus, relationsMap, id);
-
-        return menus;
-    }
-
-    private void setMenuItems(List<MenuAssignVO> menus, Map<Integer, List<OrganizationMenuRelation>> relationsMap, Integer id) {
-        menus.forEach(menu -> {
-            List<Integer> orgIds = relationsMap.get(menu.getId()).stream()
-                    .map(OrganizationMenuRelation::getOrgId).collect(Collectors.toList());
-            menu.setChecked(CollectionUtils.isNotEmpty(orgIds));
-            menu.setEnableUncheck(orgIds.stream().allMatch(id::equals));
-
-            if (!CollectionUtils.isEmpty(menu.getChildren())) {
-                setMenuItems(menu.getChildren(), relationsMap, id);
-            }
-        });
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)

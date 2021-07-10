@@ -1,0 +1,23 @@
+.header-menu .avatar {
+    width: 24px;
+    height: 24px;
+    position: relative;
+    top: -3px;
+}
+
+.header-menu .avatar-text {
+    margin-left: 6px;
+    font-size: 14px;
+}
+
+.header-menu .ant-menu-item::after,
+.header-menu .ant-menu-submenu::after,
+.header-menu .ant-menu-item-selected::after,
+.header-menu .ant-menu-submenu-selected::after {
+    border-bottom: 0 !important;
+}
+
+.header-menu .ant-menu-item:hover:not(:first-child),
+.header-menu .ant-menu-submenu:hover:not(:first-child) {
+    background: rgba(0, 0, 0, .025);
+}

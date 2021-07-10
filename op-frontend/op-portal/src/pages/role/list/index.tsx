@@ -1,5 +1,5 @@
 import React, {FC, useRef} from "react";
-import {Button, Card, Dropdown, Menu, Popconfirm, Space} from "antd";
+import {Button, Dropdown, Menu, Popconfirm, Space} from "antd";
 import {ExportOutlined, MinusOutlined, PlusOutlined} from "@ant-design/icons";
 
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
@@ -7,6 +7,7 @@ import ProTable from '@ant-design/pro-table';
 import {Role} from "../../../models/Role";
 import {changeRolesEnabled, deleteRoles, queryRolePage} from "../../../services/role";
 import {useHistory} from "react-router-dom";
+import {PageContainer} from "@ant-design/pro-layout";
 
 const RoleListPage: FC = () => {
     const history = useHistory();
@@ -35,7 +36,7 @@ const RoleListPage: FC = () => {
             title: '操作',
             valueType: 'option',
             render: (text, record, _, action) => [
-                <a key="edit" onClick={() => history.push(`/management/role-edit/${record.id}`)}>
+                <a key="edit" onClick={() => history.push(`/admin/role/edit/${record.id}`)}>
                     编辑
                 </a>,
                 <Popconfirm
@@ -48,7 +49,7 @@ const RoleListPage: FC = () => {
                         删除
                     </a>
                 </Popconfirm>,
-                <a key="view" onClick={() => history.push(`/management/role-detail/${record.id}`)}>
+                <a key="view" onClick={() => history.push(`/admin/role/detail/${record.id}`)}>
                     查看
                 </a>,
                 <a key="enable" onClick={() => onChangeRolesEnabled([record.id] as number[], record.status === 0)}>
@@ -69,12 +70,13 @@ const RoleListPage: FC = () => {
     }
 
     return (
-        <Card size="small" className="card">
+        <PageContainer className="page-container" header={{
+            breadcrumb: {},
+        }}>
             <ProTable<Role>
                 actionRef={ref}
                 rowKey="id"
                 search={false}
-                headerTitle="角色列表"
                 options={{
                     search: {
                         placeholder: "输入角色名、角色编码或角色描述查询",
@@ -106,7 +108,7 @@ const RoleListPage: FC = () => {
                 rowSelection={{}}
                 toolBarRender={() => [
                     <Button key="button" type="primary" icon={<PlusOutlined/>}
-                            onClick={() => history.push('/management/role-edit')}>
+                            onClick={() => history.push('/admin/role/edit')}>
                         新建
                     </Button>,
                     <Button key="button" icon={<ExportOutlined/>}>
@@ -140,7 +142,7 @@ const RoleListPage: FC = () => {
                     );
                 }}
             />
-        </Card>
+        </PageContainer>
     )
 };
 
