@@ -14,6 +14,9 @@ import UserDetailPage from "../pages/user/detail";
 import BasicLayout from "../layouts/BasicLayout";
 import MenuEditPage from "../pages/menu/edit";
 import MenuDetailPage from "../pages/menu/detail";
+import OrganizationListPage from "../pages/organization/list";
+import OrganizationEditPage from "../pages/organization/edit";
+import OrganizationDetailPage from "../pages/organization/detail";
 
 const routes  = [
     {
@@ -26,6 +29,21 @@ const routes  = [
                 render: () => (
                     <Redirect to={"/workbench"}/>
                 )
+            },
+            {
+                path: "/admin/organization",
+                exact: true,
+                component: OrganizationListPage,
+            },
+            {
+                path: "/admin/organization/edit/:id?",
+                exact: true,
+                component: OrganizationEditPage,
+            },
+            {
+                path: "/admin/organization/detail/:id",
+                exact: true,
+                component: OrganizationDetailPage,
             },
             {
                 path: "/admin/user",

@@ -61,8 +61,9 @@ const UserDetailPage = () => {
                         <Descriptions.Item label="性别">{user.gender && user.gender === 1 ? '男' : '女'}</Descriptions.Item>
                         <Descriptions.Item label="出生日期">{user.birthday}</Descriptions.Item>
                         <Descriptions.Item label="个性签名">{user.signature}</Descriptions.Item>
-                        <Descriptions.Item
-                            label="帐号状态">{user.status && (user.status === 1 ? '启用' : (user.status === 2 ? '禁用' : (user.status === 3 ? '过期' : '密码过期')))}</Descriptions.Item>
+                        <Descriptions.Item label="帐号状态">
+                            {user.status && (user.status === 1 ? '启用' : (user.status === 2 ? '禁用' : (user.status === 3 ? '过期' : '密码过期')))}
+                        </Descriptions.Item>
                     </Descriptions>
                 </Spin>
             </Card>

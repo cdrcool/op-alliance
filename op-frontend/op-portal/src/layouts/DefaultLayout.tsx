@@ -1,14 +1,13 @@
 import React, {FC, useState} from "react";
 import type {MenuDataItem, ProSettings} from "@ant-design/pro-layout";
 import ProLayout, {SettingDrawer} from "@ant-design/pro-layout";
-import {MenuUnfoldOutlined, MenuFoldOutlined} from "@ant-design/icons";
+import * as Icon from "@ant-design/icons";
+import {MenuFoldOutlined, MenuUnfoldOutlined} from "@ant-design/icons";
 import "./DefaultLayout.css";
 import logo from "../assets/logo.svg";
-import {useLocation} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 import {renderRoutes} from "react-router-config";
 import defaultSettings from "./defaultSettings";
-import * as Icon from '@ant-design/icons'
-import {Link} from "react-router-dom";
 import HeaderMenu from "./HeaderMenu";
 import {queryMenuTreeList} from "../services/menu";
 import {Menus} from "../models/Menus";
@@ -28,9 +27,10 @@ const DefaultLayout: FC = (props) => {
                     // @ts-ignore
                     Icon[item.menuIcon],
                     {
-                        style:{ fontSize: '16px'}
+                        style: {fontSize: '16px'}
                     }
                 ),
+                hideInMenu: item.isHidden,
                 children: item.children && convertToAntdMenu(item.children),
             }
         });
@@ -58,7 +58,7 @@ const DefaultLayout: FC = (props) => {
                                 fontSize: '16px',
                             }}
                         >
-                            {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                            {collapsed ? <MenuUnfoldOutlined/> : <MenuFoldOutlined/>}
                         </div>
                     );
                 }}

@@ -23,6 +23,10 @@ const RoleListPage: FC = () => {
             dataIndex: 'roleCode',
         },
         {
+            title: '角色描述',
+            dataIndex: 'roleDesc',
+        },
+        {
             title: '启用状态',
             dataIndex: 'status',
             valueEnum: {

@@ -131,16 +131,11 @@ public class OrganizationServiceImpl implements OrganizationService {
      * @param pid          上级组织 id
      */
     private void setOrganizationProps(Organization organization, Integer pid) {
-        if (pid == null) {
-            organization.setPid(-1);
-            organization.setOrgCodeLink("");
-        } else {
-            Organization pOrg = organizationMapper.selectByPrimaryKey(pid)
-                    .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + pid + "】的上级组织"));
-            String orgCodeLink = pOrg.getOrgCodeLink();
-            orgCodeLink = StringUtils.isNoneBlank(orgCodeLink) ? orgCodeLink + "." + organization.getOrgCode() : organization.getOrgCode();
-            organization.setOrgCodeLink(orgCodeLink);
-        }
+        Organization pOrg = organizationMapper.selectByPrimaryKey(pid)
+                .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + pid + "】的上级组织"));
+        String orgCodeLink = pOrg.getOrgCodeLink();
+        orgCodeLink = StringUtils.isNoneBlank(orgCodeLink) ? orgCodeLink + "." + organization.getOrgCode() : organization.getOrgCode();
+        organization.setOrgCodeLink(orgCodeLink);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -208,7 +203,8 @@ public class OrganizationServiceImpl implements OrganizationService {
         } else {
             SelectStatementProvider partSelectStatementProvider = select(OrganizationDynamicSqlSupport.orgCodeLink)
                     .from(OrganizationDynamicSqlSupport.organization)
-                    .where(OrganizationDynamicSqlSupport.orgName, isLike(queryDTO.getKeyword()).map(v -> "%" + v + "%"))
+                    .where(OrganizationDynamicSqlSupport.orgName, isLike(queryDTO.getKeyword())
+                            .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"))
                     .build().render(RenderingStrategies.MYBATIS3);
             List<String> orgCodeLinks = organizationMapper.selectMany(partSelectStatementProvider).stream()
                     .map(Organization::getOrgCodeLink).collect(Collectors.toList());
@@ -239,9 +235,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         SelectStatementProvider selectStatementProvider = select(OrganizationMapper.selectList)
                 .from(OrganizationDynamicSqlSupport.organization)
                 .where(OrganizationDynamicSqlSupport.orgName, isLike(queryDTO.getKeyword())
-                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"),
-                        or(OrganizationDynamicSqlSupport.orgCode, isLike(queryDTO.getKeyword())
-                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")))
+                        .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"))
                 .and(OrganizationDynamicSqlSupport.pid, isEqualToWhenPresent(queryDTO.getPid()))
                 .build().render(RenderingStrategies.MYBATIS3);
         List<Organization> organizations = organizationMapper.selectMany(selectStatementProvider);

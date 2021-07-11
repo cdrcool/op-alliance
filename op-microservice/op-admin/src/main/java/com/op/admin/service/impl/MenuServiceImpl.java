@@ -52,6 +52,8 @@ public class MenuServiceImpl implements MenuService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void save(MenuSaveDTO saveDTO) {
+        saveDTO.setPid(Optional.ofNullable(saveDTO.getPid()).orElse(-1));
+
         // 校验同一菜单下，子菜单名称是否重复
         validateMenuName(saveDTO.getPid(), saveDTO.getId(), saveDTO.getMenuName());
 
@@ -95,8 +97,7 @@ public class MenuServiceImpl implements MenuService {
      * @param pid  父菜单id
      */
     private void setMenuProps(Menu menu, Integer pid) {
-        if (pid == null) {
-            menu.setPid(-1);
+        if (pid == -1) {
             menu.setMenuLevel(1);
         } else {
             Menu pMenu = menuMapper.selectByPrimaryKey(pid)
