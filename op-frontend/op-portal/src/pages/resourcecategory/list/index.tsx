@@ -4,11 +4,14 @@ import {Button, Card, Input, Pagination, Popconfirm, Space} from "antd";
 import * as Icon from "@ant-design/icons";
 import {PageContainer} from "@ant-design/pro-layout";
 import {ResourceCategory} from "../../../models/Resource";
+import {useHistory} from "react-router-dom";
 
 const {Meta} = Card;
 const {Search} = Input;
 
 export default () => {
+    const history = useHistory();
+
     const dataSource: ResourceCategory[] = [
         {
             id: 1,
@@ -106,6 +109,9 @@ export default () => {
                                     </Popconfirm>
                                 </Space>
                             }
+                            onClick={() => history.push(`/admin/resource`, {
+                                categoryId: item.id,
+                            })}
                         >
                             <Meta
                                 avatar={item.categoryIcon && React.createElement(

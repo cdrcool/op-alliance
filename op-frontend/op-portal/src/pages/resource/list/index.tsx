@@ -1,179 +1,129 @@
-import React, {FC} from "react";
-import {Alert, Button, Card, Input, Space, Table} from "antd";
-import {ExportOutlined, MinusOutlined, PlusOutlined, SearchOutlined} from "@ant-design/icons";
+import React, {FC, useRef} from "react";
+import {Button, Popconfirm, Space} from "antd";
+import {ExportOutlined, MinusOutlined, PlusOutlined} from "@ant-design/icons";
 
-import './index.css';
+import type {ActionType, ProColumns} from '@ant-design/pro-table';
+import ProTable from '@ant-design/pro-table';
+import {useHistory} from "react-router-dom";
+import {PageContainer} from "@ant-design/pro-layout";
+import {Resource} from "../../../models/Resource";
+import {deleteResources, queryResourcePage} from "../../../services/resource";
 
 const ResourceListPage: FC = () => {
-    const columns = [
-        /*{
-            title: '编号',
-            dataIndex: 'resourceNo',
-            key: 'resourceNo',
-        },*/
+    const history = useHistory();
+    // @ts-ignore
+    const {categoryId} = history.location.state || {};
+    const ref = useRef<ActionType>();
+
+    const columns: ProColumns<Resource>[] = [
         {
-            title: '资源名称',
+            title: '资源名',
             dataIndex: 'resourceName',
-            key: 'resourceName',
-            render: (value: string) => <a>{value}</a>,
         },
         {
             title: '资源路径',
             dataIndex: 'resourcePath',
-            key: 'resourcePath',
         },
         {
             title: '资源描述',
             dataIndex: 'resourceDesc',
-            key: 'resourceDesc',
         },
         {
             title: '操作',
-            key: 'action',
-            render: (text: string, record: object) => (
-                <Space>
-                    <a>编辑</a>
-                    <a>删除</a>
-                </Space>
-            ),
+            valueType: 'option',
+            render: (text, record, _, action) => [
+                <a key="edit" onClick={() => history.push(`/admin/resource/edit/${record.id}`)}>
+                    编辑
+                </a>,
+                <Popconfirm
+                    title="确定要删除吗？"
+                    okText="确定"
+                    cancelText="取消"
+                    onConfirm={() => onDeleteResources([record.id] as number[])}
+                >
+                    <a key="delete">
+                        删除
+                    </a>
+                </Popconfirm>,
+                <a key="view" onClick={() => history.push(`/admin/resource/detail/${record.id}`)}>
+                    查看
+                </a>,
+            ],
         },
     ];
 
-    const dataSource = [
-        {
-            id: 3,
-            resourceNo: 1,
-            resourceName: '组织管理',
-            resourcePath: '/admin/organization',
-            resourceDesc: null,
-        },
-        {
-            id: 4,
-            resourceNo: 2,
-            resourceName: '用户管理',
-            resourcePath: '/admin/user',
-            resourceDesc: null,
-        },
-        {
-            id: 5,
-            resourceNo: 3,
-            resourceName: '角色',
-            resourcePath: '/admin/role',
-            resourceDesc: null,
-        },
-        {
-            id: 6,
-            resourceNo: 4,
-            resourceName: '资源管理',
-            resourcePath: '/admin/resource',
-            resourceDesc: null,
-        },
-        {
-            id: 7,
-            resourceNo: 5,
-            resourceName: '菜单管理',
-            resourcePath: '/admin/menu',
-            resourceDesc: null,
-        },
-    ];
-
-    const expandedRowRender = (record: { id: number, resourceNo: number, resourceName: string, resourcePath: string, resourceDesc: string | null }) => {
-        const columns = [
-            {title: '动作名称', dataIndex: 'actionName', key: 'actionName'},
-            {title: '动作路径', dataIndex: 'actionPath', key: 'actionPath'},
-            {title: '动作描述', dataIndex: 'actionDesc', key: 'actionDesc'},
-            {title: '权限名', dataIndex: 'permission', key: 'permission'},
-            {
-                title: '操作',
-                dataIndex: 'operation',
-                key: 'operation',
-                render: () => (
-                    <Space>
-                        <a>编辑</a>
-                        <a>删除</a>
-                    </Space>
-                ),
-            },
-        ];
-
-        const data = [
-            {
-                id: record.id + "-" + 1,
-                actionName: '查看',
-                actionPath: 'view',
-                actionDesc: null,
-                permission: 'view',
-            },
-            {
-                id: record.id + "-" + 2,
-                actionName: '保存',
-                actionPath: 'save',
-                actionDesc: null,
-                permission: 'save',
-            },
-            {
-                id: record.id + "-" + 3,
-                actionName: '删除',
-                actionPath: 'delete',
-                actionDesc: null,
-                permission: 'delete',
-            },
-            {
-                id: record.id + "-" + 4,
-                actionName: '导出',
-                actionPath: 'export',
-                actionDesc: null,
-                permission: 'export',
-            },
-        ];
-        return <Table columns={columns} dataSource={data} rowKey="id"/>;
-    };
+    const onDeleteResources = (ids: number[]) => {
+        // @ts-ignore
+        deleteResources(ids).then(() => ref.current.reloadAndRest());
+    }
 
     return (
-        <>
-            <Card size="small" className="card">
-                <div style={{float: 'right', marginBottom: 4}}>
-                    <Space>
-                        <Input placeholder="输入资源名称或资源路径查询" suffix={<SearchOutlined/>} allowClear={true}
-                               style={{width: 400}}/>
-                    </Space>
-                </div>
-            </Card>
-
-            <Card className="card">
-                <div>
-                    <Space style={{float: 'right'}}>
-                        <Button key="add" type="primary" icon={<PlusOutlined/>}>
-                            新增
-                        </Button>
-                        <Button key="export" icon={<ExportOutlined/>}>
-                            导出
-                        </Button>
-                    </Space>
-
-                    <Space style={{marginBottom: 6}}>
-                        <Alert message="已选择 1 项" type="info" style={{width: 400, height: 32}}
-                               action={<Button size="small" type="link">
-                                   取消选择
-                               </Button>}/>
-                        <Button key="batchDelete" icon={<MinusOutlined/>}>
-                            批量删除
-                        </Button>
-                    </Space>
-                </div>
-
-                <Table columns={columns} dataSource={dataSource}
-                       rowKey="id"
-                       rowSelection={{
-                           type: "checkbox",
-                           onChange: (selectedRowKeys: React.Key[], selectedRows: any[]) => {
-                               console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-                           }
-                       }}
-                       expandable={{expandedRowRender}}
-                />
-            </Card>
-        </>
+        <PageContainer className="page-container" header={{
+            breadcrumb: {},
+        }}>
+            <ProTable<Resource>
+                actionRef={ref}
+                rowKey="id"
+                search={false}
+                options={{
+                    search: {
+                        placeholder: "输入资源名、资源路径或资源描述查询",
+                        style: {width: 400},
+                    },
+                    fullScreen: true,
+                }}
+                columns={columns}
+                request={
+                    async (params, sort, filter) => {
+                        const {current, pageSize, keyword} = params;
+                        const result = await queryResourcePage(
+                            (current || 1) - 1,
+                            pageSize || 10,
+                            {
+                                keyword,
+                                ...filter,
+                                categoryId
+                            }
+                        );
+                        return {
+                            data: result.content,
+                            success: true,
+                            total: result.totalElements,
+                        };
+                    }}
+                pagination={{
+                    pageSize: 10,
+                }}
+                rowSelection={{}}
+                toolBarRender={() => [
+                    <Button key="button" type="primary" icon={<PlusOutlined/>}
+                            onClick={() => history.push('/admin/resource/edit', {
+                                categoryId,
+                            })}>
+                        新建
+                    </Button>,
+                    <Button key="button" icon={<ExportOutlined/>}>
+                        导出
+                    </Button>,
+                ]}
+                tableAlertOptionRender={({selectedRowKeys}) => {
+                    return (
+                        <Space>
+                            <Popconfirm
+                                title="确定要删除吗？"
+                                okText="确定"
+                                cancelText="取消"
+                                onConfirm={() => onDeleteResources(selectedRowKeys as number[])}
+                            >
+                                <Button key="batchDelete" icon={<MinusOutlined/>}>
+                                    批量删除
+                                </Button>
+                            </Popconfirm>
+                        </Space>
+                    );
+                }}
+            />
+        </PageContainer>
     )
 };
 

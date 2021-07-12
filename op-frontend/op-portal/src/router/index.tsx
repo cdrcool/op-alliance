@@ -5,20 +5,21 @@ import UserListPage from "../pages/user/list";
 import NoFoundPage from "../pages/404";
 import MenuListPage from "../pages/menu/list";
 import ResourceCategoryPage from "../pages/resourcecategory/list";
-import ResourceListPage from "../pages/resource/list";
 import RoleListPage from "../pages/role/list";
 import RoleEditPage from "../pages/role/edit";
 import RoleDetailPage from "../pages/role/detail";
 import UserEditPage from "../pages/user/edit";
 import UserDetailPage from "../pages/user/detail";
-import BasicLayout from "../layouts/BasicLayout";
 import MenuEditPage from "../pages/menu/edit";
 import MenuDetailPage from "../pages/menu/detail";
 import OrganizationListPage from "../pages/organization/list";
 import OrganizationEditPage from "../pages/organization/edit";
 import OrganizationDetailPage from "../pages/organization/detail";
+import ResourceEditPage from "../pages/resource/edit";
+import ResourceDetailPage from "../pages/resource/detail";
+import ResourceListPage from "../pages/resource/list";
 
-const routes  = [
+const routes = [
     {
         path: "/",
         component: DefaultLayout,
@@ -99,6 +100,16 @@ const routes  = [
                 path: "/admin/resource",
                 exact: true,
                 component: ResourceListPage,
+            },
+            {
+                path: "/admin/resource/edit/:id?",
+                exact: true,
+                component: ResourceEditPage,
+            },
+            {
+                path: "/admin/resource/detail/:id",
+                exact: true,
+                component: ResourceDetailPage,
             },
             {
                 component: NoFoundPage,

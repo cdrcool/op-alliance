@@ -109,7 +109,8 @@ public class ResourceServiceImpl implements ResourceService {
 
         SelectStatementProvider selectStatementProvider = select(ResourceMapper.selectList)
                 .from(ResourceDynamicSqlSupport.resource)
-                .where(ResourceDynamicSqlSupport.resourceName, isLike(queryDTO.getKeyword())
+                .where(ResourceDynamicSqlSupport.categoryId, isEqualTo(queryDTO.getCategoryId()))
+                        .and(ResourceDynamicSqlSupport.resourceName, isLike(queryDTO.getKeyword())
                                 .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"),
                         or(ResourceDynamicSqlSupport.resourcePath, isLike(queryDTO.getKeyword())
                                 .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")))
