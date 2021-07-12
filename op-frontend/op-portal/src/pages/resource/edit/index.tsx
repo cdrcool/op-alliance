@@ -1,11 +1,14 @@
-import {Button, Card, Form, Input, InputNumber, Space, Spin} from 'antd';
+import {Button, Card, Form, Input, InputNumber, Select, Space, Spin} from 'antd';
 import {useHistory, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import {PageContainer} from "@ant-design/pro-layout";
 import {getResource, saveResource} from "../../../services/resource";
 import {Resource} from "../../../models/Resource";
+import {queryResourceCategorySelectList} from "../../../services/resourceCategory";
+import {SelectOptions} from "../../../models/SelectOptions";
 
 const {TextArea} = Input;
+const {Option} = Select;
 
 const ResourceEditPage = () => {
     const history = useHistory();
@@ -14,6 +17,7 @@ const ResourceEditPage = () => {
     const {categoryId} = history.location.state || {};
 
     const [loading, setLoading] = useState<boolean>(!!id);
+    const [categoryOptions, setCategoryOptions] = useState<SelectOptions[]>([]);
     const [form] = Form.useForm();
 
     useEffect(() => {
@@ -29,6 +33,14 @@ const ResourceEditPage = () => {
         } else {
             form.setFieldsValue({categoryId});
         }
+
+        const fetchCategoryOptions = async () => {
+            const categoryOptions = await queryResourceCategorySelectList({});
+            setCategoryOptions(categoryOptions || []);
+        };
+        fetchCategoryOptions().then(() => {
+        });
+
     }, []);
 
 
@@ -62,7 +74,13 @@ const ResourceEditPage = () => {
                         onFinishFailed={onFinishFailed}
                     >
                         <Form.Item name="id" hidden={true}/>
-                        <Form.Item name="categoryId" hidden={true}/>
+                        <Form.Item label="资源分类" name="categoryId">
+                            <Select>
+                                {
+                                    categoryOptions.map(item => <Option key={item.value} value={item.value}>{item.label}</Option>)
+                                }
+                            </Select>
+                        </Form.Item>
                         <Form.Item label="资源名" name="resourceName" rules={[{required: true, message: '请输入资源名'}]}>
                             <Input/>
                         </Form.Item>

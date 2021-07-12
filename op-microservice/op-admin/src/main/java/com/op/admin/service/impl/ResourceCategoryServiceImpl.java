@@ -12,6 +12,7 @@ import com.op.admin.service.ResourceService;
 import com.op.admin.vo.ResourceAssignVO;
 import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.ResourceCategoryVO;
+import com.op.admin.vo.SelectVO;
 import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.apache.commons.lang3.StringUtils;
@@ -110,6 +111,22 @@ public class ResourceCategoryServiceImpl implements ResourceCategoryService {
                 .doSelectPage(() -> resourceCategoryMapper.selectMany(selectStatementProvider));
 
         return new PageImpl<>(resourceCategoryMapping.toResourceCategoryVOList(result.getResult()), pageable, result.getTotal());
+    }
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public List<SelectVO> querySelectList(ResourceCategoryPageQueryDTO queryDTO) {
+        SelectStatementProvider selectStatementProvider = select(ResourceCategoryDynamicSqlSupport.id, ResourceCategoryDynamicSqlSupport.categoryName)
+                .from(ResourceCategoryDynamicSqlSupport.resourceCategory)
+                .where(ResourceCategoryDynamicSqlSupport.categoryName, isLike(queryDTO.getKeyword())
+                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"),
+                        or(ResourceCategoryDynamicSqlSupport.serverName, isLike(queryDTO.getKeyword())
+                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")))
+                .orderBy(ResourceCategoryDynamicSqlSupport.categoryNo)
+                .build().render(RenderingStrategies.MYBATIS3);
+        List<ResourceCategory> list = resourceCategoryMapper.selectMany(selectStatementProvider);
+
+        return resourceCategoryMapping.toSelectVOList(list);
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)

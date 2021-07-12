@@ -15,7 +15,6 @@ import javax.validation.constraints.NotNull;
 @Data
 public class ResourcePageQueryDTO {
     @ApiModelProperty("资源分类 id")
-    @NotNull
     private Integer categoryId;
 
     @ApiModelProperty("关键字（根据资源名称或资源路径查询）")

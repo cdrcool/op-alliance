@@ -4,6 +4,7 @@ import com.op.admin.dto.ResourceCategoryPageQueryDTO;
 import com.op.admin.dto.ResourceCategorySaveDTO;
 import com.op.admin.service.ResourceCategoryService;
 import com.op.admin.vo.ResourceCategoryVO;
+import com.op.admin.vo.SelectVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Page;
@@ -59,5 +60,11 @@ public class ResourceCategoryController {
     public Page<ResourceCategoryVO> queryPage(@PageableDefault(sort = "category_no", direction = Sort.Direction.ASC) Pageable pageable,
                                               @Valid @RequestBody ResourceCategoryPageQueryDTO queryDTO) {
         return resourceCategoryService.queryPage(pageable, queryDTO);
+    }
+
+    @ApiOperation("查询资源分类下拉框列表")
+    @PostMapping("selectList")
+    public List<SelectVO> querySelectList(@Valid @RequestBody ResourceCategoryPageQueryDTO queryDTO) {
+        return resourceCategoryService.querySelectList(queryDTO);
     }
 }

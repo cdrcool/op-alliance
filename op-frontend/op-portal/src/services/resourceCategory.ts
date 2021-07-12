@@ -1,6 +1,7 @@
 import {ResourceCategory} from "../models/ResourceCategory";
 import {PageResult} from "../models/PageResult";
 import request from "../utils/request";
+import {SelectOptions} from "../models/SelectOptions";
 
 /**
  * 保存资源分类
@@ -47,4 +48,13 @@ export async function getResourceCategory(id: number): Promise<ResourceCategory>
  */
 export async function queryResourceCategoryPage(page: number, size: number, params: object): Promise<PageResult<ResourceCategory>> {
     return request.post(`/api/resourceCategory/page?page=${page}&size=${size}`, params);
+}
+
+/**
+ * 查询资源分类下拉框列表
+ *
+ * @param params 查询参数
+ */
+export async function queryResourceCategorySelectList(params: object): Promise<SelectOptions[]> {
+    return request.post(`/api/resourceCategory/selectList`, params);
 }

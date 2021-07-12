@@ -1,4 +1,4 @@
-import React, {FC, useRef} from "react";
+import React, {FC, useEffect, useRef, useState} from "react";
 import {Button, Popconfirm, Space} from "antd";
 import {ExportOutlined, MinusOutlined, PlusOutlined} from "@ant-design/icons";
 
@@ -8,6 +8,10 @@ import {useHistory} from "react-router-dom";
 import {PageContainer} from "@ant-design/pro-layout";
 import {Resource} from "../../../models/Resource";
 import {deleteResources, queryResourcePage} from "../../../services/resource";
+import {getUser} from "../../../services/user";
+import {queryResourceCategorySelectList} from "../../../services/resourceCategory";
+import {User} from "../../../models/User";
+import {SelectOptions} from "../../../models/SelectOptions";
 
 const ResourceListPage: FC = () => {
     const history = useHistory();
@@ -15,18 +19,42 @@ const ResourceListPage: FC = () => {
     const {categoryId} = history.location.state || {};
     const ref = useRef<ActionType>();
 
+    const [categoryOptions, setCategoryOptions] = useState<SelectOptions[]>([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const categoryOptions = await queryResourceCategorySelectList({});
+            setCategoryOptions(categoryOptions || []);
+        }
+
+        fetchData().then(() => {
+        });
+    }, []);
+
     const columns: ProColumns<Resource>[] = [
+        {
+            title: '资源分类',
+            dataIndex: 'categoryId',
+            valueType: 'select',
+            fieldProps: {
+                options: categoryOptions,
+            },
+            initialValue: categoryId,
+        },
         {
             title: '资源名',
             dataIndex: 'resourceName',
+            search: false,
         },
         {
             title: '资源路径',
             dataIndex: 'resourcePath',
+            search: false,
         },
         {
             title: '资源描述',
             dataIndex: 'resourceDesc',
+            search: false,
         },
         {
             title: '操作',
@@ -58,13 +86,15 @@ const ResourceListPage: FC = () => {
     }
 
     return (
-        <PageContainer className="page-container" header={{
-            breadcrumb: {},
-        }}>
+        <PageContainer
+            className="page-container"
+            title="资源管理"
+            header={{
+                breadcrumb: {},
+            }}>
             <ProTable<Resource>
                 actionRef={ref}
                 rowKey="id"
-                search={false}
                 options={{
                     search: {
                         placeholder: "输入资源名、资源路径或资源描述查询",
@@ -75,14 +105,13 @@ const ResourceListPage: FC = () => {
                 columns={columns}
                 request={
                     async (params, sort, filter) => {
-                        const {current, pageSize, keyword} = params;
+                        const {current, pageSize, ...others} = params;
                         const result = await queryResourcePage(
                             (current || 1) - 1,
                             pageSize || 10,
                             {
-                                keyword,
+                                ...others,
                                 ...filter,
-                                categoryId
                             }
                         );
                         return {
@@ -90,7 +119,8 @@ const ResourceListPage: FC = () => {
                             success: true,
                             total: result.totalElements,
                         };
-                    }}
+                    }
+                }
                 pagination={{
                     pageSize: 10,
                 }}

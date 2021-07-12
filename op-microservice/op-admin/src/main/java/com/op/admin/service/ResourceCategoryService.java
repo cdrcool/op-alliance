@@ -4,6 +4,7 @@ import com.op.admin.dto.ResourceCategoryPageQueryDTO;
 import com.op.admin.dto.ResourceCategorySaveDTO;
 import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.ResourceCategoryVO;
+import com.op.admin.vo.SelectVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -53,6 +54,14 @@ public interface ResourceCategoryService {
      * @return 资源分类 vo 分页列表
      */
     Page<ResourceCategoryVO> queryPage(Pageable pageable, ResourceCategoryPageQueryDTO queryDTO);
+
+    /**
+     * 查询资源分类下拉框列表
+     *
+     * @param queryDTO 查询对象
+     * @return 资源分类下拉框列表
+     */
+    List<SelectVO> querySelectList(ResourceCategoryPageQueryDTO queryDTO);
 
     /**
      * 查找所有资源分类，用于分配资源使用
