@@ -41,6 +41,26 @@ export default () => {
             categoryName: "文档中心",
             categoryIcon: "ReadOutlined",
         },
+        {
+            id: 7,
+            categoryName: "日志中心",
+            categoryIcon: "DatabaseOutlined",
+        },
+        {
+            id: 8,
+            categoryName: "监控中心",
+            categoryIcon: "PictureOutlined",
+        },
+        {
+            id: 9,
+            categoryName: "附件中心",
+            categoryIcon: "FileImageOutlined",
+        },
+        {
+            id: 10,
+            categoryName: "文档中心",
+            categoryIcon: "ReadOutlined",
+        },
     ];
 
     const onDeleteResourceCategory = (ids: number[]) => {
@@ -63,7 +83,7 @@ export default () => {
                     dataSource.map(item =>
                         <ProCard
                             key={item.id}
-                            colSpan={8}
+                            colSpan={12}
                             bordered
                             hoverable
                             title={item.categoryName}
