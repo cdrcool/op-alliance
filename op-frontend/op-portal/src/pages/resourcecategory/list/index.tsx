@@ -3,7 +3,7 @@ import ProCard from '@ant-design/pro-card';
 import {Button, Card, Input, Pagination, Popconfirm, Space} from "antd";
 import * as Icon from "@ant-design/icons";
 import {PageContainer} from "@ant-design/pro-layout";
-import {ResourceCategory} from "../../../models/Resource";
+import {ResourceCategory} from "../../../models/ResourceCategory";
 import {useHistory} from "react-router-dom";
 
 const {Meta} = Card;
