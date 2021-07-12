@@ -1,6 +1,6 @@
 import React from 'react';
 import ProCard from '@ant-design/pro-card';
-import {Button, Card, Pagination, Popconfirm, Space, Input} from "antd";
+import {Button, Card, Input, Pagination, Popconfirm, Space} from "antd";
 import * as Icon from "@ant-design/icons";
 import {PageContainer} from "@ant-design/pro-layout";
 import {ResourceCategory} from "../../../models/Resource";
@@ -74,11 +74,17 @@ export default () => {
                 breadcrumb: {},
             }}
         >
-            <Space style={{float: 'right', marginBottom: 8}}>
-                <Search placeholder="输入资源分类名称查询" style={{width: 400}}/>
-                <Button type="primary">新建</Button>
-            </Space>
-            <ProCard ghost wrap gutter={[8, 8]}>
+            <ProCard
+                wrap={true}
+                gutter={[16, 16]}
+                extra={
+                    <Space style={{float: 'right', marginBottom: 8}}>
+                        <Search placeholder="输入资源分类名称查询" style={{width: 400}}/>
+                        <Button type="primary">新建</Button>
+                    </Space>
+                }
+                actions={[<Pagination/>]}
+            >
                 {
                     dataSource.map(item =>
                         <ProCard
@@ -89,17 +95,18 @@ export default () => {
                             title={item.categoryName}
                             extra={
                                 <Space>
-                                    <Button size="small">编辑</Button>
+                                    <a>编辑</a>
                                     <Popconfirm
                                         title="确定要删除吗？"
                                         okText="确定"
                                         cancelText="取消"
                                         onConfirm={() => onDeleteResourceCategory([item.id] as number[])}
                                     >
-                                        <Button size="small">删除</Button>
+                                        <a>删除</a>
                                     </Popconfirm>
                                 </Space>
-                            }>
+                            }
+                        >
                             <Meta
                                 avatar={item.categoryIcon && React.createElement(
                                     // @ts-ignore
@@ -114,7 +121,6 @@ export default () => {
                     )
                 }
             </ProCard>
-            <Pagination style={{float: 'right', marginTop: 8}}/>
         </PageContainer>
     );
 };
