@@ -10,6 +10,72 @@ import {Resource} from "../../../models/Resource";
 import {deleteResources, queryResourcePage} from "../../../services/resource";
 import {queryResourceCategorySelectList} from "../../../services/resourceCategory";
 import {SelectOptions} from "../../../models/SelectOptions";
+import {deleteResourceAction, saveResourceAction} from "../../../services/resourceAction";
+import {ResourceAction} from "../../../models/ResourceAction";
+
+type ResourceActionListProps = {
+    actions: ResourceAction[];
+};
+
+const ResourceActionList: React.FC<ResourceActionListProps> = (props) => {
+    const [actions, setActions] = useState<ResourceAction[]>(props.actions || []);
+
+    return (
+        <ProTable
+            rowKey="id"
+            columns={[
+                {title: '动作名称', dataIndex: 'actionName'},
+                {title: '动作路径', dataIndex: 'actionPath'},
+                {title: '动作描述', dataIndex: 'actionDesc'},
+                {title: '权限标识', dataIndex: 'permission'},
+                {
+                    title: '操作',
+                    valueType: 'option',
+                    width: 200,
+                    render: (text, record, _, action) => [
+                        <a key="edit" onClick={
+                            () => {
+                                action?.startEditable?.(record.id as number)
+                            }
+                        }>
+                            编辑
+                        </a>,
+                        <Popconfirm
+                            title="确定要删除吗？"
+                            okText="确定"
+                            cancelText="取消"
+                            onConfirm={
+                                () => {
+                                    setActions(actions.filter((item) => item.id !== record.id));
+                                }
+                            }
+                        >
+                            <a key="delete">
+                                删除
+                            </a>
+                        </Popconfirm>,
+                    ],
+                },
+            ]}
+            editable={
+                {
+                    type: "single",
+                    onSave: async (rowKey, record, originRow) => {
+                        await saveResourceAction(record);
+                    },
+                    onDelete: async (key, row) => {
+                        await deleteResourceAction(key as number);
+                    }
+                }
+            }
+            dataSource={actions}
+            headerTitle={false}
+            search={false}
+            options={false}
+            pagination={false}
+        />
+    )
+};
 
 const ResourceListPage: FC = () => {
     const history = useHistory();
@@ -83,49 +149,6 @@ const ResourceListPage: FC = () => {
         deleteResources(ids).then(() => ref.current.reloadAndRest());
     }
 
-    const expandedRowRender = (resource: Resource, index: number, indent: number, expanded: boolean) => {
-        return (
-            <ProTable
-                columns={[
-                    {title: '动作名称', dataIndex: 'actionName'},
-                    {title: '动作路径', dataIndex: 'actionPath'},
-                    {title: '动作描述', dataIndex: 'actionDesc'},
-                    {title: '权限标识', dataIndex: 'permission'},
-                    {
-                        title: '操作',
-                        valueType: 'option',
-                        render: (text, record, _, action) => [
-                            <a key="edit" onClick={() => history.push(`/admin/resourceAction/edit/${record.id}`, {
-                                resourceId: resource.id,
-                                resourceName: resource.resourceName,
-                            })}>
-                                编辑
-                            </a>,
-                            <Popconfirm
-                                title="确定要删除吗？"
-                                okText="确定"
-                                cancelText="取消"
-                                onConfirm={() => onDeleteResources([record.id] as number[])}
-                            >
-                                <a key="delete">
-                                    删除
-                                </a>
-                            </Popconfirm>,
-                            <a key="view" onClick={() => history.push(`/admin/resourceAction/detail/${record.id}`)}>
-                                查看
-                            </a>,
-                        ],
-                    },
-                ]}
-                dataSource={resource.actions}
-                headerTitle={false}
-                search={false}
-                options={false}
-                pagination={false}
-            />
-        );
-    };
-
     return (
         <PageContainer
             className="page-container"
@@ -146,7 +169,15 @@ const ResourceListPage: FC = () => {
                 columns={columns}
 
                 // @ts-ignore
-                expandable={{expandedRowRender}}
+                expandable={
+                    {
+                        expandedRowRender: (resource, index, indent, expanded) => {
+                            return (
+                                <ResourceActionList actions={resource.actions || []}/>
+                            );
+                        },
+                    }
+                }
                 request={
                     async (params, sort, filter) => {
                         const {current, pageSize, ...others} = params;
