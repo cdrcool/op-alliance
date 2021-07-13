@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 /**
  * 资源 VO
  *
@@ -32,4 +34,7 @@ public class ResourceVO extends BaseVo {
 
     @ApiModelProperty("资源编号")
     private Integer resourceNo;
+
+    @ApiModelProperty("资源动作列表")
+    private List<ResourceActionVO> actions;
 }

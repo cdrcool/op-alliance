@@ -3,13 +3,14 @@ package com.op.admin.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.op.admin.dto.ResourcePageQueryDTO;
 import com.op.admin.dto.ResourceSaveDTO;
-import com.op.admin.mapper.ResourceMapper;
-import com.op.admin.mapping.ResourceMapping;
 import com.op.admin.entity.Resource;
 import com.op.admin.mapper.ResourceDynamicSqlSupport;
+import com.op.admin.mapper.ResourceMapper;
+import com.op.admin.mapping.ResourceMapping;
 import com.op.admin.service.ResourceActionService;
 import com.op.admin.service.ResourceService;
 import com.op.admin.vo.ResourceActionAssignVO;
+import com.op.admin.vo.ResourceActionVO;
 import com.op.admin.vo.ResourceAssignVO;
 import com.op.admin.vo.ResourceVO;
 import com.op.framework.web.common.api.response.ResultCode;
@@ -92,6 +93,7 @@ public class ResourceServiceImpl implements ResourceService {
     public ResourceVO findById(Integer id) {
         Resource resource = resourceMapper.selectByPrimaryKey(id)
                 .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的资源"));
+
         return resourceMapping.toResourceVO(resource);
     }
 
@@ -110,7 +112,7 @@ public class ResourceServiceImpl implements ResourceService {
         SelectStatementProvider selectStatementProvider = select(ResourceMapper.selectList)
                 .from(ResourceDynamicSqlSupport.resource)
                 .where(ResourceDynamicSqlSupport.categoryId, isEqualToWhenPresent(queryDTO.getCategoryId()))
-                        .and(ResourceDynamicSqlSupport.resourceName, isLike(queryDTO.getKeyword())
+                .and(ResourceDynamicSqlSupport.resourceName, isLike(queryDTO.getKeyword())
                                 .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"),
                         or(ResourceDynamicSqlSupport.resourcePath, isLike(queryDTO.getKeyword())
                                 .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")))
@@ -121,7 +123,13 @@ public class ResourceServiceImpl implements ResourceService {
                 .startPage(pageable.getPageNumber() + 1, pageable.getPageSize())
                 .doSelectPage(() -> resourceMapper.selectMany(selectStatementProvider));
 
-        return new PageImpl<>(resourceMapping.toResourceVOList(result.getResult()), pageable, result.getTotal());
+        Page<ResourceVO> page = new PageImpl<>(resourceMapping.toResourceVOList(result.getResult()), pageable, result.getTotal());
+        page.getContent().forEach(resource -> {
+            List<ResourceActionVO> actions = resourceActionService.findByResourceId(resource.getId());
+            resource.setActions(actions);
+        });
+
+        return page;
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)

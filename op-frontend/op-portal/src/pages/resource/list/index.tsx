@@ -8,9 +8,7 @@ import {useHistory} from "react-router-dom";
 import {PageContainer} from "@ant-design/pro-layout";
 import {Resource} from "../../../models/Resource";
 import {deleteResources, queryResourcePage} from "../../../services/resource";
-import {getUser} from "../../../services/user";
 import {queryResourceCategorySelectList} from "../../../services/resourceCategory";
-import {User} from "../../../models/User";
 import {SelectOptions} from "../../../models/SelectOptions";
 
 const ResourceListPage: FC = () => {
@@ -33,15 +31,6 @@ const ResourceListPage: FC = () => {
 
     const columns: ProColumns<Resource>[] = [
         {
-            title: '资源分类',
-            dataIndex: 'categoryId',
-            valueType: 'select',
-            fieldProps: {
-                options: categoryOptions,
-            },
-            initialValue: categoryId,
-        },
-        {
             title: '资源名',
             dataIndex: 'resourceName',
             search: false,
@@ -55,6 +44,15 @@ const ResourceListPage: FC = () => {
             title: '资源描述',
             dataIndex: 'resourceDesc',
             search: false,
+        },
+        {
+            title: '资源分类',
+            dataIndex: 'categoryId',
+            valueType: 'select',
+            fieldProps: {
+                options: categoryOptions,
+            },
+            initialValue: categoryId,
         },
         {
             title: '操作',
@@ -85,6 +83,49 @@ const ResourceListPage: FC = () => {
         deleteResources(ids).then(() => ref.current.reloadAndRest());
     }
 
+    const expandedRowRender = (resource: Resource, index: number, indent: number, expanded: boolean) => {
+        return (
+            <ProTable
+                columns={[
+                    {title: '动作名称', dataIndex: 'actionName'},
+                    {title: '动作路径', dataIndex: 'actionPath'},
+                    {title: '动作描述', dataIndex: 'actionDesc'},
+                    {title: '权限标识', dataIndex: 'permission'},
+                    {
+                        title: '操作',
+                        valueType: 'option',
+                        render: (text, record, _, action) => [
+                            <a key="edit" onClick={() => history.push(`/admin/resourceAction/edit/${record.id}`, {
+                                resourceId: resource.id,
+                                resourceName: resource.resourceName,
+                            })}>
+                                编辑
+                            </a>,
+                            <Popconfirm
+                                title="确定要删除吗？"
+                                okText="确定"
+                                cancelText="取消"
+                                onConfirm={() => onDeleteResources([record.id] as number[])}
+                            >
+                                <a key="delete">
+                                    删除
+                                </a>
+                            </Popconfirm>,
+                            <a key="view" onClick={() => history.push(`/admin/resourceAction/detail/${record.id}`)}>
+                                查看
+                            </a>,
+                        ],
+                    },
+                ]}
+                dataSource={resource.actions}
+                headerTitle={false}
+                search={false}
+                options={false}
+                pagination={false}
+            />
+        );
+    };
+
     return (
         <PageContainer
             className="page-container"
@@ -103,6 +144,9 @@ const ResourceListPage: FC = () => {
                     fullScreen: true,
                 }}
                 columns={columns}
+
+                // @ts-ignore
+                expandable={{expandedRowRender}}
                 request={
                     async (params, sort, filter) => {
                         const {current, pageSize, ...others} = params;
@@ -127,9 +171,7 @@ const ResourceListPage: FC = () => {
                 rowSelection={{}}
                 toolBarRender={() => [
                     <Button key="button" type="primary" icon={<PlusOutlined/>}
-                            onClick={() => history.push('/admin/resource/edit', {
-                                categoryId,
-                            })}>
+                            onClick={() => history.push('/admin/resource/edit')}>
                         新建
                     </Button>,
                     <Button key="button" icon={<ExportOutlined/>}>

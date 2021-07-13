@@ -18,6 +18,8 @@ import OrganizationDetailPage from "../pages/organization/detail";
 import ResourceEditPage from "../pages/resource/edit";
 import ResourceDetailPage from "../pages/resource/detail";
 import ResourceListPage from "../pages/resource/list";
+import ResourceActionEditPage from "../pages/resourceaction/edit";
+import ResourceActionDetailPage from "../pages/resourceaction/detail";
 
 const routes = [
     {
@@ -110,6 +112,16 @@ const routes = [
                 path: "/admin/resource/detail/:id",
                 exact: true,
                 component: ResourceDetailPage,
+            },
+            {
+                path: "/admin/resourceAction/edit/:id?",
+                exact: true,
+                component: ResourceActionEditPage,
+            },
+            {
+                path: "/admin/resourceAction/detail/:id",
+                exact: true,
+                component: ResourceActionDetailPage,
             },
             {
                 component: NoFoundPage,

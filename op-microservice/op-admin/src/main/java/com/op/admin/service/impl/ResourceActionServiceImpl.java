@@ -91,6 +91,18 @@ public class ResourceActionServiceImpl implements ResourceActionService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
+    public List<ResourceActionVO> findByResourceId(Integer resourceId) {
+        SelectStatementProvider selectStatementProvider = select(ResourceActionMapper.selectList)
+                .from(ResourceActionDynamicSqlSupport.resourceAction)
+                .where(ResourceActionDynamicSqlSupport.resourceId, isEqualTo(resourceId))
+                .orderBy(ResourceActionDynamicSqlSupport.actionNo)
+                .build().render(RenderingStrategies.MYBATIS3);
+        List<ResourceAction> actions= resourceActionMapper.selectMany(selectStatementProvider);
+        return resourceActionMapping.toResourceActionVOList(actions);
+    }
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
     public Page<ResourceActionVO> queryPage(Pageable pageable, ResourceActionPageQueryDTO queryDTO) {
         SortSpecification[] specifications = pageable.getSort().stream()
                 .map(order -> {

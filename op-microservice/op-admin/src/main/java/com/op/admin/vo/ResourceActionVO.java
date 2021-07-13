@@ -30,9 +30,9 @@ public class ResourceActionVO extends BaseVo {
     @ApiModelProperty("动作描述")
     private String actionDesc;
 
+    @ApiModelProperty("权限标识")
+    private String permission;
+
     @ApiModelProperty("动作编号")
     private Integer actionNo;
-
-    @ApiModelProperty("权限名")
-    private String permission;
 }

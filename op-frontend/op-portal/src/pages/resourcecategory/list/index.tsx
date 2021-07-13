@@ -109,16 +109,17 @@ export default () => {
                                     </Popconfirm>
                                 </Space>
                             }
-                            onClick={() => history.push(`/admin/resource`, {
-                                categoryId: item.id,
-                            })}
+                            style={{cursor: 'default'}}
                         >
                             <Meta
                                 avatar={item.categoryIcon && React.createElement(
                                     // @ts-ignore
                                     Icon[item.categoryIcon],
                                     {
-                                        style: {fontSize: '32px', color: 'DodgerBlue'}
+                                        style: {fontSize: '32px', color: 'DodgerBlue'},
+                                        onClick: () => history.push(`/admin/resource`, {
+                                            categoryId: item.id,
+                                        })
                                     }
                                 )}
                                 description={item.resources && item.resources.join(' | ')}

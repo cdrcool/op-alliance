@@ -54,6 +54,14 @@ public interface ResourceActionService {
     ResourceActionVO findById(Integer id);
 
     /**
+     * 根据资源 id 查找资源动作列表
+     *
+     * @param resourceId 资源 id
+     * @return 资源动作 vo 列表
+     */
+    List<ResourceActionVO> findByResourceId(Integer resourceId);
+
+    /**
      * 分页查询资源动作
      *
      * @param pageable 分页对象
