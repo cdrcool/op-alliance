@@ -1,7 +1,6 @@
 import React, {FC, useEffect, useRef, useState} from "react";
 import {Button, Popconfirm, Space} from "antd";
 import {ExportOutlined, MinusOutlined, PlusOutlined} from "@ant-design/icons";
-
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import {useHistory} from "react-router-dom";
@@ -44,11 +43,10 @@ const ResourceActionList: React.FC<ResourceActionListProps> = (props) => {
                             title="确定要删除吗？"
                             okText="确定"
                             cancelText="取消"
-                            onConfirm={
-                                () => {
-                                    setActions(actions.filter((item) => item.id !== record.id));
-                                }
-                            }
+                            onConfirm={() => {
+                                setActions(actions.filter((item) => item.id !== record.id));
+                                deleteResourceAction(record.id as number);
+                            }}
                         >
                             <a key="delete">
                                 删除
