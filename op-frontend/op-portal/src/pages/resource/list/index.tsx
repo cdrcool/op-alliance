@@ -2,7 +2,7 @@ import React, {FC, useEffect, useRef, useState} from "react";
 import {Button, Popconfirm, Space} from "antd";
 import {ExportOutlined, MinusOutlined, PlusOutlined} from "@ant-design/icons";
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
+import ProTable, {EditableProTable} from '@ant-design/pro-table';
 import {useHistory} from "react-router-dom";
 import {PageContainer} from "@ant-design/pro-layout";
 import {Resource} from "../../../models/Resource";
@@ -13,24 +13,30 @@ import {deleteResourceAction, saveResourceAction} from "../../../services/resour
 import {ResourceAction} from "../../../models/ResourceAction";
 
 type ResourceActionListProps = {
+    resourceId: number;
     actions: ResourceAction[];
 };
 
 const ResourceActionList: React.FC<ResourceActionListProps> = (props) => {
-    const [actions, setActions] = useState<ResourceAction[]>(props.actions || []);
+    const {resourceId, actions} = props;
+    const [dataSource, setDataSource] = useState<ResourceAction[]>(actions || []);
+
+    useEffect(() => {
+        setDataSource(actions);
+    }, [actions]);
 
     return (
-        <ProTable
+        <EditableProTable<ResourceAction>
             rowKey="id"
             columns={[
                 {title: '动作名称', dataIndex: 'actionName'},
                 {title: '动作路径', dataIndex: 'actionPath'},
                 {title: '动作描述', dataIndex: 'actionDesc'},
                 {title: '权限标识', dataIndex: 'permission'},
+                {title: '动作编号', dataIndex: 'actionNo'},
                 {
                     title: '操作',
                     valueType: 'option',
-                    width: 200,
                     render: (text, record, _, action) => [
                         <a key="edit" onClick={
                             () => {
@@ -44,8 +50,9 @@ const ResourceActionList: React.FC<ResourceActionListProps> = (props) => {
                             okText="确定"
                             cancelText="取消"
                             onConfirm={() => {
-                                setActions(actions.filter((item) => item.id !== record.id));
-                                deleteResourceAction(record.id as number);
+                                deleteResourceAction(record.id as number).then(() => {
+                                    setDataSource(dataSource.filter((item) => item.id !== record.id));
+                                });
                             }}
                         >
                             <a key="delete">
@@ -58,19 +65,36 @@ const ResourceActionList: React.FC<ResourceActionListProps> = (props) => {
             editable={
                 {
                     type: "single",
-                    onSave: async (rowKey, record, originRow) => {
-                        await saveResourceAction(record);
+                    onSave: async (rowKey, record, originRow, newLineConfig) => {
+                        if (record.isAdd) {
+                            delete record.id;
+                        }
+                        const id = await saveResourceAction(record);
+                        if (record.isAdd) {
+                            setDataSource([...dataSource, record]);
+                        } else {
+                            setDataSource(dataSource.map(item => item.id === rowKey ? {...record, id} : item));
+                        }
                     },
                     onDelete: async (key, row) => {
                         await deleteResourceAction(key as number);
+                        setDataSource(dataSource.filter((item) => item.id !== key));
                     }
                 }
             }
-            dataSource={actions}
-            headerTitle={false}
-            search={false}
-            options={false}
-            pagination={false}
+            recordCreatorProps={
+                {
+                    record: {
+                        // @ts-ignore
+                        id: Math.max(...dataSource.map(item => item.id)) + 1,
+                        resourceId,
+                        isAdd: true,
+                    },
+                    creatorButtonText: '新增资源动作',
+                }
+            }
+
+            value={dataSource}
         />
     )
 };
@@ -165,13 +189,11 @@ const ResourceListPage: FC = () => {
                     fullScreen: true,
                 }}
                 columns={columns}
-
-                // @ts-ignore
                 expandable={
                     {
                         expandedRowRender: (resource, index, indent, expanded) => {
                             return (
-                                <ResourceActionList actions={resource.actions || []}/>
+                                <ResourceActionList resourceId={resource.id as number} actions={resource.actions || []}/>
                             );
                         },
                     }

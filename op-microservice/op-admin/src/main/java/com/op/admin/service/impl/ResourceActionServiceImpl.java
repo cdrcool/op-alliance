@@ -47,16 +47,18 @@ public class ResourceActionServiceImpl implements ResourceActionService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void save(ResourceActionSaveDTO saveDTO) {
+    public Integer save(ResourceActionSaveDTO saveDTO) {
         if (saveDTO.getId() == null) {
             ResourceAction resourceAction = resourceActionMapping.toResourceAction(saveDTO);
             resourceActionMapper.insert(resourceAction);
+            return resourceAction.getId();
         } else {
             Integer id = saveDTO.getId();
             ResourceAction resourceAction = resourceActionMapper.selectByPrimaryKey(id)
                     .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的资源动作"));
             resourceActionMapping.update(saveDTO, resourceAction);
             resourceActionMapper.updateByPrimaryKey(resourceAction);
+            return resourceAction.getId();
         }
     }
 

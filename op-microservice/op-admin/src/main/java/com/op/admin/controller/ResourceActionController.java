@@ -32,7 +32,7 @@ public class ResourceActionController {
 
     @ApiOperation("保存资源动作")
     @PostMapping("save")
-    public void save(@Valid @RequestBody ResourceActionSaveDTO saveDTO) {
+    public Integer save(@Valid @RequestBody ResourceActionSaveDTO saveDTO) {
         resourceActionService.save(saveDTO);
     }
 
@@ -59,5 +59,11 @@ public class ResourceActionController {
     public Page<ResourceActionVO> queryPage(@PageableDefault(sort = "action_no", direction = Sort.Direction.ASC) Pageable pageable,
                                             @Valid @RequestBody ResourceActionPageQueryDTO queryDTO) {
         return resourceActionService.queryPage(pageable, queryDTO);
+    }
+
+    @ApiOperation("获取指定资源下的资源动作列表")
+    @GetMapping("findByResourceId")
+    public List<ResourceActionVO> findByResourceId(@RequestParam Integer resourceId) {
+        return resourceActionService.findByResourceId(resourceId);
     }
 }

@@ -7,7 +7,7 @@ import request from "../utils/request";
  *
  * @param resourceAction 资源动作
  */
-export async function saveResourceAction(resourceAction: ResourceAction) {
+export async function saveResourceAction(resourceAction: ResourceAction): Promise<number> {
     return request.post('/api/resourceAction/save', resourceAction);
 }
 
@@ -47,4 +47,13 @@ export async function getResourceAction(id: number): Promise<ResourceAction> {
  */
 export async function queryResourceActionPage(page: number, size: number, params: object): Promise<PageResult<ResourceAction>> {
     return request.post(`/api/resourceAction/page?page=${page}&size=${size}`, params);
+}
+
+/**
+ * 获取指定资源下的资源动作列表
+ *
+ * @param resourceId 资源 id
+ */
+export async function findByResourceId(resourceId: number): Promise<ResourceAction[]> {
+    return request.get(`/api/resourceAction/findByResourceId?resourceId=${resourceId}`);
 }

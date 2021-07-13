@@ -21,8 +21,9 @@ public interface ResourceActionService {
      * 保存资源动作
      *
      * @param saveDTO 资源动作保存 dto
+     * @return id
      */
-    void save(ResourceActionSaveDTO saveDTO);
+    Integer save(ResourceActionSaveDTO saveDTO);
 
     /**
      * 删除资源动作
@@ -79,6 +80,7 @@ public interface ResourceActionService {
 
     /**
      * 根据 ids 获取权限列表
+     *
      * @param ids ids
      * @return 权限列表
      */

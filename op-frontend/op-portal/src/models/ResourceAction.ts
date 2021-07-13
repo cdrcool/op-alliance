@@ -5,4 +5,5 @@ export interface ResourceAction {
     actionPath?: string;
     actionDesc?: number;
     actionNo?: number;
+    isAdd?: boolean;
 }
