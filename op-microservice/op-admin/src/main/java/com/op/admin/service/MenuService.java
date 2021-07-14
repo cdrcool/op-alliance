@@ -19,8 +19,9 @@ public interface MenuService {
      * 保存菜单
      *
      * @param saveDTO 菜单保存 dto
+     * @return 菜单 vo
      */
-    void save(MenuSaveDTO saveDTO);
+    MenuVO save(MenuSaveDTO saveDTO);
 
     /**
      * 删除菜单

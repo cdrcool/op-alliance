@@ -23,6 +23,9 @@ import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,9 +52,10 @@ public class MenuServiceImpl implements MenuService {
         this.menuMapping = menuMapping;
     }
 
+    @CachePut(value = "menus", key = "#saveDTO.id")
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void save(MenuSaveDTO saveDTO) {
+    public MenuVO save(MenuSaveDTO saveDTO) {
         saveDTO.setPid(Optional.ofNullable(saveDTO.getPid()).orElse(-1));
 
         // 校验同一菜单下，子菜单名称是否重复
@@ -61,6 +65,8 @@ public class MenuServiceImpl implements MenuService {
             Menu menu = menuMapping.toMenu(saveDTO);
             setMenuProps(menu, saveDTO.getPid());
             menuMapper.insert(menu);
+
+            return menuMapping.toMenuVO(menu);
         } else {
             Integer id = saveDTO.getId();
             Menu menu = menuMapper.selectByPrimaryKey(id)
@@ -68,6 +74,8 @@ public class MenuServiceImpl implements MenuService {
             menuMapping.update(saveDTO, menu);
             setMenuProps(menu, saveDTO.getPid());
             menuMapper.updateByPrimaryKey(menu);
+
+            return menuMapping.toMenuVO(menu);
         }
     }
 
@@ -110,6 +118,7 @@ public class MenuServiceImpl implements MenuService {
         menu.setMenuNo(Optional.ofNullable(menu.getMenuNo()).orElse(999));
     }
 
+    @CacheEvict(value = "menus", key = "#id", beforeInvocation = true)
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteById(Integer id) {
@@ -123,6 +132,7 @@ public class MenuServiceImpl implements MenuService {
         ids.forEach(this::deleteById);
     }
 
+    @Cacheable(value = "menus", key = "#id", unless = "#result == null")
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public MenuVO findById(Integer id) {
