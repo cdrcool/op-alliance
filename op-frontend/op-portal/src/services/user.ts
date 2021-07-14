@@ -64,7 +64,7 @@ export async function getUser(id: number) {
  * @param params 查询参数
  */
 export async function queryUserPage(page: number, size: number, params: object): Promise<PageResult<User>> {
-    return request.post(`/api/user/page?queryPage=${page}&size=${size}`, params);
+    return request.post(`/api/user/queryPage?page=${page}&size=${size}`, params);
 }
 
 /**
