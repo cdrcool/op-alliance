@@ -128,7 +128,7 @@ export default () => {
                                     // @ts-ignore
                                     Icon[item.categoryIcon],
                                     {
-                                        style: {fontSize: '32px'},
+                                        style: {fontSize: '32px', color: '#1890ff'},
                                         onClick: () => history.push(`/admin/resource`, {
                                             categoryId: item.id,
                                         })
