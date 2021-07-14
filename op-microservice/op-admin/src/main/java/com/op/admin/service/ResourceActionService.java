@@ -21,9 +21,8 @@ public interface ResourceActionService {
      * 保存资源动作
      *
      * @param saveDTO 资源动作保存 dto
-     * @return id
      */
-    Integer save(ResourceActionSaveDTO saveDTO);
+    void save(ResourceActionSaveDTO saveDTO);
 
     /**
      * 删除资源动作
@@ -61,6 +60,14 @@ public interface ResourceActionService {
      * @return 资源动作 vo 列表
      */
     List<ResourceActionVO> findByResourceId(Integer resourceId);
+
+    /**
+     * 根据资源 id 查找资源动作列表的 ids
+     *
+     * @param resourceId 资源 id
+     * @return 资源动作列表的 ids
+     */
+    List<Integer> findIdsByResourceId(Integer resourceId);
 
     /**
      * 分页查询资源动作

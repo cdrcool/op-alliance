@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 资源保存 DTO
  *
@@ -29,4 +31,7 @@ public class ResourceSaveDTO {
 
     @ApiModelProperty("资源编号")
     private Integer resourceNo;
+
+    @ApiModelProperty("资源动作列表")
+    private List<ResourceActionSaveDTO> actions;
 }

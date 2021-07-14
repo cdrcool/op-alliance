@@ -47,18 +47,16 @@ public class ResourceActionServiceImpl implements ResourceActionService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public Integer save(ResourceActionSaveDTO saveDTO) {
+    public void save(ResourceActionSaveDTO saveDTO) {
         if (saveDTO.getId() == null) {
             ResourceAction resourceAction = resourceActionMapping.toResourceAction(saveDTO);
             resourceActionMapper.insert(resourceAction);
-            return resourceAction.getId();
         } else {
             Integer id = saveDTO.getId();
             ResourceAction resourceAction = resourceActionMapper.selectByPrimaryKey(id)
                     .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的资源动作"));
             resourceActionMapping.update(saveDTO, resourceAction);
             resourceActionMapper.updateByPrimaryKey(resourceAction);
-            return resourceAction.getId();
         }
     }
 
@@ -101,6 +99,17 @@ public class ResourceActionServiceImpl implements ResourceActionService {
                 .build().render(RenderingStrategies.MYBATIS3);
         List<ResourceAction> actions= resourceActionMapper.selectMany(selectStatementProvider);
         return resourceActionMapping.toResourceActionVOList(actions);
+    }
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public List<Integer> findIdsByResourceId(Integer resourceId) {
+        SelectStatementProvider selectStatementProvider = select(ResourceActionDynamicSqlSupport.id)
+                .from(ResourceActionDynamicSqlSupport.resourceAction)
+                .where(ResourceActionDynamicSqlSupport.resourceId, isEqualTo(resourceId))
+                .build().render(RenderingStrategies.MYBATIS3);
+        List<ResourceAction> actions= resourceActionMapper.selectMany(selectStatementProvider);
+        return actions.stream().map(ResourceAction::getId).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)

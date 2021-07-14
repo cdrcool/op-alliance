@@ -32,7 +32,7 @@ public class ResourceActionController {
 
     @ApiOperation("保存资源动作")
     @PostMapping("save")
-    public Integer save(@Valid @RequestBody ResourceActionSaveDTO saveDTO) {
+    public void save(@Valid @RequestBody ResourceActionSaveDTO saveDTO) {
         resourceActionService.save(saveDTO);
     }
 

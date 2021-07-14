@@ -1,14 +1,16 @@
-import {Button, Card, Form, Input, InputNumber, Select, Space, Spin} from 'antd';
+import {Button, Card, Collapse, Form, Input, InputNumber, Popconfirm, Select, Space, Spin} from 'antd';
 import {useHistory, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import {PageContainer} from "@ant-design/pro-layout";
 import {getResource, saveResource} from "../../../services/resource";
-import {Resource} from "../../../models/Resource";
 import {queryResourceCategorySelectList} from "../../../services/resourceCategory";
 import {SelectOptions} from "../../../models/SelectOptions";
+import {ResourceAction} from "../../../models/ResourceAction";
+import {EditableProTable} from "@ant-design/pro-table";
 
-const {TextArea} = Input;
 const {Option} = Select;
+const {Panel} = Collapse;
+const {TextArea} = Input;
 
 const ResourceEditPage = () => {
     const history = useHistory();
@@ -18,13 +20,16 @@ const ResourceEditPage = () => {
 
     const [loading, setLoading] = useState<boolean>(!!id);
     const [categoryOptions, setCategoryOptions] = useState<SelectOptions[]>([]);
+    const [dataSource, setDataSource] = useState<ResourceAction[]>([]);
     const [form] = Form.useForm();
 
     useEffect(() => {
         if (id) {
             const fetchData = async () => {
                 const resource = await getResource(parseInt(id));
-                form.setFieldsValue(resource);
+                const {actions, ...fieldValues} = resource;
+                form.setFieldsValue(fieldValues);
+                setDataSource(actions || []);
                 setLoading(false);
             }
 
@@ -43,15 +48,21 @@ const ResourceEditPage = () => {
 
     }, []);
 
-
-    const onFinish = (resource: Resource) => {
-        saveResource(resource).then(() => {
-            history.push('/admin/resource');
-        });
-    };
-
-    const onFinishFailed = (errorInfo: any) => {
-        console.log('保存资源失败:', errorInfo);
+    const onSave = () => {
+        form.validateFields().then(values => {
+            saveResource({
+                ...values,
+                actions: dataSource.map(item => {
+                    if (item.isAdd) {
+                        const {id, ...others} = item;
+                        return others;
+                    }
+                    return item;
+                }),
+            }).then(() => {
+                history.push('/admin/resource');
+            });
+        })
     };
 
     return (
@@ -61,49 +72,102 @@ const ResourceEditPage = () => {
             header={{
                 breadcrumb: {},
             }}
+            extra={
+                <Space>
+                    <Button type="primary" onClick={onSave}>保存</Button>
+                </Space>
+            }
             onBack={() => history.push('/admin/resource')}
 
         >
             <Card>
                 <Spin spinning={loading}>
-                    <Form
-                        form={form}
-                        labelCol={{span: 8}}
-                        wrapperCol={{span: 8}}
-                        onFinish={onFinish}
-                        onFinishFailed={onFinishFailed}
-                    >
-                        <Form.Item name="id" hidden={true}/>
-                        <Form.Item label="资源分类" name="categoryId">
-                            <Select>
-                                {
-                                    categoryOptions.map(item => <Option key={item.value} value={item.value}>{item.label}</Option>)
+                    <Collapse bordered={false} ghost={true} activeKey={['baseInfo', 'actions']}>
+                        <Panel header="基本信息" key="baseInfo" showArrow={false}>
+                            <Form
+                                form={form}
+                                labelCol={{span: 8}}
+                                wrapperCol={{span: 8}}
+                            >
+                                <Form.Item name="id" hidden={true}/>
+                                <Form.Item label="资源分类" name="categoryId">
+                                    <Select>
+                                        {
+                                            categoryOptions.map(item => <Option key={item.value}
+                                                                                value={item.value}>{item.label}</Option>)
+                                        }
+                                    </Select>
+                                </Form.Item>
+                                <Form.Item label="资源名" name="resourceName"
+                                           rules={[{required: true, message: '请输入资源名'}]}>
+                                    <Input/>
+                                </Form.Item>
+                                <Form.Item label="资源路径" name="resourcePath"
+                                           rules={[{required: true, message: '请输入资源路径'}]}>
+                                    <Input/>
+                                </Form.Item>
+                                <Form.Item label="资源描述" name="resourceDesc">
+                                    <TextArea/>
+                                </Form.Item>
+                                <Form.Item label="资源编号" name="resourceNo">
+                                    <InputNumber/>
+                                </Form.Item>
+                            </Form>
+                        </Panel>
+                        <Panel header="资源动作" key="actions" showArrow={false}>
+                            <EditableProTable<ResourceAction>
+                                rowKey="id"
+                                columns={[
+                                    {title: '动作名称', dataIndex: 'actionName'},
+                                    {title: '动作路径', dataIndex: 'actionPath'},
+                                    {title: '动作描述', dataIndex: 'actionDesc'},
+                                    {title: '权限标识', dataIndex: 'permission'},
+                                    {title: '动作编号', dataIndex: 'actionNo'},
+                                    {
+                                        title: '操作',
+                                        valueType: 'option',
+                                        render: (text, record, _, action) => [
+                                            <a key="edit" onClick={
+                                                () => {
+                                                    action?.startEditable?.(record.id as number)
+                                                }
+                                            }>
+                                                编辑
+                                            </a>,
+                                            <Popconfirm
+                                                title="删除此行？"
+                                                okText="确定"
+                                                cancelText="取消"
+                                                onConfirm={() => {
+                                                    setDataSource(dataSource.filter((item) => item.id !== record.id))
+                                                }}
+                                            >
+                                                <a key="delete">
+                                                    删除
+                                                </a>
+                                            </Popconfirm>,
+                                        ],
+                                    },
+                                ]}
+                                editable={
+                                    {
+                                        type: 'multiple',
+                                    }
                                 }
-                            </Select>
-                        </Form.Item>
-                        <Form.Item label="资源名" name="resourceName" rules={[{required: true, message: '请输入资源名'}]}>
-                            <Input/>
-                        </Form.Item>
-                        <Form.Item label="资源路径" name="resourcePath" rules={[{required: true, message: '请输入资源路径'}]}>
-                            <Input/>
-                        </Form.Item>
-                        <Form.Item label="资源描述" name="resourceDesc">
-                            <TextArea/>
-                        </Form.Item>
-                        <Form.Item label="资源编号" name="resourceNo">
-                            <InputNumber/>
-                        </Form.Item>
-                        <Form.Item wrapperCol={{offset: 8, span: 8}}>
-                            <Space>
-                                <Button onClick={() => history.push('/admin/resource')}>
-                                    取消
-                                </Button>
-                                <Button type="primary" htmlType="submit">
-                                    保存
-                                </Button>
-                            </Space>
-                        </Form.Item>
-                    </Form>
+                                recordCreatorProps={
+                                    {
+                                        record: {
+                                            id: Date.now(),
+                                            isAdd: true,
+                                        },
+                                        creatorButtonText: '新增资源动作',
+                                    }
+                                }
+                                value={dataSource}
+                                onChange={setDataSource}
+                            />
+                        </Panel>
+                    </Collapse>
                 </Spin>
             </Card>
         </PageContainer>

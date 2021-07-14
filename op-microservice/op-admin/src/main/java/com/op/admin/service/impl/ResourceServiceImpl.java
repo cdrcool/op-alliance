@@ -1,6 +1,7 @@
 package com.op.admin.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.op.admin.dto.ResourceActionSaveDTO;
 import com.op.admin.dto.ResourcePageQueryDTO;
 import com.op.admin.dto.ResourceSaveDTO;
 import com.op.admin.entity.Resource;
@@ -15,6 +16,8 @@ import com.op.admin.vo.ResourceAssignVO;
 import com.op.admin.vo.ResourceVO;
 import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
+import io.swagger.models.auth.In;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
@@ -27,8 +30,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
@@ -54,15 +59,38 @@ public class ResourceServiceImpl implements ResourceService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void save(ResourceSaveDTO saveDTO) {
+        List<ResourceActionSaveDTO> actions = saveDTO.getActions();
+
         if (saveDTO.getId() == null) {
             Resource resource = resourceMapping.toResource(saveDTO);
             resourceMapper.insert(resource);
+            saveDTO.setId(resource.getId());
+
+            // 保存资源动作列表
+            actions.forEach(action -> {
+                action.setResourceId(saveDTO.getId());
+                resourceActionService.save(action);
+            });
         } else {
             Integer id = saveDTO.getId();
             Resource resource = resourceMapper.selectByPrimaryKey(id)
                     .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的资源"));
             resourceMapping.update(saveDTO, resource);
             resourceMapper.updateByPrimaryKey(resource);
+
+            // 保存资源动作列表
+            List<Integer> curActionIds = new ArrayList<>();
+            actions.forEach(action -> {
+                action.setResourceId(id);
+                resourceActionService.save(action);
+
+                curActionIds.add(action.getId());
+            });
+            List<Integer> preActionsIds = resourceActionService.findIdsByResourceId(id);
+            List<Integer> toDelActionIds = preActionsIds.stream().filter(actionId -> !curActionIds.contains(actionId)).collect(Collectors.toList());
+            if (!CollectionUtils.isNotEmpty(toDelActionIds)) {
+                resourceActionService.deleteByIds(toDelActionIds);
+            }
         }
     }
 
@@ -93,8 +121,11 @@ public class ResourceServiceImpl implements ResourceService {
     public ResourceVO findById(Integer id) {
         Resource resource = resourceMapper.selectByPrimaryKey(id)
                 .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的资源"));
+        ResourceVO resourceVO = resourceMapping.toResourceVO(resource);
 
-        return resourceMapping.toResourceVO(resource);
+        resourceVO.setActions(resourceActionService.findByResourceId(id));
+
+        return resourceVO;
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -123,13 +154,7 @@ public class ResourceServiceImpl implements ResourceService {
                 .startPage(pageable.getPageNumber() + 1, pageable.getPageSize())
                 .doSelectPage(() -> resourceMapper.selectMany(selectStatementProvider));
 
-        Page<ResourceVO> page = new PageImpl<>(resourceMapping.toResourceVOList(result.getResult()), pageable, result.getTotal());
-        page.getContent().forEach(resource -> {
-            List<ResourceActionVO> actions = resourceActionService.findByResourceId(resource.getId());
-            resource.setActions(actions);
-        });
-
-        return page;
+        return new PageImpl<>(resourceMapping.toResourceVOList(result.getResult()), pageable, result.getTotal());
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
