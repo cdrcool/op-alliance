@@ -58,7 +58,7 @@ public class UserGroupController {
     }
 
     @ApiOperation("分页查询用户组")
-    @PostMapping("page")
+    @PostMapping("queryPage")
     public Page<UserGroupVO> queryPage(@PageableDefault(sort = "group_no", direction = Sort.Direction.ASC) Pageable pageable,
                                        @Valid @RequestBody UserGroupPageQueryDTO queryDTO) {
         return userGroupService.queryPage(pageable, queryDTO);

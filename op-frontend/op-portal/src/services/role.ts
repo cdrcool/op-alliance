@@ -46,7 +46,7 @@ export async function getRole(id: number): Promise<Role> {
  * @param params 查询参数
  */
 export async function queryRolePage(page: number, size: number, params: object): Promise<PageResult<Role>> {
-    return request.post(`/api/role/page?page=${page}&size=${size}`, params);
+    return request.post(`/api/role/queryPage?page=${page}&size=${size}`, params);
 }
 
 /**

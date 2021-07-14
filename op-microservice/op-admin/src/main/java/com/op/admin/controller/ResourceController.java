@@ -55,7 +55,7 @@ public class ResourceController {
     }
 
     @ApiOperation("分页查询资源")
-    @PostMapping("page")
+    @PostMapping("queryPage")
     public Page<ResourceVO> queryPage(@PageableDefault(sort = "resource_no", direction = Sort.Direction.ASC) Pageable pageable,
                                       @Valid @RequestBody ResourcePageQueryDTO queryDTO) {
         return resourceService.queryPage(pageable, queryDTO);

@@ -77,7 +77,7 @@ public class UserController {
     }
 
     @ApiOperation("分页查询用户")
-    @PostMapping("page")
+    @PostMapping("queryPage")
     public Page<UserVO> queryPage(@PageableDefault(sort = "user_no", direction = Sort.Direction.ASC) Pageable pageable,
                                   @Valid @RequestBody UserPageQueryDTO queryDTO) {
         return userService.queryPage(pageable, queryDTO);

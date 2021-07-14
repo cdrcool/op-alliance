@@ -46,7 +46,7 @@ export async function getResourceAction(id: number): Promise<ResourceAction> {
  * @param params 查询参数
  */
 export async function queryResourceActionPage(page: number, size: number, params: object): Promise<PageResult<ResourceAction>> {
-    return request.post(`/api/resourceAction/page?page=${page}&size=${size}`, params);
+    return request.post(`/api/resourceAction/queryPage?page=${page}&size=${size}`, params);
 }
 
 /**

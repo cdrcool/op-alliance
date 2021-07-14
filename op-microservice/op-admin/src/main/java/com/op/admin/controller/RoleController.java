@@ -56,7 +56,7 @@ public class RoleController {
     }
 
     @ApiOperation("分页查询角色")
-    @PostMapping("page")
+    @PostMapping("queryPage")
     public Page<RoleVO> queryPage(@PageableDefault(sort = "role_no", direction = Sort.Direction.ASC) Pageable pageable,
                                   @Valid @RequestBody RolePageQueryDTO queryDTO) {
         return roleService.queryPage(pageable, queryDTO);

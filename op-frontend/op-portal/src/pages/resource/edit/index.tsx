@@ -120,9 +120,8 @@ const ResourceEditPage = () => {
                                 columns={[
                                     {title: '动作名称', dataIndex: 'actionName'},
                                     {title: '动作路径', dataIndex: 'actionPath'},
-                                    {title: '动作描述', dataIndex: 'actionDesc'},
                                     {title: '权限标识', dataIndex: 'permission'},
-                                    {title: '动作编号', dataIndex: 'actionNo'},
+                                    {title: '动作编号', dataIndex: 'actionNo', width: 80},
                                     {
                                         title: '操作',
                                         valueType: 'option',

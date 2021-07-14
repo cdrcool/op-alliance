@@ -47,7 +47,7 @@ export async function getResourceCategory(id: number): Promise<ResourceCategory>
  * @param params 查询参数
  */
 export async function queryResourceCategoryPage(page: number, size: number, params: object): Promise<PageResult<ResourceCategory>> {
-    return request.post(`/api/resourceCategory/page?page=${page}&size=${size}`, params);
+    return request.post(`/api/resourceCategory/queryPage?page=${page}&size=${size}`, params);
 }
 
 /**

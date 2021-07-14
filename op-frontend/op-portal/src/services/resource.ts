@@ -46,5 +46,5 @@ export async function getResource(id: number): Promise<Resource> {
  * @param params 查询参数
  */
 export async function queryResourcePage(page: number, size: number, params: object): Promise<PageResult<Resource>> {
-    return request.post(`/api/resource/page?page=${page}&size=${size}`, params);
+    return request.post(`/api/resource/queryPage?page=${page}&size=${size}`, params);
 }

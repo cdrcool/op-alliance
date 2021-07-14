@@ -64,7 +64,7 @@ public class OauthClientDetailsController {
     }
 
     @ApiOperation("分页查询 oauth2-client")
-    @PostMapping("page")
+    @PostMapping("queryPage")
     public Page<OauthClientDetailsVO> queryPage(@PageableDefault(sort = "create_time", direction = Sort.Direction.DESC) Pageable pageable,
                                                 @Valid @RequestBody OauthClientDetailsPageQueryDTO queryDTO) {
         return oauthClientDetailsService.queryPage(pageable, queryDTO);
