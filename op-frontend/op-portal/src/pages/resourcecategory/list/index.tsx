@@ -1,6 +1,7 @@
 import React from 'react';
 import ProCard from '@ant-design/pro-card';
 import {Button, Card, Input, Pagination, Popconfirm, Space} from "antd";
+import {EditOutlined, MinusOutlined, PlusOutlined} from "@ant-design/icons";
 import * as Icon from "@ant-design/icons";
 import {PageContainer} from "@ant-design/pro-layout";
 import {ResourceCategory} from "../../../models/ResourceCategory";
@@ -16,52 +17,62 @@ export default () => {
         {
             id: 1,
             categoryName: "管理中心",
+            categoryPath: "admin",
             categoryIcon: "TeamOutlined",
             resources: ["组织管理", "用户管理", "角色管理", "资源管理", "菜单管理"]
         },
         {
             id: 2,
             categoryName: "统计中心",
+            categoryPath: "statistics",
             categoryIcon: "AreaChartOutlined",
         },
         {
             id: 3,
             categoryName: "日志中心",
+            categoryPath: "logging",
             categoryIcon: "DatabaseOutlined",
         },
         {
             id: 4,
             categoryName: "监控中心",
+            categoryPath: "monitor",
             categoryIcon: "PictureOutlined",
         },
         {
             id: 5,
             categoryName: "附件中心",
+            categoryPath: "attachment",
             categoryIcon: "FileImageOutlined",
         },
         {
             id: 6,
             categoryName: "文档中心",
+            categoryPath: "document",
             categoryIcon: "ReadOutlined",
         },
         {
             id: 7,
             categoryName: "日志中心",
+            categoryPath: "logging",
             categoryIcon: "DatabaseOutlined",
         },
         {
             id: 8,
             categoryName: "监控中心",
+            categoryPath: "monitor",
             categoryIcon: "PictureOutlined",
         },
         {
             id: 9,
             categoryName: "附件中心",
+            categoryPath: "attachment",
             categoryIcon: "FileImageOutlined",
         },
         {
             id: 10,
             categoryName: "文档中心",
+            categoryPath: "document",
             categoryIcon: "ReadOutlined",
         },
     ];
@@ -96,6 +107,7 @@ export default () => {
                             bordered
                             hoverable
                             title={item.categoryName}
+                            subTitle={item.categoryPath}
                             extra={
                                 <Space>
                                     <a>编辑</a>

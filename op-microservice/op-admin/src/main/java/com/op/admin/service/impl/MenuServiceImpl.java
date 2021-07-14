@@ -118,7 +118,7 @@ public class MenuServiceImpl implements MenuService {
         menu.setMenuNo(Optional.ofNullable(menu.getMenuNo()).orElse(999));
     }
 
-    @CacheEvict(value = "menus", key = "#id", beforeInvocation = true)
+    @CacheEvict(cacheNames = "menus", key = "#id", beforeInvocation = true)
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteById(Integer id) {
@@ -132,7 +132,7 @@ public class MenuServiceImpl implements MenuService {
         ids.forEach(this::deleteById);
     }
 
-    @Cacheable(value = "menus", key = "#id", unless = "#result == null")
+    @Cacheable(cacheNames = "menus", key = "#id", unless = "#result == null")
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public MenuVO findById(Integer id) {
