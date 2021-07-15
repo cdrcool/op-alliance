@@ -59,7 +59,7 @@ public class RedisConfig {
                                                RedisSerializer<Object> serializer) {
         RedisCacheWriter redisCacheWriter = RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory);
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofHours(30))
+                .entryTtl(Duration.ofHours(2))
                 .disableCachingNullValues()
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(serializer));
         return new RedisCacheManager(redisCacheWriter, redisCacheConfiguration);
