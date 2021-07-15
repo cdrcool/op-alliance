@@ -43,7 +43,7 @@ public class MenuController {
     @ApiOperation("批量删除菜单")
     @PostMapping("batchDelete")
     public void batchDelete(@RequestBody List<Integer> ids) {
-        menuService.deleteByIds(ids);
+        ids.forEach(menuService::deleteById);
     }
 
     @ApiOperation("查看菜单详情")
@@ -67,6 +67,6 @@ public class MenuController {
     @ApiOperation("显示/隐藏菜单")
     @PostMapping("changeVisibility")
     public void changeVisibility(@Valid @RequestBody MenuChangeVisibilityDTO changeVisibilityDTO) {
-        menuService.changeVisibility(changeVisibilityDTO.getIds(), changeVisibilityDTO.getShow());
+        changeVisibilityDTO.getIds().forEach(id -> menuService.changeVisibility(id, changeVisibilityDTO.getShow()));
     }
 }

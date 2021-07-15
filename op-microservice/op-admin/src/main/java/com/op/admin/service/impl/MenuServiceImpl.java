@@ -1,19 +1,17 @@
 package com.op.admin.service.impl;
 
 import com.op.admin.dto.MenuListQueryDTO;
-import com.op.admin.entity.Organization;
+import com.op.admin.dto.MenuSaveDTO;
+import com.op.admin.entity.Menu;
 import com.op.admin.mapper.MenuDynamicSqlSupport;
 import com.op.admin.mapper.MenuMapper;
 import com.op.admin.mapper.extend.MenuMapperExtend;
 import com.op.admin.mapping.MenuMapping;
-import com.op.admin.dto.MenuSaveDTO;
-import com.op.admin.entity.Menu;
 import com.op.admin.service.MenuService;
 import com.op.admin.utils.TreeUtils;
 import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.MenuTreeVO;
 import com.op.admin.vo.MenuVO;
-import com.op.admin.vo.OrganizationTreeVO;
 import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.apache.commons.collections4.CollectionUtils;
@@ -23,6 +21,7 @@ import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -42,6 +41,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
  *
  * @author cdrcool
  */
+@CacheConfig(cacheNames = "menus")
 @Service
 public class MenuServiceImpl implements MenuService {
     private final MenuMapperExtend menuMapper;
@@ -52,7 +52,7 @@ public class MenuServiceImpl implements MenuService {
         this.menuMapping = menuMapping;
     }
 
-    @CachePut(value = "menus", key = "#saveDTO.id")
+    @CachePut(key = "#saveDTO.id")
     @Transactional(rollbackFor = Exception.class)
     @Override
     public MenuVO save(MenuSaveDTO saveDTO) {
@@ -82,8 +82,8 @@ public class MenuServiceImpl implements MenuService {
     /**
      * 校验同一菜单下，子菜单名称是否重复
      *
-     * @param pid 父 id
-     * @param id 主键
+     * @param pid      父 id
+     * @param id       主键
      * @param menuName 菜单名称
      */
     private void validateMenuName(Integer pid, Integer id, String menuName) {
@@ -118,7 +118,7 @@ public class MenuServiceImpl implements MenuService {
         menu.setMenuNo(Optional.ofNullable(menu.getMenuNo()).orElse(999));
     }
 
-    @CacheEvict(cacheNames = "menus", key = "#id", beforeInvocation = true)
+    @CacheEvict(key = "#id", beforeInvocation = true)
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteById(Integer id) {
@@ -132,7 +132,7 @@ public class MenuServiceImpl implements MenuService {
         ids.forEach(this::deleteById);
     }
 
-    @Cacheable(cacheNames = "menus", key = "#id", unless = "#result == null")
+    @Cacheable(key = "#id", unless = "#result == null", sync = true)
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public MenuVO findById(Integer id) {
@@ -173,6 +173,20 @@ public class MenuServiceImpl implements MenuService {
         List<Menu> menus = menuMapper.select(SelectDSLCompleter.allRows());
         return TreeUtils.buildTree(menus, menuMapping::toMenuAssignVO, MenuAssignVO::getPid, MenuAssignVO::getId,
                 (menu, children) -> menu.setChildren(children.stream().sorted(Comparator.comparing(MenuAssignVO::getMenuNo)).collect(Collectors.toList())), -1);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public MenuVO changeVisibility(Integer id, boolean show) {
+        UpdateStatementProvider updateStatement = SqlBuilder.update(MenuDynamicSqlSupport.menu)
+                .set(MenuDynamicSqlSupport.isHidden).equalTo(!show)
+                .where(MenuDynamicSqlSupport.id, isEqualTo(id))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        menuMapper.update(updateStatement);
+
+        return this.findById(id);
     }
 
     @Transactional(rollbackFor = Exception.class)

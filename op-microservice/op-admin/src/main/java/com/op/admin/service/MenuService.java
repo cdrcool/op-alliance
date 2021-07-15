@@ -32,6 +32,8 @@ public interface MenuService {
 
     /**
      * 批量删除菜单
+     * <p>
+     * 由于 Spring Cache 不支持批量刪除 keys，所以不应直接调用改方法，先放着
      *
      * @param ids 菜单 ids
      */
@@ -70,7 +72,18 @@ public interface MenuService {
     /**
      * 显示/隐藏菜单
      *
-     * @param ids   菜单 ids
+     * @param id   菜单 id
+     * @param show 显示 or 隐藏
+     * @return 菜单 vo
+     */
+    MenuVO changeVisibility(Integer id, boolean show);
+
+    /**
+     * 显示/隐藏菜单
+     * <p>
+     * 由于 Spring Cache 不支持批量更新 keys 的缓存，所以不应直接调用改方法，先放着
+     *
+     * @param ids  菜单 ids
      * @param show 显示 or 隐藏
      */
     void changeVisibility(List<Integer> ids, boolean show);
