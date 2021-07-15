@@ -4,6 +4,11 @@ server:
 spring:
   profiles:
     active: local
+  task:
+    execution:
+      pool:
+        core-size: 9
+        max-size: 9
 
 management:
   endpoints:
