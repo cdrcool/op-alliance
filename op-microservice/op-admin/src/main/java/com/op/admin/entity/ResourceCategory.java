@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author Mybatis Generator
- * @date 2021/07/12 01:38
+ * @date 2021/07/16 11:06
  */
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
@@ -25,6 +25,12 @@ public class ResourceCategory extends BaseEntity {
      */
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String categoryName;
+
+    /**
+     * 分类图标
+     */
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String categoryIcon;
 
     /**
      * 服务名称

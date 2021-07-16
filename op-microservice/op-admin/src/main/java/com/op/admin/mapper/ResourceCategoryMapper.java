@@ -33,12 +33,12 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 /**
  * @author Mybatis Generator
- * @date 2021/07/12 01:38
+ * @date 2021/07/16 11:06
  */
 @Mapper
 public interface ResourceCategoryMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(id, categoryName, serverName, categoryNo, version, deleted, creatorId, createTime, lastModifierId, lastModifyTime, tenantId);
+    BasicColumn[] selectList = BasicColumn.columnList(id, categoryName, categoryIcon, serverName, categoryNo, version, deleted, creatorId, createTime, lastModifierId, lastModifyTime, tenantId);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -63,6 +63,7 @@ public interface ResourceCategoryMapper {
     @Results(id="ResourceCategoryResult", value = {
         @Result(column="id", property="id", jdbcType=JdbcType.INTEGER, id=true),
         @Result(column="category_name", property="categoryName", jdbcType=JdbcType.VARCHAR),
+        @Result(column="category_icon", property="categoryIcon", jdbcType=JdbcType.VARCHAR),
         @Result(column="server_name", property="serverName", jdbcType=JdbcType.VARCHAR),
         @Result(column="category_no", property="categoryNo", jdbcType=JdbcType.INTEGER),
         @Result(column="version", property="version", jdbcType=JdbcType.INTEGER),
@@ -100,6 +101,7 @@ public interface ResourceCategoryMapper {
     default int insert(ResourceCategory record) {
         return MyBatis3Utils.insert(this::insert, record, resourceCategory, c ->
             c.map(categoryName).toProperty("categoryName")
+            .map(categoryIcon).toProperty("categoryIcon")
             .map(serverName).toProperty("serverName")
             .map(categoryNo).toProperty("categoryNo")
             .map(version).toProperty("version")
@@ -116,6 +118,7 @@ public interface ResourceCategoryMapper {
     default int insertSelective(ResourceCategory record) {
         return MyBatis3Utils.insert(this::insert, record, resourceCategory, c ->
             c.map(categoryName).toPropertyWhenPresent("categoryName", record::getCategoryName)
+            .map(categoryIcon).toPropertyWhenPresent("categoryIcon", record::getCategoryIcon)
             .map(serverName).toPropertyWhenPresent("serverName", record::getServerName)
             .map(categoryNo).toPropertyWhenPresent("categoryNo", record::getCategoryNo)
             .map(version).toPropertyWhenPresent("version", record::getVersion)
@@ -158,6 +161,7 @@ public interface ResourceCategoryMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     static UpdateDSL<UpdateModel> updateAllColumns(ResourceCategory record, UpdateDSL<UpdateModel> dsl) {
         return dsl.set(categoryName).equalTo(record::getCategoryName)
+                .set(categoryIcon).equalTo(record::getCategoryIcon)
                 .set(serverName).equalTo(record::getServerName)
                 .set(categoryNo).equalTo(record::getCategoryNo)
                 .set(version).equalTo(record::getVersion)
@@ -172,6 +176,7 @@ public interface ResourceCategoryMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     static UpdateDSL<UpdateModel> updateSelectiveColumns(ResourceCategory record, UpdateDSL<UpdateModel> dsl) {
         return dsl.set(categoryName).equalToWhenPresent(record::getCategoryName)
+                .set(categoryIcon).equalToWhenPresent(record::getCategoryIcon)
                 .set(serverName).equalToWhenPresent(record::getServerName)
                 .set(categoryNo).equalToWhenPresent(record::getCategoryNo)
                 .set(version).equalToWhenPresent(record::getVersion)
@@ -187,6 +192,7 @@ public interface ResourceCategoryMapper {
     default int updateByPrimaryKey(ResourceCategory record) {
         return update(c ->
             c.set(categoryName).equalTo(record::getCategoryName)
+            .set(categoryIcon).equalTo(record::getCategoryIcon)
             .set(serverName).equalTo(record::getServerName)
             .set(categoryNo).equalTo(record::getCategoryNo)
             .set(version).equalTo(record::getVersion)
@@ -204,6 +210,7 @@ public interface ResourceCategoryMapper {
     default int updateByPrimaryKeySelective(ResourceCategory record) {
         return update(c ->
             c.set(categoryName).equalToWhenPresent(record::getCategoryName)
+            .set(categoryIcon).equalToWhenPresent(record::getCategoryIcon)
             .set(serverName).equalToWhenPresent(record::getServerName)
             .set(categoryNo).equalToWhenPresent(record::getCategoryNo)
             .set(version).equalToWhenPresent(record::getVersion)

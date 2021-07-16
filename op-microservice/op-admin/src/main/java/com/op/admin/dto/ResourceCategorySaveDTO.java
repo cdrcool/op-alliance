@@ -18,6 +18,9 @@ public class ResourceCategorySaveDTO {
     @ApiModelProperty(value = "分类名称", required = true)
     private String categoryName;
 
+    @ApiModelProperty(value = "分类图标", required = true)
+    private String categoryIcon;
+
     @ApiModelProperty(value = "服务名称", required = true)
     private String serverName;
 

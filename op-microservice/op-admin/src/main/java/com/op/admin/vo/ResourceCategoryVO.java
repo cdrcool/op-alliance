@@ -21,6 +21,9 @@ public class ResourceCategoryVO extends BaseVo {
     @ApiModelProperty("分类名称")
     private String categoryName;
 
+    @ApiModelProperty(value = "分类图标")
+    private String categoryIcon;
+
     @ApiModelProperty("服务名称")
     private String serverName;
 
