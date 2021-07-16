@@ -7,8 +7,8 @@ spring:
   task:
     execution:
       pool:
-        core-size: 9
-        max-size: 9
+        core-size: 13
+        max-size: 300
 
 management:
   endpoints:
