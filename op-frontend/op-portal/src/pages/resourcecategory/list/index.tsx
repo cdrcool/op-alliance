@@ -1,120 +1,23 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import {Button, Input, Popconfirm, Tag} from 'antd';
 import ProList from '@ant-design/pro-list';
 import {PageContainer} from "@ant-design/pro-layout";
-import {ResourceCategory} from "../../../models/ResourceCategory";
 import * as Icon from "@ant-design/icons";
-import {queryResourceCategoryPage} from "../../../services/resourceCategory";
+import {deleteResourceCategories, queryResourceCategoryPage} from "../../../services/resourceCategory";
+import {ActionType} from "@ant-design/pro-table";
+import {useHistory} from "react-router-dom";
 
 const {Search} = Input;
 
-const dataSource: ResourceCategory[] = [
-    {
-        id: 1,
-        categoryName: "管理中心",
-        categoryPath: "admin",
-        categoryIcon: "TeamOutlined",
-        resources: ["组织管理", "用户管理", "角色管理", "资源管理", "菜单管理"]
-    },
-    {
-        id: 2,
-        categoryName: "统计中心",
-        categoryPath: "statistics",
-        categoryIcon: "AreaChartOutlined",
-    },
-    {
-        id: 3,
-        categoryName: "日志中心",
-        categoryPath: "logging",
-        categoryIcon: "DatabaseOutlined",
-    },
-    {
-        id: 4,
-        categoryName: "监控中心",
-        categoryPath: "monitor",
-        categoryIcon: "PictureOutlined",
-    },
-    {
-        id: 5,
-        categoryName: "附件中心",
-        categoryPath: "attachment",
-        categoryIcon: "FileImageOutlined",
-    },
-    {
-        id: 6,
-        categoryName: "文档中心",
-        categoryPath: "document",
-        categoryIcon: "ReadOutlined",
-    },
-    {
-        id: 7,
-        categoryName: "日志中心",
-        categoryPath: "logging",
-        categoryIcon: "DatabaseOutlined",
-    },
-    {
-        id: 8,
-        categoryName: "监控中心",
-        categoryPath: "monitor",
-        categoryIcon: "PictureOutlined",
-    },
-    {
-        id: 9,
-        categoryName: "附件中心",
-        categoryPath: "attachment",
-        categoryIcon: "FileImageOutlined",
-    },
-    {
-        id: 10,
-        categoryName: "文档中心",
-        categoryPath: "document",
-        categoryIcon: "ReadOutlined",
-    },
-];
+const ResourceCategoryListPage: React.FC = () => {
+    const history = useHistory();
+    const ref = useRef<ActionType>();
 
-const onDeleteResourceCategory = (ids: number[]) => {
-
-};
-
-const data = dataSource.map((item) => ({
-    title: item.categoryName,
-    subTitle: <Tag color="#5BD8A6">{item.categoryPath}</Tag>,
-    actions: [
-        <a>编辑</a>,
-        <Popconfirm
-            title="确定要删除吗？"
-            okText="确定"
-            cancelText="取消"
-            onConfirm={() => onDeleteResourceCategory([item.id] as number[])}
-        >
-            <a>删除</a>
-        </Popconfirm>
-    ],
-    avatar: item.categoryIcon && React.createElement(
+    const onDeleteResourceCategory = (ids: number[]) => {
         // @ts-ignore
-        Icon[item.categoryIcon],
-        {
-            style: {fontSize: '16px', color: '#1890ff'},
-        }
-    ),
-    content: (
-        <div
-            style={{
-                flex: 1,
-            }}
-        >
-            <div
-                style={{
-                    width: 200,
-                }}
-            >
-                <div>发布中</div>
-            </div>
-        </div>
-    ),
-}));
+        deleteResourceCategories(ids).then(() => ref.current.reloadAndRest());
+    };
 
-export default () => {
     return (
         <PageContainer
             className="page-container"
@@ -123,11 +26,13 @@ export default () => {
             }}
         >
             <ProList<any>
+                actionRef={ref}
                 style={{backgroundColor: '#fff'}}
+                grid={{gutter: 16, column: 2}}
                 toolBarRender={() => {
                     return [
                         <Search placeholder="输入资源分类名称查询" style={{width: 400}}/>,
-                        <Button key="add" type="primary">
+                        <Button key="add" type="primary" onClick={() => history.push('/admin/resourceCategory/edit')}>
                             新建
                         </Button>,
                     ];
@@ -150,11 +55,6 @@ export default () => {
                         };
                     }
                 }
-                pagination={{
-                    defaultPageSize: 8,
-                    showSizeChanger: false,
-                }}
-                grid={{gutter: 16, column: 2}}
                 metas={{
                     avatar: {
                         dataIndex: 'categoryIcon',
@@ -164,7 +64,8 @@ export default () => {
                                     // @ts-ignore
                                     Icon[row.categoryIcon],
                                     {
-                                        style: {fontSize: '32px', color: '#1890ff'},
+                                        style: {fontSize: '16px', color: '#40a9ff'},
+                                        onClick: () => history.push(`/admin/resourceCategory/detail/${row.id}`),
                                     }
                                 ) : <></>
                             )
@@ -187,7 +88,7 @@ export default () => {
                     type: {},
                     actions: {
                         render: (text, row) => [
-                            <a>编辑</a>,
+                            <a onClick={() => history.push(`/admin/resourceCategory/edit/${row.id}`)}>编辑</a>,
                             <Popconfirm
                                 title="确定要删除吗？"
                                 okText="确定"
@@ -199,10 +100,21 @@ export default () => {
                         ],
                     },
                     content: {
-                        dataIndex: 'serverName',
+                        dataIndex: 'resourceNames',
+                        render: (text, row) => {
+                            return (
+                                <>{row.resourceNames?.join(' | ')}</>
+                            );
+                        },
                     },
+                }}
+                pagination={{
+                    defaultPageSize: 8,
+                    showSizeChanger: false,
                 }}
             />
         </PageContainer>
-);
+    );
 };
+
+export default ResourceCategoryListPage;

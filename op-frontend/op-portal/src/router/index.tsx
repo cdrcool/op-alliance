@@ -20,6 +20,8 @@ import ResourceDetailPage from "../pages/resource/detail";
 import ResourceListPage from "../pages/resource/list";
 import ResourceActionEditPage from "../pages/resourceaction/edit";
 import ResourceActionDetailPage from "../pages/resourceaction/detail";
+import ResourceCategoryEditPage from "../pages/resourcecategory/edit";
+import ResourceCategoryDetailPage from "../pages/resourcecategory/detail";
 
 const routes = [
     {
@@ -97,6 +99,16 @@ const routes = [
                 path: "/admin/resourceCategory",
                 exact: true,
                 component: ResourceCategoryPage,
+            },
+            {
+                path: "/admin/resourceCategory/edit/:id?",
+                exact: true,
+                component: ResourceCategoryEditPage,
+            },
+            {
+                path: "/admin/resourceCategory/detail/:id",
+                exact: true,
+                component: ResourceCategoryDetailPage,
             },
             {
                 path: "/admin/resource",

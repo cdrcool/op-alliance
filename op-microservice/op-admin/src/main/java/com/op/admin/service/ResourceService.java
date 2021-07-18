@@ -63,6 +63,14 @@ public interface ResourceService {
     Page<ResourceVO> queryPage(Pageable pageable, ResourcePageQueryDTO queryDTO);
 
     /**
+     * 获取指定资源分类下的资源名称列表
+     *
+     * @param categoryId 资源分类id
+     * @return 资源名称列表
+     */
+    List<String> findNamesByCategoryId(Integer categoryId);
+
+    /**
      * 查找所有资源，用于分配资源使用
      *
      * @return 资源分配 VO Map（key：资源分类 id；value：资源列表）
