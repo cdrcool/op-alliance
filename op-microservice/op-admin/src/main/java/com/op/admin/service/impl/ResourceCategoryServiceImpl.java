@@ -82,7 +82,11 @@ public class ResourceCategoryServiceImpl implements ResourceCategoryService {
     public ResourceCategoryVO findById(Integer id) {
         ResourceCategory resourceCategory = resourceCategoryMapper.selectByPrimaryKey(id)
                 .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的资源分类"));
-        return resourceCategoryMapping.toResourceCategoryVO(resourceCategory);
+        ResourceCategoryVO resourceCategoryVO =  resourceCategoryMapping.toResourceCategoryVO(resourceCategory);
+
+        resourceCategoryVO.setResourceNames(resourceService.findNamesByCategoryId(id));
+
+        return resourceCategoryVO;
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)

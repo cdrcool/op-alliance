@@ -101,6 +101,7 @@ CREATE TABLE `admin_resource_category`
 (
     `id`               int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
     `category_name`    varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '分类名称',
+    `category_icon`    varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '分类图标',
     `server_name`      varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '服务名称',
     `category_no`      int NULL DEFAULT NULL COMMENT '分类编号',
     `version`          int NULL DEFAULT NULL COMMENT '版本号',

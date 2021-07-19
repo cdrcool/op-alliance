@@ -1,84 +1,21 @@
-import React from 'react';
-import ProCard from '@ant-design/pro-card';
-import {Button, Card, Input, Pagination, Popconfirm, Space} from "antd";
-import {EditOutlined, MinusOutlined, PlusOutlined} from "@ant-design/icons";
-import * as Icon from "@ant-design/icons";
+import React, {useRef} from 'react';
+import {Button, Input, Popconfirm, Tag} from 'antd';
+import ProList from '@ant-design/pro-list';
 import {PageContainer} from "@ant-design/pro-layout";
-import {ResourceCategory} from "../../../models/ResourceCategory";
+import * as Icon from "@ant-design/icons";
+import {deleteResourceCategories, queryResourceCategoryPage} from "../../../services/resourceCategory";
+import {ActionType} from "@ant-design/pro-table";
 import {useHistory} from "react-router-dom";
 
-const {Meta} = Card;
 const {Search} = Input;
 
-export default () => {
+const ResourceCategoryListPage: React.FC = () => {
     const history = useHistory();
-
-    const dataSource: ResourceCategory[] = [
-        {
-            id: 1,
-            categoryName: "管理中心",
-            categoryPath: "admin",
-            categoryIcon: "TeamOutlined",
-            resources: ["组织管理", "用户管理", "角色管理", "资源管理", "菜单管理"]
-        },
-        {
-            id: 2,
-            categoryName: "统计中心",
-            categoryPath: "statistics",
-            categoryIcon: "AreaChartOutlined",
-        },
-        {
-            id: 3,
-            categoryName: "日志中心",
-            categoryPath: "logging",
-            categoryIcon: "DatabaseOutlined",
-        },
-        {
-            id: 4,
-            categoryName: "监控中心",
-            categoryPath: "monitor",
-            categoryIcon: "PictureOutlined",
-        },
-        {
-            id: 5,
-            categoryName: "附件中心",
-            categoryPath: "attachment",
-            categoryIcon: "FileImageOutlined",
-        },
-        {
-            id: 6,
-            categoryName: "文档中心",
-            categoryPath: "document",
-            categoryIcon: "ReadOutlined",
-        },
-        {
-            id: 7,
-            categoryName: "日志中心",
-            categoryPath: "logging",
-            categoryIcon: "DatabaseOutlined",
-        },
-        {
-            id: 8,
-            categoryName: "监控中心",
-            categoryPath: "monitor",
-            categoryIcon: "PictureOutlined",
-        },
-        {
-            id: 9,
-            categoryName: "附件中心",
-            categoryPath: "attachment",
-            categoryIcon: "FileImageOutlined",
-        },
-        {
-            id: 10,
-            categoryName: "文档中心",
-            categoryPath: "document",
-            categoryIcon: "ReadOutlined",
-        },
-    ];
+    const ref = useRef<ActionType>();
 
     const onDeleteResourceCategory = (ids: number[]) => {
-
+        // @ts-ignore
+        deleteResourceCategories(ids).then(() => ref.current.reloadAndRest());
     };
 
     return (
@@ -88,58 +25,96 @@ export default () => {
                 breadcrumb: {},
             }}
         >
-            <ProCard
-                wrap={true}
-                gutter={[16, 16]}
-                extra={
-                    <Space style={{float: 'right', marginBottom: 8}}>
-                        <Search placeholder="输入资源分类名称查询" style={{width: 400}}/>
-                        <Button type="primary">新建</Button>
-                    </Space>
-                }
-                actions={[<Pagination/>]}
-            >
-                {
-                    dataSource.map(item =>
-                        <ProCard
-                            key={item.id}
-                            colSpan={12}
-                            bordered
-                            hoverable
-                            title={item.categoryName}
-                            subTitle={item.categoryPath}
-                            extra={
-                                <Space>
-                                    <a>编辑</a>
-                                    <Popconfirm
-                                        title="确定要删除吗？"
-                                        okText="确定"
-                                        cancelText="取消"
-                                        onConfirm={() => onDeleteResourceCategory([item.id] as number[])}
-                                    >
-                                        <a>删除</a>
-                                    </Popconfirm>
-                                </Space>
+            <ProList<any>
+                actionRef={ref}
+                style={{backgroundColor: '#fff'}}
+                grid={{gutter: 16, column: 2}}
+                toolBarRender={() => {
+                    return [
+                        <Search placeholder="输入资源分类名称查询" style={{width: 400}}/>,
+                        <Button key="add" type="primary" onClick={() => history.push('/admin/resourceCategory/edit')}>
+                            新建
+                        </Button>,
+                    ];
+                }}
+                request={
+                    async (params, sort, filter) => {
+                        const {current, pageSize, keyword} = params;
+                        const result = await queryResourceCategoryPage(
+                            (current || 1) - 1,
+                            pageSize || 10,
+                            {
+                                keyword,
+                                ...filter
                             }
-                            style={{cursor: 'default'}}
-                        >
-                            <Meta
-                                avatar={item.categoryIcon && React.createElement(
-                                    // @ts-ignore
-                                    Icon[item.categoryIcon],
-                                    {
-                                        style: {fontSize: '32px', color: '#1890ff'},
-                                        onClick: () => history.push(`/admin/resource`, {
-                                            categoryId: item.id,
-                                        })
-                                    }
-                                )}
-                                description={item.resources && item.resources.join(' | ')}
-                            />
-                        </ProCard>
-                    )
+                        );
+                        return {
+                            data: result.content,
+                            success: true,
+                            total: result.totalElements,
+                        };
+                    }
                 }
-            </ProCard>
+                metas={{
+                    avatar: {
+                        dataIndex: 'categoryIcon',
+                        render: (_, row) => {
+                            return (
+                                row.categoryIcon ? React.createElement(
+                                    // @ts-ignore
+                                    Icon[row.categoryIcon],
+                                    {
+                                        style: {fontSize: '16px', color: '#40a9ff'},
+                                        onClick: () => history.push(`/admin/resourceCategory/detail/${row.id}`),
+                                    }
+                                ) : <></>
+                            )
+                        },
+                    },
+                    title: {
+                        title: '分类名称',
+                        dataIndex: 'categoryName',
+                    },
+                    subTitle: {
+                        dataIndex: 'serverName',
+                        render: (_, row) => {
+                            return (
+                                <Tag color="#5BD8A6" key={row.serverName}>
+                                    {row.serverName}
+                                </Tag>
+                            );
+                        },
+                    },
+                    type: {},
+                    actions: {
+                        render: (text, row) => [
+                            <a onClick={() => history.push(`/admin/resourceCategory/edit/${row.id}`)}>编辑</a>,
+                            <Popconfirm
+                                title="确定要删除吗？"
+                                okText="确定"
+                                cancelText="取消"
+                                onConfirm={() => onDeleteResourceCategory([row.id] as number[])}
+                            >
+                                <a>删除</a>
+                            </Popconfirm>,
+                        ],
+                    },
+                    content: {
+                        dataIndex: 'resourceNames',
+                        render: (text, row) => {
+                            return (
+                                <>{row.resourceNames?.join(' | ')}</>
+                            );
+                        },
+                    },
+                }}
+                pagination={{
+                    defaultPageSize: 8,
+                    showSizeChanger: false,
+                }}
+            />
         </PageContainer>
     );
 };
+
+export default ResourceCategoryListPage;

@@ -128,7 +128,8 @@ const UserList: React.FC<UserListProps> = (props) => {
                         success: true,
                         total: result.totalElements,
                     };
-                }}
+                }
+            }
             pagination={{
                 pageSize: 10,
             }}

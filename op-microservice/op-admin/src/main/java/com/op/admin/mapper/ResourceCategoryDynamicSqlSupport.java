@@ -17,6 +17,9 @@ public final class ResourceCategoryDynamicSqlSupport {
     public static final SqlColumn<String> categoryName = resourceCategory.categoryName;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<String> categoryIcon = resourceCategory.categoryIcon;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> serverName = resourceCategory.serverName;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -48,6 +51,8 @@ public final class ResourceCategoryDynamicSqlSupport {
         public final SqlColumn<Integer> id = column("id", JDBCType.INTEGER);
 
         public final SqlColumn<String> categoryName = column("category_name", JDBCType.VARCHAR);
+
+        public final SqlColumn<String> categoryIcon = column("category_icon", JDBCType.VARCHAR);
 
         public final SqlColumn<String> serverName = column("server_name", JDBCType.VARCHAR);
 

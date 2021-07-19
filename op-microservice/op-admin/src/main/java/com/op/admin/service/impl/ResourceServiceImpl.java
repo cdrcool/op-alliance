@@ -159,6 +159,16 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
+    public List<String> findNamesByCategoryId(Integer categoryId) {
+        SelectStatementProvider selectStatementProvider = select(ResourceDynamicSqlSupport.resourceName)
+                .from(ResourceDynamicSqlSupport.resource)
+                .where(ResourceDynamicSqlSupport.categoryId, isEqualTo(categoryId))
+                .build().render(RenderingStrategies.MYBATIS3);
+        return resourceMapper.selectMany(selectStatementProvider).stream().map(Resource::getResourceName).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
     public Map<Integer, List<ResourceAssignVO>> findAllForAssign() {
         SelectStatementProvider selectStatementProvider =
                 select(ResourceDynamicSqlSupport.id, ResourceDynamicSqlSupport.resourceName)
