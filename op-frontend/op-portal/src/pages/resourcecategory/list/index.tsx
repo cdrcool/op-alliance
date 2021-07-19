@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import {Button, Input, Popconfirm, Tag} from 'antd';
 import ProList from '@ant-design/pro-list';
 import {PageContainer} from "@ant-design/pro-layout";
@@ -12,6 +12,14 @@ const {Search} = Input;
 const ResourceCategoryListPage: React.FC = () => {
     const history = useHistory();
     const ref = useRef<ActionType>();
+
+    const [keyword, setKeyword] = useState<string>();
+
+    const onSearch = (value: string) => {
+        setKeyword(value);
+        // @ts-ignore
+        ref.current.reloadAndRest();
+    };
 
     const onDeleteResourceCategory = (ids: number[]) => {
         // @ts-ignore
@@ -31,7 +39,7 @@ const ResourceCategoryListPage: React.FC = () => {
                 grid={{gutter: 16, column: 2}}
                 toolBarRender={() => {
                     return [
-                        <Search placeholder="输入资源分类名称查询" style={{width: 400}}/>,
+                        <Search style={{width: 400}} placeholder="输入资源分类名称查询" allowClear onSearch={(value) =>onSearch(value)}/>,
                         <Button key="add" type="primary" onClick={() => history.push('/admin/resourceCategory/edit')}>
                             新建
                         </Button>,
@@ -39,7 +47,7 @@ const ResourceCategoryListPage: React.FC = () => {
                 }}
                 request={
                     async (params, sort, filter) => {
-                        const {current, pageSize, keyword} = params;
+                        const {current, pageSize} = params;
                         const result = await queryResourceCategoryPage(
                             (current || 1) - 1,
                             pageSize || 10,
@@ -64,8 +72,7 @@ const ResourceCategoryListPage: React.FC = () => {
                                     // @ts-ignore
                                     Icon[row.categoryIcon],
                                     {
-                                        style: {fontSize: '16px', color: '#40a9ff'},
-                                        onClick: () => history.push(`/admin/resourceCategory/detail/${row.id}`),
+                                        style: {color: '#444950'},
                                     }
                                 ) : <></>
                             )
@@ -74,6 +81,11 @@ const ResourceCategoryListPage: React.FC = () => {
                     title: {
                         title: '分类名称',
                         dataIndex: 'categoryName',
+                        render: (_, row) => {
+                            return (
+                                <a onClick={() => history.push('/admin/resource')}>{row.categoryName}</a>
+                            )
+                        },
                     },
                     subTitle: {
                         dataIndex: 'serverName',
@@ -97,6 +109,7 @@ const ResourceCategoryListPage: React.FC = () => {
                             >
                                 <a>删除</a>
                             </Popconfirm>,
+                            <a onClick={() => history.push(`/admin/resourceCategory/detail/${row.id}`)}>查看</a>,
                         ],
                     },
                     content: {
@@ -109,7 +122,7 @@ const ResourceCategoryListPage: React.FC = () => {
                     },
                 }}
                 pagination={{
-                    defaultPageSize: 8,
+                    defaultPageSize: 10,
                     showSizeChanger: false,
                 }}
             />

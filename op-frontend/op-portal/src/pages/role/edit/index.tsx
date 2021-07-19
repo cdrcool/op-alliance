@@ -1,9 +1,9 @@
 import {Button, Card, Form, Input, InputNumber, Radio, Space, Spin} from 'antd';
 import {useHistory, useParams} from "react-router-dom";
-import {getRole, saveRole} from "../../../services/role";
-import {Role} from "../../../models/Role";
+import {getRole} from "../../../services/role";
 import React, {useEffect, useState} from "react";
 import {PageContainer} from "@ant-design/pro-layout";
+import {saveMenu} from "../../../services/menu";
 
 const {TextArea} = Input;
 
@@ -27,15 +27,12 @@ const RoleEditPage = () => {
         }
     }, []);
 
-
-    const onFinish = (role: Role) => {
-        saveRole(role).then(() => {
-            history.push('/admin/role');
-        });
-    };
-
-    const onFinishFailed = (errorInfo: any) => {
-        console.log('保存角色失败:', errorInfo);
+    const onSave = () => {
+        form.validateFields().then(values => {
+            saveMenu(values).then(() => {
+                history.push('/admin/role');
+            });
+        })
     };
 
     return (
@@ -45,8 +42,12 @@ const RoleEditPage = () => {
             header={{
                 breadcrumb: {},
             }}
+            extra={
+                <Space>
+                    <Button type="primary" onClick={onSave}>保存</Button>
+                </Space>
+            }
             onBack={() => history.push('/admin/role')}
-
         >
             <Card>
                 <Spin spinning={loading}>
@@ -54,8 +55,6 @@ const RoleEditPage = () => {
                         form={form}
                         labelCol={{span: 8}}
                         wrapperCol={{span: 8}}
-                        onFinish={onFinish}
-                        onFinishFailed={onFinishFailed}
                     >
                         <Form.Item name="id" hidden={true}/>
                         <Form.Item label="角色名" name="roleName" rules={[{required: true, message: '请输入角色名'}]}>
@@ -76,16 +75,6 @@ const RoleEditPage = () => {
                         </Form.Item>
                         <Form.Item label="角色编号" name="roleNo">
                             <InputNumber/>
-                        </Form.Item>
-                        <Form.Item wrapperCol={{offset: 8, span: 8}}>
-                            <Space>
-                                <Button onClick={() => history.push('/admin/role')}>
-                                    取消
-                                </Button>
-                                <Button type="primary" htmlType="submit">
-                                    保存
-                                </Button>
-                            </Space>
                         </Form.Item>
                     </Form>
                 </Spin>

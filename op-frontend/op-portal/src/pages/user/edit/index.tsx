@@ -5,6 +5,7 @@ import {User} from "../../../models/User";
 import {getUser, saveUser} from "../../../services/user";
 import moment from "moment";
 import {PageContainer} from "@ant-design/pro-layout";
+import {saveMenu} from "../../../services/menu";
 
 const {TextArea} = Input;
 
@@ -34,17 +35,12 @@ const UserEditPage = () => {
         }
     }, []);
 
-
-    const onFinish = (user: User) => {
-        // @ts-ignore
-        user.birthday = user.birthday && user.birthday.format('YYYY-MM-DD');
-        saveUser(user).then(() => {
-            history.push('/admin/user');
-        });
-    };
-
-    const onFinishFailed = (errorInfo: any) => {
-        console.log('保存用户失败:', errorInfo);
+    const onSave = () => {
+        form.validateFields().then(values => {
+            saveMenu(values).then(() => {
+                history.push('/admin/user');
+            });
+        })
     };
 
     return (
@@ -54,8 +50,12 @@ const UserEditPage = () => {
             header={{
                 breadcrumb: {},
             }}
+            extra={
+                <Space>
+                    <Button type="primary" onClick={onSave}>保存</Button>
+                </Space>
+            }
             onBack={() => history.push('/admin/user')}
-
         >
             <Card>
                 <Spin spinning={loading}>
@@ -63,8 +63,6 @@ const UserEditPage = () => {
                         form={form}
                         labelCol={{span: 8}}
                         wrapperCol={{span: 8}}
-                        onFinish={onFinish}
-                        onFinishFailed={onFinishFailed}
                     >
                         <Form.Item name="id" hidden={true}/>
                         <Form.Item name="orgId" hidden={true}/>
@@ -101,16 +99,6 @@ const UserEditPage = () => {
                         </Form.Item>
                         <Form.Item label="用户编号" name="userNo">
                             <InputNumber/>
-                        </Form.Item>
-                        <Form.Item wrapperCol={{offset: 8, span: 8}}>
-                            <Space>
-                                <Button onClick={() => history.push('/admin/user')}>
-                                    取消
-                                </Button>
-                                <Button type="primary" htmlType="submit">
-                                    保存
-                                </Button>
-                            </Space>
                         </Form.Item>
                     </Form>
                 </Spin>

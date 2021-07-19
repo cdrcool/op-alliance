@@ -3,7 +3,6 @@ import {useHistory, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import {PageContainer} from "@ant-design/pro-layout";
 import {getMenu, saveMenu} from "../../../services/menu";
-import {Menus} from "../../../models/Menus";
 
 const MenuEditPage = () => {
     const history = useHistory();
@@ -29,15 +28,12 @@ const MenuEditPage = () => {
         }
     }, []);
 
-
-    const onFinish = (menu: Menus) => {
-        saveMenu(menu).then(() => {
-            history.push('/admin/menu');
-        });
-    };
-
-    const onFinishFailed = (errorInfo: any) => {
-        console.log('保存菜单失败:', errorInfo);
+    const onSave = () => {
+        form.validateFields().then(values => {
+            saveMenu(values).then(() => {
+                history.push('/admin/menu');
+            });
+        })
     };
 
     return (
@@ -47,8 +43,12 @@ const MenuEditPage = () => {
             header={{
                 breadcrumb: {},
             }}
+            extra={
+                <Space>
+                    <Button type="primary" onClick={onSave}>保存</Button>
+                </Space>
+            }
             onBack={() => history.push('/admin/menu')}
-
         >
             <Card>
                 <Spin spinning={loading}>
@@ -56,12 +56,10 @@ const MenuEditPage = () => {
                         form={form}
                         labelCol={{span: 8}}
                         wrapperCol={{span: 8}}
-                        onFinish={onFinish}
-                        onFinishFailed={onFinishFailed}
                     >
                         <Form.Item name="id" hidden={true}/>
                         <Form.Item name="pid" hidden={true}/>
-                        <Form.Item label="上级菜单" >
+                        <Form.Item label="上级菜单">
                             {pName}
                         </Form.Item>
                         <Form.Item label="菜单名" name="menuName" rules={[{required: true, message: '请输入菜单名'}]}>
@@ -85,16 +83,6 @@ const MenuEditPage = () => {
                         </Form.Item>
                         <Form.Item label="菜单编号" name="menuNo">
                             <InputNumber/>
-                        </Form.Item>
-                        <Form.Item wrapperCol={{offset: 8, span: 8}}>
-                            <Space>
-                                <Button onClick={() => history.push('/admin/menu')}>
-                                    取消
-                                </Button>
-                                <Button type="primary" htmlType="submit">
-                                    保存
-                                </Button>
-                            </Space>
                         </Form.Item>
                     </Form>
                 </Spin>

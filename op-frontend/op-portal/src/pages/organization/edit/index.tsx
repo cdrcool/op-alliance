@@ -4,6 +4,7 @@ import React, {useEffect, useState} from "react";
 import {PageContainer} from "@ant-design/pro-layout";
 import {getOrganization, saveOrganization} from "../../../services/organization";
 import {Organization} from "../../../models/Organization";
+import {saveMenu} from "../../../services/menu";
 
 const {Option} = Select;
 
@@ -31,15 +32,12 @@ const OrganizationEditPage = () => {
         }
     }, []);
 
-
-    const onFinish = (org: Organization) => {
-        saveOrganization(org).then(() => {
-            history.push('/admin/organization');
-        });
-    };
-
-    const onFinishFailed = (errorInfo: any) => {
-        console.log('保存组织失败:', errorInfo);
+    const onSave = () => {
+        form.validateFields().then(values => {
+            saveMenu(values).then(() => {
+                history.push('/admin/organization');
+            });
+        })
     };
 
     return (
@@ -49,8 +47,12 @@ const OrganizationEditPage = () => {
             header={{
                 breadcrumb: {},
             }}
+            extra={
+                <Space>
+                    <Button type="primary" onClick={onSave}>保存</Button>
+                </Space>
+            }
             onBack={() => history.push('/admin/organization')}
-
         >
             <Card>
                 <Spin spinning={loading}>
@@ -58,8 +60,6 @@ const OrganizationEditPage = () => {
                         form={form}
                         labelCol={{span: 8}}
                         wrapperCol={{span: 8}}
-                        onFinish={onFinish}
-                        onFinishFailed={onFinishFailed}
                     >
                         <Form.Item name="id" hidden={true}/>
                         <Form.Item name="pid" hidden={true}/>
@@ -79,16 +79,6 @@ const OrganizationEditPage = () => {
                                 <Option value={4}>项目部</Option>
                                 <Option value={5}>部门</Option>
                             </Select>
-                        </Form.Item>
-                        <Form.Item wrapperCol={{offset: 8, span: 8}}>
-                            <Space>
-                                <Button onClick={() => history.push('/admin/organization')}>
-                                    取消
-                                </Button>
-                                <Button type="primary" htmlType="submit">
-                                    保存
-                                </Button>
-                            </Space>
                         </Form.Item>
                     </Form>
                 </Spin>

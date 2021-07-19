@@ -132,7 +132,7 @@ public class MenuServiceImpl implements MenuService {
         ids.forEach(this::deleteById);
     }
 
-    @Cacheable(key = "#id", unless = "#result == null", sync = true)
+    @Cacheable(key = "#id", sync = true)
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public MenuVO findById(Integer id) {
