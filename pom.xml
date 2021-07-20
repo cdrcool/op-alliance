@@ -228,7 +228,7 @@
         </pluginManagement>
     </build>
 
-    <!--<repositories>
+    <repositories>
         <repository>
             <id>nexus-aliyun</id>
             <name>Nexus aliyun</name>
@@ -258,5 +258,5 @@
             <name>Spring Milestones</name>
             <url>https://repo.spring.io/libs-milestone</url>
         </repository>
-    </repositories>-->
+    </repositories>
 </project>
