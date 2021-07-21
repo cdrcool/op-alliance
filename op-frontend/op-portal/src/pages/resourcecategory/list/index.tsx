@@ -122,7 +122,7 @@ const ResourceCategoryListPage: React.FC = () => {
                     },
                 }}
                 pagination={{
-                    defaultPageSize: 10,
+                    defaultPageSize: 8,
                     showSizeChanger: false,
                 }}
             />
