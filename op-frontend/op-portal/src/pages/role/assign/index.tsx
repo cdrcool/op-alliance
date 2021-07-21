@@ -1,20 +1,15 @@
-import React, {FC} from 'react';
+import React from 'react';
 import ProCard from '@ant-design/pro-card';
 import {PageContainer} from "@ant-design/pro-layout";
 import {useHistory} from "react-router-dom";
-import {Button, Checkbox, Collapse, List, Space} from "antd";
+import {Button, Checkbox, Collapse, Space} from "antd";
+import {Resource} from "../../../models/Resource";
+import resourceCategories from "../../../services/resourceCategoryJson";
 
 const {Panel} = Collapse;
 
-const plainOptions = [
-    {label: '保存', value: 'save'},
-    {label: '删除', value: 'delete'},
-    {label: '查看', value: 'view'},
-    {label: '导出', value: 'export'},
-];
-
-const RoleAssignPage: FC = () => {
-    const history = useHistory();
+const ResourcePanel: React.FC<Resource> = (props) => {
+    const {resourceName, resourceEnName, actions=[]} = props;
 
     const [checkedList, setCheckedList] = React.useState<string[]>([]);
     const [indeterminate, setIndeterminate] = React.useState(true);
@@ -22,17 +17,50 @@ const RoleAssignPage: FC = () => {
 
     const onChange = (list: any[]) => {
         setCheckedList(list);
-        setIndeterminate(!!list.length && list.length < plainOptions.length);
-        setCheckAll(list.length === plainOptions.length);
+        setIndeterminate(!!list.length && list.length < actions.length);
+        setCheckAll(list.length === actions.length);
     };
 
     const onCheckAllChange = (e: { target: { checked: boolean } }) => {
-        console.log('e: ', e);
         // @ts-ignore
-        setCheckedList(e.target.checked ? plainOptions : []);
+        setCheckedList(e.target.checked ? actions.map(item => item.permission) : []);
         setIndeterminate(false);
         setCheckAll(e.target.checked);
     };
+
+    return (
+        <Panel
+            key={resourceEnName || "1"}
+            showArrow={false}
+            header={
+                <Space>
+                    <Checkbox
+                        indeterminate={indeterminate}
+                        onChange={onCheckAllChange}
+                        checked={checkAll}
+                    />
+                    {resourceName}
+                </Space>
+            }
+        >
+            <Checkbox.Group
+                // @ts-ignore
+                options={
+                    actions.map(action => {
+                        return {
+                            label: action.actionName,
+                            value: action.permission,
+                        }
+                    })
+                }
+                value={checkedList}
+                onChange={onChange}/>
+        </Panel>
+    )
+};
+
+const RoleAssignPage: React.FC = () => {
+    const history = useHistory();
 
     const onSave = () => {
 
@@ -57,70 +85,25 @@ const RoleAssignPage: FC = () => {
                     tabPosition: 'left',
                 }}
             >
-                <ProCard.TabPane key="management" tab="管理中心">
-                    <Collapse activeKey={['organization', 'user', 'role', 'resourceCategory', 'resource', 'menu']}>
-                        <Panel header={
-                            <Space><Checkbox indeterminate={indeterminate} onChange={onCheckAllChange} checked={checkAll}/>组织管理</Space>
-                        } key="organization" showArrow={false}>
-                            <Checkbox.Group options={plainOptions} value={checkedList} onChange={onChange} />
-                        </Panel>
-                        <Panel header="用户管理" key="user" showArrow={false}>
-                            <Checkbox.Group options={[
-                                {label: '保存', value: 'save'},
-                                {label: '删除', value: 'delete'},
-                                {label: '查看', value: 'view'},
-                                {label: '导出', value: 'export'},
-                            ]}/>
-                        </Panel>
-                        <Panel header="角色管理" key="role" showArrow={false}>
-                            <Checkbox.Group options={[
-                                {label: '保存', value: 'save'},
-                                {label: '删除', value: 'delete'},
-                                {label: '查看', value: 'view'},
-                                {label: '导出', value: 'export'},
-                            ]}/>
-                        </Panel>
-                        <Panel header="资源分类管理" key="resourceCategory" showArrow={false}>
-                            <Checkbox.Group options={[
-                                {label: '保存', value: 'save'},
-                                {label: '删除', value: 'delete'},
-                                {label: '查看', value: 'view'},
-                                {label: '导出', value: 'export'},
-                            ]}/>
-                        </Panel>
-                        <Panel header="资源管理" key="resource" showArrow={false}>
-                            <Checkbox.Group options={[
-                                {label: '保存', value: 'save'},
-                                {label: '删除', value: 'delete'},
-                                {label: '查看', value: 'view'},
-                                {label: '导出', value: 'export'},
-                            ]}/>
-                        </Panel>
-                        <Panel header="菜单管理" key="menu" showArrow={false}>
-                            <Checkbox.Group options={[
-                                {label: '保存', value: 'save'},
-                                {label: '删除', value: 'delete'},
-                                {label: '查看', value: 'view'},
-                                {label: '导出', value: 'export'},
-                            ]}/>
-                        </Panel>
-                    </Collapse>
-                </ProCard.TabPane>
-                <ProCard.TabPane key="statistics" tab="统计中心">
-
-                </ProCard.TabPane>
-                <ProCard.TabPane key="logging" tab="日志中心">
-
-                </ProCard.TabPane>
-                <ProCard.TabPane key="monitor" tab="监控中心">
-
-                </ProCard.TabPane>
-                <ProCard.TabPane key="attachment" tab="附件中心">
-
-                </ProCard.TabPane>
-                <ProCard.TabPane key="document" tab="文档中心">
-
-                </ProCard.TabPane>
+                {
+                    resourceCategories.map(category => {
+                        console.log(category.categoryEnName);
+                        return (
+                            <ProCard.TabPane key={category.categoryEnName} tab={category.categoryName}>
+                                <Collapse activeKey={category.resources?.map(resource => resource.resourceEnName|| "11")}>
+                                    {
+                                        category?.resources?.map(resource => {
+                                            return (
+                                                // @ts-ignore
+                                                <ResourcePanel resource={resource}/>
+                                            )
+                                        })
+                                    }
+                                </Collapse>
+                            </ProCard.TabPane>
+                        )
+                    })
+                }
             </ProCard>
         </PageContainer>
     );

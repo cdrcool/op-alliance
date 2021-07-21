@@ -4,6 +4,7 @@ export interface ResourceAction {
     actionName?: string;
     actionPath?: string;
     actionDesc?: number;
+    permission?: string;
     actionNo?: number;
     isAdd?: boolean;
 }
