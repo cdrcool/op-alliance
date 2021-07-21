@@ -47,7 +47,6 @@ const ResourceCategoryEditPage = () => {
                 </Space>
             }
             onBack={() => history.push('/admin/resourceCategory')}
-
         >
             <Card>
                 <Spin spinning={loading}>

@@ -49,7 +49,6 @@ const RoleDetailPage = () => {
                 </Space>
             }
             onBack={() => history.push('/admin/role')}
-
         >
             <Card>
                 <Spin spinning={loading}>

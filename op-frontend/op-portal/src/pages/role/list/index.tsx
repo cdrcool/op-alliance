@@ -59,6 +59,9 @@ const RoleListPage: FC = () => {
                 <a key="enable" onClick={() => onChangeRolesEnabled([record.id] as number[], record.status === 0)}>
                     {record.status === 1 ? '禁用' : '启用'}
                 </a>,
+                <a key="assign" onClick={() => history.push(`/admin/role/assign/${record.id}`)}>
+                    分配资源
+                </a>,
             ],
         },
     ];
