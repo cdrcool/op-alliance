@@ -3,7 +3,9 @@ import {PageContainer} from "@ant-design/pro-layout";
 import {useHistory, useParams} from "react-router-dom";
 import ProList from '@ant-design/pro-list';
 import ProCard from '@ant-design/pro-card';
-import {Button, Space} from "antd";
+import {Button, Pagination, Space} from "antd";
+
+import "./index.css";
 
 const UserAssignRolesPage: FC = () => {
     const history = useHistory();
@@ -24,68 +26,129 @@ const UserAssignRolesPage: FC = () => {
             }
             onBack={() => history.push('/admin/user')}
         >
-            <ProList<{ title: string, description: string | undefined | null }>
-                style={{backgroundColor: '#ffffff'}}
-                metas={{
-                    title: {},
-                    description: {},
-                }}
-                rowKey="title"
-                rowSelection={
-                    {
-                        selectedRowKeys,
-                        onChange: (keys: ReactText[]) => setSelectedRowKeys(keys),
-                    }
-                }
-                dataSource={
-                    [
-                        {
-                            title: '管理员',
-                            description: '具有系统所有操作权限',
-                        },
-                        {
-                            title: '游客',
-                            description: '具有系统查看权限',
-                        },
-                        {
-                            title: '管理员2',
-                            description: '具有系统所有操作权限',
-                        },
-                        {
-                            title: '游客2',
-                            description: '具有系统查看权限',
-                        },
-                        {
-                            title: '管理员3',
-                            description: '具有系统所有操作权限',
-                        },
-                        {
-                            title: '游客3',
-                            description: '具有系统查看权限',
-                        },
-                        {
-                            title: '管理员4',
-                            description: '具有系统所有操作权限',
-                        },
-                        {
-                            title: '游客4',
-                            description: '具有系统查看权限',
-                        },
-                        {
-                            title: '管理员5',
-                            description: null,
-                        },
-                        {
-                            title: '游客5',
-                            description: undefined,
-                        },
-                    ]
-                }
-                pagination={{
-                    defaultPageSize: 10,
-                    showSizeChanger: true,
-                }}
-            />
+            <ProCard split="vertical">
+                <ProCard colSpan="50%">
+                    <ProList<{ title: string, description: string | undefined | null }>
+                        style={{backgroundColor: '#ffffff'}}
+                        metas={{
+                            title: {},
+                            description: {},
+                        }}
+                        rowKey="title"
+                        rowSelection={
+                            {
+                                selectedRowKeys,
+                                onChange: (keys: ReactText[]) => setSelectedRowKeys(keys),
+                            }
+                        }
+                        dataSource={
+                            [
+                                {
+                                    title: '管理员',
+                                    description: '具有系统所有操作权限',
+                                },
+                                {
+                                    title: '游客',
+                                    description: '具有系统查看权限',
+                                },
+                                {
+                                    title: '管理员2',
+                                    description: '具有系统所有操作权限',
+                                },
+                                {
+                                    title: '游客2',
+                                    description: '具有系统查看权限',
+                                },
+                                {
+                                    title: '管理员3',
+                                    description: '具有系统所有操作权限',
+                                },
+                                {
+                                    title: '游客3',
+                                    description: '具有系统查看权限',
+                                },
+                                {
+                                    title: '管理员4',
+                                    description: '具有系统所有操作权限',
+                                },
+                                {
+                                    title: '游客4',
+                                    description: '具有系统查看权限',
+                                },
+                                {
+                                    title: '管理员5',
+                                    description: null,
+                                },
+                                {
+                                    title: '游客5',
+                                    description: undefined,
+                                },
+                            ]
+                        }
+                    />
+                </ProCard>
+                <ProCard>
+                    <ProList<{ title: string, description: string | undefined | null }>
+                        style={{backgroundColor: '#ffffff'}}
+                        metas={{
+                            title: {},
+                            description: {},
+                        }}
+                        rowKey="title"
+                        rowSelection={
+                            {
+                                selectedRowKeys,
+                                onChange: (keys: ReactText[]) => setSelectedRowKeys(keys),
+                            }
+                        }
+                        dataSource={
+                            [
+                                {
+                                    title: '管理员',
+                                    description: '具有系统所有操作权限',
+                                },
+                                {
+                                    title: '游客',
+                                    description: '具有系统查看权限',
+                                },
+                                {
+                                    title: '管理员2',
+                                    description: '具有系统所有操作权限',
+                                },
+                                {
+                                    title: '游客2',
+                                    description: '具有系统查看权限',
+                                },
+                                {
+                                    title: '管理员3',
+                                    description: '具有系统所有操作权限',
+                                },
+                                {
+                                    title: '游客3',
+                                    description: '具有系统查看权限',
+                                },
+                                {
+                                    title: '管理员4',
+                                    description: '具有系统所有操作权限',
+                                },
+                                {
+                                    title: '游客4',
+                                    description: '具有系统查看权限',
+                                },
+                                {
+                                    title: '管理员5',
+                                    description: null,
+                                },
+                                {
+                                    title: '游客5',
+                                    description: undefined,
+                                },
+                            ]
+                        }
+                    />
+                </ProCard>
+            </ProCard>
+            <Pagination/>
         </PageContainer>
     );
 };
