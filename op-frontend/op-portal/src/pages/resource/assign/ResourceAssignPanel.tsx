@@ -19,7 +19,6 @@ const ResourceAssignPanel: FC<ResourceAssignPanelProps> = (props) => {
     const [checkAll, setCheckAll] = useState(selectedOptions.length > 0 && selectedOptions.length === groupOptions.length);
 
     const onChange = (list: CheckboxValueType[]) => {
-        console.log('list: ', list);
         setCheckedList(list as number[]);
         setIndeterminate(!!list.length && list.length < groupOptions.length);
         setCheckAll(list.length === groupOptions.length);
