@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import ProTable, {ProColumns} from "@ant-design/pro-table";
 import {Organization} from "../../../models/Organization";
 import {queryOrganizationTree} from "../../../services/organization";
@@ -8,7 +8,7 @@ type OrganizationTreeProps = {
     onChange: (id: number) => void;
 };
 
-const OrganizationTree: React.FC<OrganizationTreeProps> = (props) => {
+const OrganizationTree: FC<OrganizationTreeProps> = (props) => {
     const {orgId, onChange} = props;
 
     const getWindowSize = () => ({

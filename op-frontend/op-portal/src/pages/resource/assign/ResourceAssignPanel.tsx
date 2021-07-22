@@ -26,10 +26,11 @@ const ResourceAssignPanel: FC<ResourceAssignPanelProps> = (props) => {
     };
 
     const onCheckAllChange = (e: { target: { checked: boolean } }) => {
-        setCheckedList(e.target.checked ? groupOptions.map(item => item.id as number) : []);
+        const list = e.target.checked ? groupOptions.map(item => item.id as number) : groupOptions.filter(action => !action.enableUncheck).map(action => action.id as number)
+        setCheckedList(list);
         setIndeterminate(false);
         setCheckAll(e.target.checked);
-        onSelectedChange(id as number, e.target.checked ? groupOptions.map(item => item.id as number) : []);
+        onSelectedChange(id as number, list);
     };
 
     return (

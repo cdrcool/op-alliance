@@ -282,11 +282,15 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void assignResourceActions(Integer id, List<Integer> resourceActionIds) {
+        // 获取继承的分配的资源动作 ids
+        List<Integer> inheritedActionIds = this.loadInheritedAssignedActionIds(id);
+
         // 获取已建立关联的资源动作 ids
         List<Integer> preActionIds = this.getAssignedResourceActionIds(id);
 
         // 获取要新建关联的资源动作 ids
         List<Integer> toAddActionIds = resourceActionIds.stream()
+                .filter(actionId -> !inheritedActionIds.contains(actionId))
                 .filter(actionId -> !preActionIds.contains(actionId)).collect(Collectors.toList());
 
         // 获取要删除关联的资源动作 ids
@@ -313,6 +317,26 @@ public class OrganizationServiceImpl implements OrganizationService {
                             .build().render(RenderingStrategies.MYBATIS3);
             organizationResourceActionRelationMapper.delete(deleteStatementProvider);
         }
+    }
+
+    /**
+     * 获取继承的分配的资源动作 ids
+     *
+     * @param id 用户 id
+     * @return 继承的分配的资源动作 ids
+     */
+    private List<Integer> loadInheritedAssignedActionIds(Integer id) {
+        List<Integer> parentIds = organizationMapper.getParentsIds(id);
+        parentIds.remove(id);
+
+        SelectStatementProvider selectStatementProvider =
+                select(OrganizationResourceActionRelationDynamicSqlSupport.orgId, OrganizationResourceActionRelationDynamicSqlSupport.actionId)
+                        .from(OrganizationResourceActionRelationDynamicSqlSupport.organizationResourceActionRelation)
+                        .where(OrganizationResourceActionRelationDynamicSqlSupport.orgId, isIn(parentIds))
+                        .build().render(RenderingStrategies.MYBATIS3);
+        List<OrganizationResourceActionRelation> relations = organizationResourceActionRelationMapper.selectMany(selectStatementProvider);
+
+        return relations.stream().map(OrganizationResourceActionRelation::getActionId).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -380,7 +404,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         categories.forEach(category ->
                 Optional.ofNullable(category.getResources()).orElse(new ArrayList<>()).forEach(resource ->
                         Optional.ofNullable(resource.getActions()).orElse(new ArrayList<>()).forEach(action -> {
-                            List<Integer> orgIds = relationsMap.get(action.getId()).stream()
+                            List<Integer> orgIds = relationsMap.getOrDefault(action.getId(), new ArrayList<>()).stream()
                                     .map(OrganizationResourceActionRelation::getOrgId).collect(Collectors.toList());
                             action.setChecked(CollectionUtils.isNotEmpty(orgIds));
                             action.setEnableUncheck(orgIds.stream().allMatch(id::equals));

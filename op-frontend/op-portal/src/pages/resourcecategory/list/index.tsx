@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {FC, useRef, useState} from 'react';
 import {Button, Input, Popconfirm, Tag} from 'antd';
 import ProList from '@ant-design/pro-list';
 import {PageContainer} from "@ant-design/pro-layout";
@@ -9,7 +9,7 @@ import {useHistory} from "react-router-dom";
 
 const {Search} = Input;
 
-const ResourceCategoryListPage: React.FC = () => {
+const ResourceCategoryListPage: FC = () => {
     const history = useHistory();
     const ref = useRef<ActionType>();
 
@@ -39,7 +39,8 @@ const ResourceCategoryListPage: React.FC = () => {
                 grid={{gutter: 16, column: 2}}
                 toolBarRender={() => {
                     return [
-                        <Search style={{width: 400}} placeholder="输入资源分类名称查询" allowClear onSearch={(value) =>onSearch(value)}/>,
+                        <Search style={{width: 400}} placeholder="输入资源分类名称查询" allowClear
+                                onSearch={(value) => onSearch(value)}/>,
                         <Button key="add" type="primary" onClick={() => history.push('/admin/resourceCategory/edit')}>
                             新建
                         </Button>,

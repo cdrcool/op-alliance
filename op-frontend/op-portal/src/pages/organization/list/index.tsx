@@ -60,6 +60,9 @@ const OrganizationListPage: FC = () => {
                 })}>
                     新增下级
                 </a>,
+                <a key="assignResources" onClick={() => history.push(`/admin/organization/assign-resources/${record.id}`)}>
+                    分配资源
+                </a>,
             ],
         },
     ];

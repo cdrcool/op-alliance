@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {FC, useEffect, useRef, useState} from "react";
 import {Button, Popconfirm, Space} from "antd";
 import {ExportOutlined, MinusOutlined, PlusOutlined} from "@ant-design/icons";
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
@@ -10,7 +10,7 @@ import {deleteResources, queryResourcePage} from "../../../services/resource";
 import {queryResourceCategorySelectList} from "../../../services/resourceCategory";
 import {SelectOptions} from "../../../models/SelectOptions";
 
-const ResourceListPage: React.FC = () => {
+const ResourceListPage: FC = () => {
     const history = useHistory();
     // @ts-ignore
     const {categoryId} = history.location.state || {};

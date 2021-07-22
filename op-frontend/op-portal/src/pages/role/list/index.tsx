@@ -1,7 +1,6 @@
 import React, {FC, useRef} from "react";
 import {Button, Dropdown, Menu, Popconfirm, Space} from "antd";
 import {ExportOutlined, MinusOutlined, PlusOutlined} from "@ant-design/icons";
-
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import {Role} from "../../../models/Role";
@@ -59,7 +58,7 @@ const RoleListPage: FC = () => {
                 <a key="enable" onClick={() => onChangeRolesEnabled([record.id] as number[], record.status === 0)}>
                     {record.status === 1 ? '禁用' : '启用'}
                 </a>,
-                <a key="assign" onClick={() => history.push(`/admin/role/assign/${record.id}`)}>
+                <a key="assignResources" onClick={() => history.push(`/admin/role/assign-resources/${record.id}`)}>
                     分配资源
                 </a>,
             ],

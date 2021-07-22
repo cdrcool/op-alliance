@@ -7,7 +7,7 @@ import ResourceAssignPanel from "../../resource/assign/ResourceAssignPanel";
 import {assignRoleResourceActions, loadRoleAssignedResources} from "../../../services/role";
 import {ResourceCategory} from "../../../models/ResourceCategory";
 
-const RoleResourceAssignPage: FC = () => {
+const RoleAssignResourcesPage: FC = () => {
     const history = useHistory();
     const {id} = useParams<{ id: string }>();
 
@@ -89,4 +89,4 @@ const RoleResourceAssignPage: FC = () => {
     );
 };
 
-export default RoleResourceAssignPage;
+export default RoleAssignResourcesPage;

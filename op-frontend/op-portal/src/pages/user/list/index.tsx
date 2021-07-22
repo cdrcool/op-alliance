@@ -5,7 +5,6 @@ import './index.css';
 import OrganizationTree from "./OrganizationTree";
 import UserList from "./UserList";
 
-
 const UserListPage: FC = () => {
     const [orgId, setOrgId] = useState<number>(1);
 

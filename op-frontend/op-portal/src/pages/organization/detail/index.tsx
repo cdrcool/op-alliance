@@ -1,11 +1,11 @@
 import {Button, Card, Descriptions, Popconfirm, Space, Spin} from 'antd';
 import {useHistory, useParams} from "react-router-dom";
-import React, {useEffect, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import {PageContainer} from "@ant-design/pro-layout";
 import {Organization} from "../../../models/Organization";
 import {deleteOrganization, getOrganization} from "../../../services/organization";
 
-const OrganizationDetailPage = () => {
+const OrganizationDetailPage: FC = () => {
     const history = useHistory();
     const {id} = useParams<{ id: string }>();
 
@@ -51,8 +51,8 @@ const OrganizationDetailPage = () => {
             onBack={() => history.push('/admin/organization')}
 
         >
-            <Card>
-                <Spin spinning={loading}>
+            <Spin spinning={loading}>
+                <Card>
                     <Descriptions>
                         <Descriptions.Item label="组织名">{org.orgName}</Descriptions.Item>
                         <Descriptions.Item label="组织编码">{org.orgCode}</Descriptions.Item>
@@ -60,8 +60,8 @@ const OrganizationDetailPage = () => {
                             {org.orgType && (org.orgType === 1 ? '集团' : (org.orgType === 2 ? '公司' : (org.orgType === 3 ? '分公司' : (org.orgType === 4 ? '项目部' : '部门'))))}
                         </Descriptions.Item>
                     </Descriptions>
-                </Spin>
-            </Card>
+                </Card>
+            </Spin>
         </PageContainer>
     );
 };

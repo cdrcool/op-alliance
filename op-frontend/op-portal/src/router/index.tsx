@@ -20,8 +20,9 @@ import ResourceDetailPage from "../pages/resource/detail";
 import ResourceListPage from "../pages/resource/list";
 import ResourceCategoryEditPage from "../pages/resourcecategory/edit";
 import ResourceCategoryDetailPage from "../pages/resourcecategory/detail";
-import RoleResourceAssignPage from "../pages/role/resourceassign";
-import UserResourceAssignPage from "../pages/user/resourceassign";
+import RoleAssignResourcesPage from "../pages/role/assignresource";
+import UserAssignResourcesPage from "../pages/user/assignresource";
+import OrganizationAssignResourcesPage from "../pages/organization/assignresource";
 
 const routes = [
     {
@@ -51,6 +52,11 @@ const routes = [
                 component: OrganizationDetailPage,
             },
             {
+                path: "/admin/organization/assign-resources/:id",
+                exact: true,
+                component: OrganizationAssignResourcesPage,
+            },
+            {
                 path: "/admin/user",
                 exact: true,
                 component: UserListPage,
@@ -66,9 +72,9 @@ const routes = [
                 component: UserDetailPage,
             },
             {
-                path: "/admin/user/assign/:id",
+                path: "/admin/user/assign-resources/:id",
                 exact: true,
-                component: UserResourceAssignPage,
+                component: UserAssignResourcesPage,
             },
             {
                 path: "/admin/role",
@@ -86,9 +92,9 @@ const routes = [
                 component: RoleDetailPage,
             },
             {
-                path: "/admin/role/assign/:id",
+                path: "/admin/role/assign-resources/:id",
                 exact: true,
-                component: RoleResourceAssignPage,
+                component: RoleAssignResourcesPage,
             },
             {
                 path: "/admin/menu",

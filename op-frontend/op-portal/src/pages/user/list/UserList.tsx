@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from "react";
+import React, {FC, useEffect, useRef} from "react";
 import {useHistory} from "react-router-dom";
 import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
 import {changeUsersEnabled, queryUserPage} from "../../../services/user";
@@ -10,7 +10,7 @@ type UserListProps = {
     orgId: number;
 };
 
-const UserList: React.FC<UserListProps> = (props) => {
+const UserList: FC<UserListProps> = (props) => {
     const {orgId} = props;
 
     const history = useHistory();
@@ -94,7 +94,7 @@ const UserList: React.FC<UserListProps> = (props) => {
                 <a key="enable" onClick={() => onChangeUsersEnabled([record.id] as number[], record.status === 0)}>
                     {record.status === 1 ? '禁用' : '启用'}
                 </a>,
-                <a key="assign" onClick={() => history.push(`/admin/user/assign/${record.id}`)}>
+                <a key="assignResources" onClick={() => history.push(`/admin/user/assign-resources/${record.id}`)}>
                     分配资源
                 </a>,
             ],

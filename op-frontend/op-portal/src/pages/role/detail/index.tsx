@@ -1,11 +1,11 @@
 import {Button, Card, Descriptions, Popconfirm, Space, Spin} from 'antd';
 import {useHistory, useParams} from "react-router-dom";
-import React, {useEffect, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import {deleteRole, getRole} from "../../../services/role";
 import {Role} from "../../../models/Role";
 import {PageContainer} from "@ant-design/pro-layout";
 
-const RoleDetailPage = () => {
+const RoleDetailPage: FC = () => {
     const history = useHistory();
     const {id} = useParams<{ id: string }>();
 
@@ -50,8 +50,8 @@ const RoleDetailPage = () => {
             }
             onBack={() => history.push('/admin/role')}
         >
-            <Card>
-                <Spin spinning={loading}>
+            <Spin spinning={loading}>
+                <Card>
                     <Descriptions>
                         <Descriptions.Item label="角色名">{role.roleName}</Descriptions.Item>
                         <Descriptions.Item label="角色编码">{role.roleCode}</Descriptions.Item>
@@ -60,8 +60,8 @@ const RoleDetailPage = () => {
                             label="是否启用">{role.status && (role.status === 1 ? '启用' : '禁用')}</Descriptions.Item>
                         <Descriptions.Item label="角色编号">{role.roleNo}</Descriptions.Item>
                     </Descriptions>
-                </Spin>
-            </Card>
+                </Card>
+            </Spin>
         </PageContainer>
     );
 };

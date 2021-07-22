@@ -1,13 +1,13 @@
 import {Button, Card, Form, Input, InputNumber, Radio, Space, Spin} from 'antd';
 import {useHistory, useParams} from "react-router-dom";
 import {getRole} from "../../../services/role";
-import React, {useEffect, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import {PageContainer} from "@ant-design/pro-layout";
 import {saveMenu} from "../../../services/menu";
 
 const {TextArea} = Input;
 
-const RoleEditPage = () => {
+const RoleEditPage: FC = () => {
     const history = useHistory();
     const {id} = useParams<{ id?: string }>();
 
@@ -49,8 +49,8 @@ const RoleEditPage = () => {
             }
             onBack={() => history.push('/admin/role')}
         >
-            <Card>
-                <Spin spinning={loading}>
+            <Spin spinning={loading}>
+                <Card>
                     <Form
                         form={form}
                         labelCol={{span: 8}}
@@ -77,8 +77,8 @@ const RoleEditPage = () => {
                             <InputNumber/>
                         </Form.Item>
                     </Form>
-                </Spin>
-            </Card>
+                </Card>
+            </Spin>
         </PageContainer>
     );
 };

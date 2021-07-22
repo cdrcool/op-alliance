@@ -5,9 +5,9 @@ import {useHistory, useParams} from "react-router-dom";
 import {Button, Space} from "antd";
 import ResourceAssignPanel from "../../resource/assign/ResourceAssignPanel";
 import {ResourceCategory} from "../../../models/ResourceCategory";
-import {assignUserResourceActions, loaUserAssignedResources} from "../../../services/user";
+import {assignUserResourceActions, loadUserAssignedResources} from "../../../services/user";
 
-const UserResourceAssignPage: FC = () => {
+const UserAssignResourcesPage: FC = () => {
     const history = useHistory();
     const {id} = useParams<{ id: string }>();
 
@@ -17,7 +17,7 @@ const UserResourceAssignPage: FC = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const resourceCategories = await loaUserAssignedResources(parseInt(id));
+            const resourceCategories = await loadUserAssignedResources(parseInt(id));
             setResourceCategories(resourceCategories || []);
             setResourceActionsMap(() => {
                 const map = new Map<number, number[]>();
@@ -89,4 +89,4 @@ const UserResourceAssignPage: FC = () => {
     );
 };
 
-export default UserResourceAssignPage;
+export default UserAssignResourcesPage;

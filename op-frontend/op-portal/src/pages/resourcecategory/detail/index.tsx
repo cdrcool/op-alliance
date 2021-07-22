@@ -1,11 +1,11 @@
 import {Button, Card, Descriptions, Popconfirm, Space, Spin} from 'antd';
 import {useHistory, useParams} from "react-router-dom";
-import React, {useEffect, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import {PageContainer} from "@ant-design/pro-layout";
 import {ResourceCategory} from "../../../models/ResourceCategory";
 import {deleteResourceCategory, getResourceCategory} from "../../../services/resourceCategory";
 
-const ResourceCategoryDetailPage = () => {
+const ResourceCategoryDetailPage: FC = () => {
     const history = useHistory();
     const {id} = useParams<{ id: string }>();
 
@@ -51,16 +51,16 @@ const ResourceCategoryDetailPage = () => {
             }
             onBack={() => history.push('/admin/resourceCategory')}
         >
-            <Card>
-                <Spin spinning={loading}>
+            <Spin spinning={loading}>
+                <Card>
                     <Descriptions>
                         <Descriptions.Item label="分类名称">{resourceCategory.categoryName}</Descriptions.Item>
                         <Descriptions.Item label="分类图标">{resourceCategory.categoryIcon}</Descriptions.Item>
                         <Descriptions.Item label="服务名称">{resourceCategory.serverName}</Descriptions.Item>
                         <Descriptions.Item label="分类编号">{resourceCategory.categoryNo}</Descriptions.Item>
                     </Descriptions>
-                </Spin>
-            </Card>
+                </Card>
+            </Spin>
         </PageContainer>
     );
 };

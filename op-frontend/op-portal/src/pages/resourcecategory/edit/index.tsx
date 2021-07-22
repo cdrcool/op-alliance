@@ -1,12 +1,12 @@
 import {Button, Card, Form, Input, InputNumber, Space, Spin} from 'antd';
 import {useHistory, useParams} from "react-router-dom";
-import React, {useEffect, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import {PageContainer} from "@ant-design/pro-layout";
 import {getResourceCategory, saveResourceCategory} from "../../../services/resourceCategory";
 
 const {TextArea} = Input;
 
-const ResourceCategoryEditPage = () => {
+const ResourceCategoryEditPage: FC = () => {
     const history = useHistory();
     const {id} = useParams<{ id?: string }>();
 
@@ -48,8 +48,8 @@ const ResourceCategoryEditPage = () => {
             }
             onBack={() => history.push('/admin/resourceCategory')}
         >
-            <Card>
-                <Spin spinning={loading}>
+            <Spin spinning={loading}>
+                <Card>
                     <Form
                         form={form}
                         labelCol={{span: 8}}
@@ -69,8 +69,8 @@ const ResourceCategoryEditPage = () => {
                             <InputNumber/>
                         </Form.Item>
                     </Form>
-                </Spin>
-            </Card>
+                </Card>
+            </Spin>
         </PageContainer>
     );
 };

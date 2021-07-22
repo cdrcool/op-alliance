@@ -1,11 +1,11 @@
 import {Button, Card, Descriptions, Popconfirm, Space, Spin} from 'antd';
 import {useHistory, useParams} from "react-router-dom";
-import React, {useEffect, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import {PageContainer} from "@ant-design/pro-layout";
 import {deleteMenu, getMenu} from "../../../services/menu";
 import {Menus} from "../../../models/Menus";
 
-const MenuDetailPage = () => {
+const MenuDetailPage: FC = () => {
     const history = useHistory();
     const {id} = useParams<{ id: string }>();
 
@@ -51,8 +51,8 @@ const MenuDetailPage = () => {
             onBack={() => history.push('/admin/menu')}
 
         >
-            <Card>
-                <Spin spinning={loading}>
+            <Spin spinning={loading}>
+                <Card>
                     <Descriptions>
                         <Descriptions.Item label="菜单名">{menu.menuName}</Descriptions.Item>
                         <Descriptions.Item label="菜单图标">{menu.menuIcon}</Descriptions.Item>
@@ -62,8 +62,8 @@ const MenuDetailPage = () => {
                         <Descriptions.Item label="权限标识">{menu.permission}</Descriptions.Item>
                         <Descriptions.Item label="菜单编号">{menu.menuNo}</Descriptions.Item>
                     </Descriptions>
-                </Spin>
-            </Card>
+                </Card>
+            </Spin>
         </PageContainer>
     );
 };

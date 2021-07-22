@@ -1,5 +1,6 @@
 import {Organization} from "../models/Organization";
 import request from "../utils/request";
+import {ResourceCategory} from "../models/ResourceCategory";
 
 /**
  * 保存组织
@@ -53,4 +54,23 @@ export async function queryOrganizationTree(params: object): Promise<Organizatio
  */
 export async function queryOrganizationList(params: object): Promise<Organization[]> {
     return request.post(`/api/organization/queryList`, params);
+}
+
+/**
+ * 分配资源动作
+ *
+ * @param id 用户 id
+ * @param resourceActionIds 资源动作 ids
+ */
+export async function assignOrganizationResourceActions(id: number, resourceActionIds: number[]) {
+    return request.post('/api/organization/assignResourceActions', {id, resourceActionIds});
+}
+
+/**
+ * 查找资源分配情况
+ *
+ * @param id 用户 id
+ */
+export async function loadOrganizationAssignedResources(id: number):  Promise<ResourceCategory[]> {
+    return request.get(`/api/organization/loadAssignedResources?id=${id}`);
 }

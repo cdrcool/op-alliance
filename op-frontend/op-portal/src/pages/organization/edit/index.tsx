@@ -1,14 +1,13 @@
-import {Button, Card, Form, Input, Space, Spin, Select} from 'antd';
+import {Button, Card, Form, Input, Select, Space, Spin} from 'antd';
 import {useHistory, useParams} from "react-router-dom";
-import React, {useEffect, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import {PageContainer} from "@ant-design/pro-layout";
-import {getOrganization, saveOrganization} from "../../../services/organization";
-import {Organization} from "../../../models/Organization";
+import {getOrganization} from "../../../services/organization";
 import {saveMenu} from "../../../services/menu";
 
 const {Option} = Select;
 
-const OrganizationEditPage = () => {
+const OrganizationEditPage: FC = () => {
     const history = useHistory();
     const {id} = useParams<{ id?: string }>();
     // @ts-ignore
@@ -54,8 +53,8 @@ const OrganizationEditPage = () => {
             }
             onBack={() => history.push('/admin/organization')}
         >
-            <Card>
-                <Spin spinning={loading}>
+            <Spin spinning={loading}>
+                <Card>
                     <Form
                         form={form}
                         labelCol={{span: 8}}
@@ -73,7 +72,7 @@ const OrganizationEditPage = () => {
                             <Input/>
                         </Form.Item>
                         <Form.Item label="组织类型" name="orgType" rules={[{required: true, message: '请选择组织类型'}]}>
-                            <Select >
+                            <Select>
                                 <Option value={2}>公司</Option>
                                 <Option value={3}>分公司</Option>
                                 <Option value={4}>项目部</Option>
@@ -81,8 +80,8 @@ const OrganizationEditPage = () => {
                             </Select>
                         </Form.Item>
                     </Form>
-                </Spin>
-            </Card>
+                </Card>
+            </Spin>
         </PageContainer>
     );
 };

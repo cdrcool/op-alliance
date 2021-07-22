@@ -1,11 +1,11 @@
 import {Button, Card, Descriptions, Popconfirm, Space, Spin} from 'antd';
 import {useHistory, useParams} from "react-router-dom";
-import React, {useEffect, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import {User} from "../../../models/User";
 import {deleteUser, getUser} from "../../../services/user";
 import {PageContainer} from "@ant-design/pro-layout";
 
-const UserDetailPage = () => {
+const UserDetailPage: FC = () => {
     const history = useHistory();
     const {id} = useParams<{ id: string }>();
 
@@ -51,8 +51,8 @@ const UserDetailPage = () => {
             onBack={() => history.push('/admin/user')}
 
         >
-            <Card>
-                <Spin spinning={loading}>
+            <Spin spinning={loading}>
+                <Card>
                     <Descriptions>
                         <Descriptions.Item label="用户名">{user.nickname}</Descriptions.Item>
                         <Descriptions.Item label="昵称">{user.nickname}</Descriptions.Item>
@@ -65,8 +65,8 @@ const UserDetailPage = () => {
                             {user.status && (user.status === 1 ? '启用' : (user.status === 2 ? '禁用' : (user.status === 3 ? '过期' : '密码过期')))}
                         </Descriptions.Item>
                     </Descriptions>
-                </Spin>
-            </Card>
+                </Card>
+            </Spin>
         </PageContainer>
     );
 };

@@ -1,6 +1,6 @@
 import {Button, Card, Collapse, Form, Input, InputNumber, Popconfirm, Select, Space, Spin} from 'antd';
 import {useHistory, useParams} from "react-router-dom";
-import React, {useEffect, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import {PageContainer} from "@ant-design/pro-layout";
 import {getResource, saveResource} from "../../../services/resource";
 import {queryResourceCategorySelectList} from "../../../services/resourceCategory";
@@ -12,7 +12,7 @@ const {Option} = Select;
 const {Panel} = Collapse;
 const {TextArea} = Input;
 
-const ResourceEditPage = () => {
+const ResourceEditPage: FC = () => {
     const history = useHistory();
     const {id} = useParams<{ id?: string }>();
     // @ts-ignore
@@ -80,8 +80,8 @@ const ResourceEditPage = () => {
             onBack={() => history.push('/admin/resource')}
 
         >
-            <Card>
-                <Spin spinning={loading}>
+            <Spin spinning={loading}>
+                <Card>
                     <Collapse bordered={false} ghost={true} activeKey={['baseInfo', 'actions']}>
                         <Panel header="基本信息" key="baseInfo" showArrow={false}>
                             <Form
@@ -167,8 +167,8 @@ const ResourceEditPage = () => {
                             />
                         </Panel>
                     </Collapse>
-                </Spin>
-            </Card>
+                </Card>
+            </Spin>
         </PageContainer>
     );
 };

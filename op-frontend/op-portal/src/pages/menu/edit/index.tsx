@@ -1,10 +1,10 @@
 import {Button, Card, Form, Input, InputNumber, Radio, Space, Spin} from 'antd';
 import {useHistory, useParams} from "react-router-dom";
-import React, {useEffect, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import {PageContainer} from "@ant-design/pro-layout";
 import {getMenu, saveMenu} from "../../../services/menu";
 
-const MenuEditPage = () => {
+const MenuEditPage: FC = () => {
     const history = useHistory();
     const {id} = useParams<{ id?: string }>();
     // @ts-ignore
@@ -50,8 +50,8 @@ const MenuEditPage = () => {
             }
             onBack={() => history.push('/admin/menu')}
         >
-            <Card>
-                <Spin spinning={loading}>
+            <Spin spinning={loading}>
+                <Card>
                     <Form
                         form={form}
                         labelCol={{span: 8}}
@@ -85,8 +85,8 @@ const MenuEditPage = () => {
                             <InputNumber/>
                         </Form.Item>
                     </Form>
-                </Spin>
-            </Card>
+                </Card>
+            </Spin>
         </PageContainer>
     );
 };

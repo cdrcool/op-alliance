@@ -93,6 +93,6 @@ export async function assignUserResourceActions(id: number, resourceActionIds: n
  *
  * @param id 用户 id
  */
-export async function loaUserAssignedResources(id: number):  Promise<ResourceCategory[]> {
+export async function loadUserAssignedResources(id: number):  Promise<ResourceCategory[]> {
     return request.get(`/api/user/loadAssignedResources?id=${id}`);
 }

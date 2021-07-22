@@ -1,15 +1,14 @@
 import {Button, Card, DatePicker, Form, Input, InputNumber, Radio, Space, Spin} from 'antd';
 import {useHistory, useParams} from "react-router-dom";
-import React, {useEffect, useState} from "react";
-import {User} from "../../../models/User";
-import {getUser, saveUser} from "../../../services/user";
+import React, {FC, useEffect, useState} from "react";
+import {getUser} from "../../../services/user";
 import moment from "moment";
 import {PageContainer} from "@ant-design/pro-layout";
 import {saveMenu} from "../../../services/menu";
 
 const {TextArea} = Input;
 
-const UserEditPage = () => {
+const UserEditPage: FC = () => {
     const history = useHistory();
     const {id} = useParams<{ id?: string }>();
     // @ts-ignore
@@ -57,8 +56,8 @@ const UserEditPage = () => {
             }
             onBack={() => history.push('/admin/user')}
         >
-            <Card>
-                <Spin spinning={loading}>
+            <Spin spinning={loading}>
+                <Card>
                     <Form
                         form={form}
                         labelCol={{span: 8}}
@@ -101,8 +100,8 @@ const UserEditPage = () => {
                             <InputNumber/>
                         </Form.Item>
                     </Form>
-                </Spin>
-            </Card>
+                </Card>
+            </Spin>
         </PageContainer>
     );
 };
