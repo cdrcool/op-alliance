@@ -1,6 +1,7 @@
 import {User} from "../models/User";
 import {PageResult} from "../models/PageResult";
 import request from "../utils/request";
+import {ResourceCategory} from "../models/ResourceCategory";
 
 /**
  * 创建用户（返回新建用户的密码）
@@ -75,4 +76,23 @@ export async function queryUserPage(page: number, size: number, params: object):
  */
 export async function changeUsersEnabled(ids: number[], enable: boolean) {
     return request.post(`/api/user/changeEnabled`, {ids, enable});
+}
+
+/**
+ * 分配资源动作
+ *
+ * @param id 用户 id
+ * @param resourceActionIds 资源动作 ids
+ */
+export async function assignUserResourceActions(id: number, resourceActionIds: number[]) {
+    return request.post('/api/user/assignResourceActions', {id, resourceActionIds});
+}
+
+/**
+ * 查找资源分配情况
+ *
+ * @param id 用户 id
+ */
+export async function loaUserAssignedResources(id: number):  Promise<ResourceCategory[]> {
+    return request.get(`/api/user/loadAssignedResources?id=${id}`);
 }

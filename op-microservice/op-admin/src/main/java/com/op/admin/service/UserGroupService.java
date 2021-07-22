@@ -102,5 +102,5 @@ public interface UserGroupService {
      * @param id 用户组 id
      * @return 资源分类分配 VO 列表
      */
-    List<ResourceCategoryAssignVO> loadResources(Integer id);
+    List<ResourceCategoryAssignVO> loadAssignedResources(Integer id);
 }

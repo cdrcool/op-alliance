@@ -30,8 +30,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
@@ -274,13 +276,13 @@ public class UserGroupServiceImpl implements UserGroupService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<ResourceCategoryAssignVO> loadResources(Integer id) {
+    public List<ResourceCategoryAssignVO> loadAssignedResources(Integer id) {
         List<Integer> assignedActionIds = this.getAssignedResourceActionIds(Collections.singletonList(id));
 
         List<ResourceCategoryAssignVO> categories = resourceCategoryService.findAllForAssign();
         categories.forEach(category ->
-                category.getResources().forEach(resource ->
-                        resource.getActions().forEach(action -> {
+                Optional.ofNullable(category.getResources()).orElse(new ArrayList<>()).forEach(resource ->
+                        Optional.ofNullable(resource.getActions()).orElse(new ArrayList<>()).forEach(action -> {
                             action.setChecked(assignedActionIds.contains(action.getId()));
                             action.setEnableUncheck(true);
                         })));

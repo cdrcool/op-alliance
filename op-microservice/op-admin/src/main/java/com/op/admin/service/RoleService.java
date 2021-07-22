@@ -93,5 +93,5 @@ public interface RoleService {
      * @param id 角色 id
      * @return 资源分类分配 VO 列表
      */
-    List<ResourceCategoryAssignVO> loadResources(Integer id);
+    List<ResourceCategoryAssignVO> loadAssignedResources(Integer id);
 }

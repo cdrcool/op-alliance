@@ -80,8 +80,8 @@ public class OrganizationController {
     }
 
     @ApiOperation("查找所有资源，以及组织分配情况")
-    @GetMapping("loadResources")
-    public List<ResourceCategoryAssignVO> loadResources(@RequestParam Integer id) {
-        return organizationService.loadResources(id);
+    @GetMapping("loadAssignedResources")
+    public List<ResourceCategoryAssignVO> loadAssignedResources(@RequestParam Integer id) {
+        return organizationService.loadAssignedResources(id);
     }
 }

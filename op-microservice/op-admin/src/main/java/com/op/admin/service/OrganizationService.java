@@ -108,7 +108,7 @@ public interface OrganizationService {
      * @param id 组织 id
      * @return 资源分类分配 VO 列表
      */
-    List<ResourceCategoryAssignVO> loadResources(Integer id);
+    List<ResourceCategoryAssignVO> loadAssignedResources(Integer id);
 
     /**
      * 获取本上级 ids

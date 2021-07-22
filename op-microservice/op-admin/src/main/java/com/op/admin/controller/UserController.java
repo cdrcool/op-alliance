@@ -107,8 +107,8 @@ public class UserController {
     }
 
     @ApiOperation("查找所有资源，以及用户分配情况")
-    @GetMapping("loadResources")
-    public List<ResourceCategoryAssignVO> loadResources(@RequestParam Integer id) {
-        return userService.loadResources(id);
+    @GetMapping("loadAssignedResources")
+    public List<ResourceCategoryAssignVO> loadAssignedResources(@RequestParam Integer id) {
+        return userService.loadAssignedResources(id);
     }
 }

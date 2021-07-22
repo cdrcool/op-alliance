@@ -94,6 +94,9 @@ const UserList: React.FC<UserListProps> = (props) => {
                 <a key="enable" onClick={() => onChangeUsersEnabled([record.id] as number[], record.status === 0)}>
                     {record.status === 1 ? '禁用' : '启用'}
                 </a>,
+                <a key="assign" onClick={() => history.push(`/admin/user/assign/${record.id}`)}>
+                    分配资源
+                </a>,
             ],
         },
     ];

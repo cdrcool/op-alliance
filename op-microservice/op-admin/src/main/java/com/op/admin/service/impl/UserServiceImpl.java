@@ -11,7 +11,6 @@ import com.op.admin.mapping.UserMapping;
 import com.op.admin.service.*;
 import com.op.admin.utils.BCryptPasswordEncoder;
 import com.op.admin.utils.PasswordGenerator;
-import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.RoleAssignVO;
 import com.op.admin.vo.UserVO;
@@ -35,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
@@ -59,7 +59,6 @@ public class UserServiceImpl implements UserService {
     private final RoleService roleService;
     private final ResourceCategoryService resourceCategoryService;
     private final ResourceActionService resourceActionService;
-    private final MenuService menuService;
     private final UserGroupService userGroupService;
     private final OrganizationService organizationService;
 
@@ -79,7 +78,6 @@ public class UserServiceImpl implements UserService {
         this.roleService = roleService;
         this.resourceCategoryService = resourceCategoryService;
         this.resourceActionService = resourceActionService;
-        this.menuService = menuService;
         this.userGroupService = userGroupService;
         this.organizationService = organizationService;
     }
@@ -405,7 +403,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<ResourceCategoryAssignVO> loadResources(Integer id) {
+    public List<ResourceCategoryAssignVO> loadAssignedResources(Integer id) {
         // 获取用户所分配的资源动作 ids
         List<Integer> assignedActionIds = this.getAssignedResourceActionIds(id);
 
@@ -428,8 +426,8 @@ public class UserServiceImpl implements UserService {
 
         List<ResourceCategoryAssignVO> categories = resourceCategoryService.findAllForAssign();
         categories.forEach(category ->
-                category.getResources().forEach(resource ->
-                        resource.getActions().forEach(action -> {
+                Optional.ofNullable(category.getResources()).orElse(new ArrayList<>()).forEach(resource ->
+                        Optional.ofNullable(resource.getActions()).orElse(new ArrayList<>()).forEach(action -> {
                             action.setChecked(assignedActionIds.contains(action.getId()) ||
                                     roleAssignedActionIds.contains(action.getId()) ||
                                     groupAssignedActionIds.contains(action.getId()) ||

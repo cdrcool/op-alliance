@@ -8,7 +8,6 @@ import ResourceCategoryPage from "../pages/resourcecategory/list";
 import RoleListPage from "../pages/role/list";
 import RoleEditPage from "../pages/role/edit";
 import RoleDetailPage from "../pages/role/detail";
-import RoleAssignPag from "../pages/role/assign";
 import UserEditPage from "../pages/user/edit";
 import UserDetailPage from "../pages/user/detail";
 import MenuEditPage from "../pages/menu/edit";
@@ -21,7 +20,8 @@ import ResourceDetailPage from "../pages/resource/detail";
 import ResourceListPage from "../pages/resource/list";
 import ResourceCategoryEditPage from "../pages/resourcecategory/edit";
 import ResourceCategoryDetailPage from "../pages/resourcecategory/detail";
-import RoleAssignPage from "../pages/role/assign";
+import RoleResourceAssignPage from "../pages/role/resourceassign";
+import UserResourceAssignPage from "../pages/user/resourceassign";
 
 const routes = [
     {
@@ -66,6 +66,11 @@ const routes = [
                 component: UserDetailPage,
             },
             {
+                path: "/admin/user/assign/:id",
+                exact: true,
+                component: UserResourceAssignPage,
+            },
+            {
                 path: "/admin/role",
                 exact: true,
                 component: RoleListPage,
@@ -83,7 +88,7 @@ const routes = [
             {
                 path: "/admin/role/assign/:id",
                 exact: true,
-                component: RoleAssignPage,
+                component: RoleResourceAssignPage,
             },
             {
                 path: "/admin/menu",

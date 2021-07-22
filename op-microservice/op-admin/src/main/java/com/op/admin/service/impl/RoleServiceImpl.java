@@ -247,7 +247,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<ResourceCategoryAssignVO> loadResources(Integer id) {
+    public List<ResourceCategoryAssignVO> loadAssignedResources(Integer id) {
         List<Integer> assignedActionIds = this.getAssignedResourceActionIds(Collections.singletonList(id));
 
         List<ResourceCategoryAssignVO> categories = resourceCategoryService.findAllForAssign();

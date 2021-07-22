@@ -81,8 +81,8 @@ public class UserGroupController {
     }
 
     @ApiOperation("查找所有资源，以及用户组分配情况")
-    @GetMapping("loadResources")
-    public List<ResourceCategoryAssignVO> loadResources(@RequestParam Integer id) {
-        return userGroupService.loadResources(id);
+    @GetMapping("loadAssignedResources")
+    public List<ResourceCategoryAssignVO> loadAssignedResources(@RequestParam Integer id) {
+        return userGroupService.loadAssignedResources(id);
     }
 }

@@ -3,11 +3,11 @@ import ProCard from '@ant-design/pro-card';
 import {PageContainer} from "@ant-design/pro-layout";
 import {useHistory, useParams} from "react-router-dom";
 import {Button, Space, Spin} from "antd";
-import ResourceAssignPanel from "./ResourceAssignPanel";
+import ResourceAssignPanel from "../../resource/assign/ResourceAssignPanel";
 import {assignRoleResourceActions, loadRoleAssignedResources} from "../../../services/role";
 import {ResourceCategory} from "../../../models/ResourceCategory";
 
-const RoleAssignPage: React.FC = () => {
+const RoleResourceAssignPage: React.FC = () => {
     const history = useHistory();
     const {id} = useParams<{ id: string }>();
 
@@ -81,4 +81,4 @@ const RoleAssignPage: React.FC = () => {
     );
 };
 
-export default RoleAssignPage;
+export default RoleResourceAssignPage;

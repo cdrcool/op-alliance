@@ -76,6 +76,6 @@ public class RoleController {
     @ApiOperation("查找角色资源分配情况")
     @GetMapping("loadAssignedResources")
     public List<ResourceCategoryAssignVO> loadAssignedResources(@RequestParam Integer id) {
-        return roleService.loadResources(id);
+        return roleService.loadAssignedResources(id);
     }
 }

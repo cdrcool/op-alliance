@@ -364,7 +364,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<ResourceCategoryAssignVO> loadResources(Integer id) {
+    public List<ResourceCategoryAssignVO> loadAssignedResources(Integer id) {
         List<Integer> parentIds = organizationMapper.getParentsIds(id);
 
         SelectStatementProvider selectStatementProvider =
@@ -378,8 +378,8 @@ public class OrganizationServiceImpl implements OrganizationService {
 
         List<ResourceCategoryAssignVO> categories = resourceCategoryService.findAllForAssign();
         categories.forEach(category ->
-                category.getResources().forEach(resource ->
-                        resource.getActions().forEach(action -> {
+                Optional.ofNullable(category.getResources()).orElse(new ArrayList<>()).forEach(resource ->
+                        Optional.ofNullable(resource.getActions()).orElse(new ArrayList<>()).forEach(action -> {
                             List<Integer> orgIds = relationsMap.get(action.getId()).stream()
                                     .map(OrganizationResourceActionRelation::getOrgId).collect(Collectors.toList());
                             action.setChecked(CollectionUtils.isNotEmpty(orgIds));
