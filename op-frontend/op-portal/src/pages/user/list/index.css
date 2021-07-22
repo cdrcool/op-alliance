@@ -8,9 +8,10 @@
 }
 
 #user-page .left .rowSelected {
-    background: #E6E6FA;
+    background: #fafafa;
+    /*background: #E6E6FA;*/
 }
 
 #user-page .left .rowUnSelected {
-    background: #fff;
+    background: #ffffff;
 }
