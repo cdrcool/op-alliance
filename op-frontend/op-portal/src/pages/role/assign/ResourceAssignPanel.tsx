@@ -34,6 +34,7 @@ const ResourceAssignPanel: React.FC<ResourceAssignPanelProps> = (props) => {
 
     return (
         <Card
+            headStyle={{backgroundColor: '#fafafa'}}
             title={
                 <Space>
                     <Checkbox
