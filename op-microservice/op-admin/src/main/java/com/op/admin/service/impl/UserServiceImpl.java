@@ -340,11 +340,15 @@ public class UserServiceImpl implements UserService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void assignResourceActions(Integer id, List<Integer> resourceActionIds) {
+        // 获取继承的分配的资源动作 ids
+        List<Integer> inheritedActionIds = this.loadInheritedAssignedActionIds(id);
+
         // 获取已建立关联的资源动作 ids
         List<Integer> preActionIds = this.getAssignedResourceActionIds(id);
 
         // 获取要新建关联的资源动作 ids
         List<Integer> toAddActionIds = resourceActionIds.stream()
+                .filter(actionId -> !inheritedActionIds.contains(actionId))
                 .filter(actionId -> !preActionIds.contains(actionId)).collect(Collectors.toList());
 
         // 获取要删除关联的资源动作 ids
@@ -371,6 +375,33 @@ public class UserServiceImpl implements UserService {
                             .build().render(RenderingStrategies.MYBATIS3);
             userResourceActionRelationMapper.delete(deleteStatementProvider);
         }
+    }
+
+    /**
+     * 获取继承的分配的资源动作 ids
+     *
+     * @param id 用户 id
+     * @return 继承的分配的资源动作 ids
+     */
+    private List<Integer> loadInheritedAssignedActionIds(Integer id) {
+        List<Integer> assignedActionIds = new ArrayList<>();
+
+        // 获取用户的角色所分配的资源动作 ids
+        List<Integer> roleIds = this.getAssignedRoleIds(id);
+        if (!CollectionUtils.isEmpty(roleIds)) {
+            assignedActionIds.addAll(roleService.getAssignedResourceActionIds(roleIds));
+        }
+
+        // 获取用户的用户组所分配的资源动作 ids
+        List<Integer> groupIds = this.getAssignedGroupIds(id);
+        if (!CollectionUtils.isEmpty(groupIds)) {
+            assignedActionIds.addAll(userGroupService.getAssignedResourceActionIds(groupIds));
+        }
+
+        // 获取用户的组织所分配的资源动作 ids
+        assignedActionIds.addAll(organizationService.getAssignedResourceActionIds(id));
+
+        return assignedActionIds;
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)

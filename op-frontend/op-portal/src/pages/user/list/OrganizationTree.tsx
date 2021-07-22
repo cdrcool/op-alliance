@@ -18,7 +18,6 @@ const OrganizationTree: React.FC<OrganizationTreeProps> = (props) => {
     const [windowSize, setWindowSize] = useState(getWindowSize());
     const handleResize = () => {
         setWindowSize(getWindowSize());
-        console.log(getWindowSize().innerHeight);
     };
 
     useEffect(() => {

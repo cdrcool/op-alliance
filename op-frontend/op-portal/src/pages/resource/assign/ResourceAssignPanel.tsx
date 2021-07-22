@@ -1,4 +1,4 @@
-import React from "react";
+import React, {FC, useState} from "react";
 import {Resource} from "../../../models/Resource";
 import {Card, Checkbox, Space} from "antd";
 import {CheckboxOptionType, CheckboxValueType} from "antd/es/checkbox/Group";
@@ -8,17 +8,18 @@ type ResourceAssignPanelProps = {
     onSelectedChange: (resourceId: number, actionIds: number[]) => void,
 }
 
-const ResourceAssignPanel: React.FC<ResourceAssignPanelProps> = (props) => {
+const ResourceAssignPanel: FC<ResourceAssignPanelProps> = (props) => {
     const {resource, onSelectedChange} = props;
     const {id, resourceName, actions} = resource;
     const groupOptions = actions || [];
     const selectedOptions = groupOptions.filter(action => action.checked).map(action => action.id as number);
 
-    const [checkedList, setCheckedList] = React.useState<number[]>(selectedOptions);
-    const [indeterminate, setIndeterminate] = React.useState(!!selectedOptions.length && selectedOptions.length < groupOptions.length);
-    const [checkAll, setCheckAll] = React.useState(selectedOptions.length > 0 && selectedOptions.length === groupOptions.length);
+    const [checkedList, setCheckedList] = useState<number[]>(selectedOptions);
+    const [indeterminate, setIndeterminate] = useState(!!selectedOptions.length && selectedOptions.length < groupOptions.length);
+    const [checkAll, setCheckAll] = useState(selectedOptions.length > 0 && selectedOptions.length === groupOptions.length);
 
     const onChange = (list: CheckboxValueType[]) => {
+        console.log('list: ', list);
         setCheckedList(list as number[]);
         setIndeterminate(!!list.length && list.length < groupOptions.length);
         setCheckAll(list.length === groupOptions.length);
@@ -52,6 +53,7 @@ const ResourceAssignPanel: React.FC<ResourceAssignPanelProps> = (props) => {
                         return {
                             label: action.actionName,
                             value: action.id,
+                            disabled: !action.enableUncheck,
                         } as CheckboxOptionType
                     })
                 }

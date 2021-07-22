@@ -1,14 +1,13 @@
-import React, {useEffect, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import ProCard from '@ant-design/pro-card';
 import {PageContainer} from "@ant-design/pro-layout";
 import {useHistory, useParams} from "react-router-dom";
-import {Button, Space, Spin} from "antd";
+import {Button, Space} from "antd";
 import ResourceAssignPanel from "../../resource/assign/ResourceAssignPanel";
-import {assignRoleResourceActions, loadRoleAssignedResources} from "../../../services/role";
 import {ResourceCategory} from "../../../models/ResourceCategory";
 import {assignUserResourceActions, loaUserAssignedResources} from "../../../services/user";
 
-const UserResourceAssignPage: React.FC = () => {
+const UserResourceAssignPage: FC = () => {
     const history = useHistory();
     const {id} = useParams<{ id: string }>();
 
@@ -27,7 +26,6 @@ const UserResourceAssignPage: React.FC = () => {
                         map.set(resource.id as number, (resource.actions || []).filter(action => action.checked).map(action => action.id as number));
                     });
                 });
-                console.log('map: ', map);
                 return map;
             })
             setLoading(false);
@@ -64,30 +62,29 @@ const UserResourceAssignPage: React.FC = () => {
             }
             onBack={() => history.push('/admin/user')}
         >
-            <Spin spinning={loading}>
-                <ProCard
-                    tabs={{
-                        tabPosition: 'left',
-                    }}
-                >
-                    {
-                        resourceCategories.map(category => {
-                            return (
-                                <ProCard.TabPane key={category.id + ''} tab={category.categoryName}>
-                                    {
-                                        category?.resources?.map(resource => {
-                                            return (
-                                                <ResourceAssignPanel key={resource.id + ''} resource={resource}
-                                                                     onSelectedChange={onSelectedChange}/>
-                                            )
-                                        })
-                                    }
-                                </ProCard.TabPane>
-                            )
-                        })
-                    }
-                </ProCard>
-            </Spin>
+            <ProCard
+                loading={loading}
+                tabs={{
+                    tabPosition: 'left',
+                }}
+            >
+                {
+                    resourceCategories.map(category => {
+                        return (
+                            <ProCard.TabPane key={category.id + ''} tab={category.categoryName}>
+                                {
+                                    category?.resources?.map(resource => {
+                                        return (
+                                            <ResourceAssignPanel key={resource.id + ''} resource={resource}
+                                                                 onSelectedChange={onSelectedChange}/>
+                                        )
+                                    })
+                                }
+                            </ProCard.TabPane>
+                        )
+                    })
+                }
+            </ProCard>
         </PageContainer>
     );
 };
