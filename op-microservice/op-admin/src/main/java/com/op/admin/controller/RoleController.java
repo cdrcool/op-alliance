@@ -2,7 +2,6 @@ package com.op.admin.controller;
 
 import com.op.admin.dto.*;
 import com.op.admin.service.RoleService;
-import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.RoleVO;
 import io.swagger.annotations.Api;
@@ -71,12 +70,12 @@ public class RoleController {
     @ApiOperation("分配资源动作")
     @PostMapping("assignResourceActions")
     public void assignResourceActions(@Valid @RequestBody ResourceAssignDTO resourceAssignDTO) {
-        roleService.assignResourceActions(resourceAssignDTO.getId(), resourceAssignDTO.getResourceIds());
+        roleService.assignResourceActions(resourceAssignDTO.getId(), resourceAssignDTO.getResourceActionIds());
     }
 
-    @ApiOperation("查找所有资源，以及角色分配情况")
-    @GetMapping("loadResources")
-    public List<ResourceCategoryAssignVO> loadResources(@RequestParam Integer id) {
+    @ApiOperation("查找角色资源分配情况")
+    @GetMapping("loadAssignedResources")
+    public List<ResourceCategoryAssignVO> loadAssignedResources(@RequestParam Integer id) {
         return roleService.loadResources(id);
     }
 }

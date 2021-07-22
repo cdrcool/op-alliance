@@ -7,4 +7,6 @@ export interface ResourceAction {
     permission?: string;
     actionNo?: number;
     isAdd?: boolean;
+    checked?: boolean;
+    enableUncheck?: boolean;
 }

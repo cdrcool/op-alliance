@@ -1,6 +1,7 @@
 import {Role} from "../models/Role";
 import {PageResult} from "../models/PageResult";
 import request from "../utils/request";
+import {ResourceCategory} from "../models/ResourceCategory";
 
 /**
  * 保存角色
@@ -56,5 +57,24 @@ export async function queryRolePage(page: number, size: number, params: object):
  * @param enable 是否启用
  */
 export async function changeRolesEnabled(ids: number[], enable: boolean) {
-    return request.post(`/api/role/changeEnabled`, {ids, enable});
+    return request.post('/api/role/changeEnabled', {ids, enable});
+}
+
+/**
+ * 分配资源动作
+ *
+ * @param id 角色 id
+ * @param resourceActionIds 资源动作 ids
+ */
+export async function assignRoleResourceActions(id: number, resourceActionIds: number[]) {
+    return request.post('/api/role/assignResourceActions', {id, resourceActionIds});
+}
+
+/**
+ * 查找资源分配情况
+ *
+ * @param id 角色 id
+ */
+export async function loadRoleAssignedResources(id: number):  Promise<ResourceCategory[]> {
+    return request.get(`/api/role/loadAssignedResources?id=${id}`);
 }

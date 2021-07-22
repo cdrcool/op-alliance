@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -15,8 +16,9 @@ import java.util.List;
 @Data
 public class ResourceAssignDTO {
     @ApiModelProperty(value = "组织/用户/角色/用户组id", required = true)
+    @NotNull
     private Integer id;
 
-    @ApiModelProperty(value = "资源ids", required = true)
-    private List<Integer> resourceIds;
+    @ApiModelProperty(value = "资源动作ids", required = true)
+    private List<Integer> resourceActionIds;
 }

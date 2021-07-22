@@ -1,7 +1,6 @@
 package com.op.admin.controller;
 
 import com.op.admin.dto.*;
-import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.RoleAssignVO;
 import com.op.admin.vo.UserVO;
@@ -98,7 +97,7 @@ public class UserController {
     @ApiOperation("分配资源动作")
     @PostMapping("assignResourceActions")
     public void assignResourceActions(@Valid @RequestBody ResourceAssignDTO resourceAssignDTO) {
-        userService.assignResourceActions(resourceAssignDTO.getId(), resourceAssignDTO.getResourceIds());
+        userService.assignResourceActions(resourceAssignDTO.getId(), resourceAssignDTO.getResourceActionIds());
     }
 
     @ApiOperation("查找所有角色，以及用户分配情况")

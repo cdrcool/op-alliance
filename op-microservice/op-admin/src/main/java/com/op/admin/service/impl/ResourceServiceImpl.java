@@ -171,7 +171,7 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public Map<Integer, List<ResourceAssignVO>> findAllForAssign() {
         SelectStatementProvider selectStatementProvider =
-                select(ResourceDynamicSqlSupport.id, ResourceDynamicSqlSupport.resourceName)
+                select(ResourceDynamicSqlSupport.id, ResourceDynamicSqlSupport.categoryId, ResourceDynamicSqlSupport.resourceName)
                         .from(ResourceDynamicSqlSupport.resource)
                         .orderBy(ResourceDynamicSqlSupport.resourceNo)
                         .build().render(RenderingStrategies.MYBATIS3);

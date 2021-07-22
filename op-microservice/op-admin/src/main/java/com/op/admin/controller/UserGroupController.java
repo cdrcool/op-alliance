@@ -1,8 +1,6 @@
 package com.op.admin.controller;
 
 import com.op.admin.dto.*;
-import com.op.admin.dto.*;
-import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.RoleAssignVO;
 import com.op.admin.service.UserGroupService;
@@ -73,7 +71,7 @@ public class UserGroupController {
     @ApiOperation("分配资源动作")
     @PostMapping("assignResourceActions")
     public void assignResourceActions(@Valid @RequestBody ResourceAssignDTO resourceAssignDTO) {
-        userGroupService.assignResourceActions(resourceAssignDTO.getId(), resourceAssignDTO.getResourceIds());
+        userGroupService.assignResourceActions(resourceAssignDTO.getId(), resourceAssignDTO.getResourceActionIds());
     }
 
     @ApiOperation("查找所有角色，以及用户组分配情况")

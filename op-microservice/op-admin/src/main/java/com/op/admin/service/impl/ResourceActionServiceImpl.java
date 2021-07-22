@@ -144,7 +144,7 @@ public class ResourceActionServiceImpl implements ResourceActionService {
     @Override
     public Map<Integer, List<ResourceActionAssignVO>> findAllForAssign() {
         SelectStatementProvider selectStatementProvider =
-                select(ResourceActionDynamicSqlSupport.id, ResourceActionDynamicSqlSupport.actionName)
+                select(ResourceActionDynamicSqlSupport.id, ResourceActionDynamicSqlSupport.resourceId, ResourceActionDynamicSqlSupport.actionName)
                         .from(ResourceActionDynamicSqlSupport.resourceAction)
                         .orderBy(ResourceActionDynamicSqlSupport.actionNo)
                         .build().render(RenderingStrategies.MYBATIS3);

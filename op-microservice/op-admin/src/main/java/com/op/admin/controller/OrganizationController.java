@@ -1,10 +1,8 @@
 package com.op.admin.controller;
 
 import com.op.admin.dto.*;
-import com.op.admin.dto.*;
 import com.op.admin.vo.*;
 import com.op.admin.service.OrganizationService;
-import com.op.admin.vo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
@@ -72,7 +70,7 @@ public class OrganizationController {
     @ApiOperation("分配资源动作")
     @PostMapping("assignResourceActions")
     public void assignResourceActions(@Valid @RequestBody ResourceAssignDTO resourceAssignDTO) {
-        organizationService.assignResourceActions(resourceAssignDTO.getId(), resourceAssignDTO.getResourceIds());
+        organizationService.assignResourceActions(resourceAssignDTO.getId(), resourceAssignDTO.getResourceActionIds());
     }
 
     @ApiOperation("查找所有角色，以及组织分配情况")

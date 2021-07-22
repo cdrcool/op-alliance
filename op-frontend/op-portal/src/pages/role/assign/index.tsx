@@ -1,69 +1,42 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import ProCard from '@ant-design/pro-card';
 import {PageContainer} from "@ant-design/pro-layout";
-import {useHistory} from "react-router-dom";
-import {Button, Checkbox, Collapse, Space} from "antd";
-import {Resource} from "../../../models/Resource";
-import resourceCategories from "../../../services/resourceCategoryJson";
-
-const {Panel} = Collapse;
-
-const ResourcePanel: React.FC<Resource> = (props) => {
-    const {resourceName, resourceEnName, actions=[]} = props;
-
-    const [checkedList, setCheckedList] = React.useState<string[]>([]);
-    const [indeterminate, setIndeterminate] = React.useState(true);
-    const [checkAll, setCheckAll] = React.useState(false);
-
-    const onChange = (list: any[]) => {
-        setCheckedList(list);
-        setIndeterminate(!!list.length && list.length < actions.length);
-        setCheckAll(list.length === actions.length);
-    };
-
-    const onCheckAllChange = (e: { target: { checked: boolean } }) => {
-        // @ts-ignore
-        setCheckedList(e.target.checked ? actions.map(item => item.permission) : []);
-        setIndeterminate(false);
-        setCheckAll(e.target.checked);
-    };
-
-    return (
-        <Panel
-            key={resourceEnName || "1"}
-            showArrow={false}
-            header={
-                <Space>
-                    <Checkbox
-                        indeterminate={indeterminate}
-                        onChange={onCheckAllChange}
-                        checked={checkAll}
-                    />
-                    {resourceName}
-                </Space>
-            }
-        >
-            <Checkbox.Group
-                // @ts-ignore
-                options={
-                    actions.map(action => {
-                        return {
-                            label: action.actionName,
-                            value: action.permission,
-                        }
-                    })
-                }
-                value={checkedList}
-                onChange={onChange}/>
-        </Panel>
-    )
-};
+import {useHistory, useParams} from "react-router-dom";
+import {Button, Space, Spin} from "antd";
+import ResourceAssignPanel from "./ResourceAssignPanel";
+import {assignRoleResourceActions, loadRoleAssignedResources} from "../../../services/role";
+import {ResourceCategory} from "../../../models/ResourceCategory";
 
 const RoleAssignPage: React.FC = () => {
     const history = useHistory();
+    const {id} = useParams<{ id: string }>();
 
-    const onSave = () => {
+    const [loading, setLoading] = useState<boolean>(true);
+    const [resourceCategories, setResourceCategories] = useState<ResourceCategory[]>([]);
+    const [resourceActionsMap, setResourceActionsMap] = useState<Map<number, number[]>>(new Map());
 
+    useEffect(() => {
+        const fetchData = async () => {
+            const resourceCategories = await loadRoleAssignedResources(parseInt(id));
+            setResourceCategories(resourceCategories || []);
+            setLoading(false);
+        }
+
+        fetchData().then(() => {
+        });
+    }, []);
+
+    const onSelectedChange = (resourceId: number, actionIds: number[]) => {
+        setResourceActionsMap(pre => {
+            pre.set(resourceId, actionIds);
+            return pre;
+        });
+    };
+
+    const onSaveSelected = () => {
+        let allActionIds: number[] = [];
+        resourceActionsMap.forEach((value) => allActionIds = allActionIds.concat(value));
+        assignRoleResourceActions(Number(id), allActionIds).then(() => history.push('/admin/role'));
     };
 
     return (
@@ -75,36 +48,35 @@ const RoleAssignPage: React.FC = () => {
             }}
             extra={
                 <Space>
-                    <Button type="primary" onClick={onSave}>保存</Button>
+                    <Button type="primary" onClick={onSaveSelected}>保存</Button>
                 </Space>
             }
             onBack={() => history.push('/admin/role')}
         >
-            <ProCard
-                tabs={{
-                    tabPosition: 'left',
-                }}
-            >
-                {
-                    resourceCategories.map(category => {
-                        console.log(category.categoryEnName);
-                        return (
-                            <ProCard.TabPane key={category.categoryEnName} tab={category.categoryName}>
-                                <Collapse activeKey={category.resources?.map(resource => resource.resourceEnName|| "11")}>
+            <Spin spinning={loading}>
+                <ProCard
+                    tabs={{
+                        tabPosition: 'left',
+                    }}
+                >
+                    {
+                        resourceCategories.map(category => {
+                            return (
+                                <ProCard.TabPane key={category.id + ''} tab={category.categoryName}>
                                     {
                                         category?.resources?.map(resource => {
                                             return (
-                                                // @ts-ignore
-                                                <ResourcePanel resource={resource}/>
+                                                <ResourceAssignPanel key={resource.id + ''} resource={resource}
+                                                                     onSelectedChange={onSelectedChange}/>
                                             )
                                         })
                                     }
-                                </Collapse>
-                            </ProCard.TabPane>
-                        )
-                    })
-                }
-            </ProCard>
+                                </ProCard.TabPane>
+                            )
+                        })
+                    }
+                </ProCard>
+            </Spin>
         </PageContainer>
     );
 };
