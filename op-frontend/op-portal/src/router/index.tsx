@@ -23,6 +23,7 @@ import ResourceCategoryDetailPage from "../pages/resourcecategory/detail";
 import RoleAssignResourcesPage from "../pages/role/assignresource";
 import UserAssignResourcesPage from "../pages/user/assignresource";
 import OrganizationAssignResourcesPage from "../pages/organization/assignresource";
+import UserAssignRolesPage from "../pages/user/assignroles";
 
 const routes = [
     {
@@ -70,6 +71,11 @@ const routes = [
                 path: "/admin/user/detail/:id",
                 exact: true,
                 component: UserDetailPage,
+            },
+            {
+                path: "/admin/user/assign-roles/:id",
+                exact: true,
+                component: UserAssignRolesPage,
             },
             {
                 path: "/admin/user/assign-resources/:id",

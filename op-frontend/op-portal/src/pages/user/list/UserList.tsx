@@ -94,6 +94,9 @@ const UserList: FC<UserListProps> = (props) => {
                 <a key="enable" onClick={() => onChangeUsersEnabled([record.id] as number[], record.status === 0)}>
                     {record.status === 1 ? '禁用' : '启用'}
                 </a>,
+                <a key="assignRoles" onClick={() => history.push(`/admin/user/assign-roles/${record.id}`)}>
+                    分配角色
+                </a>,
                 <a key="assignResources" onClick={() => history.push(`/admin/user/assign-resources/${record.id}`)}>
                     分配资源
                 </a>,

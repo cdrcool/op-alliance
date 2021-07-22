@@ -35,7 +35,7 @@ const ResourceCategoryListPage: FC = () => {
         >
             <ProList<any>
                 actionRef={ref}
-                style={{backgroundColor: '#fff'}}
+                style={{backgroundColor: '#ffffff'}}
                 grid={{gutter: 16, column: 2}}
                 toolBarRender={() => {
                     return [
