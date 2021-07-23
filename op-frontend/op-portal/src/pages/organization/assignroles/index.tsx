@@ -3,11 +3,10 @@ import {PageContainer} from "@ant-design/pro-layout";
 import {useHistory, useParams} from "react-router-dom";
 import ProList from '@ant-design/pro-list';
 import {Button, Space, Tag} from "antd";
-
-import {assignUserRoles, loadUserAssignedRoles} from "../../../services/user";
 import {Role} from "../../../models/Role";
+import {assignOrganizationRoles, loadOrganizationAssignedRoles} from "../../../services/organization";
 
-const UserAssignRolesPage: FC = () => {
+const OrganizationAssignRolesPage: FC = () => {
     const history = useHistory();
     const {id} = useParams<{ id: string }>();
 
@@ -15,13 +14,13 @@ const UserAssignRolesPage: FC = () => {
     const [selectedRows, setSelectedRows] = useState<Role[]>([]);
 
     const onSaveSelected = () => {
-        assignUserRoles(Number(id), selectedRowKeys).then(() => history.push('/admin/user'));
+        assignOrganizationRoles(Number(id), selectedRowKeys).then(() => history.push('/admin/organization'));
     };
 
     return (
         <PageContainer
             className="page-container"
-            title="用户角色分配"
+            title="组织角色分配"
             header={{
                 breadcrumb: {},
             }}
@@ -30,7 +29,7 @@ const UserAssignRolesPage: FC = () => {
                     <Button type="primary" onClick={onSaveSelected}>保存</Button>
                 </Space>
             }
-            onBack={() => history.push('/admin/user')}
+            onBack={() => history.push('/admin/organization')}
         >
             <ProList<Role>
                 style={{backgroundColor: '#fff'}}
@@ -88,7 +87,7 @@ const UserAssignRolesPage: FC = () => {
                 }
                 request={
                     async () => {
-                        const roles = await loadUserAssignedRoles(Number(id));
+                        const roles = await loadOrganizationAssignedRoles(Number(id));
 
                         const selectedRows = roles.filter(role => role.checked);
                         setSelectedRows(selectedRows);
@@ -109,4 +108,4 @@ const UserAssignRolesPage: FC = () => {
     );
 };
 
-export default UserAssignRolesPage;
+export default OrganizationAssignRolesPage;

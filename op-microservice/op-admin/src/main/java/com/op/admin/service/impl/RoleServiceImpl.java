@@ -178,7 +178,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public List<RoleAssignVO> findAllForAssign() {
         SelectStatementProvider selectStatementProvider = select(RoleDynamicSqlSupport.id,
-                RoleDynamicSqlSupport.roleName, RoleDynamicSqlSupport.roleCode)
+                RoleDynamicSqlSupport.roleName, RoleDynamicSqlSupport.roleCode, RoleDynamicSqlSupport.roleDesc)
                 .from(RoleDynamicSqlSupport.role)
                 .where(RoleDynamicSqlSupport.status, isEqualTo(1))
                 .orderBy(RoleDynamicSqlSupport.roleNo)

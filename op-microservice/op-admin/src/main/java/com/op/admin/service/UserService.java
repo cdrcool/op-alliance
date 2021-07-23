@@ -110,15 +110,15 @@ public interface UserService {
     void assignResourceActions(Integer id, List<Integer> resourceActionIds);
 
     /**
-     * 查找所有角色，以及用户分配情况
+     * 获取用户角色分配情况
      *
      * @param id 用户 id
      * @return 角色分配 VO 列表
      */
-    List<RoleAssignVO> loadRoles(Integer id);
+    List<RoleAssignVO> loadAssignedRoles(Integer id);
 
     /**
-     * 查找所有资源，以及用户分配情况
+     * 获取用户资源分配情况
      *
      * @param id 用户 id
      * @return 资源分类分配 VO 列表

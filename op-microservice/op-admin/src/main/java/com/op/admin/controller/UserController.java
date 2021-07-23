@@ -100,13 +100,13 @@ public class UserController {
         userService.assignResourceActions(resourceAssignDTO.getId(), resourceAssignDTO.getResourceActionIds());
     }
 
-    @ApiOperation("查找所有角色，以及用户分配情况")
-    @GetMapping("loadRoles")
-    public List<RoleAssignVO> loadRoles(@RequestParam Integer id) {
-        return userService.loadRoles(id);
+    @ApiOperation("获取用户角色分配情况")
+    @GetMapping("loadAssignedRoles")
+    public List<RoleAssignVO> loadAssignedRoles(@RequestParam Integer id) {
+        return userService.loadAssignedRoles(id);
     }
 
-    @ApiOperation("查找所有资源，以及用户分配情况")
+    @ApiOperation("获取用户资源分配情况")
     @GetMapping("loadAssignedResources")
     public List<ResourceCategoryAssignVO> loadAssignedResources(@RequestParam Integer id) {
         return userService.loadAssignedResources(id);

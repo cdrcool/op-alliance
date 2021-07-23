@@ -2,6 +2,7 @@ import {User} from "../models/User";
 import {PageResult} from "../models/PageResult";
 import request from "../utils/request";
 import {ResourceCategory} from "../models/ResourceCategory";
+import {Role} from "../models/Role";
 
 /**
  * 创建用户（返回新建用户的密码）
@@ -79,7 +80,26 @@ export async function changeUsersEnabled(ids: number[], enable: boolean) {
 }
 
 /**
- * 分配资源动作
+ * 分配用户角色
+ *
+ * @param id 用户 id
+ * @param roleIds 角色 ids
+ */
+export async function assignUserRoles(id: number, roleIds: number[]) {
+    return request.post('/api/user/assignRoles', {id, roleIds});
+}
+
+/**
+ * 获取用户角色分配情况
+ *
+ * @param id 用户 id
+ */
+export async function loadUserAssignedRoles(id: number): Promise<Role[]> {
+    return request.get(`/api/user/loadAssignedRoles?id=${id}`);
+}
+
+/**
+ * 分配用户资源动作
  *
  * @param id 用户 id
  * @param resourceActionIds 资源动作 ids
@@ -89,10 +109,10 @@ export async function assignUserResourceActions(id: number, resourceActionIds: n
 }
 
 /**
- * 查找资源分配情况
+ * 获取用户资源分配情况
  *
  * @param id 用户 id
  */
-export async function loadUserAssignedResources(id: number):  Promise<ResourceCategory[]> {
+export async function loadUserAssignedResources(id: number): Promise<ResourceCategory[]> {
     return request.get(`/api/user/loadAssignedResources?id=${id}`);
 }

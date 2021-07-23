@@ -6,4 +6,6 @@ export interface Role {
     status?: number;
     roleNo?: number;
     userCount?: number;
+    checked?: boolean;
+    enableUncheck?: boolean;
 }

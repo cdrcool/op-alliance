@@ -1,25 +1,16 @@
-import React, {FC, useRef, useState} from 'react';
-import {Button, Input, Popconfirm, Tag} from 'antd';
+import React, {FC, useRef} from 'react';
+import {Button, Popconfirm, Tag} from 'antd';
 import ProList from '@ant-design/pro-list';
 import {PageContainer} from "@ant-design/pro-layout";
 import * as Icon from "@ant-design/icons";
 import {deleteResourceCategories, queryResourceCategoryPage} from "../../../services/resourceCategory";
 import {ActionType} from "@ant-design/pro-table";
 import {useHistory} from "react-router-dom";
-
-const {Search} = Input;
+import {ResourceCategory} from "../../../models/ResourceCategory";
 
 const ResourceCategoryListPage: FC = () => {
     const history = useHistory();
     const ref = useRef<ActionType>();
-
-    const [keyword, setKeyword] = useState<string>();
-
-    const onSearch = (value: string) => {
-        setKeyword(value);
-        // @ts-ignore
-        ref.current.reloadAndRest();
-    };
 
     const onDeleteResourceCategory = (ids: number[]) => {
         // @ts-ignore
@@ -33,37 +24,26 @@ const ResourceCategoryListPage: FC = () => {
                 breadcrumb: {},
             }}
         >
-            <ProList<any>
-                actionRef={ref}
-                style={{backgroundColor: '#ffffff'}}
+            <ProList<ResourceCategory>
+                style={{backgroundColor: '#fff'}}
                 grid={{gutter: 16, column: 2}}
+                actionRef={ref}
+                rowKey="id"
+                options={{
+                    search: {
+                        placeholder: "输入资源分类名称查询",
+                        style: {width: 400},
+                    },
+                    fullScreen: true,
+                    setting: false,
+                }}
                 toolBarRender={() => {
                     return [
-                        <Search style={{width: 400}} placeholder="输入资源分类名称查询" allowClear
-                                onSearch={(value) => onSearch(value)}/>,
                         <Button key="add" type="primary" onClick={() => history.push('/admin/resourceCategory/edit')}>
                             新建
                         </Button>,
                     ];
                 }}
-                request={
-                    async (params, sort, filter) => {
-                        const {current, pageSize} = params;
-                        const result = await queryResourceCategoryPage(
-                            (current || 1) - 1,
-                            pageSize || 10,
-                            {
-                                keyword,
-                                ...filter
-                            }
-                        );
-                        return {
-                            data: result.content,
-                            success: true,
-                            total: result.totalElements,
-                        };
-                    }
-                }
                 metas={{
                     avatar: {
                         dataIndex: 'categoryIcon',
@@ -122,9 +102,26 @@ const ResourceCategoryListPage: FC = () => {
                         },
                     },
                 }}
+                request={
+                    async (params, sort, filter) => {
+                        const {current, pageSize, ...others} = params;
+                        const result = await queryResourceCategoryPage(
+                            (current || 1) - 1,
+                            pageSize || 10,
+                            {
+                                ...others,
+                                ...filter,
+                            }
+                        );
+                        return {
+                            data: result.content,
+                            success: true,
+                            total: result.totalElements,
+                        };
+                    }
+                }
                 pagination={{
                     defaultPageSize: 8,
-                    showSizeChanger: false,
                 }}
             />
         </PageContainer>

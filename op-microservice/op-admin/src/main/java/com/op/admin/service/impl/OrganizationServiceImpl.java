@@ -246,11 +246,15 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void assignRoles(Integer id, List<Integer> roleIds) {
+        // 获取继承的分配的角色 ids
+        List<Integer> inheritedRoleIds = this.loadInheritedAssignedRoleIds(id);
+
         // 获取已建立关联的角色 ids
         List<Integer> preRoleIds = this.getAssignedRoleIds(id);
 
         // 获取要新建关联的角色 ids
         List<Integer> toAddRoleIds = roleIds.stream()
+                .filter(roleId -> !inheritedRoleIds.contains(roleId))
                 .filter(roleId -> !preRoleIds.contains(roleId)).collect(Collectors.toList());
 
         // 获取要删除关联的角色 ids
@@ -277,6 +281,26 @@ public class OrganizationServiceImpl implements OrganizationService {
                             .build().render(RenderingStrategies.MYBATIS3);
             organizationRoleRelationMapper.delete(deleteStatementProvider);
         }
+    }
+
+    /**
+     * 获取继承的分配的角色 ids
+     *
+     * @param id 用户 id
+     * @return 继承的分配的角色 ids
+     */
+    private List<Integer> loadInheritedAssignedRoleIds(Integer id) {
+        List<Integer> parentIds = organizationMapper.getParentsIds(id);
+        parentIds.remove(id);
+
+        SelectStatementProvider selectStatementProvider = select(OrganizationRoleRelationDynamicSqlSupport.roleId)
+                .from(OrganizationRoleRelationDynamicSqlSupport.organizationRoleRelation)
+                .where(OrganizationRoleRelationDynamicSqlSupport.orgId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        List<OrganizationRoleRelation> relations = organizationRoleRelationMapper.selectMany(selectStatementProvider);
+
+
+        return relations.stream().map(OrganizationRoleRelation::getRoleId).collect(Collectors.toList());
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -377,7 +401,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 
         List<RoleAssignVO> roles = roleService.findAllForAssign();
         roles.forEach(role -> {
-            List<Integer> orgIds = relationsMap.get(role.getId()).stream()
+            List<Integer> orgIds = relationsMap.getOrDefault(role.getId(), new ArrayList<>()).stream()
                     .map(OrganizationRoleRelation::getOrgId).collect(Collectors.toList());
             role.setChecked(CollectionUtils.isNotEmpty(orgIds));
             role.setEnableUncheck(orgIds.stream().allMatch(id::equals));

@@ -89,15 +89,15 @@ public interface UserGroupService {
     List<Integer> getAssignedResourceActionIds(List<Integer> ids);
 
     /**
-     * 查找所有角色，以及用户组分配情况
+     * 获取用户组角色分配情况
      *
      * @param id 用户组 id
      * @return 角色分配 VO 列表
      */
-    List<RoleAssignVO> loadRoles(Integer id);
+    List<RoleAssignVO> loadAssignedRoles(Integer id);
 
     /**
-     * 查找所有资源，以及用户组分配情况
+     * 获取用户组资源分配情况
      *
      * @param id 用户组 id
      * @return 资源分类分配 VO 列表

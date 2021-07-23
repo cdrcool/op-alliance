@@ -1,6 +1,7 @@
 import {Organization} from "../models/Organization";
 import request from "../utils/request";
 import {ResourceCategory} from "../models/ResourceCategory";
+import {Role} from "../models/Role";
 
 /**
  * 保存组织
@@ -57,9 +58,28 @@ export async function queryOrganizationList(params: object): Promise<Organizatio
 }
 
 /**
- * 分配资源动作
+ * 分配组织角色
  *
- * @param id 用户 id
+ * @param id 组织 id
+ * @param roleIds 角色 ids
+ */
+export async function assignOrganizationRoles(id: number, roleIds: number[]) {
+    return request.post('/api/organization/assignRoles', {id, roleIds});
+}
+
+/**
+ * 获取组织角色分配情况
+ *
+ * @param id 组织 id
+ */
+export async function loadOrganizationAssignedRoles(id: number): Promise<Role[]> {
+    return request.get(`/api/organization/loadAssignedRoles?id=${id}`);
+}
+
+/**
+ * 分配组织资源动作
+ *
+ * @param id 组织 id
  * @param resourceActionIds 资源动作 ids
  */
 export async function assignOrganizationResourceActions(id: number, resourceActionIds: number[]) {
@@ -67,9 +87,9 @@ export async function assignOrganizationResourceActions(id: number, resourceActi
 }
 
 /**
- * 查找资源分配情况
+ * 获取组织资源分配情况
  *
- * @param id 用户 id
+ * @param id 组织 id
  */
 export async function loadOrganizationAssignedResources(id: number):  Promise<ResourceCategory[]> {
     return request.get(`/api/organization/loadAssignedResources?id=${id}`);

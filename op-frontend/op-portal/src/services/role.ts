@@ -61,7 +61,7 @@ export async function changeRolesEnabled(ids: number[], enable: boolean) {
 }
 
 /**
- * 分配资源动作
+ * 分配角色资源动作
  *
  * @param id 角色 id
  * @param resourceActionIds 资源动作 ids
@@ -71,7 +71,7 @@ export async function assignRoleResourceActions(id: number, resourceActionIds: n
 }
 
 /**
- * 查找资源分配情况
+ * 获取角色资源分配情况
  *
  * @param id 角色 id
  */

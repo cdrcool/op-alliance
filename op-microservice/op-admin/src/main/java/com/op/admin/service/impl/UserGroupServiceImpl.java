@@ -262,7 +262,7 @@ public class UserGroupServiceImpl implements UserGroupService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<RoleAssignVO> loadRoles(Integer id) {
+    public List<RoleAssignVO> loadAssignedRoles(Integer id) {
         List<Integer> assignedRoleIds = this.getAssignedRoleIds(Collections.singletonList(id));
 
         List<RoleAssignVO> roles = roleService.findAllForAssign();

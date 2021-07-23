@@ -24,6 +24,7 @@ import RoleAssignResourcesPage from "../pages/role/assignresource";
 import UserAssignResourcesPage from "../pages/user/assignresource";
 import OrganizationAssignResourcesPage from "../pages/organization/assignresource";
 import UserAssignRolesPage from "../pages/user/assignroles";
+import OrganizationAssignRolesPage from "../pages/organization/assignroles";
 
 const routes = [
     {
@@ -51,6 +52,11 @@ const routes = [
                 path: "/admin/organization/detail/:id",
                 exact: true,
                 component: OrganizationDetailPage,
+            },
+            {
+                path: "/admin/organization/assign-roles/:id",
+                exact: true,
+                component: OrganizationAssignRolesPage,
             },
             {
                 path: "/admin/organization/assign-resources/:id",

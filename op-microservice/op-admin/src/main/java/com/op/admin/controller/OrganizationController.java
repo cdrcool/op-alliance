@@ -73,13 +73,13 @@ public class OrganizationController {
         organizationService.assignResourceActions(resourceAssignDTO.getId(), resourceAssignDTO.getResourceActionIds());
     }
 
-    @ApiOperation("查找所有角色，以及组织分配情况")
-    @GetMapping("loadRoles")
+    @ApiOperation("获取组织角色分配情况")
+    @GetMapping("loadAssignedRoles")
     public List<RoleAssignVO> loadRoles(@RequestParam Integer id) {
         return organizationService.loadRoles(id);
     }
 
-    @ApiOperation("查找所有资源，以及组织分配情况")
+    @ApiOperation("获取组织资源分配情况")
     @GetMapping("loadAssignedResources")
     public List<ResourceCategoryAssignVO> loadAssignedResources(@RequestParam Integer id) {
         return organizationService.loadAssignedResources(id);

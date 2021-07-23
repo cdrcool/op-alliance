@@ -95,7 +95,7 @@ public interface OrganizationService {
     List<Integer> getAssignedResourceActionIds(Integer id);
 
     /**
-     * 查找所有角色，以及组织分配情况
+     * 获取组织角色分配情况
      *
      * @param id 组织 id
      * @return 角色分配 VO 列表
@@ -103,7 +103,7 @@ public interface OrganizationService {
     List<RoleAssignVO> loadRoles(Integer id);
 
     /**
-     * 查找所有资源，以及组织分配情况
+     * 获取组织资源分配情况
      *
      * @param id 组织 id
      * @return 资源分类分配 VO 列表
