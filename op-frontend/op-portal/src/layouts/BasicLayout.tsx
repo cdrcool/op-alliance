@@ -35,7 +35,7 @@ const BasicLayout: FC = (props) => {
                     <div className="logo">
                         <a>
                             <img src={logo} alt="logo"/>
-                            <h1 style={collapsed ? {display: "none"} : {display: "inline-block"}}>OnePiece</h1>
+                            <h1 style={collapsed ? {display: "none"} : {display: "inline-block"}}>One Piece</h1>
                         </a>
                     </div>
 
