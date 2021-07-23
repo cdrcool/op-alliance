@@ -49,16 +49,6 @@ const UserList: FC<UserListProps> = (props) => {
             dataIndex: 'email',
         },
         {
-            title: '性别',
-            dataIndex: 'gender',
-            valueEnum: {
-                1: {text: '男'},
-                2: {text: '女'},
-            },
-            filters: true,
-            onFilter: true,
-        },
-        {
             title: '帐号状态',
             dataIndex: 'status',
             valueEnum: {
