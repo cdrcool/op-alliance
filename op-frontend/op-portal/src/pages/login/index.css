@@ -1,0 +1,81 @@
+.container {
+    background-size: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: auto;
+    background: #f0f2f5 url(https://gw.alipayobjects.com/zos/rmsportal/TVYTbAXWheQpRcWDaDMu.svg) no-repeat center 110px;
+}
+
+.content {
+    flex: 1;
+    padding: 64px 0 24px;
+}
+
+.top {
+    text-align: center;
+}
+
+.header {
+    height: 44px;
+    line-height: 44px;
+}
+
+.header a {
+    text-decoration: none;
+}
+
+.logo {
+    height: 44px;
+    margin-right: 16px;
+    vertical-align: top;
+}
+
+.title {
+    position: relative;
+    top: 2px;
+    color: rgba(0,0,0,.85);
+    font-weight: 600;
+    font-size: 33px;
+    font-family: Avenir,helvetica neue,Arial,Helvetica,sans-serif;
+}
+
+.desc {
+    margin-top: 12px;
+    margin-bottom: 40px;
+    color: rgba(0,0,0,.45);
+    font-size: 14px;
+}
+
+.main {
+    width: 328px;
+    margin: 0 auto;
+}
+
+.prefixIcon {
+    color: #1890ff;
+    font-size: 14px;
+}
+
+.other {
+    margin-top: 24px;
+    line-height: 22px;
+    text-align: left;
+}
+
+.other .register {
+    float: right;
+}
+
+.icon {
+    margin-left: 16px;
+    color: rgba(0, 0, 0, 0.2);
+    font-size: 24px;
+    vertical-align: middle;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.icon:hover {
+     color: #1890ff;
+ }
