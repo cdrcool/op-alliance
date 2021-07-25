@@ -8,7 +8,7 @@ import request from "../utils/request";
  * @param resource 资源
  */
 export async function saveResource(resource: Resource) {
-    return request.post('/api/resource/save', resource);
+    return request.post('/api/op-admin/resource/save', resource);
 }
 
 /**
@@ -17,7 +17,7 @@ export async function saveResource(resource: Resource) {
  * @param id 资源 id
  */
 export async function deleteResource(id: number) {
-    return request.post(`/api/resource/delete?id=${id}`);
+    return request.post(`/api/op-admin/resource/delete?id=${id}`);
 }
 
 /**
@@ -26,7 +26,7 @@ export async function deleteResource(id: number) {
  * @param ids 资源 ids
  */
 export async function deleteResources(ids: number[]) {
-    return request.post(`/api/resource/batchDelete`, ids);
+    return request.post(`/api/op-admin/resource/batchDelete`, ids);
 }
 
 /**
@@ -35,7 +35,7 @@ export async function deleteResources(ids: number[]) {
  * @param id 资源 id
  */
 export async function getResource(id: number): Promise<Resource> {
-    return request.get(`/api/resource/get?id=${id}`);
+    return request.get(`/api/op-admin/resource/get?id=${id}`);
 }
 
 /**
@@ -46,5 +46,5 @@ export async function getResource(id: number): Promise<Resource> {
  * @param params 查询参数
  */
 export async function queryResourcePage(page: number, size: number, params: object): Promise<PageResult<Resource>> {
-    return request.post(`/api/resource/queryPage?page=${page}&size=${size}`, params);
+    return request.post(`/api/op-admin/resource/queryPage?page=${page}&size=${size}`, params);
 }

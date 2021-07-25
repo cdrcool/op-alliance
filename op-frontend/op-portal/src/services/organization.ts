@@ -9,7 +9,7 @@ import {Role} from "../models/Role";
  * @param org 组织
  */
 export async function saveOrganization(org: Organization) {
-    return request.post('/api/organization/save', org);
+    return request.post('/api/op-admin/organization/save', org);
 }
 
 /**
@@ -18,7 +18,7 @@ export async function saveOrganization(org: Organization) {
  * @param id 组织 id
  */
 export async function deleteOrganization(id: number) {
-    return request.post(`/api/organization/delete?id=${id}`);
+    return request.post(`/api/op-admin/organization/delete?id=${id}`);
 }
 
 /**
@@ -27,7 +27,7 @@ export async function deleteOrganization(id: number) {
  * @param ids 组织 ids
  */
 export async function deleteOrganizations(ids: number[]) {
-    return request.post(`/api/organization/batchDelete`, ids);
+    return request.post(`/api/op-admin/organization/batchDelete`, ids);
 }
 
 /**
@@ -36,7 +36,7 @@ export async function deleteOrganizations(ids: number[]) {
  * @param id 组织 id
  */
 export async function getOrganization(id: number): Promise<Organization> {
-    return request.get(`/api/organization/get?id=${id}`);
+    return request.get(`/api/op-admin/organization/get?id=${id}`);
 }
 
 /**
@@ -45,7 +45,7 @@ export async function getOrganization(id: number): Promise<Organization> {
  * @param params 查询参数
  */
 export async function queryOrganizationTree(params: object): Promise<Organization> {
-    return request.post(`/api/organization/queryTree`, params);
+    return request.post(`/api/op-admin/organization/queryTree`, params);
 }
 
 /**
@@ -54,7 +54,7 @@ export async function queryOrganizationTree(params: object): Promise<Organizatio
  * @param params 查询参数
  */
 export async function queryOrganizationList(params: object): Promise<Organization[]> {
-    return request.post(`/api/organization/queryList`, params);
+    return request.post(`/api/op-admin/organization/queryList`, params);
 }
 
 /**
@@ -64,7 +64,7 @@ export async function queryOrganizationList(params: object): Promise<Organizatio
  * @param roleIds 角色 ids
  */
 export async function assignOrganizationRoles(id: number, roleIds: number[]) {
-    return request.post('/api/organization/assignRoles', {id, roleIds});
+    return request.post('/api/op-admin/organization/assignRoles', {id, roleIds});
 }
 
 /**
@@ -73,7 +73,7 @@ export async function assignOrganizationRoles(id: number, roleIds: number[]) {
  * @param id 组织 id
  */
 export async function loadOrganizationAssignedRoles(id: number): Promise<Role[]> {
-    return request.get(`/api/organization/loadAssignedRoles?id=${id}`);
+    return request.get(`/api/op-admin/organization/loadAssignedRoles?id=${id}`);
 }
 
 /**
@@ -83,7 +83,7 @@ export async function loadOrganizationAssignedRoles(id: number): Promise<Role[]>
  * @param resourceActionIds 资源动作 ids
  */
 export async function assignOrganizationResourceActions(id: number, resourceActionIds: number[]) {
-    return request.post('/api/organization/assignResourceActions', {id, resourceActionIds});
+    return request.post('/api/op-admin/organization/assignResourceActions', {id, resourceActionIds});
 }
 
 /**
@@ -92,5 +92,5 @@ export async function assignOrganizationResourceActions(id: number, resourceActi
  * @param id 组织 id
  */
 export async function loadOrganizationAssignedResources(id: number):  Promise<ResourceCategory[]> {
-    return request.get(`/api/organization/loadAssignedResources?id=${id}`);
+    return request.get(`/api/op-admin/organization/loadAssignedResources?id=${id}`);
 }

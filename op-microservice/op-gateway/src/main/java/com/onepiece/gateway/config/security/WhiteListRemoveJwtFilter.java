@@ -1,6 +1,5 @@
 package com.onepiece.gateway.config.security;
 
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
@@ -25,9 +24,8 @@ import java.util.Optional;
 public class WhiteListRemoveJwtFilter implements WebFilter {
     private WhiteListConfig whiteListConfig;
 
-    @NotNull
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, @NotNull WebFilterChain chain) {
+    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
         URI uri = request.getURI();
 

@@ -14,5 +14,5 @@ export type LoginParams = {
  * @param loginParams 登录参数
  */
 export async function login(loginParams: LoginParams) {
-    return request.post('/api/auth/token', loginParams);
+    return request.post('/api/op-auth/auth/token', loginParams);
 }

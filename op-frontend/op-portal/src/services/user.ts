@@ -10,7 +10,7 @@ import {Role} from "../models/Role";
  * @param user 用户
  */
 export async function createUser(user: User) {
-    return request.post('/api/user/save', user);
+    return request.post('/api/op-admin/user/save', user);
 }
 
 /**
@@ -19,7 +19,7 @@ export async function createUser(user: User) {
  * @param user 用户
  */
 export async function changePassword(user: User) {
-    return request.post('/api/user/changePassword', user);
+    return request.post('/api/op-admin/user/changePassword', user);
 }
 
 /**
@@ -28,7 +28,7 @@ export async function changePassword(user: User) {
  * @param user 用户
  */
 export async function saveUser(user: User) {
-    return request.post('/api/user/save', user);
+    return request.post('/api/op-admin/user/save', user);
 }
 
 /**
@@ -37,7 +37,7 @@ export async function saveUser(user: User) {
  * @param id 用户 id
  */
 export async function deleteUser(id: number) {
-    return request.post(`/api/user/delete?id=${id}`);
+    return request.post(`/api/op-admin/user/delete?id=${id}`);
 }
 
 /**
@@ -46,7 +46,7 @@ export async function deleteUser(id: number) {
  * @param ids 用户 ids
  */
 export async function deleteUsers(ids: number[]) {
-    return request.post(`/api/user/batchDelete`, ids);
+    return request.post(`/api/op-admin/user/batchDelete`, ids);
 }
 
 /**
@@ -55,7 +55,7 @@ export async function deleteUsers(ids: number[]) {
  * @param id 用户 id
  */
 export async function getUser(id: number) {
-    return request.get(`/api/user/get?id=${id}`);
+    return request.get(`/api/op-admin/user/get?id=${id}`);
 }
 
 /**
@@ -66,7 +66,7 @@ export async function getUser(id: number) {
  * @param params 查询参数
  */
 export async function queryUserPage(page: number, size: number, params: object): Promise<PageResult<User>> {
-    return request.post(`/api/user/queryPage?page=${page}&size=${size}`, params);
+    return request.post(`/api/op-admin/user/queryPage?page=${page}&size=${size}`, params);
 }
 
 /**
@@ -76,7 +76,7 @@ export async function queryUserPage(page: number, size: number, params: object):
  * @param enable 是否启用
  */
 export async function changeUsersEnabled(ids: number[], enable: boolean) {
-    return request.post(`/api/user/changeEnabled`, {ids, enable});
+    return request.post(`/api/op-admin/user/changeEnabled`, {ids, enable});
 }
 
 /**
@@ -86,7 +86,7 @@ export async function changeUsersEnabled(ids: number[], enable: boolean) {
  * @param roleIds 角色 ids
  */
 export async function assignUserRoles(id: number, roleIds: number[]) {
-    return request.post('/api/user/assignRoles', {id, roleIds});
+    return request.post('/api/op-admin/user/assignRoles', {id, roleIds});
 }
 
 /**
@@ -95,7 +95,7 @@ export async function assignUserRoles(id: number, roleIds: number[]) {
  * @param id 用户 id
  */
 export async function loadUserAssignedRoles(id: number): Promise<Role[]> {
-    return request.get(`/api/user/loadAssignedRoles?id=${id}`);
+    return request.get(`/api/op-admin/user/loadAssignedRoles?id=${id}`);
 }
 
 /**
@@ -105,7 +105,7 @@ export async function loadUserAssignedRoles(id: number): Promise<Role[]> {
  * @param resourceActionIds 资源动作 ids
  */
 export async function assignUserResourceActions(id: number, resourceActionIds: number[]) {
-    return request.post('/api/user/assignResourceActions', {id, resourceActionIds});
+    return request.post('/api/op-admin/user/assignResourceActions', {id, resourceActionIds});
 }
 
 /**
@@ -114,5 +114,5 @@ export async function assignUserResourceActions(id: number, resourceActionIds: n
  * @param id 用户 id
  */
 export async function loadUserAssignedResources(id: number): Promise<ResourceCategory[]> {
-    return request.get(`/api/user/loadAssignedResources?id=${id}`);
+    return request.get(`/api/op-admin/user/loadAssignedResources?id=${id}`);
 }

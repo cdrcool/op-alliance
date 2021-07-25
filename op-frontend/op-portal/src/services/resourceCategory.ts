@@ -9,7 +9,7 @@ import {SelectOptions} from "../models/SelectOptions";
  * @param resourceCategory 资源分类
  */
 export async function saveResourceCategory(resourceCategory: ResourceCategory) {
-    return request.post('/api/resourceCategory/save', resourceCategory);
+    return request.post('/api/op-admin/resourceCategory/save', resourceCategory);
 }
 
 /**
@@ -18,7 +18,7 @@ export async function saveResourceCategory(resourceCategory: ResourceCategory) {
  * @param id 资源分类 id
  */
 export async function deleteResourceCategory(id: number) {
-    return request.post(`/api/resourceCategory/delete?id=${id}`);
+    return request.post(`/api/op-admin/resourceCategory/delete?id=${id}`);
 }
 
 /**
@@ -27,7 +27,7 @@ export async function deleteResourceCategory(id: number) {
  * @param ids 资源分类 ids
  */
 export async function deleteResourceCategories(ids: number[]) {
-    return request.post(`/api/resourceCategory/batchDelete`, ids);
+    return request.post(`/api/op-admin/resourceCategory/batchDelete`, ids);
 }
 
 /**
@@ -36,7 +36,7 @@ export async function deleteResourceCategories(ids: number[]) {
  * @param id 资源分类 id
  */
 export async function getResourceCategory(id: number): Promise<ResourceCategory> {
-    return request.get(`/api/resourceCategory/get?id=${id}`);
+    return request.get(`/api/op-admin/resourceCategory/get?id=${id}`);
 }
 
 /**
@@ -47,7 +47,7 @@ export async function getResourceCategory(id: number): Promise<ResourceCategory>
  * @param params 查询参数
  */
 export async function queryResourceCategoryPage(page: number, size: number, params: object): Promise<PageResult<ResourceCategory>> {
-    return request.post(`/api/resourceCategory/queryPage?page=${page}&size=${size}`, params);
+    return request.post(`/api/op-admin/resourceCategory/queryPage?page=${page}&size=${size}`, params);
 }
 
 /**
@@ -56,5 +56,5 @@ export async function queryResourceCategoryPage(page: number, size: number, para
  * @param params 查询参数
  */
 export async function queryResourceCategorySelectList(params: object): Promise<SelectOptions[]> {
-    return request.post(`/api/resourceCategory/selectList`, params);
+    return request.post(`/api/op-admin/resourceCategory/selectList`, params);
 }

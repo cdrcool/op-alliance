@@ -8,7 +8,7 @@ import request from "../utils/request";
  * @param resourceAction 资源动作
  */
 export async function saveResourceAction(resourceAction: ResourceAction): Promise<number> {
-    return request.post('/api/resourceAction/save', resourceAction);
+    return request.post('/api/op-admin/resourceAction/save', resourceAction);
 }
 
 /**
@@ -17,7 +17,7 @@ export async function saveResourceAction(resourceAction: ResourceAction): Promis
  * @param id 资源动作 id
  */
 export async function deleteResourceAction(id: number) {
-    return request.post(`/api/resourceAction/delete?id=${id}`);
+    return request.post(`/api/op-admin/resourceAction/delete?id=${id}`);
 }
 
 /**
@@ -26,7 +26,7 @@ export async function deleteResourceAction(id: number) {
  * @param ids 资源动作 ids
  */
 export async function deleteResourceActions(ids: number[]) {
-    return request.post(`/api/resourceAction/batchDelete`, ids);
+    return request.post(`/api/op-admin/resourceAction/batchDelete`, ids);
 }
 
 /**
@@ -35,7 +35,7 @@ export async function deleteResourceActions(ids: number[]) {
  * @param id 资源动作 id
  */
 export async function getResourceAction(id: number): Promise<ResourceAction> {
-    return request.get(`/api/resourceAction/get?id=${id}`);
+    return request.get(`/api/op-admin/resourceAction/get?id=${id}`);
 }
 
 /**
@@ -46,7 +46,7 @@ export async function getResourceAction(id: number): Promise<ResourceAction> {
  * @param params 查询参数
  */
 export async function queryResourceActionPage(page: number, size: number, params: object): Promise<PageResult<ResourceAction>> {
-    return request.post(`/api/resourceAction/queryPage?page=${page}&size=${size}`, params);
+    return request.post(`/api/op-admin/resourceAction/queryPage?page=${page}&size=${size}`, params);
 }
 
 /**
@@ -55,5 +55,5 @@ export async function queryResourceActionPage(page: number, size: number, params
  * @param resourceId 资源 id
  */
 export async function findByResourceId(resourceId: number): Promise<ResourceAction[]> {
-    return request.get(`/api/resourceAction/findByResourceId?resourceId=${resourceId}`);
+    return request.get(`/api/op-admin/resourceAction/findByResourceId?resourceId=${resourceId}`);
 }

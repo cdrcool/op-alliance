@@ -9,7 +9,7 @@ import {ResourceCategory} from "../models/ResourceCategory";
  * @param role 角色
  */
 export async function saveRole(role: Role) {
-    return request.post('/api/role/save', role);
+    return request.post('/api/op-admin/role/save', role);
 }
 
 /**
@@ -18,7 +18,7 @@ export async function saveRole(role: Role) {
  * @param id 角色 id
  */
 export async function deleteRole(id: number) {
-    return request.post(`/api/role/delete?id=${id}`);
+    return request.post(`/api/op-admin/role/delete?id=${id}`);
 }
 
 /**
@@ -27,7 +27,7 @@ export async function deleteRole(id: number) {
  * @param ids 角色 ids
  */
 export async function deleteRoles(ids: number[]) {
-    return request.post(`/api/role/batchDelete`, ids);
+    return request.post(`/api/op-admin/role/batchDelete`, ids);
 }
 
 /**
@@ -36,7 +36,7 @@ export async function deleteRoles(ids: number[]) {
  * @param id 角色 id
  */
 export async function getRole(id: number): Promise<Role> {
-    return request.get(`/api/role/get?id=${id}`);
+    return request.get(`/api/op-admin/role/get?id=${id}`);
 }
 
 /**
@@ -47,7 +47,7 @@ export async function getRole(id: number): Promise<Role> {
  * @param params 查询参数
  */
 export async function queryRolePage(page: number, size: number, params: object): Promise<PageResult<Role>> {
-    return request.post(`/api/role/queryPage?page=${page}&size=${size}`, params);
+    return request.post(`/api/op-admin/role/queryPage?page=${page}&size=${size}`, params);
 }
 
 /**
@@ -57,7 +57,7 @@ export async function queryRolePage(page: number, size: number, params: object):
  * @param enable 是否启用
  */
 export async function changeRolesEnabled(ids: number[], enable: boolean) {
-    return request.post('/api/role/changeEnabled', {ids, enable});
+    return request.post('/api/op-admin/role/changeEnabled', {ids, enable});
 }
 
 /**
@@ -67,7 +67,7 @@ export async function changeRolesEnabled(ids: number[], enable: boolean) {
  * @param resourceActionIds 资源动作 ids
  */
 export async function assignRoleResourceActions(id: number, resourceActionIds: number[]) {
-    return request.post('/api/role/assignResourceActions', {id, resourceActionIds});
+    return request.post('/api/op-admin/role/assignResourceActions', {id, resourceActionIds});
 }
 
 /**
@@ -76,5 +76,5 @@ export async function assignRoleResourceActions(id: number, resourceActionIds: n
  * @param id 角色 id
  */
 export async function loadRoleAssignedResources(id: number):  Promise<ResourceCategory[]> {
-    return request.get(`/api/role/loadAssignedResources?id=${id}`);
+    return request.get(`/api/op-admin/role/loadAssignedResources?id=${id}`);
 }

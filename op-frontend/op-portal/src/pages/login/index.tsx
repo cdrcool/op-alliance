@@ -22,7 +22,7 @@ const LoginPage: FC = () => {
     const [type, setType] = useState<string>('account');
 
     const onSubmit = async (values: LoginParams) => {
-        await login(values);
+        await login({...values, clientId: 'password'});
         message.success('提交成功');
     };
 
@@ -73,7 +73,7 @@ const LoginPage: FC = () => {
                         {type === 'account' && (
                             <>
                                 <ProFormText
-                                    name="userName"
+                                    name="username"
                                     fieldProps={{
                                         size: 'large',
                                         prefix: <UserOutlined className="prefixIcon"/>,

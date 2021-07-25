@@ -7,7 +7,7 @@ import request from "../utils/request";
  * @param menu 菜单
  */
 export async function saveMenu(menu: Menus) {
-    return request.post('/api/menu/save', menu);
+    return request.post('/api/op-admin/menu/save', menu);
 }
 
 /**
@@ -16,7 +16,7 @@ export async function saveMenu(menu: Menus) {
  * @param id 菜单 id
  */
 export async function deleteMenu(id: number) {
-    return request.post(`/api/menu/delete?id=${id}`);
+    return request.post(`/api/op-admin/menu/delete?id=${id}`);
 }
 
 /**
@@ -25,7 +25,7 @@ export async function deleteMenu(id: number) {
  * @param ids 菜单 ids
  */
 export async function deleteMenus(ids: number[]) {
-    return request.post(`/api/menu/batchDelete`, ids);
+    return request.post(`/api/op-admin/menu/batchDelete`, ids);
 }
 
 /**
@@ -34,7 +34,7 @@ export async function deleteMenus(ids: number[]) {
  * @param id 菜单 id
  */
 export async function getMenu(id: number): Promise<Menus> {
-    return request.get(`/api/menu/get?id=${id}`);
+    return request.get(`/api/op-admin/menu/get?id=${id}`);
 }
 
 /**
@@ -43,7 +43,7 @@ export async function getMenu(id: number): Promise<Menus> {
  * @param params 查询参数
  */
 export async function queryMenuTreeList(params?: object): Promise<Menus[]> {
-    return request.post('/api/menu/queryTreeList', params);
+    return request.post('/api/op-admin/menu/queryTreeList', params);
 }
 
 /**
@@ -53,5 +53,5 @@ export async function queryMenuTreeList(params?: object): Promise<Menus[]> {
  * @param show 是否显示
  */
 export async function changeMenusVisibility(ids: number[], show: boolean) {
-    return request.post(`/api/menu/changeVisibility`, {ids, show});
+    return request.post(`/api/op-admin/menu/changeVisibility`, {ids, show});
 }
