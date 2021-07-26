@@ -27,7 +27,7 @@ spring:
         jwt:
           # RSA 公钥访问地址
           #          jwk-set-uri: 'http://localhost:8081/oauth2/jwks'
-          jwk-set-uri: 'http://op-auth/.well-known/jwks.json'
+          jwk-set-uri: 'http://localhost:8081/.well-known/jwks.json'
   #          issuer-uri: 'http://localhost:8081'
 
 secure:

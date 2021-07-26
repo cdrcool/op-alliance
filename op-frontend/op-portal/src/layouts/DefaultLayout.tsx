@@ -11,6 +11,7 @@ import defaultSettings from "./defaultSettings";
 import HeaderMenu from "./HeaderMenu";
 import {queryMenuTreeList} from "../services/menu";
 import {Menus} from "../models/Menus";
+import UserContext from "../context/userContext";
 
 const DefaultLayout: FC = (props) => {
     const [settings, setSetting] = useState<Partial<ProSettings> | undefined>(defaultSettings);
@@ -37,73 +38,79 @@ const DefaultLayout: FC = (props) => {
     }
 
     return (
-        <div id="default-layout">
-            <ProLayout
-                logo={logo}
-                location={{
-                    pathname: location.pathname,
-                }}
-                menu={{
-                    request: async () => {
-                        const result = await queryMenuTreeList();
-                        return convertToAntdMenu(result);
-                    }
-                }}
-                headerContentRender={() => {
-                    return (
+        <UserContext.Provider value={
+            {
+
+            }
+        }>
+            <div id="default-layout">
+                <ProLayout
+                    logo={logo}
+                    location={{
+                        pathname: location.pathname,
+                    }}
+                    menu={{
+                        request: async () => {
+                            const result = await queryMenuTreeList();
+                            return convertToAntdMenu(result);
+                        }
+                    }}
+                    headerContentRender={() => {
+                        return (
+                            <div
+                                onClick={() => setCollapsed(!collapsed)}
+                                style={{
+                                    cursor: 'pointer',
+                                    fontSize: '16px',
+                                }}
+                            >
+                                {collapsed ? <MenuUnfoldOutlined/> : <MenuFoldOutlined/>}
+                            </div>
+                        );
+                    }}
+                    collapsed={collapsed}
+                    onCollapse={setCollapsed}
+                    collapsedButtonRender={false}
+                    menuHeaderRender={(logo, title) => (
                         <div
-                            onClick={() => setCollapsed(!collapsed)}
-                            style={{
-                                cursor: 'pointer',
-                                fontSize: '16px',
+                            id="customize_menu_header"
+                            onClick={() => {
+                                window.open('https://remaxjs.org/');
                             }}
                         >
-                            {collapsed ? <MenuUnfoldOutlined/> : <MenuFoldOutlined/>}
+                            {logo}
+                            {title}
                         </div>
-                    );
-                }}
-                collapsed={collapsed}
-                onCollapse={setCollapsed}
-                collapsedButtonRender={false}
-                menuHeaderRender={(logo, title) => (
-                    <div
-                        id="customize_menu_header"
-                        onClick={() => {
-                            window.open('https://remaxjs.org/');
-                        }}
-                    >
-                        {logo}
-                        {title}
-                    </div>
-                )}
-                onMenuHeaderClick={(e) => console.log(e)}
-                menuItemRender={
-                    (menuDataItem, dom) => {
-                        if (!menuDataItem.path) {
-                            return dom;
+                    )}
+                    onMenuHeaderClick={(e) => console.log(e)}
+                    menuItemRender={
+                        (menuDataItem, dom) => {
+                            if (!menuDataItem.path) {
+                                return dom;
+                            }
+                            return <Link to={menuDataItem.path}>{dom}</Link>;
                         }
-                        return <Link to={menuDataItem.path}>{dom}</Link>;
                     }
-                }
-                rightContentRender={() => <HeaderMenu/>}
-                {...settings}
-            >
-                {
-                    // @ts-ignore
-                    renderRoutes(props.route.routes)
-                }
+                    rightContentRender={() => <HeaderMenu/>}
+                    {...settings}
+                >
+                    {
+                        // @ts-ignore
+                        renderRoutes(props.route.routes)
+                    }
 
-            </ProLayout>
-            <SettingDrawer
-                pathname={location.pathname}
-                getContainer={() => document.getElementById('default-layout')}
-                settings={settings}
-                onSettingChange={(changeSetting) => {
-                    setSetting(changeSetting);
-                }}
-                disableUrlParams
-            />
-        </div>
+                </ProLayout>
+                <SettingDrawer
+                    pathname={location.pathname}
+                    getContainer={() => document.getElementById('default-layout')}
+                    settings={settings}
+                    onSettingChange={(changeSetting) => {
+                        setSetting(changeSetting);
+                    }}
+                    disableUrlParams
+                />
+            </div>
+        </UserContext.Provider>
     );
 };
 

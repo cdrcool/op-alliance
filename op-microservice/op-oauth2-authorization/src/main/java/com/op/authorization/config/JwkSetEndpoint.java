@@ -2,6 +2,7 @@ package com.op.authorization.config;
 
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
+import com.op.framework.web.common.api.response.NoApiResponse;
 import org.springframework.security.oauth2.provider.endpoint.FrameworkEndpoint;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -26,6 +27,7 @@ public class JwkSetEndpoint {
         this.keyPair = keyPair;
     }
 
+    @NoApiResponse
     @GetMapping("/.well-known/jwks.json")
     @ResponseBody
     public Map<String, Object> getKey() {

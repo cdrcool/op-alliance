@@ -3,13 +3,16 @@ import {BellOutlined, BookOutlined, SearchOutlined} from "@ant-design/icons";
 import Notice from "./Notice";
 import avatar from "../assets/avatar.png";
 import {Link} from "react-router-dom";
-import React, {FC} from "react";
+import React, {FC, useContext} from "react";
 
 import "./HeaderMenu.css";
+import UserContext from "../context/userContext";
 
 const {SubMenu} = Menu;
 
 const HeaderMenu: FC = () => {
+    const {username} = useContext(UserContext);
+
     return (
         <Menu theme="light" mode="horizontal" className="header-menu">
             <Menu.Item key="search">
@@ -25,7 +28,7 @@ const HeaderMenu: FC = () => {
             <SubMenu key="avatar" icon={
                 <>
                     <Avatar src={avatar} className="avatar"/>
-                    <span className="avatar-text">管理员</span>
+                    <span className="avatar-text">{username}</span>
                 </>
             }>
                 <Menu.Item key="center">
