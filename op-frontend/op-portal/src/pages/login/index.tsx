@@ -15,15 +15,26 @@ import logo from "../../assets/logo.svg";
 
 import "./index.css";
 import {login, LoginParams} from "../../services/login";
+import {useHistory} from "react-router-dom";
 
 const {TabPane} = Tabs;
 
 const LoginPage: FC = () => {
+    const history = useHistory();
+
     const [type, setType] = useState<string>('account');
+    const [submitting, setSubmitting] = useState<boolean>(false);
 
     const onSubmit = async (values: LoginParams) => {
-        await login({...values, clientId: 'password'});
-        message.success('提交成功');
+        setSubmitting(true);
+        const oathToken = await login({...values, clientId: 'password'});
+        const {accessToken, tokenType, refreshToken, expiresIn} = oathToken;
+        sessionStorage.setItem('accessToken', accessToken);
+        sessionStorage.setItem('tokenType', tokenType);
+        sessionStorage.setItem('refreshToken', refreshToken);
+        sessionStorage.setItem('expiresIn', expiresIn + '');
+        setSubmitting(false);
+        history.push('/');
     };
 
     return (
@@ -49,6 +60,7 @@ const LoginPage: FC = () => {
                             },
                             render: (_, dom) => dom.pop(),
                             submitButtonProps: {
+                                loading: submitting,
                                 size: 'large',
                                 style: {
                                     width: '100%',
@@ -56,7 +68,7 @@ const LoginPage: FC = () => {
                             },
                         }}
                         onFinish={(values) => {
-                            onSubmit(values);
+                            onSubmit(values).then(() => {});
                             return Promise.resolve();
                         }}
                     >

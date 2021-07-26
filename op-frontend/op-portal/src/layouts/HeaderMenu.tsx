@@ -2,16 +2,18 @@ import {Avatar, Badge, Input, Menu, Popover, Tooltip} from "antd";
 import {BellOutlined, BookOutlined, SearchOutlined} from "@ant-design/icons";
 import Notice from "./Notice";
 import avatar from "../assets/avatar.png";
-import {Link} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import React, {FC, useContext} from "react";
 
 import "./HeaderMenu.css";
-import UserContext from "../context/userContext";
+import userContext from "../context/userContext";
 
 const {SubMenu} = Menu;
 
 const HeaderMenu: FC = () => {
-    const {username} = useContext(UserContext);
+    const history = useHistory();
+
+    const {username} = useContext(userContext);
 
     return (
         <Menu theme="light" mode="horizontal" className="header-menu">
@@ -39,7 +41,10 @@ const HeaderMenu: FC = () => {
                 </Menu.Item>
                 <Menu.Divider/>
                 <Menu.Item key="logout">
-                    <Link to='/logout'>退出登录</Link>
+                    <a onClick={() => {
+                        sessionStorage.removeItem('accessToken');
+                        history.push('/login');
+                    }}>退出登录</a>
                 </Menu.Item>
             </SubMenu>
 

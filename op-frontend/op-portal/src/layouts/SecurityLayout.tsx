@@ -3,12 +3,11 @@ import {useHistory} from "react-router-dom";
 import {renderRoutes} from "react-router-config";
 
 const SecurityLayout: FC = (props) => {
-
     const history = useHistory();
 
     useEffect(() => {
-        const user = window.sessionStorage.getItem("user");
-        if (!user) {
+        const accessToken = sessionStorage.getItem("accessToken");
+        if (!accessToken) {
             history.replace('/login');
         }
     }, []);

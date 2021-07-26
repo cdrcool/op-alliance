@@ -1,4 +1,6 @@
 import request from "../utils/request";
+import {OauthToken} from "../models/OauthToken";
+import {User} from "../models/User";
 
 export type LoginParams = {
     clientId: string;
@@ -13,6 +15,13 @@ export type LoginParams = {
  *
  * @param loginParams 登录参数
  */
-export async function login(loginParams: LoginParams) {
+export async function login(loginParams: LoginParams): Promise<OauthToken> {
     return request.post('/api/op-auth/auth/token', loginParams);
+}
+
+/**
+ * 用户登录
+ */
+export async function getCurrentUser() {
+    return request.get('/api/oauth2/userinfo');
 }

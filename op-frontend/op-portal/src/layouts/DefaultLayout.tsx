@@ -1,4 +1,4 @@
-import React, {FC, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import type {MenuDataItem, ProSettings} from "@ant-design/pro-layout";
 import ProLayout, {SettingDrawer} from "@ant-design/pro-layout";
 import * as Icon from "@ant-design/icons";
@@ -11,13 +11,16 @@ import defaultSettings from "./defaultSettings";
 import HeaderMenu from "./HeaderMenu";
 import {queryMenuTreeList} from "../services/menu";
 import {Menus} from "../models/Menus";
-import UserContext from "../context/userContext";
+import userContext from "../context/userContext";
+import {getCurrentUser} from "../services/login";
+import {User} from "../models/User";
 
 const DefaultLayout: FC = (props) => {
     const [settings, setSetting] = useState<Partial<ProSettings> | undefined>(defaultSettings);
     const location = useLocation();
 
-    const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] = useState<boolean>(false);
+    const [user, setUser] = useState<User>({});
 
     const convertToAntdMenu = (menus: Menus[]): MenuDataItem[] => {
         return menus && menus.map(item => {
@@ -37,12 +40,18 @@ const DefaultLayout: FC = (props) => {
         });
     }
 
-    return (
-        <UserContext.Provider value={
-            {
+    useEffect(() => {
+        const fetchData = async () => {
+            const user = await getCurrentUser();
+            setUser(user || {});
+        }
 
-            }
-        }>
+        fetchData().then(() => {
+        });
+    }, []);
+
+    return (
+        <userContext.Provider value={user}>
             <div id="default-layout">
                 <ProLayout
                     logo={logo}
@@ -110,7 +119,7 @@ const DefaultLayout: FC = (props) => {
                     disableUrlParams
                 />
             </div>
-        </UserContext.Provider>
+        </userContext.Provider>
     );
 };
 
