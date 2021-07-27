@@ -39,10 +39,10 @@ const HeaderMenu: FC = () => {
                 </>
             }>
                 <Menu.Item key="center">
-                    <Link to='/center'>个人中心</Link>
+                    <Link to='/personal/center'>个人中心</Link>
                 </Menu.Item>
                 <Menu.Item key="settings">
-                    <Link to='/settings'>个人设置</Link>
+                    <Link to='/personal/settings'>个人设置</Link>
                 </Menu.Item>
                 <Menu.Divider/>
                 <Menu.Item key="logout">

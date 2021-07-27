@@ -52,7 +52,7 @@ public class MenuServiceImpl implements MenuService {
         this.menuMapping = menuMapping;
     }
 
-    @CachePut(key = "#saveDTO.id")
+    @CachePut(key = "#result.id")
     @Transactional(rollbackFor = Exception.class)
     @Override
     public MenuVO save(MenuSaveDTO saveDTO) {
