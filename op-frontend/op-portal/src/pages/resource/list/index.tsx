@@ -31,7 +31,7 @@ const ResourceListPage: FC = () => {
     const onDeleteResources = (ids: number[]) => {
         // @ts-ignore
         deleteResources(ids).then(() => ref.current.reloadAndRest());
-    }
+    };
 
     const columns: ProColumns<Resource>[] = [
         {

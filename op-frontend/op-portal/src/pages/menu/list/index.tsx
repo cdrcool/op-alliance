@@ -15,12 +15,12 @@ const MenuListPage: FC = () => {
     const onDeleteMenus = (ids: number[]) => {
         // @ts-ignore
         deleteMenus(ids).then(() => ref.current.reloadAndRest());
-    }
+    };
 
     const onChangeMenusVisibility = (ids: number[], enable: boolean) => {
         // @ts-ignore
         changeMenusVisibility(ids, enable).then(() => ref.current.reload());
-    }
+    };
 
     const columns: ProColumns<Menus>[] = [
         {

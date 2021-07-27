@@ -15,12 +15,12 @@ const RoleListPage: FC = () => {
     const onDeleteRoles = (ids: number[]) => {
         // @ts-ignore
         deleteRoles(ids).then(() => ref.current.reloadAndRest());
-    }
+    };
 
     const onChangeRolesEnabled = (ids: number[], enable: boolean) => {
         // @ts-ignore
         changeRolesEnabled(ids, enable).then(() => ref.current.reload());
-    }
+    };
 
     const columns: ProColumns<Role>[] = [
         {

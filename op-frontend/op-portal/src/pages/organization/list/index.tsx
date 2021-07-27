@@ -15,7 +15,7 @@ const OrganizationListPage: FC = () => {
     const onDeleteOrganizations = (ids: number[]) => {
         // @ts-ignore
         deleteOrganizations(ids).then(() => ref.current.reloadAndRest());
-    }
+    };
 
     const columns: ProColumns<Organization>[] = [
         {
@@ -129,7 +129,9 @@ const OrganizationListPage: FC = () => {
                             data: [result],
                             success: true,
                         };
-                    }}
+                    }
+                }
+                defaultExpandedRowKeys={[1]}
                 rowSelection={{}}
                 pagination={false}
             />
