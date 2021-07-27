@@ -26,148 +26,141 @@ import OrganizationAssignResourcesPage from "../pages/organization/assignresourc
 import UserAssignRolesPage from "../pages/user/assignroles";
 import OrganizationAssignRolesPage from "../pages/organization/assignroles";
 import LoginPage from "../pages/login";
-import SecurityLayout from "../layouts/SecurityLayout";
 
 const routes = [
     {
+        path: "/login",
+        exact: true,
+        component: LoginPage,
+    },
+    {
         path: "/",
-        component: SecurityLayout,
+        component: DefaultLayout,
         routes: [
             {
-                path: "/login",
+                path: "/",
                 exact: true,
-                component: LoginPage,
+                render: () => (
+                    <Redirect to={"/workbench"}/>
+                )
             },
             {
-                path: "/",
-                component: DefaultLayout,
-                routes: [
-                    {
-                        path: "/",
-                        exact: true,
-                        render: () => (
-                            <Redirect to={"/workbench"}/>
-                        )
-                    },
-                    {
-                        path: "/admin/organization",
-                        exact: true,
-                        component: OrganizationListPage,
-                    },
-                    {
-                        path: "/admin/organization/edit/:id?",
-                        exact: true,
-                        component: OrganizationEditPage,
-                    },
-                    {
-                        path: "/admin/organization/detail/:id",
-                        exact: true,
-                        component: OrganizationDetailPage,
-                    },
-                    {
-                        path: "/admin/organization/assign-roles/:id",
-                        exact: true,
-                        component: OrganizationAssignRolesPage,
-                    },
-                    {
-                        path: "/admin/organization/assign-resources/:id",
-                        exact: true,
-                        component: OrganizationAssignResourcesPage,
-                    },
-                    {
-                        path: "/admin/user",
-                        exact: true,
-                        component: UserListPage,
-                    },
-                    {
-                        path: "/admin/user/edit/:id?",
-                        exact: true,
-                        component: UserEditPage,
-                    },
-                    {
-                        path: "/admin/user/detail/:id",
-                        exact: true,
-                        component: UserDetailPage,
-                    },
-                    {
-                        path: "/admin/user/assign-roles/:id",
-                        exact: true,
-                        component: UserAssignRolesPage,
-                    },
-                    {
-                        path: "/admin/user/assign-resources/:id",
-                        exact: true,
-                        component: UserAssignResourcesPage,
-                    },
-                    {
-                        path: "/admin/role",
-                        exact: true,
-                        component: RoleListPage,
-                    },
-                    {
-                        path: "/admin/role/edit/:id?",
-                        exact: true,
-                        component: RoleEditPage,
-                    },
-                    {
-                        path: "/admin/role/detail/:id",
-                        exact: true,
-                        component: RoleDetailPage,
-                    },
-                    {
-                        path: "/admin/role/assign-resources/:id",
-                        exact: true,
-                        component: RoleAssignResourcesPage,
-                    },
-                    {
-                        path: "/admin/menu",
-                        exact: true,
-                        component: MenuListPage,
-                    },
-                    {
-                        path: "/admin/menu/edit/:id?",
-                        exact: true,
-                        component: MenuEditPage,
-                    },
-                    {
-                        path: "/admin/menu/detail/:id",
-                        exact: true,
-                        component: MenuDetailPage,
-                    },
-                    {
-                        path: "/admin/resourceCategory",
-                        exact: true,
-                        component: ResourceCategoryPage,
-                    },
-                    {
-                        path: "/admin/resourceCategory/edit/:id?",
-                        exact: true,
-                        component: ResourceCategoryEditPage,
-                    },
-                    {
-                        path: "/admin/resourceCategory/detail/:id",
-                        exact: true,
-                        component: ResourceCategoryDetailPage,
-                    },
-                    {
-                        path: "/admin/resource",
-                        exact: true,
-                        component: ResourceListPage,
-                    },
-                    {
-                        path: "/admin/resource/edit/:id?",
-                        exact: true,
-                        component: ResourceEditPage,
-                    },
-                    {
-                        path: "/admin/resource/detail/:id",
-                        exact: true,
-                        component: ResourceDetailPage,
-                    },
-                    {
-                        component: NoFoundPage,
-                    },
-                ],
+                path: "/admin/organization",
+                exact: true,
+                component: OrganizationListPage,
+            },
+            {
+                path: "/admin/organization/edit/:id?",
+                exact: true,
+                component: OrganizationEditPage,
+            },
+            {
+                path: "/admin/organization/detail/:id",
+                exact: true,
+                component: OrganizationDetailPage,
+            },
+            {
+                path: "/admin/organization/assign-roles/:id",
+                exact: true,
+                component: OrganizationAssignRolesPage,
+            },
+            {
+                path: "/admin/organization/assign-resources/:id",
+                exact: true,
+                component: OrganizationAssignResourcesPage,
+            },
+            {
+                path: "/admin/user",
+                exact: true,
+                component: UserListPage,
+            },
+            {
+                path: "/admin/user/edit/:id?",
+                exact: true,
+                component: UserEditPage,
+            },
+            {
+                path: "/admin/user/detail/:id",
+                exact: true,
+                component: UserDetailPage,
+            },
+            {
+                path: "/admin/user/assign-roles/:id",
+                exact: true,
+                component: UserAssignRolesPage,
+            },
+            {
+                path: "/admin/user/assign-resources/:id",
+                exact: true,
+                component: UserAssignResourcesPage,
+            },
+            {
+                path: "/admin/role",
+                exact: true,
+                component: RoleListPage,
+            },
+            {
+                path: "/admin/role/edit/:id?",
+                exact: true,
+                component: RoleEditPage,
+            },
+            {
+                path: "/admin/role/detail/:id",
+                exact: true,
+                component: RoleDetailPage,
+            },
+            {
+                path: "/admin/role/assign-resources/:id",
+                exact: true,
+                component: RoleAssignResourcesPage,
+            },
+            {
+                path: "/admin/menu",
+                exact: true,
+                component: MenuListPage,
+            },
+            {
+                path: "/admin/menu/edit/:id?",
+                exact: true,
+                component: MenuEditPage,
+            },
+            {
+                path: "/admin/menu/detail/:id",
+                exact: true,
+                component: MenuDetailPage,
+            },
+            {
+                path: "/admin/resourceCategory",
+                exact: true,
+                component: ResourceCategoryPage,
+            },
+            {
+                path: "/admin/resourceCategory/edit/:id?",
+                exact: true,
+                component: ResourceCategoryEditPage,
+            },
+            {
+                path: "/admin/resourceCategory/detail/:id",
+                exact: true,
+                component: ResourceCategoryDetailPage,
+            },
+            {
+                path: "/admin/resource",
+                exact: true,
+                component: ResourceListPage,
+            },
+            {
+                path: "/admin/resource/edit/:id?",
+                exact: true,
+                component: ResourceEditPage,
+            },
+            {
+                path: "/admin/resource/detail/:id",
+                exact: true,
+                component: ResourceDetailPage,
+            },
+            {
+                component: NoFoundPage,
             },
         ],
     },

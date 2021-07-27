@@ -5,7 +5,7 @@ import * as Icon from "@ant-design/icons";
 import {MenuFoldOutlined, MenuUnfoldOutlined} from "@ant-design/icons";
 import "./DefaultLayout.css";
 import logo from "../assets/logo.svg";
-import {Link, useLocation} from "react-router-dom";
+import {Link, useHistory, useLocation} from "react-router-dom";
 import {renderRoutes} from "react-router-config";
 import defaultSettings from "./defaultSettings";
 import HeaderMenu from "./HeaderMenu";
@@ -16,6 +16,8 @@ import {getCurrentUser} from "../services/login";
 import {User} from "../models/User";
 
 const DefaultLayout: FC = (props) => {
+    const history = useHistory();
+
     const [settings, setSetting] = useState<Partial<ProSettings> | undefined>(defaultSettings);
     const location = useLocation();
 
@@ -43,6 +45,9 @@ const DefaultLayout: FC = (props) => {
     useEffect(() => {
         const fetchData = async () => {
             const user = await getCurrentUser();
+            if (!user) {
+                history.push('/login');
+            }
             setUser(user || {});
         }
 
@@ -83,7 +88,6 @@ const DefaultLayout: FC = (props) => {
                     collapsedButtonRender={false}
                     menuHeaderRender={(logo, title) => (
                         <div
-                            id="customize_menu_header"
                             onClick={() => {
                                 window.open('https://remaxjs.org/');
                             }}

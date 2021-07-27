@@ -195,7 +195,7 @@ const LoginPage: FC = () => {
                 </div>
             </div>
             <DefaultFooter
-                copyright="2021 cdrcool 出品"
+                copyright="2021 cdrcool 版权所有"
                 links={[
                     {
                         key: 'github',

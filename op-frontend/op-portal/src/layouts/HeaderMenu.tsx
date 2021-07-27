@@ -15,6 +15,11 @@ const HeaderMenu: FC = () => {
 
     const context = useContext(userContext);
 
+    const onLogout = () => {
+        sessionStorage.removeItem('accessToken');
+        history.replace('/login');
+    }
+
     return (
         <Menu theme="light" mode="horizontal" className="header-menu">
             <Menu.Item key="search">
@@ -41,10 +46,7 @@ const HeaderMenu: FC = () => {
                 </Menu.Item>
                 <Menu.Divider/>
                 <Menu.Item key="logout">
-                    <a onClick={() => {
-                        sessionStorage.removeItem('accessToken');
-                        history.push('/login');
-                    }}>退出登录</a>
+                    <a onClick={onLogout}>退出登录</a>
                 </Menu.Item>
             </SubMenu>
 
