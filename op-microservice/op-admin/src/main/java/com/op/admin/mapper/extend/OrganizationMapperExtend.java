@@ -2,11 +2,14 @@ package com.op.admin.mapper.extend;
 
 import com.op.admin.entity.Organization;
 import com.op.admin.mapper.OrganizationMapper;
+import com.op.admin.vo.MenuVO;
+import com.op.admin.vo.OrganizationVO;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 组织 Mapper Extend
@@ -15,6 +18,17 @@ import java.util.List;
  */
 @Mapper
 public interface OrganizationMapperExtend extends OrganizationMapper {
+
+    /**
+     * 根据 id 查找组织
+     *
+     * @param id 组织 id
+     * @return 组织 VO
+     */
+    @Select(" SELECT o.*, po.org_name AS parent_name FROM admin_organization o" +
+            " LEFT JOIN admin_organization po ON po.id = o.pid" +
+            " WHERE o.id = #{id}")
+    Optional<OrganizationVO> findById(Integer id);
 
     /**
      * 获取本上级 ids

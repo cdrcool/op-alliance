@@ -45,15 +45,13 @@ public class OrganizationServiceImpl implements OrganizationService {
     private final UserService userService;
     private final RoleService roleService;
     private final ResourceCategoryService resourceCategoryService;
-    private final MenuService menuService;
 
     public OrganizationServiceImpl(OrganizationMapperExtend organizationMapper, OrganizationMapping organizationMapping,
                                    OrganizationRoleRelationMapper organizationRoleRelationMapper,
                                    OrganizationResourceActionRelationMapper organizationResourceActionRelationMapper,
                                    @Lazy UserService userService,
                                    RoleService roleService,
-                                   ResourceCategoryService resourceCategoryService,
-                                   MenuService menuService) {
+                                   ResourceCategoryService resourceCategoryService) {
         this.organizationMapper = organizationMapper;
         this.organizationMapping = organizationMapping;
         this.organizationRoleRelationMapper = organizationRoleRelationMapper;
@@ -61,7 +59,6 @@ public class OrganizationServiceImpl implements OrganizationService {
         this.userService = userService;
         this.roleService = roleService;
         this.resourceCategoryService = resourceCategoryService;
-        this.menuService = menuService;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -175,9 +172,8 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public OrganizationVO findById(Integer id) {
-        Organization organization = organizationMapper.selectByPrimaryKey(id)
+        return organizationMapper.findById(id)
                 .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的组织"));
-        return organizationMapping.toOrganizationVO(organization);
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)

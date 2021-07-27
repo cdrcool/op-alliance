@@ -54,6 +54,7 @@ const MenuDetailPage: FC = () => {
             <Spin spinning={loading}>
                 <Card>
                     <Descriptions>
+                        <Descriptions.Item label="上级菜单">{menu.parentName}</Descriptions.Item>
                         <Descriptions.Item label="菜单名">{menu.menuName}</Descriptions.Item>
                         <Descriptions.Item label="菜单图标">{menu.menuIcon}</Descriptions.Item>
                         <Descriptions.Item label="菜单路径">{menu.menuPath}</Descriptions.Item>

@@ -5,5 +5,6 @@ export interface Organization {
     orgCode?: string;
     orgCodeLink?: number;
     orgType?: number;
+    parentName?: string;
     children?: Organization[];
 }

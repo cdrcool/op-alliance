@@ -32,4 +32,7 @@ public class OrganizationVO extends BaseVo {
 
     @ApiModelProperty("组织类型（1-集团；2-公司；3-分公司；4-项目部；5-部门）")
     private Integer orgType;
+
+    @ApiModelProperty("上级组织名称")
+    private String parentName;
 }

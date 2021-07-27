@@ -53,6 +53,7 @@ const OrganizationDetailPage: FC = () => {
             <Spin spinning={loading}>
                 <Card>
                     <Descriptions>
+                        <Descriptions.Item label="上级组织">{org.parentName}</Descriptions.Item>
                         <Descriptions.Item label="组织名">{org.orgName}</Descriptions.Item>
                         <Descriptions.Item label="组织编码">{org.orgCode}</Descriptions.Item>
                         <Descriptions.Item label="组织类型">

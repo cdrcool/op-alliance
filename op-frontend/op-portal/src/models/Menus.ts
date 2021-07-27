@@ -8,5 +8,6 @@ export interface Menus {
     permission?: string;
     menuNo?: number;
     menuLevel?: number;
+    parentName?: string;
     children?: Menus[];
 }

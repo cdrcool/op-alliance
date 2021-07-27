@@ -61,7 +61,7 @@ const OrganizationListPage: FC = () => {
                 </a>,
                 <a key="addChild" onClick={() => history.push(`/admin/organization/edit`, {
                     pid: record.id,
-                    pName: record.orgName,
+                    parentName: record.orgName,
                 })}>
                     新增下级
                 </a>,

@@ -136,9 +136,8 @@ public class MenuServiceImpl implements MenuService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public MenuVO findById(Integer id) {
-        Menu menu = menuMapper.selectByPrimaryKey(id)
+        return menuMapper.findById(id)
                 .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的菜单"));
-        return menuMapping.toMenuVO(menu);
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)

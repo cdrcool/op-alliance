@@ -8,7 +8,7 @@ const MenuEditPage: FC = () => {
     const history = useHistory();
     const {id} = useParams<{ id?: string }>();
     // @ts-ignore
-    const {pid, pName} = history.location.state || {};
+    const {pid, parentName} = history.location.state || {};
 
     const [loading, setLoading] = useState<boolean>(!!id);
     const [form] = Form.useForm();
@@ -60,7 +60,7 @@ const MenuEditPage: FC = () => {
                         <Form.Item name="id" hidden={true}/>
                         <Form.Item name="pid" hidden={true}/>
                         <Form.Item label="上级菜单">
-                            {pName}
+                            {parentName || form.getFieldValue('parentName')}
                         </Form.Item>
                         <Form.Item label="菜单名" name="menuName" rules={[{required: true, message: '请输入菜单名'}]}>
                             <Input/>

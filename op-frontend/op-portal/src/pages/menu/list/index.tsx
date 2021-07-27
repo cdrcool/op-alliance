@@ -73,7 +73,7 @@ const MenuListPage: FC = () => {
                 </a>,
                 <a key="addChild" onClick={() => history.push(`/admin/menu/edit`, {
                     pid: record.id,
-                    pName: record.menuName,
+                    parentName: record.menuName,
                 })}>
                     新增下级
                 </a>,

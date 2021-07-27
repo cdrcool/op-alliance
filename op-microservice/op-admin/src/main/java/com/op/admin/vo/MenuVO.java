@@ -46,4 +46,7 @@ public class MenuVO extends BaseVo {
 
     @ApiModelProperty("菜单层级")
     private Integer menuLevel;
+
+    @ApiModelProperty("上级菜单名称")
+    private String parentName;
 }

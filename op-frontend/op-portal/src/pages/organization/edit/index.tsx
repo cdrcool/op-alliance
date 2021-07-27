@@ -10,7 +10,7 @@ const OrganizationEditPage: FC = () => {
     const history = useHistory();
     const {id} = useParams<{ id?: string }>();
     // @ts-ignore
-    const {pid, pName} = history.location.state || {};
+    const {pid, parentName} = history.location.state || {};
 
     const [loading, setLoading] = useState<boolean>(!!id);
     const [form] = Form.useForm();
@@ -62,7 +62,7 @@ const OrganizationEditPage: FC = () => {
                         <Form.Item name="id" hidden={true}/>
                         <Form.Item name="pid" hidden={true}/>
                         <Form.Item label="上级组织">
-                            {pName}
+                            {parentName || form.getFieldValue('parentName')}
                         </Form.Item>
                         <Form.Item label="组织名" name="orgName" rules={[{required: true, message: '请输入组织名'}]}>
                             <Input/>
