@@ -51,7 +51,7 @@ const HeaderMenu: FC = () => {
             </SubMenu>
 
             <Menu.Item key="knowledge">
-                <Tooltip title="开发文档" color="blue">
+                <Tooltip title="技术文档" color="blue">
                     <a onClick={() => {window.open('https://www.yuque.com/qingtian-skp6f/xtgdy7/gl89qv')}} target="_blank">
                         <BookOutlined/>
                     </a>
