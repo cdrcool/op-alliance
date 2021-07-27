@@ -121,7 +121,7 @@ const ResourceCategoryListPage: FC = () => {
                     }
                 }
                 pagination={{
-                    defaultPageSize: 8,
+                    defaultPageSize: 10,
                 }}
             />
         </PageContainer>
