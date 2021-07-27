@@ -1,8 +1,8 @@
 import React, {FC, useState} from 'react';
-import {PageContainer} from "@ant-design/pro-layout";
 import {useHistory, useParams} from "react-router-dom";
-import ProList from '@ant-design/pro-list';
 import {Button, Space, Tag} from "antd";
+import {PageContainer} from "@ant-design/pro-layout";
+import ProList from '@ant-design/pro-list';
 import {Role} from "../../../models/Role";
 import {assignOrganizationRoles, loadOrganizationAssignedRoles} from "../../../services/organization";
 
@@ -59,18 +59,6 @@ const OrganizationAssignRolesPage: FC = () => {
                         dataIndex: 'roleDesc',
                     },
                 }}
-                rowSelection={
-                    {
-                        selectedRowKeys: selectedRowKeys,
-                        onChange: (selectedRowKeys, selectedRows) => {
-                            setSelectedRowKeys(selectedRowKeys as number[]);
-                            setSelectedRows(selectedRows);
-                        },
-                        getCheckboxProps: (record) => ({
-                            disabled: !record.enableUncheck,
-                        }),
-                    }
-                }
                 tableAlertRender={
                     () => (
                         <Space size={24}>
@@ -100,9 +88,19 @@ const OrganizationAssignRolesPage: FC = () => {
                         };
                     }
                 }
-                pagination={{
-                    defaultPageSize: 10,
-                }}
+                rowSelection={
+                    {
+                        selectedRowKeys: selectedRowKeys,
+                        onChange: (selectedRowKeys, selectedRows) => {
+                            setSelectedRowKeys(selectedRowKeys as number[]);
+                            setSelectedRows(selectedRows);
+                        },
+                        getCheckboxProps: (record) => ({
+                            disabled: !record.enableUncheck,
+                        }),
+                    }
+                }
+                pagination={{}}
             />
         </PageContainer>
     );

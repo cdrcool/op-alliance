@@ -1,13 +1,13 @@
-import {ResourceAction} from "../models/ResourceAction";
-import {PageResult} from "../models/PageResult";
 import request from "../utils/request";
+import {PageResult} from "../models/PageResult";
+import {ResourceAction} from "../models/ResourceAction";
 
 /**
  * 保存资源动作
  *
  * @param resourceAction 资源动作
  */
-export async function saveResourceAction(resourceAction: ResourceAction): Promise<number> {
+export async function saveResourceAction(resourceAction: ResourceAction) {
     return request.post('/api/op-admin/resourceAction/save', resourceAction);
 }
 

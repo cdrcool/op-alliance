@@ -1,16 +1,26 @@
 import React, {FC, useRef} from "react";
+import {useHistory} from "react-router-dom";
 import {Button, Dropdown, Menu, Popconfirm, Space} from "antd";
 import {ExportOutlined, MinusOutlined, PlusOutlined} from "@ant-design/icons";
+import {PageContainer} from "@ant-design/pro-layout";
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import {Role} from "../../../models/Role";
 import {changeRolesEnabled, deleteRoles, queryRolePage} from "../../../services/role";
-import {useHistory} from "react-router-dom";
-import {PageContainer} from "@ant-design/pro-layout";
 
 const RoleListPage: FC = () => {
     const history = useHistory();
     const ref = useRef<ActionType>();
+
+    const onDeleteRoles = (ids: number[]) => {
+        // @ts-ignore
+        deleteRoles(ids).then(() => ref.current.reloadAndRest());
+    }
+
+    const onChangeRolesEnabled = (ids: number[], enable: boolean) => {
+        // @ts-ignore
+        changeRolesEnabled(ids, enable).then(() => ref.current.reload());
+    }
 
     const columns: ProColumns<Role>[] = [
         {
@@ -65,16 +75,6 @@ const RoleListPage: FC = () => {
         },
     ];
 
-    const onDeleteRoles = (ids: number[]) => {
-        // @ts-ignore
-        deleteRoles(ids).then(() => ref.current.reloadAndRest());
-    }
-
-    const onChangeRolesEnabled = (ids: number[], enable: boolean) => {
-        // @ts-ignore
-        changeRolesEnabled(ids, enable).then(() => ref.current.reload());
-    }
-
     return (
         <PageContainer className="page-container" header={{
             breadcrumb: {},
@@ -90,28 +90,6 @@ const RoleListPage: FC = () => {
                     },
                     fullScreen: true,
                 }}
-                columns={columns}
-                request={
-                    async (params, sort, filter) => {
-                        const {current, pageSize, keyword} = params;
-                        const result = await queryRolePage(
-                            (current || 1) - 1,
-                            pageSize || 10,
-                            {
-                                keyword,
-                                ...filter
-                            }
-                        );
-                        return {
-                            data: result.content,
-                            success: true,
-                            total: result.totalElements,
-                        };
-                    }}
-                pagination={{
-                    pageSize: 10,
-                }}
-                rowSelection={{}}
                 toolBarRender={() => [
                     <Button key="button" type="primary" icon={<PlusOutlined/>}
                             onClick={() => history.push('/admin/role/edit')}>
@@ -147,6 +125,26 @@ const RoleListPage: FC = () => {
                         </Space>
                     );
                 }}
+                columns={columns}
+                request={
+                    async (params, sort, filter) => {
+                        const {current, pageSize, keyword} = params;
+                        const result = await queryRolePage(
+                            (current || 1) - 1,
+                            pageSize || 10,
+                            {
+                                keyword,
+                                ...filter
+                            }
+                        );
+                        return {
+                            data: result.content,
+                            success: true,
+                            total: result.totalElements,
+                        };
+                    }}
+                rowSelection={{}}
+                pagination={{}}
             />
         </PageContainer>
     )

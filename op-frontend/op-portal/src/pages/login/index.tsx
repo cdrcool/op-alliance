@@ -1,7 +1,7 @@
 import React, {FC, useState} from 'react';
+import {useHistory} from "react-router-dom";
+import {Helmet} from 'react-helmet';
 import {message, Space, Tabs} from 'antd';
-import {DefaultFooter} from '@ant-design/pro-layout';
-import ProForm, {ProFormCaptcha, ProFormCheckbox, ProFormText} from '@ant-design/pro-form';
 import {
     GithubOutlined,
     LockOutlined,
@@ -11,12 +11,12 @@ import {
     UserOutlined,
     WechatOutlined,
 } from '@ant-design/icons';
+import {DefaultFooter} from '@ant-design/pro-layout';
+import ProForm, {ProFormCaptcha, ProFormCheckbox, ProFormText} from '@ant-design/pro-form';
+import {login, LoginParams} from "../../services/login";
 import logo from "../../assets/logo.svg";
-import {Helmet} from 'react-helmet';
 
 import "./index.css";
-import {login, LoginParams} from "../../services/login";
-import {useHistory} from "react-router-dom";
 
 const {TabPane} = Tabs;
 

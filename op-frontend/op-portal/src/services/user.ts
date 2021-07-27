@@ -1,15 +1,15 @@
-import {User} from "../models/User";
-import {PageResult} from "../models/PageResult";
 import request from "../utils/request";
-import {ResourceCategory} from "../models/ResourceCategory";
+import {PageResult} from "../models/PageResult";
+import {User} from "../models/User";
 import {Role} from "../models/Role";
+import {ResourceCategory} from "../models/ResourceCategory";
 
 /**
  * 创建用户（返回新建用户的密码）
  *
  * @param user 用户
  */
-export async function createUser(user: User) {
+export async function saveUser(user: User) {
     return request.post('/api/op-admin/user/save', user);
 }
 
@@ -20,15 +20,6 @@ export async function createUser(user: User) {
  */
 export async function changePassword(user: User) {
     return request.post('/api/op-admin/user/changePassword', user);
-}
-
-/**
- * 保存用户
- *
- * @param user 用户
- */
-export async function saveUser(user: User) {
-    return request.post('/api/op-admin/user/save', user);
 }
 
 /**
@@ -54,7 +45,7 @@ export async function deleteUsers(ids: number[]) {
  *
  * @param id 用户 id
  */
-export async function getUser(id: number) {
+export async function getUser(id: number): Promise<User> {
     return request.get(`/api/op-admin/user/get?id=${id}`);
 }
 

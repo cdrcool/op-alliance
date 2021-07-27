@@ -1,7 +1,7 @@
-import {ResourceCategory} from "../models/ResourceCategory";
-import {PageResult} from "../models/PageResult";
 import request from "../utils/request";
+import {PageResult} from "../models/PageResult";
 import {SelectOptions} from "../models/SelectOptions";
+import {ResourceCategory} from "../models/ResourceCategory";
 
 /**
  * 保存资源分类

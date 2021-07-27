@@ -1,7 +1,7 @@
 import {Button, Card, DatePicker, Form, Input, InputNumber, Radio, Space, Spin} from 'antd';
 import {useHistory, useParams} from "react-router-dom";
 import React, {FC, useEffect, useState} from "react";
-import {getUser} from "../../../services/user";
+import {getUser, saveUser} from "../../../services/user";
 import moment from "moment";
 import {PageContainer} from "@ant-design/pro-layout";
 import {saveMenu} from "../../../services/menu";
@@ -36,7 +36,7 @@ const UserEditPage: FC = () => {
 
     const onSave = () => {
         form.validateFields().then(values => {
-            saveMenu(values).then(() => {
+            saveUser(values).then(() => {
                 history.push('/admin/user');
             });
         })

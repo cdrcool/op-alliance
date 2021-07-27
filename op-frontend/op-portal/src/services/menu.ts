@@ -1,5 +1,5 @@
-import {Menus} from "../models/Menus";
 import request from "../utils/request";
+import {Menus} from "../models/Menus";
 
 /**
  * 保存菜单

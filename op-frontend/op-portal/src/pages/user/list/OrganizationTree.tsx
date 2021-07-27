@@ -11,6 +11,9 @@ type OrganizationTreeProps = {
 const OrganizationTree: FC<OrganizationTreeProps> = (props) => {
     const {orgId, onChange} = props;
 
+    const [rowKey, setRowKey] = useState<number>(1);
+
+    // 动态调整组织树的滚动条高度
     const getWindowSize = () => ({
         innerHeight: document.body.scrollHeight,
         innerWidth: document.body.scrollWidth,
@@ -19,7 +22,6 @@ const OrganizationTree: FC<OrganizationTreeProps> = (props) => {
     const handleResize = () => {
         setWindowSize(getWindowSize());
     };
-
     useEffect(() => {
         // 监听
         window.addEventListener("resize", handleResize);
@@ -34,7 +36,6 @@ const OrganizationTree: FC<OrganizationTreeProps> = (props) => {
         },
     ];
 
-    const [rowKey, setRowKey] = useState<number>(1);
     return (
         <ProTable<Organization>
             rowKey="id"
@@ -55,20 +56,19 @@ const OrganizationTree: FC<OrganizationTreeProps> = (props) => {
                 }
             }
             scroll={{y: windowSize.innerHeight - 300}}
-            columns={orgColumns}
-            pagination={false}
+            rowClassName={(record, index) => {
+                return record.id === rowKey ? "rowSelected" : "rowUnSelected"
+            }}
             onRow={
                 (record, rowIndex) => {
                     return {
-                        onClick: event => {
+                        onClick: () => {
                             setRowKey(record.id as number);
                             onChange(record.id as number);
                         }
                     };
                 }}
-            rowClassName={(record, index) => {
-                return record.id === rowKey ? "rowSelected" : "rowUnSelected"
-            }}
+            columns={orgColumns}
             request={
                 async (params) => {
                     const {keyword} = params;
@@ -82,6 +82,7 @@ const OrganizationTree: FC<OrganizationTreeProps> = (props) => {
                         success: true,
                     };
                 }}
+            pagination={false}
         />
     )
 };

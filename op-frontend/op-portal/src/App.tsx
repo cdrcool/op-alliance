@@ -1,17 +1,18 @@
-import React from 'react'
-import {renderRoutes} from 'react-router-config'
-import {BrowserRouter as Routers} from 'react-router-dom'
+import React from 'react';
+import {BrowserRouter} from 'react-router-dom';
+import {renderRoutes} from 'react-router-config';
 import {ConfigProvider} from 'antd';
-import routes from './router';
 import 'moment/locale/zh-cn';
 import locale from 'antd/lib/locale/zh_CN';
+import routes from './router';
 
 const App = () => {
     return (
+        // 全局化配置（https://ant.design/components/config-provider-cn/#header）
         <ConfigProvider locale={locale}>
-            <Routers>
+            <BrowserRouter>
                 {renderRoutes(routes)}
-            </Routers>
+            </BrowserRouter>
         </ConfigProvider>
     )
 }

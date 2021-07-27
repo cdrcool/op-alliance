@@ -1,10 +1,10 @@
 import React, {FC, useEffect, useRef} from "react";
 import {useHistory} from "react-router-dom";
-import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
-import {changeUsersEnabled, queryUserPage} from "../../../services/user";
-import {User} from "../../../models/User";
 import {Button, Dropdown, Menu, Popconfirm, Space} from "antd";
 import {ExportOutlined, MinusOutlined, PlusOutlined} from "@ant-design/icons";
+import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
+import {User} from "../../../models/User";
+import {changeUsersEnabled, queryUserPage} from "../../../services/user";
 
 type UserListProps = {
     orgId: number;
@@ -16,6 +16,11 @@ const UserList: FC<UserListProps> = (props) => {
     const history = useHistory();
     const ref = useRef<ActionType>();
 
+    useEffect(() => {
+        // @ts-ignore
+        ref.current.reset()
+    }, [orgId]);
+
     const onDeleteUsers = (ids: number[]) => {
         // @ts-ignore
         deleteUsers(ids).then(() => ref.current.reloadAndRest());
@@ -25,11 +30,6 @@ const UserList: FC<UserListProps> = (props) => {
         // @ts-ignore
         changeUsersEnabled(ids, enable).then(() => ref.current.reload());
     };
-
-    useEffect(() => {
-        // @ts-ignore
-        ref.current.reset()
-    }, [orgId]);
 
     const userColumns: ProColumns<User>[] = [
         {
@@ -106,30 +106,6 @@ const UserList: FC<UserListProps> = (props) => {
                 },
                 fullScreen: true,
             }}
-            columns={userColumns}
-            request={
-                async (params, sort, filter) => {
-                    const {current, pageSize, keyword} = params;
-                    const result = await queryUserPage(
-                        (current || 1) - 1,
-                        pageSize || 10,
-                        {
-                            orgId,
-                            keyword,
-                            ...filter
-                        }
-                    );
-                    return {
-                        data: result.content,
-                        success: true,
-                        total: result.totalElements,
-                    };
-                }
-            }
-            pagination={{
-                pageSize: 10,
-            }}
-            rowSelection={{}}
             toolBarRender={() => [
                 <Button key="button" type="primary" icon={<PlusOutlined/>}
                         onClick={() => history.push('/admin/user/edit', {
@@ -167,6 +143,28 @@ const UserList: FC<UserListProps> = (props) => {
                     </Space>
                 );
             }}
+            columns={userColumns}
+            request={
+                async (params, sort, filter) => {
+                    const {current, pageSize, keyword} = params;
+                    const result = await queryUserPage(
+                        (current || 1) - 1,
+                        pageSize || 10,
+                        {
+                            orgId,
+                            keyword,
+                            ...filter
+                        }
+                    );
+                    return {
+                        data: result.content,
+                        success: true,
+                        total: result.totalElements,
+                    };
+                }
+            }
+            pagination={{}}
+            rowSelection={{}}
         />
     )
 };

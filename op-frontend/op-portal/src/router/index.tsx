@@ -1,31 +1,31 @@
 import React from 'react';
 import {Redirect} from 'react-router-dom';
+import LoginPage from "../pages/login";
 import DefaultLayout from '../layouts/DefaultLayout';
-import UserListPage from "../pages/user/list";
-import NoFoundPage from "../pages/404";
-import MenuListPage from "../pages/menu/list";
-import ResourceCategoryPage from "../pages/resourcecategory/list";
-import RoleListPage from "../pages/role/list";
-import RoleEditPage from "../pages/role/edit";
-import RoleDetailPage from "../pages/role/detail";
-import UserEditPage from "../pages/user/edit";
-import UserDetailPage from "../pages/user/detail";
-import MenuEditPage from "../pages/menu/edit";
-import MenuDetailPage from "../pages/menu/detail";
 import OrganizationListPage from "../pages/organization/list";
 import OrganizationEditPage from "../pages/organization/edit";
 import OrganizationDetailPage from "../pages/organization/detail";
-import ResourceEditPage from "../pages/resource/edit";
-import ResourceDetailPage from "../pages/resource/detail";
-import ResourceListPage from "../pages/resource/list";
+import OrganizationAssignRolesPage from "../pages/organization/assignroles";
+import OrganizationAssignResourcesPage from "../pages/organization/assignresource";
+import UserListPage from "../pages/user/list";
+import UserEditPage from "../pages/user/edit";
+import UserDetailPage from "../pages/user/detail";
+import UserAssignRolesPage from "../pages/user/assignroles";
+import UserAssignResourcesPage from "../pages/user/assignresource";
+import RoleListPage from "../pages/role/list";
+import RoleEditPage from "../pages/role/edit";
+import RoleDetailPage from "../pages/role/detail";
+import RoleAssignResourcesPage from "../pages/role/assignresource";
+import ResourceCategoryListPage from "../pages/resourcecategory/list";
 import ResourceCategoryEditPage from "../pages/resourcecategory/edit";
 import ResourceCategoryDetailPage from "../pages/resourcecategory/detail";
-import RoleAssignResourcesPage from "../pages/role/assignresource";
-import UserAssignResourcesPage from "../pages/user/assignresource";
-import OrganizationAssignResourcesPage from "../pages/organization/assignresource";
-import UserAssignRolesPage from "../pages/user/assignroles";
-import OrganizationAssignRolesPage from "../pages/organization/assignroles";
-import LoginPage from "../pages/login";
+import ResourceListPage from "../pages/resource/list";
+import ResourceEditPage from "../pages/resource/edit";
+import ResourceDetailPage from "../pages/resource/detail";
+import MenuListPage from "../pages/menu/list";
+import MenuEditPage from "../pages/menu/edit";
+import MenuDetailPage from "../pages/menu/detail";
+import NoFoundPage from "../pages/404";
 
 const routes = [
     {
@@ -115,24 +115,9 @@ const routes = [
                 component: RoleAssignResourcesPage,
             },
             {
-                path: "/admin/menu",
-                exact: true,
-                component: MenuListPage,
-            },
-            {
-                path: "/admin/menu/edit/:id?",
-                exact: true,
-                component: MenuEditPage,
-            },
-            {
-                path: "/admin/menu/detail/:id",
-                exact: true,
-                component: MenuDetailPage,
-            },
-            {
                 path: "/admin/resourceCategory",
                 exact: true,
-                component: ResourceCategoryPage,
+                component: ResourceCategoryListPage,
             },
             {
                 path: "/admin/resourceCategory/edit/:id?",
@@ -158,6 +143,21 @@ const routes = [
                 path: "/admin/resource/detail/:id",
                 exact: true,
                 component: ResourceDetailPage,
+            },
+            {
+                path: "/admin/menu",
+                exact: true,
+                component: MenuListPage,
+            },
+            {
+                path: "/admin/menu/edit/:id?",
+                exact: true,
+                component: MenuEditPage,
+            },
+            {
+                path: "/admin/menu/detail/:id",
+                exact: true,
+                component: MenuDetailPage,
             },
             {
                 component: NoFoundPage,

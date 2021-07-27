@@ -1,16 +1,26 @@
 import React, {FC, useRef} from "react";
+import {useHistory} from "react-router-dom";
 import {Button, Dropdown, Menu, Popconfirm, Space} from "antd";
 import {ExportOutlined, MinusOutlined, PlusOutlined} from "@ant-design/icons";
+import {PageContainer} from "@ant-design/pro-layout";
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import {useHistory} from "react-router-dom";
-import {PageContainer} from "@ant-design/pro-layout";
 import {Menus} from "../../../models/Menus";
 import {changeMenusVisibility, deleteMenus, queryMenuTreeList} from "../../../services/menu";
 
 const MenuListPage: FC = () => {
     const history = useHistory();
     const ref = useRef<ActionType>();
+
+    const onDeleteMenus = (ids: number[]) => {
+        // @ts-ignore
+        deleteMenus(ids).then(() => ref.current.reloadAndRest());
+    }
+
+    const onChangeMenusVisibility = (ids: number[], enable: boolean) => {
+        // @ts-ignore
+        changeMenusVisibility(ids, enable).then(() => ref.current.reload());
+    }
 
     const columns: ProColumns<Menus>[] = [
         {
@@ -71,16 +81,6 @@ const MenuListPage: FC = () => {
         },
     ];
 
-    const onDeleteMenus = (ids: number[]) => {
-        // @ts-ignore
-        deleteMenus(ids).then(() => ref.current.reloadAndRest());
-    }
-
-    const onChangeMenusVisibility = (ids: number[], enable: boolean) => {
-        // @ts-ignore
-        changeMenusVisibility(ids, enable).then(() => ref.current.reload());
-    }
-
     return (
         <PageContainer className="page-container" header={{
             breadcrumb: {},
@@ -96,23 +96,6 @@ const MenuListPage: FC = () => {
                     },
                     fullScreen: true,
                 }}
-                columns={columns}
-                request={
-                    async (params, sort, filter) => {
-                        const {keyword} = params;
-                        const result = await queryMenuTreeList(
-                            {
-                                keyword,
-                                ...filter
-                            }
-                        );
-                        return {
-                            data: result,
-                            success: true,
-                        };
-                    }}
-                pagination={false}
-                rowSelection={{}}
                 toolBarRender={() => [
                     <Button key="button" type="primary" icon={<PlusOutlined/>}
                             onClick={() => history.push('/admin/menu/edit')}>
@@ -148,6 +131,23 @@ const MenuListPage: FC = () => {
                         </Space>
                     );
                 }}
+                columns={columns}
+                request={
+                    async (params, sort, filter) => {
+                        const {keyword} = params;
+                        const result = await queryMenuTreeList(
+                            {
+                                keyword,
+                                ...filter
+                            }
+                        );
+                        return {
+                            data: result,
+                            success: true,
+                        };
+                    }}
+                rowSelection={{}}
+                pagination={false}
             />
         </PageContainer>
     )

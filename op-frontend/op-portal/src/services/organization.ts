@@ -1,7 +1,7 @@
-import {Organization} from "../models/Organization";
 import request from "../utils/request";
-import {ResourceCategory} from "../models/ResourceCategory";
+import {Organization} from "../models/Organization";
 import {Role} from "../models/Role";
+import {ResourceCategory} from "../models/ResourceCategory";
 
 /**
  * 保存组织
@@ -49,15 +49,6 @@ export async function queryOrganizationTree(params: object): Promise<Organizatio
 }
 
 /**
- * 分页查询组织
- *
- * @param params 查询参数
- */
-export async function queryOrganizationList(params: object): Promise<Organization[]> {
-    return request.post(`/api/op-admin/organization/queryList`, params);
-}
-
-/**
  * 分配组织角色
  *
  * @param id 组织 id
@@ -91,6 +82,6 @@ export async function assignOrganizationResourceActions(id: number, resourceActi
  *
  * @param id 组织 id
  */
-export async function loadOrganizationAssignedResources(id: number):  Promise<ResourceCategory[]> {
+export async function loadOrganizationAssignedResources(id: number): Promise<ResourceCategory[]> {
     return request.get(`/api/op-admin/organization/loadAssignedResources?id=${id}`);
 }

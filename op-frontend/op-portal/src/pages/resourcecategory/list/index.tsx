@@ -1,12 +1,12 @@
 import React, {FC, useRef} from 'react';
-import {Button, Popconfirm, Tag} from 'antd';
-import ProList from '@ant-design/pro-list';
-import {PageContainer} from "@ant-design/pro-layout";
-import * as Icon from "@ant-design/icons";
-import {deleteResourceCategories, queryResourceCategoryPage} from "../../../services/resourceCategory";
-import {ActionType} from "@ant-design/pro-table";
 import {useHistory} from "react-router-dom";
+import {Button, Popconfirm, Tag} from 'antd';
+import * as Icon from "@ant-design/icons";
+import {PageContainer} from "@ant-design/pro-layout";
+import ProList from '@ant-design/pro-list';
+import {ActionType} from "@ant-design/pro-table";
 import {ResourceCategory} from "../../../models/ResourceCategory";
+import {deleteResourceCategories, queryResourceCategoryPage} from "../../../services/resourceCategory";
 
 const ResourceCategoryListPage: FC = () => {
     const history = useHistory();

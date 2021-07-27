@@ -55,12 +55,6 @@ public class OrganizationController {
         return organizationService.queryTree(queryDTO);
     }
 
-    @ApiOperation("查询组织列表")
-    @PostMapping("queryList")
-    public List<OrganizationVO> queryList(@Valid @RequestBody OrganizationListQueryDTO queryDTO) {
-        return organizationService.queryList(queryDTO);
-    }
-
     @ApiOperation("分配角色")
     @PostMapping("assignRoles")
     public void assignRoles(@Valid @RequestBody RoleAssignDTO roleAssignDTO) {

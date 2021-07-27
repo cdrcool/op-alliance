@@ -1,11 +1,11 @@
 import React, {FC, useEffect, useState} from 'react';
-import ProCard from '@ant-design/pro-card';
-import {PageContainer} from "@ant-design/pro-layout";
 import {useHistory, useParams} from "react-router-dom";
 import {Button, Space} from "antd";
+import {PageContainer} from "@ant-design/pro-layout";
+import ProCard from '@ant-design/pro-card';
 import ResourceAssignPanel from "../../resource/assign/ResourceAssignPanel";
-import {assignRoleResourceActions, loadRoleAssignedResources} from "../../../services/role";
 import {ResourceCategory} from "../../../models/ResourceCategory";
+import {assignRoleResourceActions, loadRoleAssignedResources} from "../../../services/role";
 
 const RoleAssignResourcesPage: FC = () => {
     const history = useHistory();

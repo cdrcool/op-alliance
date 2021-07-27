@@ -229,20 +229,6 @@ public class OrganizationServiceImpl implements OrganizationService {
         return CollectionUtils.isNotEmpty(treeList) ? treeList.get(0) : new OrganizationTreeVO();
     }
 
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
-    @Override
-    public List<OrganizationVO> queryList(OrganizationListQueryDTO queryDTO) {
-        SelectStatementProvider selectStatementProvider = select(OrganizationMapper.selectList)
-                .from(OrganizationDynamicSqlSupport.organization)
-                .where(OrganizationDynamicSqlSupport.orgName, isLike(queryDTO.getKeyword())
-                        .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"))
-                .and(OrganizationDynamicSqlSupport.pid, isEqualToWhenPresent(queryDTO.getPid()))
-                .build().render(RenderingStrategies.MYBATIS3);
-        List<Organization> organizations = organizationMapper.selectMany(selectStatementProvider);
-
-        return organizationMapping.toOrganizationVOList(organizations);
-    }
-
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void assignRoles(Integer id, List<Integer> roleIds) {

@@ -2,8 +2,7 @@ import {Button, Card, Form, Input, Select, Space, Spin} from 'antd';
 import {useHistory, useParams} from "react-router-dom";
 import React, {FC, useEffect, useState} from "react";
 import {PageContainer} from "@ant-design/pro-layout";
-import {getOrganization} from "../../../services/organization";
-import {saveMenu} from "../../../services/menu";
+import {getOrganization, saveOrganization} from "../../../services/organization";
 
 const {Option} = Select;
 
@@ -33,7 +32,7 @@ const OrganizationEditPage: FC = () => {
 
     const onSave = () => {
         form.validateFields().then(values => {
-            saveMenu(values).then(() => {
+            saveOrganization(values).then(() => {
                 history.push('/admin/organization');
             });
         })

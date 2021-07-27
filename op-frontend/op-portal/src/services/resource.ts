@@ -1,6 +1,6 @@
-import {Resource} from "../models/Resource";
-import {PageResult} from "../models/PageResult";
 import request from "../utils/request";
+import {PageResult} from "../models/PageResult";
+import {Resource} from "../models/Resource";
 
 /**
  * 保存资源

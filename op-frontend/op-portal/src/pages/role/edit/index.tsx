@@ -1,9 +1,8 @@
 import {Button, Card, Form, Input, InputNumber, Radio, Space, Spin} from 'antd';
 import {useHistory, useParams} from "react-router-dom";
-import {getRole} from "../../../services/role";
+import {getRole, saveRole} from "../../../services/role";
 import React, {FC, useEffect, useState} from "react";
 import {PageContainer} from "@ant-design/pro-layout";
-import {saveMenu} from "../../../services/menu";
 
 const {TextArea} = Input;
 
@@ -29,7 +28,7 @@ const RoleEditPage: FC = () => {
 
     const onSave = () => {
         form.validateFields().then(values => {
-            saveMenu(values).then(() => {
+            saveRole(values).then(() => {
                 history.push('/admin/role');
             });
         })

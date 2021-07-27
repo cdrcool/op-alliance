@@ -1,17 +1,20 @@
 import React, {FC, useState} from 'react';
-import ProCard from '@ant-design/pro-card';
 import {PageContainer} from "@ant-design/pro-layout";
-import './index.css';
+import ProCard from '@ant-design/pro-card';
 import OrganizationTree from "./OrganizationTree";
 import UserList from "./UserList";
+import './index.css';
 
 const UserListPage: FC = () => {
     const [orgId, setOrgId] = useState<number>(1);
 
     return (
-        <PageContainer className="page-container" header={{
-            breadcrumb: {},
-        }}>
+        <PageContainer
+            className="page-container"
+            header={{
+                breadcrumb: {},
+            }}
+        >
             <div id="user-page">
                 <ProCard split="vertical">
                     <ProCard colSpan={6} className="left">

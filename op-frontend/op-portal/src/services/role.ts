@@ -1,6 +1,6 @@
-import {Role} from "../models/Role";
-import {PageResult} from "../models/PageResult";
 import request from "../utils/request";
+import {PageResult} from "../models/PageResult";
+import {Role} from "../models/Role";
 import {ResourceCategory} from "../models/ResourceCategory";
 
 /**

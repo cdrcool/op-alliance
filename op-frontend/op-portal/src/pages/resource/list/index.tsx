@@ -1,14 +1,14 @@
 import React, {FC, useEffect, useRef, useState} from "react";
+import {useHistory} from "react-router-dom";
 import {Button, Popconfirm, Space} from "antd";
 import {ExportOutlined, MinusOutlined, PlusOutlined} from "@ant-design/icons";
+import {PageContainer} from "@ant-design/pro-layout";
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import {useHistory} from "react-router-dom";
-import {PageContainer} from "@ant-design/pro-layout";
 import {Resource} from "../../../models/Resource";
+import {SelectOptions} from "../../../models/SelectOptions";
 import {deleteResources, queryResourcePage} from "../../../services/resource";
 import {queryResourceCategorySelectList} from "../../../services/resourceCategory";
-import {SelectOptions} from "../../../models/SelectOptions";
 
 const ResourceListPage: FC = () => {
     const history = useHistory();
@@ -27,6 +27,11 @@ const ResourceListPage: FC = () => {
         fetchData().then(() => {
         });
     }, []);
+
+    const onDeleteResources = (ids: number[]) => {
+        // @ts-ignore
+        deleteResources(ids).then(() => ref.current.reloadAndRest());
+    }
 
     const columns: ProColumns<Resource>[] = [
         {
@@ -77,11 +82,6 @@ const ResourceListPage: FC = () => {
         },
     ];
 
-    const onDeleteResources = (ids: number[]) => {
-        // @ts-ignore
-        deleteResources(ids).then(() => ref.current.reloadAndRest());
-    }
-
     return (
         <PageContainer
             className="page-container"
@@ -99,29 +99,6 @@ const ResourceListPage: FC = () => {
                     },
                     fullScreen: true,
                 }}
-                columns={columns}
-                request={
-                    async (params, sort, filter) => {
-                        const {current, pageSize, ...others} = params;
-                        const result = await queryResourcePage(
-                            (current || 1) - 1,
-                            pageSize || 10,
-                            {
-                                ...others,
-                                ...filter,
-                            }
-                        );
-                        return {
-                            data: result.content,
-                            success: true,
-                            total: result.totalElements,
-                        };
-                    }
-                }
-                pagination={{
-                    pageSize: 10,
-                }}
-                rowSelection={{}}
                 toolBarRender={() => [
                     <Button key="button" type="primary" icon={<PlusOutlined/>}
                             onClick={() => history.push('/admin/resource/edit')}>
@@ -147,6 +124,27 @@ const ResourceListPage: FC = () => {
                         </Space>
                     );
                 }}
+                columns={columns}
+                request={
+                    async (params, sort, filter) => {
+                        const {current, pageSize, ...others} = params;
+                        const result = await queryResourcePage(
+                            (current || 1) - 1,
+                            pageSize || 10,
+                            {
+                                ...others,
+                                ...filter,
+                            }
+                        );
+                        return {
+                            data: result.content,
+                            success: true,
+                            total: result.totalElements,
+                        };
+                    }
+                }
+                rowSelection={{}}
+                pagination={{}}
             />
         </PageContainer>
     )

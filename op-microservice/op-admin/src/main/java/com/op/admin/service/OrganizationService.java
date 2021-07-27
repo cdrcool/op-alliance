@@ -55,14 +55,6 @@ public interface OrganizationService {
     OrganizationTreeVO queryTree(OrganizationTreeQueryDTO queryDTO);
 
     /**
-     * 查询组织列表
-     *
-     * @param queryDTO 查询对象
-     * @return 组织 vo 列表
-     */
-    List<OrganizationVO> queryList(OrganizationListQueryDTO queryDTO);
-
-    /**
      * 分配角色
      *
      * @param id      组织 id
