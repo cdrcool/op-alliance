@@ -43,6 +43,11 @@ const DefaultLayout: FC = (props) => {
     }
 
     useEffect(() => {
+        const accessToken = sessionStorage.getItem('accessToken');
+        if (!accessToken) {
+            history.push('/login');
+        }
+
         const fetchData = async () => {
             const user = await getCurrentUser();
             if (!user) {

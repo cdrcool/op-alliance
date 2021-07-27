@@ -16,7 +16,7 @@ const HeaderMenu: FC = () => {
     const context = useContext(userContext);
 
     const onLogout = () => {
-        sessionStorage.removeItem('accessToken');
+        sessionStorage.clear();
         history.replace('/login');
     }
 

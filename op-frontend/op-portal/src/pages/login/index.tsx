@@ -12,6 +12,7 @@ import {
     WechatOutlined,
 } from '@ant-design/icons';
 import logo from "../../assets/logo.svg";
+import {Helmet} from 'react-helmet';
 
 import "./index.css";
 import {login, LoginParams} from "../../services/login";
@@ -27,18 +28,23 @@ const LoginPage: FC = () => {
 
     const onSubmit = async (values: LoginParams) => {
         setSubmitting(true);
-        const oathToken = await login({...values, clientId: 'password'});
-        const {accessToken, tokenType, refreshToken, expiresIn} = oathToken;
-        sessionStorage.setItem('accessToken', accessToken);
-        sessionStorage.setItem('tokenType', tokenType);
-        sessionStorage.setItem('refreshToken', refreshToken);
-        sessionStorage.setItem('expiresIn', expiresIn + '');
-        setSubmitting(false);
-        history.push('/');
+        try {
+            const oathToken = await login({...values, clientId: 'password'});
+            const {accessToken, tokenType, refreshToken, expiresIn} = oathToken;
+            sessionStorage.setItem('accessToken', accessToken);
+            sessionStorage.setItem('tokenType', tokenType);
+            sessionStorage.setItem('refreshToken', refreshToken);
+            sessionStorage.setItem('expiresIn', expiresIn + '');
+            setSubmitting(false);
+            history.push('/');
+        } catch (error) {
+            setSubmitting(false);
+        }
     };
 
     return (
         <div className="container">
+            <Helmet title="登录"/>
             <div className="content">
                 <div className="top">
                     <div className="header">
@@ -68,7 +74,8 @@ const LoginPage: FC = () => {
                             },
                         }}
                         onFinish={(values) => {
-                            onSubmit(values).then(() => {});
+                            onSubmit(values).then(() => {
+                            });
                             return Promise.resolve();
                         }}
                     >
