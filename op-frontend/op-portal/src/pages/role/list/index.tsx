@@ -144,7 +144,9 @@ const RoleListPage: FC = () => {
                         };
                     }}
                 rowSelection={{}}
-                pagination={{}}
+                pagination={{
+                    pageSize: 10,
+                }}
             />
         </PageContainer>
     )

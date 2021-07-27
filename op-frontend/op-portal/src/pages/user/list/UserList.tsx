@@ -163,7 +163,9 @@ const UserList: FC<UserListProps> = (props) => {
                     };
                 }
             }
-            pagination={{}}
+            pagination={{
+                pageSize: 10,
+            }}
             rowSelection={{}}
         />
     )

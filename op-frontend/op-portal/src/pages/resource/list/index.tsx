@@ -144,7 +144,9 @@ const ResourceListPage: FC = () => {
                     }
                 }
                 rowSelection={{}}
-                pagination={{}}
+                pagination={{
+                    pageSize: 10,
+                }}
             />
         </PageContainer>
     )
