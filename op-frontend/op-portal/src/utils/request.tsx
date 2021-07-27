@@ -8,7 +8,7 @@ const request = axios.create({
 
 request.interceptors.request.use(
     config => {
-        const accessToken = sessionStorage.getItem('accessToken')
+        const accessToken = localStorage.getItem('accessToken')
         if (accessToken) {
             config.headers.authorization = `Bearer ${accessToken}`;
         }

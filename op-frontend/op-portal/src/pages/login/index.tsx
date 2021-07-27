@@ -31,10 +31,10 @@ const LoginPage: FC = () => {
         try {
             const oathToken = await login({...values, clientId: 'password'});
             const {accessToken, tokenType, refreshToken, expiresIn} = oathToken;
-            sessionStorage.setItem('accessToken', accessToken);
-            sessionStorage.setItem('tokenType', tokenType);
-            sessionStorage.setItem('refreshToken', refreshToken);
-            sessionStorage.setItem('expiresIn', expiresIn + '');
+            localStorage.setItem('accessToken', accessToken);
+            localStorage.setItem('tokenType', tokenType);
+            localStorage.setItem('refreshToken', refreshToken);
+            localStorage.setItem('expiresIn', expiresIn + '');
             setSubmitting(false);
             history.push('/');
         } catch (error) {

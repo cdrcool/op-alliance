@@ -43,7 +43,7 @@ const DefaultLayout: FC = (props) => {
     }
 
     useEffect(() => {
-        const accessToken = sessionStorage.getItem('accessToken');
+        const accessToken = localStorage.getItem('accessToken');
         if (!accessToken) {
             history.push('/login');
         }
