@@ -68,7 +68,7 @@ const MenuListPage: FC = () => {
                     查看
                 </a>,
                 <a key="enable"
-                   onClick={() => onChangeMenusVisibility([record.id] as number[], record.isHidden || true)}>
+                   onClick={() => onChangeMenusVisibility([record.id] as number[], record.isHidden as boolean)}>
                     {record.isHidden ? '显示' : '隐藏'}
                 </a>,
                 <a key="addChild" onClick={() => history.push(`/admin/menu/edit`, {
