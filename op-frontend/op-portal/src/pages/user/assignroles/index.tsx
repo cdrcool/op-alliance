@@ -100,7 +100,9 @@ const UserAssignRolesPage: FC = () => {
                         }),
                     }
                 }
-                pagination={{}}
+                pagination={{
+                    pageSize: 10,
+                }}
             />
         </PageContainer>
     );
