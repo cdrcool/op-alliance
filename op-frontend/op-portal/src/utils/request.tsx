@@ -8,9 +8,9 @@ const request = axios.create({
 
 request.interceptors.request.use(
     config => {
-        const token = sessionStorage.getItem('token')
-        if (token) {
-            config.headers.authorization = `Bearer ${token}`;
+        const accessToken = sessionStorage.getItem('accessToken')
+        if (accessToken) {
+            config.headers.authorization = `Bearer ${accessToken}`;
         }
         return config
     },

@@ -13,7 +13,7 @@ const {SubMenu} = Menu;
 const HeaderMenu: FC = () => {
     const history = useHistory();
 
-    const {username} = useContext(userContext);
+    const context = useContext(userContext);
 
     return (
         <Menu theme="light" mode="horizontal" className="header-menu">
@@ -30,7 +30,7 @@ const HeaderMenu: FC = () => {
             <SubMenu key="avatar" icon={
                 <>
                     <Avatar src={avatar} className="avatar"/>
-                    <span className="avatar-text">{username}</span>
+                    <span className="avatar-text">{context.name}</span>
                 </>
             }>
                 <Menu.Item key="center">

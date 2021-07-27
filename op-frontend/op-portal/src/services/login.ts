@@ -1,6 +1,5 @@
 import request from "../utils/request";
 import {OauthToken} from "../models/OauthToken";
-import {User} from "../models/User";
 
 export type LoginParams = {
     clientId: string;
@@ -23,5 +22,5 @@ export async function login(loginParams: LoginParams): Promise<OauthToken> {
  * 用户登录
  */
 export async function getCurrentUser() {
-    return request.get('/api/oauth2/userinfo');
+    return request.get('/api/oauth/userInfo');
 }

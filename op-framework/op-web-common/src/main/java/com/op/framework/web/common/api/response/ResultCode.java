@@ -22,7 +22,7 @@ public enum ResultCode {
     /**
      * 操作失败
      */
-    FAILURE(HttpServletResponse.SC_BAD_REQUEST, "Business Exception"),
+    FAILURE(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Business Exception"),
 
     /**
      * 请求读取异常

@@ -51,6 +51,7 @@ const DefaultLayout: FC = (props) => {
     }, []);
 
     return (
+        //@ts-ignore
         <userContext.Provider value={user}>
             <div id="default-layout">
                 <ProLayout
