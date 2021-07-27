@@ -41,7 +41,7 @@ const routes = [
                 path: "/",
                 exact: true,
                 render: () => (
-                    <Redirect to={"/workbench"}/>
+                    <Redirect to={"/admin/organization"}/>
                 )
             },
             {
