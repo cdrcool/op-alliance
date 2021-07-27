@@ -18,7 +18,7 @@ const UserList: FC<UserListProps> = (props) => {
 
     useEffect(() => {
         // @ts-ignore
-        ref.current.reset()
+        ref.current.reload();
     }, [orgId]);
 
     const onDeleteUsers = (ids: number[]) => {
