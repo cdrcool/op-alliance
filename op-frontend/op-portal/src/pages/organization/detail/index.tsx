@@ -49,7 +49,6 @@ const OrganizationDetailPage: FC = () => {
                 </Space>
             }
             onBack={() => history.push('/admin/organization')}
-
         >
             <Spin spinning={loading}>
                 <Card>
