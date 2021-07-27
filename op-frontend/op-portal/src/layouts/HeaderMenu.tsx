@@ -52,7 +52,9 @@ const HeaderMenu: FC = () => {
 
             <Menu.Item key="knowledge">
                 <Tooltip title="开发文档" color="blue">
-                    <Link to='/knowledge'><BookOutlined/></Link>
+                    <a onClick={() => {window.open('https://www.yuque.com/qingtian-skp6f/xtgdy7/gl89qv')}} target="_blank">
+                        <BookOutlined/>
+                    </a>
                 </Tooltip>
             </Menu.Item>
         </Menu>
