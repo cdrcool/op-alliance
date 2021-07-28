@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 /**
  * 用户组 VO
  *
@@ -26,4 +28,7 @@ public class UserGroupVO extends BaseVo {
 
     @ApiModelProperty("用户编号")
     private Integer groupNo;
+
+    @ApiModelProperty("用户列表")
+    private List<UserVO> users;
 }

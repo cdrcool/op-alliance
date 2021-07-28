@@ -6,15 +6,17 @@ import com.op.admin.dto.UserGroupSaveDTO;
 import com.op.admin.entity.UserGroup;
 import com.op.admin.entity.UserGroupResourceActionRelation;
 import com.op.admin.entity.UserGroupRoleRelation;
+import com.op.admin.entity.UserGroupUserRelation;
 import com.op.admin.mapper.*;
 import com.op.admin.mapping.UserGroupMapping;
-import com.op.admin.service.MenuService;
 import com.op.admin.service.ResourceCategoryService;
 import com.op.admin.service.RoleService;
 import com.op.admin.service.UserGroupService;
+import com.op.admin.service.UserService;
 import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.RoleAssignVO;
 import com.op.admin.vo.UserGroupVO;
+import com.op.admin.vo.UserVO;
 import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.apache.commons.collections4.CollectionUtils;
@@ -24,6 +26,7 @@ import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SimpleSortSpecification;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -50,25 +53,26 @@ public class UserGroupServiceImpl implements UserGroupService {
     private final UserGroupUserRelationMapper userGroupUserRelationMapper;
     private final UserGroupRoleRelationMapper userGroupRoleRelationMapper;
     private final UserGroupResourceActionRelationMapper userGroupResourceActionRelationMapper;
+    private final UserService userService;
     private final RoleService roleService;
     private final ResourceCategoryService resourceCategoryService;
-    private final MenuService menuService;
 
     public UserGroupServiceImpl(UserGroupMapper userGroupMapper, UserGroupMapping userGroupMapping,
                                 UserGroupUserRelationMapper userGroupUserRelationMapper,
                                 UserGroupRoleRelationMapper userGroupRoleRelationMapper,
                                 UserGroupResourceActionRelationMapper userGroupResourceActionRelationMapper,
+                                @Lazy
+                                UserService userService,
                                 RoleService roleService,
-                                ResourceCategoryService resourceCategoryService,
-                                MenuService menuService) {
+                                ResourceCategoryService resourceCategoryService) {
         this.userGroupMapper = userGroupMapper;
         this.userGroupMapping = userGroupMapping;
         this.userGroupUserRelationMapper = userGroupUserRelationMapper;
         this.userGroupRoleRelationMapper = userGroupRoleRelationMapper;
         this.userGroupResourceActionRelationMapper = userGroupResourceActionRelationMapper;
+        this.userService = userService;
         this.roleService = roleService;
         this.resourceCategoryService = resourceCategoryService;
-        this.menuService = menuService;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -77,16 +81,52 @@ public class UserGroupServiceImpl implements UserGroupService {
         // 校验组名是否重复
         validateGroupName(saveDTO.getId(), saveDTO.getGroupName());
 
+        List<Integer> curUserIds = saveDTO.getUserIds();
+
         if (saveDTO.getId() == null) {
             UserGroup userGroup = userGroupMapping.toUserGroup(saveDTO);
             userGroupMapper.insert(userGroup);
+
+            // 保存用户组-用户关联列表
+            curUserIds.forEach(userId -> {
+                UserGroupUserRelation relation = new UserGroupUserRelation();
+                relation.setGroupId(userGroup.getId());
+                relation.setUserId(userId);
+                userGroupUserRelationMapper.insert(relation);
+            });
         } else {
             Integer id = saveDTO.getId();
             UserGroup userGroup = userGroupMapper.selectByPrimaryKey(id)
                     .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的用户组"));
             userGroupMapping.update(saveDTO, userGroup);
             userGroupMapper.updateByPrimaryKey(userGroup);
+
+            // 保存用户组-用户关联列表
+            List<Integer> preUserIds = findGroupUserIds(id);
+            List<Integer> toDelUserIds = preUserIds.stream().filter(userId -> !curUserIds.contains(userId)).collect(Collectors.toList());
+            if (!CollectionUtils.isNotEmpty(toDelUserIds)) {
+                DeleteStatementProvider deleteStatementProvider = deleteFrom(UserGroupUserRelationDynamicSqlSupport.userGroupUserRelation)
+                        .where(UserGroupUserRelationDynamicSqlSupport.groupId, isEqualTo(id))
+                        .and(UserGroupUserRelationDynamicSqlSupport.userId, isIn(toDelUserIds))
+                        .build().render(RenderingStrategies.MYBATIS3);
+                userGroupUserRelationMapper.delete(deleteStatementProvider);
+            }
         }
+    }
+
+    /**
+     * 获取用户组下的用户 ids
+     *
+     * @param id 主键
+     * @return 用户 ids
+     */
+    private List<Integer> findGroupUserIds(Integer id) {
+        SelectStatementProvider selectStatementProvider = select(UserGroupUserRelationDynamicSqlSupport.userId)
+                .from(UserGroupUserRelationDynamicSqlSupport.userGroupUserRelation)
+                .where(UserGroupUserRelationDynamicSqlSupport.groupId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        return userGroupUserRelationMapper.selectMany(selectStatementProvider).stream()
+                .map(UserGroupUserRelation::getUserId).collect(Collectors.toList());
     }
 
     /**
@@ -141,7 +181,14 @@ public class UserGroupServiceImpl implements UserGroupService {
     public UserGroupVO findById(Integer id) {
         UserGroup userGroup = userGroupMapper.selectByPrimaryKey(id)
                 .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的用户组"));
-        return userGroupMapping.toUserGroupVO(userGroup);
+        UserGroupVO userGroupVO = userGroupMapping.toUserGroupVO(userGroup);
+
+        // 获取用户组下的用户列表
+        List<Integer> userIds = findGroupUserIds(id);
+        List<UserVO> users = userService.findByIds(userIds);
+        userGroupVO.setUsers(users);
+
+        return userGroupVO;
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)

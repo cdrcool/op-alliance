@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 用户组保存 DTO
  *
@@ -23,4 +25,7 @@ public class UserGroupSaveDTO {
 
     @ApiModelProperty("用户编号")
     private Integer groupNo;
+
+    @ApiModelProperty("用户 ids")
+    private List<Integer> userIds;
 }

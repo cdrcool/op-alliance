@@ -69,6 +69,14 @@ public interface UserService {
     UserVO findById(Integer id);
 
     /**
+     * 批量查找用户
+     *
+     * @param ids 用户 ids
+     * @return 用户 vo 列表
+     */
+    List<UserVO> findByIds(List<Integer> ids);
+
+    /**
      * 根据用户名查找用户
      *
      * @param username 用户名

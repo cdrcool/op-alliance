@@ -12,6 +12,11 @@ import UserEditPage from "../pages/user/edit";
 import UserDetailPage from "../pages/user/detail";
 import UserAssignRolesPage from "../pages/user/assignroles";
 import UserAssignResourcesPage from "../pages/user/assignresource";
+import UserGroupListPage from "../pages/usergroup/list";
+import UserGroupAssignResourcesPage from "../pages/usergroup/assignresource";
+import UserGroupAssignRolesPage from "../pages/usergroup/assignroles";
+import UserGroupDetailPage from "../pages/usergroup/detail";
+import UserGroupEditPage from "../pages/usergroup/edit";
 import RoleListPage from "../pages/role/list";
 import RoleEditPage from "../pages/role/edit";
 import RoleDetailPage from "../pages/role/detail";
@@ -93,6 +98,31 @@ const routes = [
                 path: "/admin/user/assign-resources/:id",
                 exact: true,
                 component: UserAssignResourcesPage,
+            },
+            {
+                path: "/admin/userGroup",
+                exact: true,
+                component: UserGroupListPage,
+            },
+            {
+                path: "/admin/userGroup/edit/:id?",
+                exact: true,
+                component: UserGroupEditPage,
+            },
+            {
+                path: "/admin/userGroup/detail/:id",
+                exact: true,
+                component: UserGroupDetailPage,
+            },
+            {
+                path: "/admin/userGroup/assign-roles/:id",
+                exact: true,
+                component: UserGroupAssignRolesPage,
+            },
+            {
+                path: "/admin/userGroup/assign-resources/:id",
+                exact: true,
+                component: UserGroupAssignResourcesPage,
             },
             {
                 path: "/admin/role",

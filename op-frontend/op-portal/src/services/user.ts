@@ -5,7 +5,7 @@ import {Role} from "../models/Role";
 import {ResourceCategory} from "../models/ResourceCategory";
 
 /**
- * 创建用户（返回新建用户的密码）
+ * 保存用户
  *
  * @param user 用户
  */

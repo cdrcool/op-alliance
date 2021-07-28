@@ -62,7 +62,7 @@ const ResourceEditPage: FC = () => {
             }).then(() => {
                 history.push('/admin/resource');
             });
-        })
+        });
     };
 
     return (
@@ -114,7 +114,7 @@ const ResourceEditPage: FC = () => {
                                 </Form.Item>
                             </Form>
                         </Panel>
-                        <Panel header="资源动作" key="actions" showArrow={false}>
+                        <Panel header="资源动作列表" key="actions" showArrow={false}>
                             <EditableProTable<ResourceAction>
                                 rowKey="id"
                                 columns={[

@@ -86,8 +86,8 @@ public class ResourceServiceImpl implements ResourceService {
 
                 curActionIds.add(action.getId());
             });
-            List<Integer> preActionsIds = resourceActionService.findIdsByResourceId(id);
-            List<Integer> toDelActionIds = preActionsIds.stream().filter(actionId -> !curActionIds.contains(actionId)).collect(Collectors.toList());
+            List<Integer> preActionIds = resourceActionService.findIdsByResourceId(id);
+            List<Integer> toDelActionIds = preActionIds.stream().filter(actionId -> !curActionIds.contains(actionId)).collect(Collectors.toList());
             if (!CollectionUtils.isNotEmpty(toDelActionIds)) {
                 resourceActionService.deleteByIds(toDelActionIds);
             }

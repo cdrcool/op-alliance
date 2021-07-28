@@ -201,6 +201,17 @@ public class UserServiceImpl implements UserService {
         return userMapping.toUserVo(user);
     }
 
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public List<UserVO> findByIds(List<Integer> ids) {
+        SelectStatementProvider selectStatementProvider = select(UserMapper.selectList)
+                .from(UserDynamicSqlSupport.user)
+                .where(UserDynamicSqlSupport.id, isIn(ids))
+                .build().render(RenderingStrategies.MYBATIS3);
+        List<User> users = userMapper.selectMany(selectStatementProvider);
+        return userMapping.toUserVOList(users);
+    }
+
     @Override
     public UserDTO findByUserName(String username) {
         SelectStatementProvider selectStatementProvider = select(UserDynamicSqlSupport.username,
