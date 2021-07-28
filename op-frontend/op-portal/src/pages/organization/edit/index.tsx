@@ -72,6 +72,7 @@ const OrganizationEditPage: FC = () => {
                         </Form.Item>
                         <Form.Item label="组织类型" name="orgType" rules={[{required: true, message: '请选择组织类型'}]}>
                             <Select>
+                                <Option value={1}>集团</Option>
                                 <Option value={2}>公司</Option>
                                 <Option value={3}>分公司</Option>
                                 <Option value={4}>项目部</Option>
