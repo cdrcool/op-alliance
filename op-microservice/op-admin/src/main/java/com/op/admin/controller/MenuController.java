@@ -6,6 +6,7 @@ import com.op.admin.dto.MenuTreeListQueryDTO;
 import com.op.admin.service.MenuService;
 import com.op.admin.vo.MenuTreeVO;
 import com.op.admin.vo.MenuVO;
+import com.op.admin.vo.TreeNodeVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
@@ -62,5 +63,11 @@ public class MenuController {
     @PostMapping("changeVisibility")
     public void changeVisibility(@Valid @RequestBody MenuChangeVisibilityDTO changeVisibilityDTO) {
         changeVisibilityDTO.getIds().forEach(id -> menuService.changeVisibility(id, changeVisibilityDTO.getShow()));
+    }
+
+    @ApiOperation("查询菜单树选择列表")
+    @PostMapping("queryTreeSelectList")
+    public List<TreeNodeVO> queryTreeSelectList(@Valid @RequestBody MenuTreeListQueryDTO queryDTO) {
+        return menuService.queryTreeSelectList(queryDTO);
     }
 }

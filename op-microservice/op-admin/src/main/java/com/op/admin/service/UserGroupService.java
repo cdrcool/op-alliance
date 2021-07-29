@@ -2,7 +2,6 @@ package com.op.admin.service;
 
 import com.op.admin.dto.UserGroupPageQueryDTO;
 import com.op.admin.dto.UserGroupSaveDTO;
-import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.RoleAssignVO;
 import com.op.admin.vo.UserGroupVO;

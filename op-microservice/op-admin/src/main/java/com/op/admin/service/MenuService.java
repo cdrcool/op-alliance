@@ -2,10 +2,9 @@ package com.op.admin.service;
 
 import com.op.admin.dto.MenuTreeListQueryDTO;
 import com.op.admin.dto.MenuSaveDTO;
-import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.MenuTreeVO;
 import com.op.admin.vo.MenuVO;
-import com.op.admin.vo.SelectOptionsVO;
+import com.op.admin.vo.TreeNodeVO;
 
 import java.util.List;
 
@@ -74,4 +73,12 @@ public interface MenuService {
      * @param show 显示 or 隐藏
      */
     void changeVisibility(List<Integer> ids, boolean show);
+
+    /**
+     * 查询菜单树选择列表
+     *
+     * @param queryDTO 查询对象
+     * @return 菜单树选择列表
+     */
+    List<TreeNodeVO> queryTreeSelectList(MenuTreeListQueryDTO queryDTO);
 }

@@ -1,8 +1,9 @@
-import {Button, Card, Form, Input, InputNumber, Radio, Space, Spin} from 'antd';
+import {Button, Card, Form, Input, InputNumber, Radio, Space, Spin, TreeSelect} from 'antd';
 import {useHistory, useParams} from "react-router-dom";
 import React, {FC, useEffect, useState} from "react";
 import {PageContainer} from "@ant-design/pro-layout";
-import {getMenu, saveMenu} from "../../../services/menu";
+import {getMenu, queryMenuTreeSelectList, saveMenu} from "../../../services/menu";
+import {TreeNode} from "../../../models/TreeNode";
 
 const MenuEditPage: FC = () => {
     const history = useHistory();
@@ -11,6 +12,7 @@ const MenuEditPage: FC = () => {
     const {pid, parentName} = history.location.state || {};
 
     const [loading, setLoading] = useState<boolean>(!!id);
+    const [menuTreeData, setMenuTreeData] = useState<TreeNode[]>([]);
     const [form] = Form.useForm();
 
     useEffect(() => {
@@ -18,14 +20,26 @@ const MenuEditPage: FC = () => {
             const fetchData = async () => {
                 const menu = await getMenu(parseInt(id));
                 form.setFieldsValue(menu);
+
                 setLoading(false);
             }
 
-            fetchData().then(() => {
+            fetchData().then((value) => {
+                console.log(value);
             });
         } else {
             form.setFieldsValue({pid});
         }
+
+        const fetchMenuTreeData = async () => {
+            const menuTreeData = await queryMenuTreeSelectList({
+                id: id,
+            });
+            setMenuTreeData([{title: '无', value: -1}, ...menuTreeData || []]);
+        };
+
+        fetchMenuTreeData().then(() => {
+        });
     }, []);
 
     const onSave = () => {
@@ -58,9 +72,10 @@ const MenuEditPage: FC = () => {
                         wrapperCol={{span: 8}}
                     >
                         <Form.Item name="id" hidden={true}/>
-                        <Form.Item name="pid" hidden={true}/>
-                        <Form.Item label="上级菜单">
-                            {parentName || form.getFieldValue('parentName')}
+                        <Form.Item label="上级菜单" name="pid" >
+                            <TreeSelect
+                                treeData={menuTreeData}
+                            />
                         </Form.Item>
                         <Form.Item label="菜单名" name="menuName" rules={[{required: true, message: '请输入菜单名'}]}>
                             <Input/>

@@ -10,6 +10,7 @@ import com.op.admin.service.MenuService;
 import com.op.admin.utils.TreeUtils;
 import com.op.admin.vo.MenuTreeVO;
 import com.op.admin.vo.MenuVO;
+import com.op.admin.vo.TreeNodeVO;
 import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.apache.commons.collections4.CollectionUtils;
@@ -27,10 +28,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
@@ -143,20 +142,18 @@ public class MenuServiceImpl implements MenuService {
     public List<MenuTreeVO> queryTreeList(MenuTreeListQueryDTO queryDTO) {
         String keyword = queryDTO.getKeyword();
         List<Menu> menus = menuMapper.select(SelectDSLCompleter.allRows());
-        List<MenuTreeVO> voList = menuMapping.toMenuTreeVOList(menus);
 
         List<MenuTreeVO> treeList = TreeUtils.buildTreeRecursion(
-                voList,
-                MenuTreeVO::getPid,
-                MenuTreeVO::getId,
-                (parent, children) -> parent.setChildren(children.stream()
-                        .sorted(Comparator.comparing(MenuTreeVO::getMenuNo))
-                        .collect(Collectors.toList())),
+                menus,
+                Menu::getPid,
+                Menu::getId,
+                menuMapping::toMenuTreeVO,
+                MenuTreeVO::setChildren,
                 -1,
-                (menuTreeVO -> StringUtils.isBlank(keyword) ||
-                        Optional.ofNullable(menuTreeVO.getMenuName()).orElse("").contains(keyword) ||
-                        Optional.ofNullable(menuTreeVO.getMenuPath()).orElse("").contains(keyword) ||
-                        Optional.ofNullable(menuTreeVO.getPermission()).orElse("").contains(keyword))
+                menu -> StringUtils.isBlank(keyword) ||
+                        Optional.ofNullable(menu.getMenuName()).orElse("").contains(keyword) ||
+                        Optional.ofNullable(menu.getMenuPath()).orElse("").contains(keyword) ||
+                        Optional.ofNullable(menu.getPermission()).orElse("").contains(keyword)
         );
         return CollectionUtils.isNotEmpty(treeList) ? treeList : new ArrayList<>();
     }
@@ -185,5 +182,27 @@ public class MenuServiceImpl implements MenuService {
                 .render(RenderingStrategies.MYBATIS3);
 
         menuMapper.update(updateStatement);
+    }
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public List<TreeNodeVO> queryTreeSelectList(MenuTreeListQueryDTO queryDTO) {
+        String keyword = queryDTO.getKeyword();
+        Integer id = queryDTO.getId();
+        List<Menu> menus = id == null ? menuMapper.select(SelectDSLCompleter.allRows()) : menuMapper.findMenusNotChildren(id);
+
+        List<TreeNodeVO> treeList = TreeUtils.buildTreeRecursion(
+                menus,
+                Menu::getPid,
+                Menu::getId,
+                menuMapping::toTreeNodeVO,
+                TreeNodeVO::setChildren,
+                -1,
+                menu -> StringUtils.isBlank(keyword) ||
+                        Optional.ofNullable(menu.getMenuName()).orElse("").contains(keyword) ||
+                        Optional.ofNullable(menu.getMenuPath()).orElse("").contains(keyword) ||
+                        Optional.ofNullable(menu.getPermission()).orElse("").contains(keyword)
+        );
+        return CollectionUtils.isNotEmpty(treeList) ? treeList : new ArrayList<>();
     }
 }

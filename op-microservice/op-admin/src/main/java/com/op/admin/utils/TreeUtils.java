@@ -2,9 +2,9 @@ package com.op.admin.utils;
 
 import org.apache.commons.collections4.CollectionUtils;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -27,12 +27,12 @@ public class TreeUtils {
      * @param idFunction       vo -> id 映射
      * @param childrenConsumer (vo, children) 消费者
      * @param ancestorId       祖先 id
-     * @param <V>              vo 泛型
      * @param <E>              entity 泛型
+     * @param <V>              vo 泛型
      * @param <ID>             id 泛型
      * @return 树 VO 列表
      */
-    public static <V, E, ID> List<V> buildTree(List<E> entities,
+    public static <E, V, ID> List<V> buildTree(List<E> entities,
                                                Function<E, V> voFunction,
                                                Function<V, ID> pidFunction,
                                                Function<V, ID> idFunction,
@@ -57,35 +57,41 @@ public class TreeUtils {
      *
      * @param pidFunction      vo -> pid 映射
      * @param idFunction       vo -> id 映射
+     * @param voFunction       entity -> vo 映射
      * @param childrenConsumer (vo, children) 消费者
      * @param ancestorId       祖先 id
      * @param filter           过滤条件
+     * @param <E>              entity 泛型
      * @param <V>              vo 泛型
      * @param <ID>             id 泛型
      * @return 树 VO 列表
      */
-    public static <V, ID> List<V> buildTreeRecursion(List<V> list,
-                                                     Function<V, ID> pidFunction,
-                                                     Function<V, ID> idFunction,
-                                                     BiConsumer<V, List<V>> childrenConsumer,
-                                                     ID ancestorId,
-                                                     Predicate<V> filter) {
-        Predicate<V> predicate = Optional.ofNullable(filter).orElse(v -> true);
+    public static <E, ID, V> List<V> buildTreeRecursion(List<E> entities,
+                                                        Function<E, ID> pidFunction,
+                                                        Function<E, ID> idFunction,
+                                                        Function<E, V> voFunction,
+                                                        BiConsumer<V, List<V>> childrenConsumer,
+                                                        ID ancestorId,
+                                                        Predicate<E> filter) {
+        Predicate<E> predicate = Optional.ofNullable(filter).orElse(v -> true);
 
-        Map<Boolean, List<V>> descendantMap = list.stream()
+        Map<Boolean, List<E>> descendantMap = entities.stream()
                 .collect(Collectors.partitioningBy(item -> pidFunction.apply(item).equals(ancestorId)));
-        List<V> children = descendantMap.get(true);
-        Iterator<V> iterator = children.iterator();
-        while (iterator.hasNext()) {
-            V child = iterator.next();
-            List<V> curChildren = buildTreeRecursion(descendantMap.get(false), pidFunction, idFunction, childrenConsumer, idFunction.apply(child), filter);
-            List<V> filteredChildren = curChildren.stream().filter(predicate).collect(Collectors.toList());
-            if (CollectionUtils.isNotEmpty(filteredChildren)) {
-                childrenConsumer.accept(child, filteredChildren);
-            } else if (!predicate.test(child)) {
-                iterator.remove();
+        List<E> children = descendantMap.get(true);
+        return children.stream().map(child -> {
+            V result = voFunction.apply(child);
+
+            List<V> curChildren = buildTreeRecursion(descendantMap.get(false), pidFunction, idFunction, voFunction, childrenConsumer, idFunction.apply(child), filter);
+            if (CollectionUtils.isNotEmpty(curChildren)) {
+                childrenConsumer.accept(result, curChildren);
+                return result;
             }
-        }
-        return children;
+
+            if (predicate.test(child)) {
+                return result;
+            }
+
+            return null;
+        }).filter(Objects::nonNull).collect(Collectors.toList());
     }
 }

@@ -2,13 +2,15 @@ package com.op.admin.mapping;
 
 import com.op.admin.dto.MenuSaveDTO;
 import com.op.admin.entity.Menu;
-import com.op.admin.vo.MenuAssignVO;
+import com.op.admin.entity.ResourceCategory;
 import com.op.admin.vo.MenuTreeVO;
 import com.op.admin.vo.MenuVO;
+import com.op.admin.vo.SelectOptionVO;
+import com.op.admin.vo.TreeNodeVO;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-
-import java.util.List;
+import org.mapstruct.Mappings;
 
 /**
  * 菜单 mapping
@@ -43,14 +45,6 @@ public interface MenuMapping {
     MenuVO toMenuVO(Menu menu);
 
     /**
-     * 菜单列表 -> 菜单 vo 列表
-     *
-     * @param menus 菜单列表
-     * @return 菜单 vo 列表
-     */
-    List<MenuVO> toMenuVOList(List<Menu> menus);
-
-    /**
      * 菜单 -> 菜单树 vo
      *
      * @param menu 菜单
@@ -59,18 +53,14 @@ public interface MenuMapping {
     MenuTreeVO toMenuTreeVO(Menu menu);
 
     /**
-     * 菜单 -> 菜单树 vo 列表
-     *
-     * @param menus 菜单列表
-     * @return 菜单树 vo 列表
-     */
-    List<MenuTreeVO> toMenuTreeVOList(List<Menu> menus);
-
-    /**
-     * 菜单 -> 菜单分配 vo
+     * 菜单 -> 树节点 vo
      *
      * @param menu 菜单
-     * @return 菜单分配 vo
+     * @return 树节点 vo
      */
-    MenuAssignVO toMenuAssignVO(Menu menu);
+    @Mappings({
+            @Mapping(source = "menuName", target = "title"),
+            @Mapping(source = "id", target = "value")
+    })
+    TreeNodeVO toTreeNodeVO(Menu menu);
 }

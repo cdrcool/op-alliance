@@ -30,13 +30,13 @@ public interface MenuMapperExtend extends MenuMapper {
     Optional<MenuVO> findById(Integer id);
 
     /**
-     * 获取非指定父菜单下的子菜单的所有其他菜单列表
+     * 获取非指定菜单及其子菜单的所有其他菜单列表
      *
-     * @param pid 父菜单 id
+     * @param id 菜单 id
      * @return 菜单列表
      */
-    @Select("SELECT * FROM admin_menu WHERE !FIND_IN_SET(#{id}, parent_ids)")
-    List<Menu> findMenusNotChildren(Integer pid);
+    @Select("SELECT * FROM admin_menu WHERE id != #{id} AND !FIND_IN_SET(#{id}, parent_ids)")
+    List<Menu> findMenusNotChildren(Integer id);
 
     /**
      * 删除菜单及其子菜单列表

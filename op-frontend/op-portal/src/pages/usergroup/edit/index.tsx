@@ -6,7 +6,7 @@ import ProTable, {ActionType} from '@ant-design/pro-table';
 import {User} from "../../../models/User";
 import {getUserGroup, saveUserGroup} from "../../../services/userGroup";
 import {ExportOutlined, MinusOutlined, PlusOutlined} from "@ant-design/icons";
-import UserModelPage from "../../user/refer";
+import UserReferPage from "../../user/refer";
 
 const {Panel} = Collapse;
 const {TextArea} = Input;
@@ -165,7 +165,7 @@ const UserGroupEditPage: FC = () => {
                                 rowSelection={{}}
                                 pagination={false}
                             />
-                            <UserModelPage
+                            <UserReferPage
                                 visible={userModelVisible}
                                 defaultSelectedUsers={groupUsers}
                                 defaultSelectedUserIds={groupUserIds}

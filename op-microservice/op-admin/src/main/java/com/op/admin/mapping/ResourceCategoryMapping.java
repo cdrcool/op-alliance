@@ -4,7 +4,7 @@ import com.op.admin.dto.ResourceCategorySaveDTO;
 import com.op.admin.entity.ResourceCategory;
 import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.ResourceCategoryVO;
-import com.op.admin.vo.SelectOptionsVO;
+import com.op.admin.vo.SelectOptionVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -70,7 +70,7 @@ public interface ResourceCategoryMapping {
             @Mapping(source = "categoryName", target = "label"),
             @Mapping(source = "id", target = "value")
     })
-    SelectOptionsVO toSelectVO(ResourceCategory resourceCategory);
+    SelectOptionVO toSelectVO(ResourceCategory resourceCategory);
 
     /**
      * 资源分类列表 -> 下拉框 vo 列表
@@ -78,5 +78,5 @@ public interface ResourceCategoryMapping {
      * @param resourceCategories 资源分类列表
      * @return 下拉框 vo 列表
      */
-    List<SelectOptionsVO> toSelectVOList(List<ResourceCategory> resourceCategories);
+    List<SelectOptionVO> toSelectVOList(List<ResourceCategory> resourceCategories);
 }

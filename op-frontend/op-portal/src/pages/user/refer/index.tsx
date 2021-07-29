@@ -6,7 +6,7 @@ import UserList from "./UserList";
 import './index.css';
 import {User} from "../../../models/User";
 
-type UserModelProps = {
+type UserReferProps = {
     visible: boolean;
     defaultSelectedUserIds: number[];
     defaultSelectedUsers: User[];
@@ -14,7 +14,7 @@ type UserModelProps = {
     handleCancel: () => void;
 };
 
-const UserModelPage: FC<UserModelProps> = (props) => {
+const UserReferPage: FC<UserReferProps> = (props) => {
     const {visible, defaultSelectedUserIds, defaultSelectedUsers, handleOk, handleCancel} = props;
 
     const [orgId, setOrgId] = useState<number>(1);
@@ -47,4 +47,4 @@ const UserModelPage: FC<UserModelProps> = (props) => {
     );
 };
 
-export default UserModelPage;
+export default UserReferPage;

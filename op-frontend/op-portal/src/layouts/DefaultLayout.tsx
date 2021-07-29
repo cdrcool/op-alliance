@@ -71,7 +71,7 @@ const DefaultLayout: FC = (props) => {
                     }}
                     menu={{
                         request: async () => {
-                            const result = await queryMenuTreeList();
+                            const result = await queryMenuTreeList({});
                             return convertToAntdMenu(result);
                         }
                     }}

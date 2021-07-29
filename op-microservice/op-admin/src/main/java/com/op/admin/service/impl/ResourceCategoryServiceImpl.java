@@ -12,7 +12,7 @@ import com.op.admin.service.ResourceService;
 import com.op.admin.vo.ResourceAssignVO;
 import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.ResourceCategoryVO;
-import com.op.admin.vo.SelectOptionsVO;
+import com.op.admin.vo.SelectOptionVO;
 import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.apache.commons.lang3.StringUtils;
@@ -119,7 +119,7 @@ public class ResourceCategoryServiceImpl implements ResourceCategoryService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<SelectOptionsVO> querySelectOptions(ResourceCategoryPageQueryDTO queryDTO) {
+    public List<SelectOptionVO> querySelectOptions(ResourceCategoryPageQueryDTO queryDTO) {
         SelectStatementProvider selectStatementProvider = select(ResourceCategoryDynamicSqlSupport.id, ResourceCategoryDynamicSqlSupport.categoryName)
                 .from(ResourceCategoryDynamicSqlSupport.resourceCategory)
                 .where(ResourceCategoryDynamicSqlSupport.categoryName, isLike(queryDTO.getKeyword())

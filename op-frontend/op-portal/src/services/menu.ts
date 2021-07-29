@@ -1,5 +1,6 @@
 import request from "../utils/request";
 import {Menus} from "../models/Menus";
+import {TreeNode} from "../models/TreeNode";
 
 /**
  * 保存菜单
@@ -38,7 +39,7 @@ export async function getMenu(id: number): Promise<Menus> {
 }
 
 /**
- * 分页查询菜单
+ * 查询菜单树列表
  *
  * @param params 查询参数
  */
@@ -54,4 +55,13 @@ export async function queryMenuTreeList(params?: object): Promise<Menus[]> {
  */
 export async function changeMenusVisibility(ids: number[], show: boolean) {
     return request.post(`/api/op-admin/menu/changeVisibility`, {ids, show});
+}
+
+/**
+ * 查询菜单树选择列表
+ *
+ * @param params 查询参数
+ */
+export async function queryMenuTreeSelectList(params?: object): Promise<TreeNode[]> {
+    return request.post('/api/op-admin/menu/queryTreeSelectList', params);
 }
