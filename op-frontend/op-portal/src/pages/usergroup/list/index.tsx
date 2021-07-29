@@ -49,6 +49,12 @@ const UserGroupListPage: FC = () => {
                 <a key="view" onClick={() => history.push(`/admin/userGroup/detail/${record.id}`)}>
                     查看
                 </a>,
+                <a key="assignRoles" onClick={() => history.push(`/admin/userGroup/assign-roles/${record.id}`)}>
+                    分配角色
+                </a>,
+                <a key="assignResources" onClick={() => history.push(`/admin/userGroup/assign-resources/${record.id}`)}>
+                    分配资源
+                </a>,
             ],
         },
     ];
