@@ -2,10 +2,7 @@ package com.op.admin.utils;
 
 import org.apache.commons.collections4.CollectionUtils;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -55,8 +52,9 @@ public class TreeUtils {
     /**
      * 递归构造树 VO 列表
      *
-     * @param pidFunction      vo -> pid 映射
-     * @param idFunction       vo -> id 映射
+     * @param entities         实体列表
+     * @param pidFunction      entity -> pid 映射
+     * @param idFunction       entity -> id 映射
      * @param voFunction       entity -> vo 映射
      * @param childrenConsumer (vo, children) 消费者
      * @param ancestorId       祖先 id
@@ -93,5 +91,36 @@ public class TreeUtils {
 
             return null;
         }).filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+    /**
+     * 获取所有后代节点的 ids
+     *
+     * @param entities    entities
+     * @param pidFunction entity -> pid 映射
+     * @param idFunction  entity -> id 映射
+     * @param ancestorId  祖先 id
+     * @param <E>         entity 泛型
+     * @param <ID>        id 泛型
+     * @return 后代节点的 ids
+     */
+    public static <E, ID> List<ID> getDescendantIds(List<E> entities,
+                                                    Function<E, ID> pidFunction,
+                                                    Function<E, ID> idFunction,
+                                                    ID ancestorId) {
+        List<ID> descendantIds = new ArrayList<>();
+
+        Map<Boolean, List<E>> descendantMap = entities.stream()
+                .collect(Collectors.partitioningBy(item -> pidFunction.apply(item).equals(ancestorId)));
+        List<E> children = descendantMap.get(true);
+        children.forEach(child -> {
+            descendantIds.addAll(getDescendantIds(descendantMap.get(false), pidFunction, idFunction, idFunction.apply(child)));
+
+            if (pidFunction.apply(child).equals(ancestorId)) {
+                descendantIds.add(idFunction.apply(child));
+            }
+        });
+
+        return descendantIds;
     }
 }

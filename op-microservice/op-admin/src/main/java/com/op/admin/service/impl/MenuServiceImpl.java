@@ -4,7 +4,7 @@ import com.op.admin.dto.MenuSaveDTO;
 import com.op.admin.dto.MenuTreeListQueryDTO;
 import com.op.admin.entity.Menu;
 import com.op.admin.mapper.MenuDynamicSqlSupport;
-import com.op.admin.mapper.extend.MenuMapperExtend;
+import com.op.admin.mapper.MenuMapper;
 import com.op.admin.mapping.MenuMapping;
 import com.op.admin.service.MenuService;
 import com.op.admin.utils.TreeUtils;
@@ -16,6 +16,7 @@ import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.SqlBuilder;
+import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -41,10 +42,10 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 @CacheConfig(cacheNames = "menus")
 @Service
 public class MenuServiceImpl implements MenuService {
-    private final MenuMapperExtend menuMapper;
+    private final MenuMapper menuMapper;
     private final MenuMapping menuMapping;
 
-    public MenuServiceImpl(MenuMapperExtend menuMapper, MenuMapping menuMapping) {
+    public MenuServiceImpl(MenuMapper menuMapper, MenuMapping menuMapping) {
         this.menuMapper = menuMapper;
         this.menuMapping = menuMapping;
     }
@@ -54,13 +55,13 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public MenuVO save(MenuSaveDTO saveDTO) {
         saveDTO.setPid(Optional.ofNullable(saveDTO.getPid()).orElse(-1));
+        saveDTO.setMenuNo(Optional.ofNullable(saveDTO.getMenuNo()).orElse(999));
 
         // 校验同一菜单下，子菜单名称是否重复
         validateMenuName(saveDTO.getPid(), saveDTO.getId(), saveDTO.getMenuName());
 
         if (saveDTO.getId() == null) {
             Menu menu = menuMapping.toMenu(saveDTO);
-            setMenuProps(menu, saveDTO.getPid());
             menuMapper.insert(menu);
 
             return menuMapping.toMenuVO(menu);
@@ -69,7 +70,6 @@ public class MenuServiceImpl implements MenuService {
             Menu menu = menuMapper.selectByPrimaryKey(id)
                     .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的菜单"));
             menuMapping.update(saveDTO, menu);
-            setMenuProps(menu, saveDTO.getPid());
             menuMapper.updateByPrimaryKey(menu);
 
             return menuMapping.toMenuVO(menu);
@@ -95,34 +95,32 @@ public class MenuServiceImpl implements MenuService {
         }
     }
 
-    /**
-     * 设置菜单 pid、parentIds、menuLevel 等属性
-     *
-     * @param menu 菜单
-     * @param pid  父菜单id
-     */
-    private void setMenuProps(Menu menu, Integer pid) {
-        if (pid == -1) {
-            menu.setMenuLevel(1);
-        } else {
-            Menu pMenu = menuMapper.selectByPrimaryKey(pid)
-                    .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + pid + "】的父菜单"));
-            String parentIds = pMenu.getParentIds();
-            parentIds = StringUtils.isNotBlank(parentIds) ? parentIds + "," + pid : String.valueOf(pid);
-            menu.setParentIds(parentIds);
-            menu.setMenuLevel(pMenu.getMenuLevel() + 1);
-        }
-        menu.setMenuNo(Optional.ofNullable(menu.getMenuNo()).orElse(999));
-    }
-
-    @CacheEvict(key = "#id", beforeInvocation = true)
+    @CacheEvict(allEntries = true, beforeInvocation = true)
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteById(Integer id) {
         // 删除菜单及其子菜单列表
-        menuMapper.deleteById(id);
+        List<Integer> childrenIds = findChildrenIds(id);
+        childrenIds.add(id);
+
+        DeleteStatementProvider deleteStatementProvider = deleteFrom(MenuDynamicSqlSupport.menu)
+                .where(MenuDynamicSqlSupport.id, isIn(childrenIds))
+                .build().render(RenderingStrategies.MYBATIS3);
+        menuMapper.delete(deleteStatementProvider);
     }
 
+    /**
+     * 获取菜单下所有子菜单的 ids
+     *
+     * @param id 主键
+     * @return 子菜单的 ids
+     */
+    private List<Integer> findChildrenIds(Integer id) {
+        List<Menu> menus = menuMapper.select(SelectDSLCompleter.allRows());
+        return TreeUtils.getDescendantIds(menus, Menu::getPid, Menu::getId, id);
+    }
+
+    @CacheEvict(allEntries = true, beforeInvocation = true)
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteByIds(List<Integer> ids) {
@@ -133,8 +131,9 @@ public class MenuServiceImpl implements MenuService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public MenuVO findById(Integer id) {
-        return menuMapper.findById(id)
+        Menu menu = menuMapper.selectByPrimaryKey(id)
                 .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的菜单"));
+        return menuMapping.toMenuVO(menu);
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -189,7 +188,8 @@ public class MenuServiceImpl implements MenuService {
     public List<TreeNodeVO> queryTreeSelectList(MenuTreeListQueryDTO queryDTO) {
         String keyword = queryDTO.getKeyword();
         Integer id = queryDTO.getId();
-        List<Menu> menus = id == null ? menuMapper.select(SelectDSLCompleter.allRows()) : menuMapper.findMenusNotChildren(id);
+
+        List<Menu> menus = menuMapper.select(SelectDSLCompleter.allRows());
 
         List<TreeNodeVO> treeList = TreeUtils.buildTreeRecursion(
                 menus,
@@ -198,10 +198,11 @@ public class MenuServiceImpl implements MenuService {
                 menuMapping::toTreeNodeVO,
                 TreeNodeVO::setChildren,
                 -1,
-                menu -> StringUtils.isBlank(keyword) ||
-                        Optional.ofNullable(menu.getMenuName()).orElse("").contains(keyword) ||
-                        Optional.ofNullable(menu.getMenuPath()).orElse("").contains(keyword) ||
-                        Optional.ofNullable(menu.getPermission()).orElse("").contains(keyword)
+                menu -> !menu.getId().equals(id) && !menu.getPid().equals(id) &&
+                        (StringUtils.isBlank(keyword) ||
+                                Optional.ofNullable(menu.getMenuName()).orElse("").contains(keyword) ||
+                                Optional.ofNullable(menu.getMenuPath()).orElse("").contains(keyword) ||
+                                Optional.ofNullable(menu.getPermission()).orElse("").contains(keyword))
         );
         return CollectionUtils.isNotEmpty(treeList) ? treeList : new ArrayList<>();
     }

@@ -6,8 +6,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.annotation.Generated;
-
 /**
  * 菜单 VO
  *
@@ -46,7 +44,4 @@ public class MenuVO extends BaseVo {
 
     @ApiModelProperty("菜单层级")
     private Integer menuLevel;
-
-    @ApiModelProperty("上级菜单名称")
-    private String parentName;
 }

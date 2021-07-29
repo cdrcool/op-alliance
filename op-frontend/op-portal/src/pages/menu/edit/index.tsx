@@ -35,7 +35,7 @@ const MenuEditPage: FC = () => {
             const menuTreeData = await queryMenuTreeSelectList({
                 id: id,
             });
-            setMenuTreeData([{title: '无', value: -1}, ...menuTreeData || []]);
+            setMenuTreeData(menuTreeData || []);
         };
 
         fetchMenuTreeData().then(() => {
@@ -74,6 +74,7 @@ const MenuEditPage: FC = () => {
                         <Form.Item name="id" hidden={true}/>
                         <Form.Item label="上级菜单" name="pid" >
                             <TreeSelect
+                                allowClear={true}
                                 treeData={menuTreeData}
                             />
                         </Form.Item>
