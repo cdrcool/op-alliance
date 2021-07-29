@@ -12,6 +12,8 @@ const UserAssignRolesPage: FC = () => {
 
     const [selectedRowKeys, setSelectedRowKeys] = useState<number[]>([]);
     const [selectedRows, setSelectedRows] = useState<Role[]>([]);
+    const [defaultSelectedRowKeys, setDefaultSelectedRowKeys] = useState<number[]>([]);
+    const [defaultSelectedRows, setDefaultSetSelectedRows] = useState<Role[]>([]);
 
     const onSaveSelected = () => {
         assignUserRoles(Number(id), selectedRowKeys).then(() => history.push('/admin/user'));
@@ -73,6 +75,16 @@ const UserAssignRolesPage: FC = () => {
                         </Space>
                     )
                 }
+                tableAlertOptionRender={() => {
+                    return (
+                        <a onClick={() => {
+                            setSelectedRowKeys(defaultSelectedRowKeys);
+                            setSelectedRows(defaultSelectedRows);
+                        }}>
+                            取消选择
+                        </a>
+                    );
+                }}
                 request={
                     async () => {
                         const roles = await loadUserAssignedRoles(Number(id));
@@ -80,6 +92,8 @@ const UserAssignRolesPage: FC = () => {
                         const selectedRows = roles.filter(role => role.checked);
                         setSelectedRows(selectedRows);
                         setSelectedRowKeys(selectedRows.map(role => role.id as number));
+                        setDefaultSetSelectedRows(selectedRows);
+                        setDefaultSelectedRowKeys(selectedRows.filter(role => !role.enableUncheck).map(role => role.id as number));
 
                         return {
                             data: roles,
