@@ -9,7 +9,7 @@ const MenuEditPage: FC = () => {
     const history = useHistory();
     const {id} = useParams<{ id?: string }>();
     // @ts-ignore
-    const {pid, parentName} = history.location.state || {};
+    const {pid} = history.location.state || {};
 
     const [loading, setLoading] = useState<boolean>(!!id);
     const [menuTreeData, setMenuTreeData] = useState<TreeNode[]>([]);
@@ -75,6 +75,8 @@ const MenuEditPage: FC = () => {
                         <Form.Item label="上级菜单" name="pid" >
                             <TreeSelect
                                 allowClear={true}
+                                showSearch={true}
+                                treeNodeFilterProp="title"
                                 treeData={menuTreeData}
                             />
                         </Form.Item>
