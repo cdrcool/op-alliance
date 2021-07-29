@@ -1,15 +1,13 @@
 package com.op.admin.service.impl;
 
-import com.op.admin.dto.MenuListQueryDTO;
 import com.op.admin.dto.MenuSaveDTO;
+import com.op.admin.dto.MenuTreeListQueryDTO;
 import com.op.admin.entity.Menu;
 import com.op.admin.mapper.MenuDynamicSqlSupport;
-import com.op.admin.mapper.MenuMapper;
 import com.op.admin.mapper.extend.MenuMapperExtend;
 import com.op.admin.mapping.MenuMapping;
 import com.op.admin.service.MenuService;
 import com.op.admin.utils.TreeUtils;
-import com.op.admin.vo.MenuAssignVO;
 import com.op.admin.vo.MenuTreeVO;
 import com.op.admin.vo.MenuVO;
 import com.op.framework.web.common.api.response.ResultCode;
@@ -142,36 +140,25 @@ public class MenuServiceImpl implements MenuService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<MenuTreeVO> queryTreeList() {
+    public List<MenuTreeVO> queryTreeList(MenuTreeListQueryDTO queryDTO) {
+        String keyword = queryDTO.getKeyword();
         List<Menu> menus = menuMapper.select(SelectDSLCompleter.allRows());
-        List<MenuTreeVO> treeList = TreeUtils.buildTree(menus, menuMapping::toMenuTreeVO, MenuTreeVO::getPid, MenuTreeVO::getId,
+        List<MenuTreeVO> voList = menuMapping.toMenuTreeVOList(menus);
+
+        List<MenuTreeVO> treeList = TreeUtils.buildTreeRecursion(
+                voList,
+                MenuTreeVO::getPid,
+                MenuTreeVO::getId,
                 (parent, children) -> parent.setChildren(children.stream()
                         .sorted(Comparator.comparing(MenuTreeVO::getMenuNo))
-                        .collect(Collectors.toList())), -1);
+                        .collect(Collectors.toList())),
+                -1,
+                (menuTreeVO -> StringUtils.isBlank(keyword) ||
+                        Optional.ofNullable(menuTreeVO.getMenuName()).orElse("").contains(keyword) ||
+                        Optional.ofNullable(menuTreeVO.getMenuPath()).orElse("").contains(keyword) ||
+                        Optional.ofNullable(menuTreeVO.getPermission()).orElse("").contains(keyword))
+        );
         return CollectionUtils.isNotEmpty(treeList) ? treeList : new ArrayList<>();
-    }
-
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
-    @Override
-    public List<MenuVO> queryList(MenuListQueryDTO queryDTO) {
-        SelectStatementProvider selectStatementProvider = SqlBuilder.select(MenuMapper.selectList)
-                .from(MenuDynamicSqlSupport.menu)
-                .where(MenuDynamicSqlSupport.menuName, isLike(queryDTO.getKeyword())
-                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"),
-                        or(MenuDynamicSqlSupport.menuPath, isLike(queryDTO.getKeyword())
-                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")))
-                .build().render(RenderingStrategies.MYBATIS3);
-        List<Menu> menus = menuMapper.selectMany(selectStatementProvider);
-
-        return menuMapping.toMenuVOList(menus);
-    }
-
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
-    @Override
-    public List<MenuAssignVO> findAllForAssign() {
-        List<Menu> menus = menuMapper.select(SelectDSLCompleter.allRows());
-        return TreeUtils.buildTree(menus, menuMapping::toMenuAssignVO, MenuAssignVO::getPid, MenuAssignVO::getId,
-                (menu, children) -> menu.setChildren(children.stream().sorted(Comparator.comparing(MenuAssignVO::getMenuNo)).collect(Collectors.toList())), -1);
     }
 
     @Transactional(rollbackFor = Exception.class)

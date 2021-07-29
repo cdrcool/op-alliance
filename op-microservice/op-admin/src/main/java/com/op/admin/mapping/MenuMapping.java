@@ -59,6 +59,14 @@ public interface MenuMapping {
     MenuTreeVO toMenuTreeVO(Menu menu);
 
     /**
+     * 菜单 -> 菜单树 vo 列表
+     *
+     * @param menus 菜单列表
+     * @return 菜单树 vo 列表
+     */
+    List<MenuTreeVO> toMenuTreeVOList(List<Menu> menus);
+
+    /**
      * 菜单 -> 菜单分配 vo
      *
      * @param menu 菜单

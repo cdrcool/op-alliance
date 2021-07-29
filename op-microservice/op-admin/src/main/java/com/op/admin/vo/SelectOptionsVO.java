@@ -9,9 +9,9 @@ import lombok.Data;
  *
  * @author cdrcool
  */
-@ApiModel(description = "下拉框 VO")
+@ApiModel(description = "下拉框选项 VO")
 @Data
-public class SelectVO {
+public class SelectOptionsVO {
     @ApiModelProperty("标签")
     private String label;
 

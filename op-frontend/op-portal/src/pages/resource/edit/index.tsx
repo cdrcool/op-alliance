@@ -3,7 +3,7 @@ import {useHistory, useParams} from "react-router-dom";
 import React, {FC, useEffect, useState} from "react";
 import {PageContainer} from "@ant-design/pro-layout";
 import {getResource, saveResource} from "../../../services/resource";
-import {queryResourceCategorySelectList} from "../../../services/resourceCategory";
+import {queryResourceCategorySelectOptions} from "../../../services/resourceCategory";
 import {SelectOptions} from "../../../models/SelectOptions";
 import {ResourceAction} from "../../../models/ResourceAction";
 import {EditableProTable} from "@ant-design/pro-table";
@@ -40,7 +40,7 @@ const ResourceEditPage: FC = () => {
         }
 
         const fetchCategoryOptions = async () => {
-            const categoryOptions = await queryResourceCategorySelectList({});
+            const categoryOptions = await queryResourceCategorySelectOptions({});
             setCategoryOptions(categoryOptions || []);
         };
         fetchCategoryOptions().then(() => {

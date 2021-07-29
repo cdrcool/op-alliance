@@ -1,8 +1,8 @@
 package com.op.admin.controller;
 
 import com.op.admin.dto.MenuChangeVisibilityDTO;
-import com.op.admin.dto.MenuListQueryDTO;
 import com.op.admin.dto.MenuSaveDTO;
+import com.op.admin.dto.MenuTreeListQueryDTO;
 import com.op.admin.service.MenuService;
 import com.op.admin.vo.MenuTreeVO;
 import com.op.admin.vo.MenuVO;
@@ -54,14 +54,8 @@ public class MenuController {
 
     @ApiOperation("查询菜单树列表")
     @PostMapping("queryTreeList")
-    public List<MenuTreeVO> queryTreeList() {
-        return menuService.queryTreeList();
-    }
-
-    @ApiOperation("查询菜单列表")
-    @PostMapping("queryList")
-    public List<MenuVO> queryList(@Valid @RequestBody MenuListQueryDTO queryDTO) {
-        return menuService.queryList(queryDTO);
+    public List<MenuTreeVO> queryTreeList(@Valid @RequestBody MenuTreeListQueryDTO queryDTO) {
+        return menuService.queryTreeList(queryDTO);
     }
 
     @ApiOperation("显示/隐藏菜单")

@@ -8,7 +8,7 @@ import ProTable from '@ant-design/pro-table';
 import {Resource} from "../../../models/Resource";
 import {SelectOptions} from "../../../models/SelectOptions";
 import {deleteResources, queryResourcePage} from "../../../services/resource";
-import {queryResourceCategorySelectList} from "../../../services/resourceCategory";
+import {queryResourceCategorySelectOptions} from "../../../services/resourceCategory";
 
 const ResourceListPage: FC = () => {
     const history = useHistory();
@@ -20,7 +20,7 @@ const ResourceListPage: FC = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const categoryOptions = await queryResourceCategorySelectList({});
+            const categoryOptions = await queryResourceCategorySelectOptions({});
             setCategoryOptions(categoryOptions || []);
         }
 

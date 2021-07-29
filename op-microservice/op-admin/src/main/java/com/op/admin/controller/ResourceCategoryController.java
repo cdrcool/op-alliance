@@ -4,7 +4,7 @@ import com.op.admin.dto.ResourceCategoryPageQueryDTO;
 import com.op.admin.dto.ResourceCategorySaveDTO;
 import com.op.admin.service.ResourceCategoryService;
 import com.op.admin.vo.ResourceCategoryVO;
-import com.op.admin.vo.SelectVO;
+import com.op.admin.vo.SelectOptionsVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Page;
@@ -62,9 +62,9 @@ public class ResourceCategoryController {
         return resourceCategoryService.queryPage(pageable, queryDTO);
     }
 
-    @ApiOperation("查询资源分类下拉框列表")
-    @PostMapping("selectList")
-    public List<SelectVO> querySelectList(@Valid @RequestBody ResourceCategoryPageQueryDTO queryDTO) {
-        return resourceCategoryService.querySelectList(queryDTO);
+    @ApiOperation("查询资源分类下拉框选项列表")
+    @PostMapping("querySelectOptions")
+    public List<SelectOptionsVO> querySelectOptions(@Valid @RequestBody ResourceCategoryPageQueryDTO queryDTO) {
+        return resourceCategoryService.querySelectOptions(queryDTO);
     }
 }

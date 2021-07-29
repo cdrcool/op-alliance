@@ -51,10 +51,10 @@ export async function queryResourceCategoryPage(page: number, size: number, para
 }
 
 /**
- * 查询资源分类下拉框列表
+ * 查询资源分类下拉框选项列表
  *
  * @param params 查询参数
  */
-export async function queryResourceCategorySelectList(params: object): Promise<SelectOptions[]> {
-    return request.post(`/api/op-admin/resourceCategory/selectList`, params);
+export async function queryResourceCategorySelectOptions(params: object): Promise<SelectOptions[]> {
+    return request.post(`/api/op-admin/resourceCategory/querySelectOptions`, params);
 }
