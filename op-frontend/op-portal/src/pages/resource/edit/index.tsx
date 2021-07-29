@@ -20,7 +20,7 @@ const ResourceEditPage: FC = () => {
 
     const [loading, setLoading] = useState<boolean>(!!id);
     const [categoryOptions, setCategoryOptions] = useState<SelectOptions[]>([]);
-    const [dataSource, setDataSource] = useState<ResourceAction[]>([]);
+    const [resourceActions, setResourceActions] = useState<ResourceAction[]>([]);
     const [form] = Form.useForm();
 
     useEffect(() => {
@@ -29,7 +29,7 @@ const ResourceEditPage: FC = () => {
                 const resource = await getResource(parseInt(id));
                 const {actions, ...fieldValues} = resource;
                 form.setFieldsValue(fieldValues);
-                setDataSource(actions || []);
+                setResourceActions(actions || []);
                 setLoading(false);
             }
 
@@ -52,7 +52,7 @@ const ResourceEditPage: FC = () => {
         form.validateFields().then(values => {
             saveResource({
                 ...values,
-                actions: dataSource.map(item => {
+                actions: resourceActions.map(item => {
                     if (item.isAdd) {
                         const {id, ...others} = item;
                         return others;
@@ -64,6 +64,10 @@ const ResourceEditPage: FC = () => {
             });
         });
     };
+
+    const onDeleteResourceActions = (actionId: number) => {
+        setResourceActions(resourceActions.filter((item) => item.id !== actionId));
+    }
 
     return (
         <PageContainer
@@ -127,9 +131,7 @@ const ResourceEditPage: FC = () => {
                                         valueType: 'option',
                                         render: (text, record, _, action) => [
                                             <a key="edit" onClick={
-                                                () => {
-                                                    action?.startEditable?.(record.id as number)
-                                                }
+                                                () => action?.startEditable?.(record.id as number)
                                             }>
                                                 编辑
                                             </a>,
@@ -137,9 +139,9 @@ const ResourceEditPage: FC = () => {
                                                 title="删除此行？"
                                                 okText="确定"
                                                 cancelText="取消"
-                                                onConfirm={() => {
-                                                    setDataSource(dataSource.filter((item) => item.id !== record.id))
-                                                }}
+                                                onConfirm={
+                                                    () => onDeleteResourceActions(record.id as number)
+                                                }
                                             >
                                                 <a key="delete">
                                                     删除
@@ -162,8 +164,8 @@ const ResourceEditPage: FC = () => {
                                         creatorButtonText: '新增资源动作',
                                     }
                                 }
-                                value={dataSource}
-                                onChange={setDataSource}
+                                value={resourceActions}
+                                onChange={setResourceActions}
                             />
                         </Panel>
                     </Collapse>

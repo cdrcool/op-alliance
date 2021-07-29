@@ -1,4 +1,4 @@
-import {Button, Card, Collapse, Descriptions, Popconfirm, Space, Spin, Table} from 'antd';
+import {Badge, Button, Card, Collapse, Descriptions, Popconfirm, Space, Spin, Table} from 'antd';
 import {useHistory, useParams} from "react-router-dom";
 import React, {FC, useEffect, useState} from "react";
 import {PageContainer} from "@ant-design/pro-layout";
@@ -75,7 +75,20 @@ const UserGroupDetailPage: FC = () => {
                                         title: '帐号状态',
                                         dataIndex: 'status',
                                         render: ((value) => {
-                                            return value;
+                                            switch (value) {
+                                                case 0:
+                                                    return <Badge status="error" text="禁用"/>
+                                                case 1:
+                                                    return <Badge status="success" text="启用"/>
+                                                case 2:
+                                                    return <Badge status="error" text="过期"/>
+                                                case 3:
+                                                    return <Badge status="error" text="锁定"/>
+                                                case 4:
+                                                    return <Badge status="error" text="密码过期"/>
+                                                default:
+                                                    return null;
+                                            }
                                         })
                                     },
                                 ]}

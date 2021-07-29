@@ -103,8 +103,17 @@ public class UserGroupServiceImpl implements UserGroupService {
 
             // 保存用户组-用户关联列表
             List<Integer> preUserIds = findGroupUserIds(id);
+
+            List<Integer> toAddUserIds = curUserIds.stream().filter(userId -> !preUserIds.contains(userId)).collect(Collectors.toList());
+            toAddUserIds.forEach(userId -> {
+                UserGroupUserRelation relation = new UserGroupUserRelation();
+                relation.setGroupId(id);
+                relation.setUserId(userId);
+                userGroupUserRelationMapper.insert(relation);
+            });
+
             List<Integer> toDelUserIds = preUserIds.stream().filter(userId -> !curUserIds.contains(userId)).collect(Collectors.toList());
-            if (!CollectionUtils.isNotEmpty(toDelUserIds)) {
+            if (CollectionUtils.isNotEmpty(toDelUserIds)) {
                 DeleteStatementProvider deleteStatementProvider = deleteFrom(UserGroupUserRelationDynamicSqlSupport.userGroupUserRelation)
                         .where(UserGroupUserRelationDynamicSqlSupport.groupId, isEqualTo(id))
                         .and(UserGroupUserRelationDynamicSqlSupport.userId, isIn(toDelUserIds))
@@ -185,8 +194,10 @@ public class UserGroupServiceImpl implements UserGroupService {
 
         // 获取用户组下的用户列表
         List<Integer> userIds = findGroupUserIds(id);
-        List<UserVO> users = userService.findByIds(userIds);
-        userGroupVO.setUsers(users);
+        if (CollectionUtils.isNotEmpty(userIds)) {
+            List<UserVO> users = userService.findByIds(userIds);
+            userGroupVO.setUsers(users);
+        }
 
         return userGroupVO;
     }

@@ -1,0 +1,17 @@
+#user-model-page .ant-pro-card-body {
+    padding: 0;
+}
+
+#user-model-page .left .ant-table-tbody > tr.ant-table-row:hover > td {
+    background: none;
+    cursor: pointer;
+}
+
+#user-model-page .left .rowSelected {
+    background: #fafafa;
+    /*background: #E6E6FA;*/
+}
+
+#user-model-page .left .rowUnSelected {
+    background: #fff;
+}

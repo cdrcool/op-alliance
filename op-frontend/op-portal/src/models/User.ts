@@ -9,4 +9,5 @@ export interface User {
     signature?: string;
     status?: number;
     orgName?: string;
+    isAdd?: boolean;
 }
