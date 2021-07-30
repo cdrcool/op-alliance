@@ -11,13 +11,14 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 组织 mapping
  *
  * @author cdrcool
  */
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", imports = {Objects.class})
 public interface OrganizationMapping {
 
     /**
@@ -67,8 +68,11 @@ public interface OrganizationMapping {
      * @return 树节点 vo
      */
     @Mappings({
+            @Mapping(source = "id", target = "id"),
+            @Mapping(source = "pid", target = "pid"),
             @Mapping(source = "orgName", target = "title"),
-            @Mapping(source = "id", target = "value")
+            @Mapping(source = "id", target = "value"),
+            @Mapping(target = "isLeaf", expression = "java(Objects.equals(organization.getOrgType(), 5))")
     })
     TreeNodeVO toTreeNodeVO(Organization organization);
 

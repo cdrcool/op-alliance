@@ -4,9 +4,9 @@ import React, {FC, useEffect, useState} from "react";
 import {getUser, saveUser} from "../../../services/user";
 import moment from "moment";
 import {PageContainer} from "@ant-design/pro-layout";
-import {queryMenuTreeSelectList, saveMenu} from "../../../services/menu";
 import {TreeNode} from "../../../models/TreeNode";
 import {queryOrganizationTreeSelectList} from "../../../services/organization";
+import {LegacyDataNode} from "rc-tree-select/lib/interface";
 
 const {TextArea} = Input;
 
@@ -37,9 +37,7 @@ const UserEditPage: FC = () => {
         }
 
         const fetchOrganizationTreeData = async () => {
-            const organizationTreeData = await queryOrganizationTreeSelectList({
-                id: id,
-            });
+            const organizationTreeData = await queryOrganizationTreeSelectList({});
             setOrganizationTreeData(organizationTreeData || []);
         };
 
@@ -54,6 +52,13 @@ const UserEditPage: FC = () => {
             });
         })
     };
+
+    const onLoadData = async (treeNode: LegacyDataNode) => {
+        const children = await queryOrganizationTreeSelectList({
+            pid: treeNode.id
+        });
+        setOrganizationTreeData([...organizationTreeData, ...children]);
+    }
 
     return (
         <PageContainer
@@ -77,12 +82,16 @@ const UserEditPage: FC = () => {
                         wrapperCol={{span: 8}}
                     >
                         <Form.Item name="id" hidden={true}/>
-                        <Form.Item label="组织" name="orgId" rules={[{required: true, message: '请选择组织'}]}>
+                        <Form.Item label="所属组织" name="orgId" rules={[{required: true, message: '请选择组织'}]}>
                             <TreeSelect
                                 allowClear={true}
                                 showSearch={true}
                                 treeNodeFilterProp="title"
+                                treeDataSimpleMode
+                                treeDefaultExpandedKeys={[1]}
                                 treeData={organizationTreeData}
+                                //@ts-ignore
+                                loadData={onLoadData}
                             />
                         </Form.Item>
                         <Form.Item label="用户名" name="username" rules={[{required: true, message: '请输入用户名'}]}>
