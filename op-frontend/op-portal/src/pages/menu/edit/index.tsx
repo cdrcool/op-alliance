@@ -25,7 +25,6 @@ const MenuEditPage: FC = () => {
             }
 
             fetchData().then((value) => {
-                console.log(value);
             });
         } else {
             form.setFieldsValue({pid});

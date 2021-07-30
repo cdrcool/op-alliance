@@ -78,4 +78,10 @@ public class OrganizationController {
     public List<ResourceCategoryAssignVO> loadAssignedResources(@RequestParam Integer id) {
         return organizationService.loadAssignedResources(id);
     }
+
+    @ApiOperation("查询组织树选择列表（异步加载）")
+    @PostMapping("queryTreeSelectList")
+    public List<TreeNodeVO> queryTreeSelectList(@Valid @RequestBody OrganizationTreeQueryDTO queryDTO) {
+        return organizationService.queryTreeSelectList(queryDTO);
+    }
 }

@@ -1,6 +1,5 @@
 package com.op.admin.service.impl;
 
-import com.op.admin.dto.OrganizationListQueryDTO;
 import com.op.admin.dto.OrganizationSaveDTO;
 import com.op.admin.dto.OrganizationTreeQueryDTO;
 import com.op.admin.entity.Organization;
@@ -9,12 +8,12 @@ import com.op.admin.entity.OrganizationRoleRelation;
 import com.op.admin.mapper.*;
 import com.op.admin.mapper.extend.OrganizationMapperExtend;
 import com.op.admin.mapping.OrganizationMapping;
-import com.op.admin.service.*;
+import com.op.admin.service.OrganizationService;
+import com.op.admin.service.ResourceCategoryService;
+import com.op.admin.service.RoleService;
+import com.op.admin.service.UserService;
 import com.op.admin.utils.TreeUtils;
-import com.op.admin.vo.OrganizationTreeVO;
-import com.op.admin.vo.OrganizationVO;
-import com.op.admin.vo.ResourceCategoryAssignVO;
-import com.op.admin.vo.RoleAssignVO;
+import com.op.admin.vo.*;
 import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.apache.commons.collections4.CollectionUtils;
@@ -429,5 +428,26 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public List<Integer> getChildrenIds(Integer id) {
         return organizationMapper.getChildrenIds(id);
+    }
+
+    @Override
+    public List<TreeNodeVO> queryTreeSelectList(OrganizationTreeQueryDTO queryDTO) {
+        Integer pid = Optional.ofNullable(queryDTO.getPid()).orElse(-1);
+        String keyword = queryDTO.getKeyword();
+        Integer id = queryDTO.getId();
+
+        String orgCodeLink = id == null ? null : organizationMapper.selectByPrimaryKey(id).orElse(new Organization()).getOrgCodeLink();
+
+        SelectStatementProvider selectStatementProvider = select(OrganizationMapper.selectList)
+                .from(OrganizationDynamicSqlSupport.organization)
+                .where(OrganizationDynamicSqlSupport.pid, isEqualTo(pid))
+                .and(OrganizationDynamicSqlSupport.orgName, isLike(keyword)
+                        .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"))
+                .and(OrganizationDynamicSqlSupport.orgCodeLink, isNotLike(orgCodeLink)
+                        .filter(StringUtils::isNotBlank).map(v -> v + "%"))
+                .build().render(RenderingStrategies.MYBATIS3);
+
+        List<Organization> organizations = organizationMapper.selectMany(selectStatementProvider);
+        return organizationMapping.toTreeNodeVOList(organizations);
     }
 }

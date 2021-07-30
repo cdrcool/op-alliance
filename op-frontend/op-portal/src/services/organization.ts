@@ -2,6 +2,7 @@ import request from "../utils/request";
 import {Organization} from "../models/Organization";
 import {Role} from "../models/Role";
 import {ResourceCategory} from "../models/ResourceCategory";
+import {TreeNode} from "../models/TreeNode";
 
 /**
  * 保存组织
@@ -84,4 +85,13 @@ export async function assignOrganizationResourceActions(id: number, resourceActi
  */
 export async function loadOrganizationAssignedResources(id: number): Promise<ResourceCategory[]> {
     return request.get(`/api/op-admin/organization/loadAssignedResources?id=${id}`);
+}
+
+/**
+ * 查询菜单树选择列表
+ *
+ * @param params 查询参数
+ */
+export async function queryOrganizationTreeSelectList(params?: object): Promise<TreeNode[]> {
+    return request.post('/api/op-admin/organization/queryTreeSelectList', params);
 }

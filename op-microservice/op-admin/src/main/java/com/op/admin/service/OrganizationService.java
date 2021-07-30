@@ -1,5 +1,6 @@
 package com.op.admin.service;
 
+import com.op.admin.dto.MenuTreeListQueryDTO;
 import com.op.admin.dto.OrganizationListQueryDTO;
 import com.op.admin.dto.OrganizationSaveDTO;
 import com.op.admin.dto.OrganizationTreeQueryDTO;
@@ -117,4 +118,12 @@ public interface OrganizationService {
      * @return 本下级 ids
      */
     List<Integer> getChildrenIds(Integer id);
+
+    /**
+     * 查询组织树选择列表
+     *
+     * @param queryDTO 查询对象
+     * @return 组织树选择列表
+     */
+    List<TreeNodeVO> queryTreeSelectList(OrganizationTreeQueryDTO queryDTO);
 }

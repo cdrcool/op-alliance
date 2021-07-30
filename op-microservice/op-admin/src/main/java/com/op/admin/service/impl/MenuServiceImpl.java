@@ -198,7 +198,7 @@ public class MenuServiceImpl implements MenuService {
                 menuMapping::toTreeNodeVO,
                 TreeNodeVO::setChildren,
                 -1,
-                menu -> !menu.getId().equals(id) && !menu.getPid().equals(id) &&
+                menu -> (id == null || (!menu.getId().equals(id) && !menu.getPid().equals(id))) &&
                         (StringUtils.isBlank(keyword) ||
                                 Optional.ofNullable(menu.getMenuName()).orElse("").contains(keyword) ||
                                 Optional.ofNullable(menu.getMenuPath()).orElse("").contains(keyword) ||

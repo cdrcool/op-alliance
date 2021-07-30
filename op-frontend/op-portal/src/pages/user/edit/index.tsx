@@ -1,10 +1,12 @@
-import {Button, Card, DatePicker, Form, Input, InputNumber, Radio, Space, Spin} from 'antd';
+import {Button, Card, DatePicker, Form, Input, InputNumber, Radio, Space, Spin, TreeSelect} from 'antd';
 import {useHistory, useParams} from "react-router-dom";
 import React, {FC, useEffect, useState} from "react";
 import {getUser, saveUser} from "../../../services/user";
 import moment from "moment";
 import {PageContainer} from "@ant-design/pro-layout";
-import {saveMenu} from "../../../services/menu";
+import {queryMenuTreeSelectList, saveMenu} from "../../../services/menu";
+import {TreeNode} from "../../../models/TreeNode";
+import {queryOrganizationTreeSelectList} from "../../../services/organization";
 
 const {TextArea} = Input;
 
@@ -15,6 +17,7 @@ const UserEditPage: FC = () => {
     const {orgId} = history.location.state || {};
 
     const [loading, setLoading] = useState<boolean>(!!id);
+    const [organizationTreeData, setOrganizationTreeData] = useState<TreeNode[]>([]);
     const [form] = Form.useForm();
 
     useEffect(() => {
@@ -32,6 +35,16 @@ const UserEditPage: FC = () => {
         } else {
             form.setFieldsValue({orgId});
         }
+
+        const fetchOrganizationTreeData = async () => {
+            const organizationTreeData = await queryOrganizationTreeSelectList({
+                id: id,
+            });
+            setOrganizationTreeData(organizationTreeData || []);
+        };
+
+        fetchOrganizationTreeData().then(() => {
+        });
     }, []);
 
     const onSave = () => {
@@ -64,7 +77,14 @@ const UserEditPage: FC = () => {
                         wrapperCol={{span: 8}}
                     >
                         <Form.Item name="id" hidden={true}/>
-                        <Form.Item name="orgId" hidden={true}/>
+                        <Form.Item label="组织" name="orgId" >
+                            <TreeSelect
+                                allowClear={true}
+                                showSearch={true}
+                                treeNodeFilterProp="title"
+                                treeData={organizationTreeData}
+                            />
+                        </Form.Item>
                         <Form.Item label="用户名" name="username" rules={[{required: true, message: '请输入用户名'}]}>
                             <Input/>
                         </Form.Item>
