@@ -63,22 +63,39 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void save(OrganizationSaveDTO saveDTO) {
-        // 校验同一组织下，下级组织名称是否重复
-        validateOrgName(saveDTO.getPid(), saveDTO.getId(), saveDTO.getOrgName());
-        // 校验同一组织下，下级组织编码是否重复
-        validateOrgCode(saveDTO.getPid(), saveDTO.getId(), saveDTO.getOrgCode());
+        Integer id = saveDTO.getId();
+        Integer pid = saveDTO.getPid();
 
-        if (saveDTO.getId() == null) {
+        // 校验同一组织下，下级组织名称是否重复
+        validateOrgName(pid, id, saveDTO.getOrgName());
+        // 校验同一组织下，下级组织编码是否重复
+        validateOrgCode(pid, id, saveDTO.getOrgCode());
+
+        // 获取上级组织
+        Organization parent = organizationMapper.selectByPrimaryKey(pid)
+                .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + pid + "】的上级组织"));
+
+        if (id == null) {
             Organization organization = organizationMapping.toOrganization(saveDTO);
-            setOrganizationProps(organization, saveDTO.getPid());
+            organization.setOrgCodeLink(parent.getOrgCodeLink() + "." + organization.getOrgCodeLink());
             organizationMapper.insert(organization);
         } else {
-            Integer id = saveDTO.getId();
             Organization organization = organizationMapper.selectByPrimaryKey(id)
                     .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的组织"));
-            setOrganizationProps(organization, saveDTO.getPid());
+            // 记录前组织编码链
+            String preOrgCodeLink = organization.getOrgCodeLink();
+            // 设置当前组织编码连
+            String curOrgCodeLink = parent.getOrgCodeLink() + "." + organization.getOrgCode();
+            organization.setOrgCodeLink(curOrgCodeLink);
+
+            // 更新组织
             organizationMapping.update(saveDTO, organization);
             organizationMapper.updateByPrimaryKey(organization);
+
+            // 如果组织编码连发生变化，则更新所有下级的组织编码连
+            if (!curOrgCodeLink.equals(preOrgCodeLink)) {
+                organizationMapper.updateChildrenOrgCodeLink(preOrgCodeLink, curOrgCodeLink);
+            }
         }
     }
 
@@ -118,20 +135,6 @@ public class OrganizationServiceImpl implements OrganizationService {
         if (count > 0) {
             throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "同一父组织下，已存在相同组织编码的下级组织，组织编码不能重复");
         }
-    }
-
-    /**
-     * 设置组织的 pid、orgCodeLink 等属性
-     *
-     * @param organization 组织
-     * @param pid          上级组织 id
-     */
-    private void setOrganizationProps(Organization organization, Integer pid) {
-        Organization pOrg = organizationMapper.selectByPrimaryKey(pid)
-                .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + pid + "】的上级组织"));
-        String orgCodeLink = pOrg.getOrgCodeLink();
-        orgCodeLink = StringUtils.isNoneBlank(orgCodeLink) ? orgCodeLink + "." + organization.getOrgCode() : organization.getOrgCode();
-        organization.setOrgCodeLink(orgCodeLink);
     }
 
     @Transactional(rollbackFor = Exception.class)
