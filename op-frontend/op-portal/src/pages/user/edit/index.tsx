@@ -20,6 +20,13 @@ const UserEditPage: FC = () => {
     const [organizationTreeData, setOrganizationTreeData] = useState<TreeNode[]>([]);
     const [form] = Form.useForm();
 
+    const fetchOrganizationTreeData = async (appendedId: number) => {
+        const organizationTreeData = await queryOrganizationTreeSelectList({
+            appendedId: appendedId,
+        });
+        setOrganizationTreeData(organizationTreeData || []);
+    };
+
     useEffect(() => {
         if (id) {
             const fetchData = async () => {
@@ -27,26 +34,25 @@ const UserEditPage: FC = () => {
                 // @ts-ignore
                 user.birthday = user.birthday && moment(user.birthday, 'YYYY-MM-DD');
                 form.setFieldsValue(user);
+
+                fetchOrganizationTreeData(user.orgId as number).then(() => {
+                });
+
                 setLoading(false);
             }
 
             fetchData().then(() => {
             });
         } else {
-            form.setFieldsValue({orgId});
+            fetchOrganizationTreeData(orgId).then(() => {
+                form.setFieldsValue({orgId});
+            });
         }
-
-        const fetchOrganizationTreeData = async () => {
-            const organizationTreeData = await queryOrganizationTreeSelectList({});
-            setOrganizationTreeData(organizationTreeData || []);
-        };
-
-        fetchOrganizationTreeData().then(() => {
-        });
     }, []);
 
     const onSave = () => {
         form.validateFields().then(values => {
+            values.birthday = values.birthday && values.birthday.format('YYYY-MM-DD');
             saveUser(values).then(() => {
                 history.push('/admin/user');
             });
@@ -84,11 +90,11 @@ const UserEditPage: FC = () => {
                         <Form.Item name="id" hidden={true}/>
                         <Form.Item label="所属组织" name="orgId" rules={[{required: true, message: '请选择组织'}]}>
                             <TreeSelect
+                                treeNodeFilterProp="title"
                                 allowClear={true}
                                 showSearch={true}
-                                treeNodeFilterProp="title"
+                                treeDefaultExpandedKeys={organizationTreeData.filter(node => node.isExpand).map(node => node.id)}
                                 treeDataSimpleMode
-                                treeDefaultExpandedKeys={[1]}
                                 treeData={organizationTreeData}
                                 //@ts-ignore
                                 loadData={onLoadData}

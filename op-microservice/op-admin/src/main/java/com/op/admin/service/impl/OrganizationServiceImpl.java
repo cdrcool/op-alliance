@@ -434,20 +434,31 @@ public class OrganizationServiceImpl implements OrganizationService {
     public List<TreeNodeVO> queryTreeSelectList(OrganizationTreeQueryDTO queryDTO) {
         Integer pid = Optional.ofNullable(queryDTO.getPid()).orElse(-1);
         String keyword = queryDTO.getKeyword();
-        Integer id = queryDTO.getId();
+        Integer filteredId = queryDTO.getFilteredId();
+        Integer appendedId = queryDTO.getAppendedId();
 
-        String orgCodeLink = id == null ? null : organizationMapper.selectByPrimaryKey(id).orElse(new Organization()).getOrgCodeLink();
+        Organization organization = organizationMapper.selectByPrimaryKey(filteredId).orElse(new Organization());
+        String orgCodeLink = organization.getOrgCodeLink();
+        List<Integer> parentIds = appendedId == null ? new ArrayList<>() : getParentsIds(appendedId);
 
         SelectStatementProvider selectStatementProvider = select(OrganizationMapper.selectList)
                 .from(OrganizationDynamicSqlSupport.organization)
-                .where(OrganizationDynamicSqlSupport.pid, isEqualTo(pid))
+                .where(OrganizationDynamicSqlSupport.pid, isEqualTo(pid),
+                        // 如果是根组织，则带出一级组织列表
+                        or(OrganizationDynamicSqlSupport.pid, isEqualTo(1).filter(v -> pid == -1)),
+                        // 如果是要追加的组织，则还要返回该组织及其上级组织列表
+                        or(OrganizationDynamicSqlSupport.id, isInWhenPresent(parentIds)))
                 .and(OrganizationDynamicSqlSupport.orgName, isLike(keyword)
                         .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"))
+                // 如果是要过滤的组织，则不返回该组织及其下级组织列表
                 .and(OrganizationDynamicSqlSupport.orgCodeLink, isNotLike(orgCodeLink)
                         .filter(StringUtils::isNotBlank).map(v -> v + "%"))
                 .build().render(RenderingStrategies.MYBATIS3);
-
         List<Organization> organizations = organizationMapper.selectMany(selectStatementProvider);
-        return organizationMapping.toTreeNodeVOList(organizations);
+
+        List<TreeNodeVO> nodes = organizationMapping.toTreeNodeVOList(organizations);
+        nodes.forEach(node -> node.setIsExpand(parentIds.contains(node.getId())));
+
+        return nodes;
     }
 }

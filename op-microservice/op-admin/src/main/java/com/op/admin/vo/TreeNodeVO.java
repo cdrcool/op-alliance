@@ -31,6 +31,9 @@ public class TreeNodeVO {
     @ApiModelProperty("是否叶子节点")
     private Boolean isLeaf;
 
+    @ApiModelProperty("是否展开")
+    private Boolean isExpand;
+
     @ApiModelProperty("子节点列表")
     private List<TreeNodeVO> children;
 }

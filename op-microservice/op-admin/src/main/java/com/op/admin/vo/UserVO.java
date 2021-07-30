@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import javax.validation.constraints.Email;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 用户 VO
@@ -61,4 +62,7 @@ public class UserVO extends BaseVo {
     @ApiModelProperty("最后登录时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime lastLoginTime;
+
+    @ApiModelProperty("组织ids")
+    private List<Integer> organizationIds;
 }

@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 /**
  * 组织 VO
  *
@@ -35,4 +37,7 @@ public class OrganizationVO extends BaseVo {
 
     @ApiModelProperty("上级组织名称")
     private String parentName;
+
+    @ApiModelProperty("父节点ids")
+    private List<Integer> parentIds;
 }
