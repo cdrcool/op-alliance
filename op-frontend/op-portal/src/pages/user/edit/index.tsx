@@ -77,7 +77,7 @@ const UserEditPage: FC = () => {
                         wrapperCol={{span: 8}}
                     >
                         <Form.Item name="id" hidden={true}/>
-                        <Form.Item label="组织" name="orgId" >
+                        <Form.Item label="组织" name="orgId" rules={[{required: true, message: '请选择组织'}]}>
                             <TreeSelect
                                 allowClear={true}
                                 showSearch={true}
