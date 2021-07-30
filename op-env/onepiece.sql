@@ -11,7 +11,7 @@
  Target Server Version : 80025
  File Encoding         : 65001
 
- Date: 23/07/2021 15:44:31
+ Date: 30/07/2021 17:44:42
 */
 
 SET NAMES utf8mb4;
@@ -24,12 +24,14 @@ DROP TABLE IF EXISTS `admin_menu`;
 CREATE TABLE `admin_menu`  (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
   `pid` int NULL DEFAULT NULL COMMENT '上级菜单id',
+  `parent_ids` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '上级菜单ids',
   `menu_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '菜单名称',
   `menu_icon` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '菜单图标',
   `menu_path` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '菜单路径',
   `is_hidden` tinyint(1) NULL DEFAULT NULL COMMENT '是否隐藏',
   `permission` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '权限标识',
   `menu_no` int NULL DEFAULT NULL COMMENT '菜单编号',
+  `menu_level` int NULL DEFAULT NULL COMMENT '菜单层级',
   `version` int NULL DEFAULT NULL COMMENT '版本号',
   `deleted` tinyint(1) NULL DEFAULT NULL COMMENT '是否逻辑删除',
   `creator_id` int NULL DEFAULT NULL COMMENT '创建人id',
@@ -38,19 +40,22 @@ CREATE TABLE `admin_menu`  (
   `last_modify_time` datetime NULL DEFAULT NULL COMMENT '最后修改时间',
   `tenant_id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜单' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜单' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of admin_menu
 -- ----------------------------
-INSERT INTO `admin_menu` VALUES (1, -1, NULL, '工作台', 'DesktopOutlined', '/workbench', 0, 'workbench_view', 1, 1, 0, 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `admin_menu` VALUES (2, -1, NULL, '管理中心', 'TeamOutlined', '/admin', 0, 'admin_view', 2, 1, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_menu` VALUES (1, -1, '', '工作台', 'DesktopOutlined', '/workbench', 0, 'workbench_view', 1, 1, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_menu` VALUES (2, -1, '10', '管理中心', 'TeamOutlined', '/admin', 0, 'admin_view', 2, 1, 0, 0, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `admin_menu` VALUES (3, 2, '2', '组织管理', NULL, '/admin/organization', 0, 'organization_view', 1, 2, 0, 0, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `admin_menu` VALUES (4, 2, '2', '用户管理', NULL, '/admin/user', 0, 'user_view', 2, 2, 0, 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `admin_menu` VALUES (5, 2, '2', '角色管理', NULL, '/admin/role', 0, 'role_view', 3, 2, 0, 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `admin_menu` VALUES (6, 2, '2', '资源分类管理', NULL, '/admin/resourceCategory', 0, 'resource_category_view', 4, 2, 0, 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `admin_menu` VALUES (7, 2, '2', '菜单管理', NULL, '/admin/menu', 0, 'menu_view', 6, 2, 0, 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `admin_menu` VALUES (8, 2, '2', '资源管理', NULL, '/admin/resource', 0, 'resource_view', 5, 2, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_menu` VALUES (5, 2, '2', '角色管理', NULL, '/admin/role', 0, 'role_view', 4, 2, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_menu` VALUES (6, 2, '2', '资源分类管理', NULL, '/admin/resourceCategory', 0, 'resource_category_view', 5, 2, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_menu` VALUES (7, 2, '2', '菜单管理', NULL, '/admin/menu', 0, 'menu_view', 7, 2, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_menu` VALUES (8, 2, '2', '资源管理', NULL, '/admin/resource', 0, 'resource_view', 6, 2, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_menu` VALUES (10, -1, '1', '个人中心', '', '/personal/center', 1, 'owner', 3, 2, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_menu` VALUES (11, -1, '1', '个人设置', NULL, '/personal/settings', 1, 'owner', 4, 1, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_menu` VALUES (17, 2, '2', '用户组管理', NULL, '/admin/userGroup', 0, 'user_group_view', 3, 2, 0, 0, NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for admin_oauth_client_details
@@ -70,11 +75,15 @@ CREATE TABLE `admin_oauth_client_details`  (
   `autoapprove` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '是否自动授权（只适用于授权码模式，可选值：true|false|read|write）',
   `additional_information` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '其它信息',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = 'oauth2-client' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = 'oauth2-client' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of admin_oauth_client_details
 -- ----------------------------
+INSERT INTO `admin_oauth_client_details` VALUES (1, 'client', '$2a$10$ngadERbCpEPqPCXKf7vbjesqK9p.wVTTs9.X2wmqjdg0LaOlpofAm', 'client_credentials', NULL, NULL, NULL, NULL, 86400, NULL, NULL, NULL);
+INSERT INTO `admin_oauth_client_details` VALUES (2, 'implicit', '$2a$10$ngadERbCpEPqPCXKf7vbjesqK9p.wVTTs9.X2wmqjdg0LaOlpofAm', 'implicit', NULL, 'https://www.baidu.com', NULL, NULL, 86400, NULL, NULL, NULL);
+INSERT INTO `admin_oauth_client_details` VALUES (3, 'password', '$2a$10$ngadERbCpEPqPCXKf7vbjesqK9p.wVTTs9.X2wmqjdg0LaOlpofAm', 'password,refresh_token', NULL, NULL, NULL, NULL, 86400, 604800, NULL, NULL);
+INSERT INTO `admin_oauth_client_details` VALUES (4, 'code', '$2a$10$ngadERbCpEPqPCXKf7vbjesqK9p.wVTTs9.X2wmqjdg0LaOlpofAm', 'authorization_code,refresh_token', NULL, 'http://localhost:8080/authorized', NULL, NULL, 86400, 604800, 'true', NULL);
 
 -- ----------------------------
 -- Table structure for admin_organization
@@ -95,13 +104,13 @@ CREATE TABLE `admin_organization`  (
   `last_modify_time` datetime NULL DEFAULT NULL COMMENT '最后修改时间',
   `tenant_id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '组织' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '组织' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of admin_organization
 -- ----------------------------
 INSERT INTO `admin_organization` VALUES (1, -1, '保利物业集团', '0001', '0001', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `admin_organization` VALUES (2, 1, '武汉公司', '0001', '0001.0001', 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_organization` VALUES (2, 1, '北京公司', '0001', '0001.0001', 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `admin_organization` VALUES (3, 2, '研发部', '0001', '0001.0001.0001', 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `admin_organization` VALUES (4, 2, '产品部', '0002', '0001.0001.0002', 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `admin_organization` VALUES (5, 2, '销售部', '0003', '0001.0001.0003', 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
@@ -109,8 +118,18 @@ INSERT INTO `admin_organization` VALUES (6, 1, '上海公司', '0002', '0001.000
 INSERT INTO `admin_organization` VALUES (7, 6, '研发部', '0001', '0001.0002.0001', 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `admin_organization` VALUES (8, 6, '产品部', '0002', '0001.0002.0002', 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `admin_organization` VALUES (9, 6, '质量部', '0003', '0001.0002.0003', 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `admin_organization` VALUES (10, 1, '西安公司', '0003', '0001.0003', 2, 0, 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `admin_organization` VALUES (11, 10, '运维部', '0001', '0001.0003.运维部', 5, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_organization` VALUES (10, 1, '广州公司', '0003', '0001.0003', 2, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_organization` VALUES (11, 10, '研发部', '0001', '0001.0003.0001', 5, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_organization` VALUES (12, 10, '产品部', '0002', '0001.0003.0002', 5, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_organization` VALUES (13, 10, '质量部', '0003', '0001.0003.0003', 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_organization` VALUES (14, 1, '深圳公司', '0004', '0001.0004', 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_organization` VALUES (15, 14, '研发部', '0001', '0001.0004.0001', 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_organization` VALUES (16, 14, '产品部', '0002', '0001.0004.0002', 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_organization` VALUES (17, 1, '武汉分公司', '0005', '0001.0005', 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_organization` VALUES (18, 17, '武汉软件新城项目部', '0001', '0001.0005.0001', 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_organization` VALUES (19, 21, '信息部', '0001', '0001.0005.0001.0003.0001', 5, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_organization` VALUES (20, 19, '技术部', '0002', '0001.0005.0001.0003.0001.0002', 5, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_organization` VALUES (21, 18, '安全部', '0003', '0001.0005.0001.0003', 5, 0, 0, NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for admin_organization_resource_action_relation
@@ -301,7 +320,7 @@ CREATE TABLE `admin_role`  (
   `last_modify_time` datetime NULL DEFAULT NULL COMMENT '最后修改时间',
   `tenant_id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 25 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of admin_role
@@ -385,14 +404,14 @@ CREATE TABLE `admin_user`  (
   `last_modify_time` datetime NULL DEFAULT NULL COMMENT '最后修改时间',
   `tenant_id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of admin_user
 -- ----------------------------
-INSERT INTO `admin_user` VALUES (1, 1, 'admin', NULL, '管理员', NULL, NULL, '13669064460', '13669064460@139.com', 1, '1989-09-15', 1, 1, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `admin_user` VALUES (2, 1, 'guest', NULL, '游客', NULL, NULL, NULL, NULL, NULL, NULL, 1, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `admin_user` VALUES (3, 1, 'lemon', NULL, '李萌', NULL, NULL, '13620600060', '13620600060@139.com', 2, '1989-04-22', 1, 3, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_user` VALUES (1, 1, 'admin', '$2a$10$Nyv6JowsaRTBpU405amyLu0Un6FalfYzbhmS5AqTlRzZ949wiS5a2', '管理员', NULL, NULL, '13669064460', '13669064460@139.com', 1, '1989-09-15', 1, 1, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_user` VALUES (2, 1, 'guest', '$2a$10$UPujvBVbhgQ0Fq5ygqaO0OOi3I4gWfzUQDFz6W1g34py6iZ28vk3W', '游客', NULL, NULL, NULL, NULL, NULL, NULL, 1, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_user` VALUES (3, 9, 'lemon', '$2a$10$pT1QtdGPnICYMT3Vy.R8jOcvDMbwOfc7aVmGBVjdJapcsYHS3BMJq', '李萌', NULL, NULL, '13620600060', '13620600060@139.com', 2, '1989-04-22', 1, 3, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for admin_user_group
@@ -411,11 +430,12 @@ CREATE TABLE `admin_user_group`  (
   `last_modify_time` datetime NULL DEFAULT NULL COMMENT '最后修改时间',
   `tenant_id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户组' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户组' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of admin_user_group
 -- ----------------------------
+INSERT INTO `admin_user_group` VALUES (1, '纪委领导班子', '', 1, 0, 0, NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for admin_user_group_resource_action_relation
@@ -437,6 +457,10 @@ CREATE TABLE `admin_user_group_resource_action_relation`  (
 -- ----------------------------
 -- Records of admin_user_group_resource_action_relation
 -- ----------------------------
+INSERT INTO `admin_user_group_resource_action_relation` VALUES (1, 1, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_user_group_resource_action_relation` VALUES (1, 2, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_user_group_resource_action_relation` VALUES (1, 3, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_user_group_resource_action_relation` VALUES (1, 4, 0, 0, NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for admin_user_group_role_relation
@@ -458,6 +482,8 @@ CREATE TABLE `admin_user_group_role_relation`  (
 -- ----------------------------
 -- Records of admin_user_group_role_relation
 -- ----------------------------
+INSERT INTO `admin_user_group_role_relation` VALUES (1, 1, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_user_group_role_relation` VALUES (1, 2, 0, 0, NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for admin_user_group_user_relation
@@ -478,6 +504,27 @@ CREATE TABLE `admin_user_group_user_relation`  (
 
 -- ----------------------------
 -- Records of admin_user_group_user_relation
+-- ----------------------------
+INSERT INTO `admin_user_group_user_relation` VALUES (1, 3, 0, 0, NULL, NULL, NULL, NULL, NULL);
+
+-- ----------------------------
+-- Table structure for admin_user_organization_relation
+-- ----------------------------
+DROP TABLE IF EXISTS `admin_user_organization_relation`;
+CREATE TABLE `admin_user_organization_relation`  (
+  `user_id` int NULL DEFAULT NULL COMMENT '用户id',
+  `org_id` int NULL DEFAULT NULL COMMENT '组织id',
+  `version` int NULL DEFAULT NULL COMMENT '版本号',
+  `deleted` tinyint(1) NULL DEFAULT NULL COMMENT '是否逻辑删除',
+  `creator_id` int NULL DEFAULT NULL COMMENT '创建人id',
+  `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+  `last_modifier_id` int NULL DEFAULT NULL COMMENT '最后修改人id',
+  `last_modify_time` datetime NULL DEFAULT NULL COMMENT '最后修改时间',
+  `tenant_id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id'
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户-授权组织关联' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of admin_user_organization_relation
 -- ----------------------------
 
 -- ----------------------------
