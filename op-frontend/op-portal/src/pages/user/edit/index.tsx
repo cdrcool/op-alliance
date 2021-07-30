@@ -22,7 +22,7 @@ const UserEditPage: FC = () => {
 
     const fetchOrganizationTreeData = async (appendedId: number) => {
         const organizationTreeData = await queryOrganizationTreeSelectList({
-            appendedId: appendedId,
+            appendedId,
         });
         setOrganizationTreeData(organizationTreeData || []);
     };
@@ -61,10 +61,10 @@ const UserEditPage: FC = () => {
 
     const onLoadData = async (treeNode: LegacyDataNode) => {
         const children = await queryOrganizationTreeSelectList({
-            pid: treeNode.id
+            pid: treeNode.id,
         });
         setOrganizationTreeData([...organizationTreeData, ...children]);
-    }
+    };
 
     return (
         <PageContainer
@@ -88,7 +88,7 @@ const UserEditPage: FC = () => {
                         wrapperCol={{span: 8}}
                     >
                         <Form.Item name="id" hidden={true}/>
-                        <Form.Item label="所属组织" name="orgId" rules={[{required: true, message: '请选择组织'}]}>
+                        <Form.Item label="所属组织" name="orgId" rules={[{required: true, message: '请选择所属组织'}]}>
                             <TreeSelect
                                 treeNodeFilterProp="title"
                                 allowClear={true}

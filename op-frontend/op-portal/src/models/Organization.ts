@@ -1,6 +1,6 @@
 export interface Organization {
     id?: number;
-    pid?: string;
+    pid?: number;
     orgName?: string;
     orgCode?: string;
     orgCodeLink?: number;
