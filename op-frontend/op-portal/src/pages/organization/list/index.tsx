@@ -4,9 +4,9 @@ import {Button, Popconfirm, Space} from "antd";
 import {ExportOutlined, MinusOutlined} from "@ant-design/icons";
 import {PageContainer} from "@ant-design/pro-layout";
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
+import ProTable, {TableDropdown} from '@ant-design/pro-table';
 import {Organization} from "../../../models/Organization";
-import {deleteOrganizations, queryOrganizationTree} from "../../../services/organization";
+import {deleteOrganizations, queryOrganizationTreeList} from "../../../services/organization";
 
 const OrganizationListPage: FC = () => {
     const history = useHistory();
@@ -64,13 +64,21 @@ const OrganizationListPage: FC = () => {
                 })}>
                     新增下级
                 </a>,
-                <a key="assignRoles" onClick={() => history.push(`/admin/organization/assign-roles/${record.id}`)}>
-                    分配角色
-                </a>,
-                <a key="assignResources"
-                   onClick={() => history.push(`/admin/organization/assign-resources/${record.id}`)}>
-                    分配资源
-                </a>,
+                <TableDropdown
+                    key="actions"
+                    menus={[
+                        {
+                            key: 'assignRoles',
+                            name: '分配角色',
+                            onClick: () => history.push(`/admin/organization/assign-roles/${record.id}`),
+                        },
+                        {
+                            key: 'assignResources',
+                            name: '分配资源',
+                            onClick: () => history.push(`/admin/organization/assign-resources/${record.id}`),
+                        },
+                    ]}
+                />,
             ],
         },
     ];
@@ -118,14 +126,14 @@ const OrganizationListPage: FC = () => {
                 request={
                     async (params, sort, filter) => {
                         const {keyword} = params;
-                        const result = await queryOrganizationTree(
+                        const result = await queryOrganizationTreeList(
                             {
                                 keyword,
                                 ...filter
                             }
                         );
                         return {
-                            data: [result],
+                            data: result,
                             success: true,
                         };
                     }

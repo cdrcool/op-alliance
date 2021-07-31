@@ -4,7 +4,7 @@ import {Button, Popconfirm, Space} from "antd";
 import {ExportOutlined, MinusOutlined, PlusOutlined} from "@ant-design/icons";
 import {PageContainer} from "@ant-design/pro-layout";
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
+import ProTable, {TableDropdown} from '@ant-design/pro-table';
 import {Resource} from "../../../models/Resource";
 import {UserGroup} from "../../../models/UserGroup";
 import {deleteUserGroups, queryUserGroupPage} from "../../../services/userGroup";
@@ -49,12 +49,21 @@ const UserGroupListPage: FC = () => {
                 <a key="view" onClick={() => history.push(`/admin/userGroup/detail/${record.id}`)}>
                     查看
                 </a>,
-                <a key="assignRoles" onClick={() => history.push(`/admin/userGroup/assign-roles/${record.id}`)}>
-                    分配角色
-                </a>,
-                <a key="assignResources" onClick={() => history.push(`/admin/userGroup/assign-resources/${record.id}`)}>
-                    分配资源
-                </a>,
+                <TableDropdown
+                    key="actions"
+                    menus={[
+                        {
+                            key: 'assignRoles',
+                            name: '分配角色',
+                            onClick: () => history.push(`/admin/userGroup/assign-roles/${record.id}`),
+                        },
+                        {
+                            key: 'assignResources',
+                            name: '分配资源',
+                            onClick: () => history.push(`/admin/userGroup/assign-resources/${record.id}`),
+                        },
+                    ]}
+                />,
             ],
         },
     ];

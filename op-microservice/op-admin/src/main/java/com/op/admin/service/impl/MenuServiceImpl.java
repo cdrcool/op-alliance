@@ -3,6 +3,7 @@ package com.op.admin.service.impl;
 import com.op.admin.dto.MenuSaveDTO;
 import com.op.admin.dto.MenuTreeListQueryDTO;
 import com.op.admin.entity.Menu;
+import com.op.admin.entity.Organization;
 import com.op.admin.mapper.MenuDynamicSqlSupport;
 import com.op.admin.mapper.MenuMapper;
 import com.op.admin.mapping.MenuMapping;
@@ -29,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -152,7 +154,8 @@ public class MenuServiceImpl implements MenuService {
                 menu -> StringUtils.isBlank(keyword) ||
                         Optional.ofNullable(menu.getMenuName()).orElse("").contains(keyword) ||
                         Optional.ofNullable(menu.getMenuPath()).orElse("").contains(keyword) ||
-                        Optional.ofNullable(menu.getPermission()).orElse("").contains(keyword)
+                        Optional.ofNullable(menu.getPermission()).orElse("").contains(keyword),
+                Comparator.comparing(Menu::getMenuNo)
         );
         return CollectionUtils.isNotEmpty(treeList) ? treeList : new ArrayList<>();
     }
@@ -202,7 +205,8 @@ public class MenuServiceImpl implements MenuService {
                         (StringUtils.isBlank(keyword) ||
                                 Optional.ofNullable(menu.getMenuName()).orElse("").contains(keyword) ||
                                 Optional.ofNullable(menu.getMenuPath()).orElse("").contains(keyword) ||
-                                Optional.ofNullable(menu.getPermission()).orElse("").contains(keyword))
+                                Optional.ofNullable(menu.getPermission()).orElse("").contains(keyword)),
+                Comparator.comparing(Menu::getMenuNo)
         );
         return CollectionUtils.isNotEmpty(treeList) ? treeList : new ArrayList<>();
     }

@@ -45,8 +45,8 @@ export async function getOrganization(id: number): Promise<Organization> {
  *
  * @param params 查询参数
  */
-export async function queryOrganizationTree(params: object): Promise<Organization> {
-    return request.post(`/api/op-admin/organization/queryTree`, params);
+export async function queryOrganizationTreeList(params: object): Promise<Organization[]> {
+    return request.post(`/api/op-admin/organization/queryTreeList`, params);
 }
 
 /**
@@ -88,10 +88,19 @@ export async function loadOrganizationAssignedResources(id: number): Promise<Res
 }
 
 /**
- * 查询菜单树选择列表
+ * 查询组织树选择列表（异步加载）
  *
  * @param params 查询参数
  */
 export async function queryOrganizationTreeSelectList(params?: object): Promise<TreeNode[]> {
     return request.post('/api/op-admin/organization/queryTreeSelectList', params);
+}
+
+/**
+ * 查询组织树参照列表（异步加载）
+ *
+ * @param params 查询参数
+ */
+export async function queryOrganizationTreeReferList(params?: object): Promise<TreeNode[]> {
+    return request.post('/api/op-admin/organization/queryTreeReferList', params);
 }

@@ -4,7 +4,7 @@ import {Button, Dropdown, Menu, Popconfirm, Space} from "antd";
 import {ExportOutlined, MinusOutlined, PlusOutlined} from "@ant-design/icons";
 import {PageContainer} from "@ant-design/pro-layout";
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
+import ProTable, {TableDropdown} from '@ant-design/pro-table';
 import {Role} from "../../../models/Role";
 import {changeRolesEnabled, deleteRoles, queryRolePage} from "../../../services/role";
 
@@ -65,12 +65,21 @@ const RoleListPage: FC = () => {
                 <a key="view" onClick={() => history.push(`/admin/role/detail/${record.id}`)}>
                     查看
                 </a>,
-                <a key="enable" onClick={() => onChangeRolesEnabled([record.id] as number[], record.status === 0)}>
-                    {record.status === 1 ? '禁用' : '启用'}
-                </a>,
-                <a key="assignResources" onClick={() => history.push(`/admin/role/assign-resources/${record.id}`)}>
-                    分配资源
-                </a>,
+                <TableDropdown
+                    key="actions"
+                    menus={[
+                        {
+                            key: 'enable',
+                            name: record.status === 1 ? '禁用' : '启用',
+                            onClick: () => onChangeRolesEnabled([record.id] as number[], record.status === 0),
+                        },
+                        {
+                            key: 'assignResources',
+                            name: '分配资源',
+                            onClick: () => history.push(`/admin/role/assign-resources/${record.id}`),
+                        },
+                    ]}
+                />,
             ],
         },
     ];

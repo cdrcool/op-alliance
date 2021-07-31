@@ -4,7 +4,7 @@ import {Button, Dropdown, Menu, Popconfirm, Space} from "antd";
 import {ExportOutlined, MinusOutlined, PlusOutlined} from "@ant-design/icons";
 import {PageContainer} from "@ant-design/pro-layout";
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
+import ProTable, {TableDropdown} from '@ant-design/pro-table';
 import {Menus} from "../../../models/Menus";
 import {changeMenusVisibility, deleteMenus, queryMenuTreeList} from "../../../services/menu";
 
@@ -67,15 +67,21 @@ const MenuListPage: FC = () => {
                 <a key="view" onClick={() => history.push(`/admin/menu/detail/${record.id}`)}>
                     查看
                 </a>,
-                <a key="enable"
-                   onClick={() => onChangeMenusVisibility([record.id] as number[], record.isHidden as boolean)}>
-                    {record.isHidden ? '显示' : '隐藏'}
-                </a>,
                 <a key="addChild" onClick={() => history.push(`/admin/menu/edit`, {
                     pid: record.id,
                 })}>
                     新增下级
                 </a>,
+                <TableDropdown
+                    key="actions"
+                    menus={[
+                        {
+                            key: 'enable',
+                            name: record.isHidden ? '显示' : '隐藏',
+                            onClick: () => onChangeMenusVisibility([record.id] as number[], record.isHidden as boolean),
+                        },
+                    ]}
+                />,
             ],
         },
     ];

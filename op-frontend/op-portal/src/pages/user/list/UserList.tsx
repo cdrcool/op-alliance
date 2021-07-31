@@ -2,7 +2,7 @@ import React, {FC, useEffect, useRef} from "react";
 import {useHistory} from "react-router-dom";
 import {Button, Dropdown, Menu, Popconfirm, Space} from "antd";
 import {ExportOutlined, MinusOutlined, PlusOutlined} from "@ant-design/icons";
-import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
+import ProTable, {ActionType, ProColumns, TableDropdown} from "@ant-design/pro-table";
 import {User} from "../../../models/User";
 import {changeUsersEnabled, queryUserPage} from "../../../services/user";
 
@@ -81,15 +81,31 @@ const UserList: FC<UserListProps> = (props) => {
                 <a key="view" onClick={() => history.push(`/admin/user/detail/${record.id}`)}>
                     查看
                 </a>,
-                <a key="enable" onClick={() => onChangeUsersEnabled([record.id] as number[], record.status === 0)}>
-                    {record.status === 1 ? '禁用' : '启用'}
-                </a>,
-                <a key="assignRoles" onClick={() => history.push(`/admin/user/assign-roles/${record.id}`)}>
-                    分配角色
-                </a>,
-                <a key="assignResources" onClick={() => history.push(`/admin/user/assign-resources/${record.id}`)}>
-                    分配资源
-                </a>,
+                <TableDropdown
+                    key="actions"
+                    menus={[
+                        {
+                            key: 'enable',
+                            name: record.status === 1 ? '禁用' : '启用',
+                            onClick: () => onChangeUsersEnabled([record.id] as number[], record.status === 0),
+                        },
+                        {
+                            key: 'assignRoles',
+                            name: '分配角色',
+                            onClick: () => history.push(`/admin/user/assign-roles/${record.id}`),
+                        },
+                        {
+                            key: 'assignResources',
+                            name: '分配资源',
+                            onClick: () => history.push(`/admin/user/assign-resources/${record.id}`),
+                        },
+                        {
+                            key: 'assignOrganizations',
+                            name: '授权组织',
+                            onClick: () => history.push(`/admin/user/assign-organizations/${record.id}`),
+                        },
+                    ]}
+                />,
             ],
         },
     ];

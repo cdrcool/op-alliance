@@ -1,7 +1,7 @@
 import React, {FC, useEffect, useState} from "react";
 import ProTable, {ProColumns} from "@ant-design/pro-table";
 import {Organization} from "../../../models/Organization";
-import {queryOrganizationTree} from "../../../services/organization";
+import {queryOrganizationTreeList} from "../../../services/organization";
 
 type OrganizationTreeProps = {
     orgId: number;
@@ -72,13 +72,13 @@ const OrganizationTree: FC<OrganizationTreeProps> = (props) => {
             request={
                 async (params) => {
                     const {keyword} = params;
-                    const result = await queryOrganizationTree(
+                    const result = await queryOrganizationTreeList(
                         {
                             keyword,
                         }
                     );
                     return {
-                        data: [result],
+                        data: result,
                         success: true,
                     };
                 }}

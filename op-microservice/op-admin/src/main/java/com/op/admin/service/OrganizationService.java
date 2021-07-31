@@ -48,12 +48,12 @@ public interface OrganizationService {
     OrganizationVO findById(Integer id);
 
     /**
-     * 查询组织树
+     * 查询组织树列表
      *
      * @param queryDTO 查询对象
-     * @return 组织树 vo
+     * @return 组织树 vo 列表
      */
-    OrganizationTreeVO queryTree(OrganizationTreeQueryDTO queryDTO);
+    List<OrganizationTreeVO> queryTreeList(OrganizationTreeQueryDTO queryDTO);
 
     /**
      * 分配角色
@@ -120,10 +120,18 @@ public interface OrganizationService {
     List<Integer> getChildrenIds(Integer id);
 
     /**
-     * 查询组织树选择列表
+     * 查询组织树选择列表（异步加载）
      *
      * @param queryDTO 查询对象
      * @return 组织树选择列表
      */
     List<TreeNodeVO> queryTreeSelectList(OrganizationTreeQueryDTO queryDTO);
+
+    /**
+     * 查询组织树参照列表（异步加载）
+     *
+     * @param queryDTO 查询对象
+     * @return 组织树选择列表
+     */
+    List<TreeNodeVO> queryTreeReferList(OrganizationTreeQueryDTO queryDTO);
 }

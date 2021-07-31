@@ -12,6 +12,7 @@ import UserEditPage from "../pages/user/edit";
 import UserDetailPage from "../pages/user/detail";
 import UserAssignRolesPage from "../pages/user/assignroles";
 import UserAssignResourcesPage from "../pages/user/assignresource";
+import UserAssignOrganizationsPage from "../pages/user/assignorganizations";
 import UserGroupListPage from "../pages/usergroup/list";
 import UserGroupAssignResourcesPage from "../pages/usergroup/assignresource";
 import UserGroupAssignRolesPage from "../pages/usergroup/assignroles";
@@ -98,6 +99,11 @@ const routes = [
                 path: "/admin/user/assign-resources/:id",
                 exact: true,
                 component: UserAssignResourcesPage,
+            },
+            {
+                path: "/admin/user/assign-organizations/:id",
+                exact: true,
+                component: UserAssignOrganizationsPage,
             },
             {
                 path: "/admin/userGroup",

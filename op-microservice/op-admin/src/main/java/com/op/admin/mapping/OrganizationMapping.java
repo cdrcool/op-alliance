@@ -68,6 +68,7 @@ public interface OrganizationMapping {
      * @return 树节点 vo
      */
     @Mappings({
+            @Mapping(source = "id", target = "key"),
             @Mapping(source = "id", target = "id"),
             @Mapping(source = "pid", target = "pid"),
             @Mapping(source = "orgName", target = "title"),

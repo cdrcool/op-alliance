@@ -15,6 +15,9 @@ import java.util.List;
 @ApiModel(description = "树节点 VO")
 @Data
 public class TreeNodeVO {
+    @ApiModelProperty("关键字")
+    private String key;
+
     @ApiModelProperty("主键")
     private Integer id;
 

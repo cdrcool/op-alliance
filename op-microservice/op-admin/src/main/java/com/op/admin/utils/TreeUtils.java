@@ -58,7 +58,8 @@ public class TreeUtils {
      * @param voFunction       entity -> vo 映射
      * @param childrenConsumer (vo, children) 消费者
      * @param ancestorId       祖先 id
-     * @param filter           过滤条件
+     * @param predicate        过滤条件
+     * @param comparator       排序
      * @param <E>              entity 泛型
      * @param <V>              vo 泛型
      * @param <ID>             id 泛型
@@ -70,27 +71,40 @@ public class TreeUtils {
                                                         Function<E, V> voFunction,
                                                         BiConsumer<V, List<V>> childrenConsumer,
                                                         ID ancestorId,
-                                                        Predicate<E> filter) {
-        Predicate<E> predicate = Optional.ofNullable(filter).orElse(v -> true);
+                                                        Predicate<E> predicate,
+                                                        Comparator<E> comparator) {
+        Predicate<E> filter = Optional.ofNullable(predicate).orElse(v -> true);
 
         Map<Boolean, List<E>> descendantMap = entities.stream()
                 .collect(Collectors.partitioningBy(item -> pidFunction.apply(item).equals(ancestorId)));
         List<E> children = descendantMap.get(true);
-        return children.stream().map(child -> {
-            V result = voFunction.apply(child);
+        return children.stream()
+                .sorted(comparator)
+                .map(child -> {
+                    V result = voFunction.apply(child);
 
-            List<V> curChildren = buildTreeRecursion(descendantMap.get(false), pidFunction, idFunction, voFunction, childrenConsumer, idFunction.apply(child), filter);
-            if (CollectionUtils.isNotEmpty(curChildren)) {
-                childrenConsumer.accept(result, curChildren);
-                return result;
-            }
+                    List<V> curChildren = buildTreeRecursion(
+                            descendantMap.get(false),
+                            pidFunction,
+                            idFunction,
+                            voFunction,
+                            childrenConsumer,
+                            idFunction.apply(child),
+                            predicate,
+                            comparator);
+                    if (CollectionUtils.isNotEmpty(curChildren)) {
+                        childrenConsumer.accept(result, curChildren);
+                        return result;
+                    }
 
-            if (predicate.test(child)) {
-                return result;
-            }
+                    if (filter.test(child)) {
+                        return result;
+                    }
 
-            return null;
-        }).filter(Objects::nonNull).collect(Collectors.toList());
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     /**

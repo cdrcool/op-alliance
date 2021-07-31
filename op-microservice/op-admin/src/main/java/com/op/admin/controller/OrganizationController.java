@@ -49,10 +49,10 @@ public class OrganizationController {
         return organizationService.findById(id);
     }
 
-    @ApiOperation("查询组织树")
-    @PostMapping("queryTree")
-    public OrganizationTreeVO queryTree(@Valid @RequestBody OrganizationTreeQueryDTO queryDTO) {
-        return organizationService.queryTree(queryDTO);
+    @ApiOperation("查询组织树列表")
+    @PostMapping("queryTreeList")
+    public List<OrganizationTreeVO> queryTreeList(@Valid @RequestBody OrganizationTreeQueryDTO queryDTO) {
+        return organizationService.queryTreeList(queryDTO);
     }
 
     @ApiOperation("分配角色")
@@ -83,5 +83,11 @@ public class OrganizationController {
     @PostMapping("queryTreeSelectList")
     public List<TreeNodeVO> queryTreeSelectList(@Valid @RequestBody OrganizationTreeQueryDTO queryDTO) {
         return organizationService.queryTreeSelectList(queryDTO);
+    }
+
+    @ApiOperation("查询组织树参照列表（异步加载）")
+    @PostMapping("queryTreeReferList")
+    public List<TreeNodeVO> queryTreeReferList(@Valid @RequestBody OrganizationTreeQueryDTO queryDTO) {
+        return organizationService.queryTreeReferList(queryDTO);
     }
 }

@@ -1,7 +1,7 @@
 import React, {FC, useState} from 'react';
-import {PageContainer} from "@ant-design/pro-layout";
 import {useHistory, useParams} from "react-router-dom";
 import {Button, Space, Tag} from "antd";
+import {PageContainer} from "@ant-design/pro-layout";
 import ProList from '@ant-design/pro-list';
 import {assignUserRoles, loadUserAssignedRoles} from "../../../services/user";
 import {Role} from "../../../models/Role";

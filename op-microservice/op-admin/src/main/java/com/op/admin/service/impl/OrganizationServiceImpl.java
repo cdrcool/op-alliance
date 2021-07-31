@@ -180,42 +180,9 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public OrganizationTreeVO queryTree(OrganizationTreeQueryDTO queryDTO) {
-        Integer pid = Optional.ofNullable(queryDTO.getPid()).orElse(-1);
-
-        List<Organization> organizations = new ArrayList<>();
-        if (StringUtils.isBlank(queryDTO.getKeyword())) {
-            SelectStatementProvider rootSelectStatementProvider = select(OrganizationMapper.selectList)
-                    .from(OrganizationDynamicSqlSupport.organization)
-                    .where(OrganizationDynamicSqlSupport.pid, isEqualTo(pid))
-                    .build().render(RenderingStrategies.MYBATIS3);
-            Optional<Organization> optional = organizationMapper.selectOne(rootSelectStatementProvider);
-            optional.ifPresent(organization -> {
-                SelectStatementProvider selectStatementProvider = select(OrganizationMapper.selectList)
-                        .from(OrganizationDynamicSqlSupport.organization)
-                        .where(OrganizationDynamicSqlSupport.orgCodeLink, isLike(organization.getOrgCodeLink()).map(v -> v + "%"))
-                        .build().render(RenderingStrategies.MYBATIS3);
-
-                organizations.addAll(organizationMapper.selectMany(selectStatementProvider));
-            });
-        } else {
-            SelectStatementProvider partSelectStatementProvider = select(OrganizationDynamicSqlSupport.orgCodeLink)
-                    .from(OrganizationDynamicSqlSupport.organization)
-                    .where(OrganizationDynamicSqlSupport.orgName, isLike(queryDTO.getKeyword())
-                            .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"))
-                    .build().render(RenderingStrategies.MYBATIS3);
-            List<String> orgCodeLinks = organizationMapper.selectMany(partSelectStatementProvider).stream()
-                    .map(Organization::getOrgCodeLink).collect(Collectors.toList());
-
-            if (CollectionUtils.isNotEmpty(orgCodeLinks)) {
-                organizations.addAll(orgCodeLinks.stream()
-                        .map(organizationMapper::findAllInPath)
-                        .flatMap(Collection::stream)
-                        .collect(Collectors.collectingAndThen(Collectors.toCollection(() ->
-                                new TreeSet<>(Comparator.comparing(Organization::getOrgCodeLink))), ArrayList::new)));
-            }
-        }
-
+    public List<OrganizationTreeVO> queryTreeList(OrganizationTreeQueryDTO queryDTO) {
+        queryDTO.setPid(Optional.ofNullable(queryDTO.getPid()).orElse(-1));
+        List<Organization> organizations = queryAllOrganizationsInChain(queryDTO);
         List<OrganizationTreeVO> treeList = TreeUtils.buildTree(
                 organizations,
                 organizationMapping::toOrganizationTreeVO,
@@ -223,8 +190,49 @@ public class OrganizationServiceImpl implements OrganizationService {
                 OrganizationTreeVO::getId,
                 (parent, children) -> parent.setChildren(children.stream()
                         .sorted(Comparator.comparing(OrganizationTreeVO::getOrgCode))
-                        .collect(Collectors.toList())), pid);
-        return CollectionUtils.isNotEmpty(treeList) ? treeList.get(0) : new OrganizationTreeVO();
+                        .collect(Collectors.toList())),
+                queryDTO.getPid());
+        return CollectionUtils.isNotEmpty(treeList) ? treeList : new ArrayList<>();
+    }
+
+    /**
+     * 查询满足条件的组织所在的组织链中的所有组织列表
+     *
+     * @param queryDTO 组织树查询对象
+     * @return 组织列表
+     */
+    private List<Organization> queryAllOrganizationsInChain(OrganizationTreeQueryDTO queryDTO) {
+        String keyword = queryDTO.getKeyword();
+
+        SelectStatementProvider childrenSelectStatementProvider = select(OrganizationDynamicSqlSupport.orgCodeLink)
+                .from(OrganizationDynamicSqlSupport.organization)
+                .where(OrganizationDynamicSqlSupport.pid, isEqualTo(queryDTO.getPid()))
+                .build().render(RenderingStrategies.MYBATIS3);
+        List<String> orgCodeLinks = organizationMapper.selectMany(childrenSelectStatementProvider).stream()
+                .map(Organization::getOrgCodeLink).collect(Collectors.toList());
+
+        if (StringUtils.isNotBlank(keyword)) {
+            SelectStatementProvider partSelectStatementProvider = select(OrganizationDynamicSqlSupport.orgCodeLink)
+                    .from(OrganizationDynamicSqlSupport.organization)
+                    .where(OrganizationDynamicSqlSupport.orgName, isLike(queryDTO.getKeyword())
+                            .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"))
+                    .build().render(RenderingStrategies.MYBATIS3);
+            List<String> partOrgCodeLinks = organizationMapper.selectMany(partSelectStatementProvider).stream()
+                    .map(Organization::getOrgCodeLink).collect(Collectors.toList());
+            orgCodeLinks.addAll(partOrgCodeLinks);
+        }
+
+        return orgCodeLinks.stream()
+                .map(orgCodeLink -> {
+                    SelectStatementProvider selectStatementProvider = select(OrganizationMapper.selectList)
+                            .from(OrganizationDynamicSqlSupport.organization)
+                            .where(OrganizationDynamicSqlSupport.orgCodeLink, isLike(orgCodeLink).map(v -> v + "%"),
+                                    or(OrganizationDynamicSqlSupport.orgCodeLink, isLike(orgCodeLink).map(v -> "%" + v)))
+                            .build().render(RenderingStrategies.MYBATIS3);
+                    return organizationMapper.selectMany(selectStatementProvider);
+                })
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -433,6 +441,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         return organizationMapper.getChildrenIds(id);
     }
 
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<TreeNodeVO> queryTreeSelectList(OrganizationTreeQueryDTO queryDTO) {
         Integer pid = Optional.ofNullable(queryDTO.getPid()).orElse(-1);
@@ -463,5 +472,22 @@ public class OrganizationServiceImpl implements OrganizationService {
         nodes.forEach(node -> node.setIsExpand(parentIds.contains(node.getId())));
 
         return nodes;
+    }
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public List<TreeNodeVO> queryTreeReferList(OrganizationTreeQueryDTO queryDTO) {
+        queryDTO.setPid(Optional.ofNullable(queryDTO.getPid()).orElse(-1));
+        List<Organization> organizations = queryAllOrganizationsInChain(queryDTO);
+        List<TreeNodeVO> treeList = TreeUtils.buildTreeRecursion(
+                organizations,
+                Organization::getPid,
+                Organization::getId,
+                organizationMapping::toTreeNodeVO,
+                TreeNodeVO::setChildren,
+                queryDTO.getPid(),
+                null,
+                Comparator.comparing(Organization::getOrgCode));
+        return CollectionUtils.isNotEmpty(treeList) ? treeList : new ArrayList<>();
     }
 }
