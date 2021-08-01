@@ -21,7 +21,7 @@ const OrganizationEditPage: FC = () => {
     const fetchOrganizationTreeData = async (filteredId: number|null, appendedId: number) => {
         const organizationTreeData = await queryForOrganizationAsyncTreeFlat({
             filteredId,
-            appendedId,
+            appendedIds: [appendedId],
         });
         setOrganizationTreeData(organizationTreeData || []);
     };

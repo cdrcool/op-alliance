@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 组织树查询 DTO
  *
@@ -21,6 +23,6 @@ public class OrganizationTreeQueryDTO {
     @ApiModelProperty("要过滤的组织id（不返回该组织及其子组织列表）")
     private Integer filteredId;
 
-    @ApiModelProperty("要追加的组织id（追加返回该组织及其上级组织列表）")
-    private Integer appendedId;
+    @ApiModelProperty("要追加的组织ids（追加返回该组织及其上级组织列表）")
+    private List<Integer> appendedIds;
 }

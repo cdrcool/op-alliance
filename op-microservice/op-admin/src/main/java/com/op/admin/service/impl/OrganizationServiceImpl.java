@@ -447,11 +447,12 @@ public class OrganizationServiceImpl implements OrganizationService {
         Integer pid = Optional.ofNullable(queryDTO.getPid()).orElse(-1);
         String keyword = queryDTO.getKeyword();
         Integer filteredId = queryDTO.getFilteredId();
-        Integer appendedId = queryDTO.getAppendedId();
+        List<Integer> appendedIds = queryDTO.getAppendedIds();
 
         Organization organization = organizationMapper.selectByPrimaryKey(filteredId).orElse(new Organization());
         String orgCodeLink = organization.getOrgCodeLink();
-        List<Integer> parentIds = appendedId == null ? new ArrayList<>() : getParentsIds(appendedId);
+        Set<Integer> parentIds = CollectionUtils.isEmpty(appendedIds) ? new HashSet<>() :
+                appendedIds.stream().map(this::getParentsIds).flatMap(Collection::stream).collect(Collectors.toSet());
 
         SelectStatementProvider selectStatementProvider = select(OrganizationMapper.selectList)
                 .from(OrganizationDynamicSqlSupport.organization)

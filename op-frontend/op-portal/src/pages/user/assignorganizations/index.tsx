@@ -15,17 +15,19 @@ const UserAssignOrganizationsPage = () => {
     const [treeData, setTreeData] = useState<TreeNode[]>([]);
 
     useEffect(() => {
-        const fetchTreeData = async () => {
-            const treeData = await queryForOrganizationAsyncTree({});
-            setTreeData(treeData || []);
-        };
-
-        fetchTreeData().then(() => {
-        });
-
         const fetchOrganizationIds = async () => {
             const organizationIds = await getUserAssignedOrganizationIds(Number(id));
             setTargetKeys((organizationIds || []).map(orgId => orgId + ''));
+
+            const fetchTreeData = async () => {
+                const treeData = await queryForOrganizationAsyncTree({
+                    appendedIds: organizationIds,
+                });
+                setTreeData(treeData || []);
+            };
+
+            fetchTreeData().then(() => {
+            });
         };
 
         fetchOrganizationIds().then(() => {

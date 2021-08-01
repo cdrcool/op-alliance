@@ -22,7 +22,7 @@ const UserEditPage: FC = () => {
 
     const fetchOrganizationTreeData = async (appendedId: number) => {
         const organizationTreeData = await queryForOrganizationAsyncTreeFlat({
-            appendedId,
+            appendedIds: [appendedId]
         });
         setOrganizationTreeData(organizationTreeData || []);
     };
