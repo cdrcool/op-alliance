@@ -3,6 +3,7 @@ import {PageResult} from "../models/PageResult";
 import {User} from "../models/User";
 import {Role} from "../models/Role";
 import {ResourceCategory} from "../models/ResourceCategory";
+import {TreeNode} from "../models/TreeNode";
 
 /**
  * 保存用户
@@ -106,4 +107,23 @@ export async function assignUserResourceActions(id: number, resourceActionIds: n
  */
 export async function loadUserAssignedResources(id: number): Promise<ResourceCategory[]> {
     return request.get(`/api/op-admin/user/loadAssignedResources?id=${id}`);
+}
+
+/**
+ * 分配用户授权组织
+ *
+ * @param id 用户 id
+ * @param organizationIds 组织 ids
+ */
+export async function assignUserOrganizations(id: number, organizationIds: number[]) {
+    return request.post('/api/op-admin/user/assignOrganizations', {id, organizationIds});
+}
+
+/**
+ * 获取用户授权的组织 ids
+ *
+ * @param id 用户 id
+ */
+export async function getUserAssignedOrganizationIds(id: number): Promise<number[]> {
+    return request.get(`/api/op-admin/user/getAssignedOrganizationIds?id=${id}`);
 }

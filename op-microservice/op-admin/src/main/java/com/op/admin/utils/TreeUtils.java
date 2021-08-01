@@ -7,6 +7,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 树工具类
@@ -78,31 +79,33 @@ public class TreeUtils {
         Map<Boolean, List<E>> descendantMap = entities.stream()
                 .collect(Collectors.partitioningBy(item -> pidFunction.apply(item).equals(ancestorId)));
         List<E> children = descendantMap.get(true);
-        return children.stream()
-                .sorted(comparator)
-                .map(child -> {
-                    V result = voFunction.apply(child);
+        Stream<E> stream = children.stream();
+        if (comparator != null) {
+            stream = stream.sorted(comparator);
+        }
+        return stream.map(child -> {
+            V result = voFunction.apply(child);
 
-                    List<V> curChildren = buildTreeRecursion(
-                            descendantMap.get(false),
-                            pidFunction,
-                            idFunction,
-                            voFunction,
-                            childrenConsumer,
-                            idFunction.apply(child),
-                            predicate,
-                            comparator);
-                    if (CollectionUtils.isNotEmpty(curChildren)) {
-                        childrenConsumer.accept(result, curChildren);
-                        return result;
-                    }
+            List<V> curChildren = buildTreeRecursion(
+                    descendantMap.get(false),
+                    pidFunction,
+                    idFunction,
+                    voFunction,
+                    childrenConsumer,
+                    idFunction.apply(child),
+                    predicate,
+                    comparator);
+            if (CollectionUtils.isNotEmpty(curChildren)) {
+                childrenConsumer.accept(result, curChildren);
+                return result;
+            }
 
-                    if (filter.test(child)) {
-                        return result;
-                    }
+            if (filter.test(child)) {
+                return result;
+            }
 
-                    return null;
-                })
+            return null;
+        })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }

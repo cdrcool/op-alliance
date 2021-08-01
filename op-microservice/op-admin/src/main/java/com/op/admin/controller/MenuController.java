@@ -65,9 +65,9 @@ public class MenuController {
         changeVisibilityDTO.getIds().forEach(id -> menuService.changeVisibility(id, changeVisibilityDTO.getShow()));
     }
 
-    @ApiOperation("查询菜单树选择列表")
-    @PostMapping("queryTreeSelectList")
-    public List<TreeNodeVO> queryTreeSelectList(@Valid @RequestBody MenuTreeListQueryDTO queryDTO) {
-        return menuService.queryTreeSelectList(queryDTO);
+    @ApiOperation("查询菜单异步树")
+    @PostMapping("queryForAsyncTreeFlat")
+    public List<TreeNodeVO> queryForAsyncTreeFlat(@Valid @RequestBody MenuTreeListQueryDTO queryDTO) {
+        return menuService.queryForAsyncTreeFlat(queryDTO);
     }
 }

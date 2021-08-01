@@ -2,7 +2,7 @@ import {Button, Card, Form, Input, Select, Space, Spin, TreeSelect} from 'antd';
 import {useHistory, useParams} from "react-router-dom";
 import React, {FC, useEffect, useState} from "react";
 import {PageContainer} from "@ant-design/pro-layout";
-import {getOrganization, queryOrganizationTreeSelectList, saveOrganization} from "../../../services/organization";
+import {getOrganization, queryForOrganizationAsyncTreeFlat, saveOrganization} from "../../../services/organization";
 import {TreeNode} from "../../../models/TreeNode";
 import {LegacyDataNode} from "rc-tree-select/lib/interface";
 
@@ -19,7 +19,7 @@ const OrganizationEditPage: FC = () => {
     const [form] = Form.useForm();
 
     const fetchOrganizationTreeData = async (filteredId: number|null, appendedId: number) => {
-        const organizationTreeData = await queryOrganizationTreeSelectList({
+        const organizationTreeData = await queryForOrganizationAsyncTreeFlat({
             filteredId,
             appendedId,
         });
@@ -57,7 +57,7 @@ const OrganizationEditPage: FC = () => {
     };
 
     const onLoadData = async (treeNode: LegacyDataNode) => {
-        const children = await queryOrganizationTreeSelectList({
+        const children = await queryForOrganizationAsyncTreeFlat({
             pid: treeNode.id,
             filteredId: Number(id),
         });

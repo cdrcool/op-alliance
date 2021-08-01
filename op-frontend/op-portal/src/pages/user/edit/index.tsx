@@ -5,7 +5,7 @@ import {getUser, saveUser} from "../../../services/user";
 import moment from "moment";
 import {PageContainer} from "@ant-design/pro-layout";
 import {TreeNode} from "../../../models/TreeNode";
-import {queryOrganizationTreeSelectList} from "../../../services/organization";
+import {queryForOrganizationAsyncTreeFlat} from "../../../services/organization";
 import {LegacyDataNode} from "rc-tree-select/lib/interface";
 
 const {TextArea} = Input;
@@ -21,7 +21,7 @@ const UserEditPage: FC = () => {
     const [form] = Form.useForm();
 
     const fetchOrganizationTreeData = async (appendedId: number) => {
-        const organizationTreeData = await queryOrganizationTreeSelectList({
+        const organizationTreeData = await queryForOrganizationAsyncTreeFlat({
             appendedId,
         });
         setOrganizationTreeData(organizationTreeData || []);
@@ -60,7 +60,7 @@ const UserEditPage: FC = () => {
     };
 
     const onLoadData = async (treeNode: LegacyDataNode) => {
-        const children = await queryOrganizationTreeSelectList({
+        const children = await queryForOrganizationAsyncTreeFlat({
             pid: treeNode.id,
         });
         setOrganizationTreeData([...organizationTreeData, ...children]);

@@ -120,18 +120,18 @@ public interface OrganizationService {
     List<Integer> getChildrenIds(Integer id);
 
     /**
-     * 查询组织树选择列表（异步加载）
+     * 查询组织异步树（平展的）
      *
      * @param queryDTO 查询对象
      * @return 组织树选择列表
      */
-    List<TreeNodeVO> queryTreeSelectList(OrganizationTreeQueryDTO queryDTO);
+    List<TreeNodeVO> queryForAsyncTreeFlat(OrganizationTreeQueryDTO queryDTO);
 
     /**
-     * 查询组织树参照列表（异步加载）
+     * 查询组织异步树
      *
      * @param queryDTO 查询对象
      * @return 组织树选择列表
      */
-    List<TreeNodeVO> queryTreeReferList(OrganizationTreeQueryDTO queryDTO);
+    List<TreeNodeVO> queryForAsyncTree(OrganizationTreeQueryDTO queryDTO);
 }

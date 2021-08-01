@@ -2,9 +2,11 @@ import React, {useEffect, useState} from 'react';
 import {useHistory, useParams} from "react-router-dom";
 import {Button, Space} from 'antd';
 import {PageContainer} from "@ant-design/pro-layout";
-import {queryOrganizationTreeReferList} from "../../../services/organization";
+import {queryForOrganizationAsyncTree} from "../../../services/organization";
 import {TreeNode} from "../../../models/TreeNode";
 import TreeTransfer from "../../../components/TreeTransfer";
+import {EventDataNode} from "rc-tree/lib/interface";
+import {assignUserOrganizations, getUserAssignedOrganizationIds} from "../../../services/user";
 
 const UserAssignOrganizationsPage = () => {
     const history = useHistory();
@@ -14,11 +16,19 @@ const UserAssignOrganizationsPage = () => {
 
     useEffect(() => {
         const fetchTreeData = async () => {
-            const treeData = await queryOrganizationTreeReferList({});
+            const treeData = await queryForOrganizationAsyncTree({});
             setTreeData(treeData || []);
         };
 
         fetchTreeData().then(() => {
+        });
+
+        const fetchOrganizationIds = async () => {
+            const organizationIds = await getUserAssignedOrganizationIds(Number(id));
+            setTargetKeys((organizationIds || []).map(orgId => orgId + ''));
+        };
+
+        fetchOrganizationIds().then(() => {
         });
     }, []);
 
@@ -27,8 +37,39 @@ const UserAssignOrganizationsPage = () => {
         setTargetKeys(keys);
     };
 
+    const onLoadData = async (node: EventDataNode) => {
+        const {key, children} = node;
+
+        if (children) {
+            return;
+        }
+
+        const treeNodes = await queryForOrganizationAsyncTree({
+            pid: key,
+        });
+        setTreeData((origin) =>
+            updateTreeData(origin, key as string, treeNodes),
+        );
+    };
+
+    const updateTreeData = (list: TreeNode[], key: string, children: TreeNode[]): TreeNode[] => {
+        return list.map((node) => {
+            if (node.key === key) {
+                return {...node, children};
+            }
+
+            if (node.children) {
+                return {...node, children: updateTreeData(node.children, key, children)};
+            }
+
+            return node;
+        });
+    }
+
     const onSaveSelected = () => {
-        console.log('targetKeys: ', targetKeys);
+        assignUserOrganizations(Number(id), targetKeys.map(key => Number(key))).then(() => {
+            history.push('/admin/user');
+        });
     };
 
     return <PageContainer
@@ -44,7 +85,7 @@ const UserAssignOrganizationsPage = () => {
         }
         onBack={() => history.push('/admin/user')}
     >
-        <TreeTransfer dataSource={treeData} targetKeys={targetKeys} onChange={onChange}/>
+        <TreeTransfer dataSource={treeData} targetKeys={targetKeys} onChange={onChange} onLoadData={onLoadData}/>
     </PageContainer>
 };
 

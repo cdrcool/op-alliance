@@ -100,6 +100,12 @@ public class UserController {
         userService.assignResourceActions(resourceAssignDTO.getId(), resourceAssignDTO.getResourceActionIds());
     }
 
+    @ApiOperation("授权组织")
+    @PostMapping("assignOrganizations")
+    public void assignOrganizations(@Valid @RequestBody OrganizationAssignDTO organizationAssignDTO) {
+        userService.assignOrganizations(organizationAssignDTO.getId(), organizationAssignDTO.getOrganizationIds());
+    }
+
     @ApiOperation("获取用户角色分配情况")
     @GetMapping("loadAssignedRoles")
     public List<RoleAssignVO> loadAssignedRoles(@RequestParam Integer id) {
@@ -110,5 +116,11 @@ public class UserController {
     @GetMapping("loadAssignedResources")
     public List<ResourceCategoryAssignVO> loadAssignedResources(@RequestParam Integer id) {
         return userService.loadAssignedResources(id);
+    }
+
+    @ApiOperation("获取用户授权的组织ids")
+    @GetMapping("getAssignedOrganizationIds")
+    public List<Integer> getAssignedOrganizationIds(@RequestParam Integer id) {
+        return userService.getAssignedOrganizationIds(id);
     }
 }

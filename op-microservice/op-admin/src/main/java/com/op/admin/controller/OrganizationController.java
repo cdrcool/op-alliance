@@ -79,15 +79,15 @@ public class OrganizationController {
         return organizationService.loadAssignedResources(id);
     }
 
-    @ApiOperation("查询组织树选择列表（异步加载）")
-    @PostMapping("queryTreeSelectList")
-    public List<TreeNodeVO> queryTreeSelectList(@Valid @RequestBody OrganizationTreeQueryDTO queryDTO) {
-        return organizationService.queryTreeSelectList(queryDTO);
+    @ApiOperation("查询组织异步树（平展的）")
+    @PostMapping("queryForAsyncTreeFlat")
+    public List<TreeNodeVO> queryForAsyncTreeFlat(@Valid @RequestBody OrganizationTreeQueryDTO queryDTO) {
+        return organizationService.queryForAsyncTreeFlat(queryDTO);
     }
 
-    @ApiOperation("查询组织树参照列表（异步加载）")
-    @PostMapping("queryTreeReferList")
-    public List<TreeNodeVO> queryTreeReferList(@Valid @RequestBody OrganizationTreeQueryDTO queryDTO) {
-        return organizationService.queryTreeReferList(queryDTO);
+    @ApiOperation("查询组织异步树")
+    @PostMapping("queryForAsyncTree")
+    public List<TreeNodeVO> queryForAsyncTree(@Valid @RequestBody OrganizationTreeQueryDTO queryDTO) {
+        return organizationService.queryForAsyncTree(queryDTO);
     }
 }

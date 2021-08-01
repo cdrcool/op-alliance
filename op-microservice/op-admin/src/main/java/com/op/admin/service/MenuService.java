@@ -80,5 +80,5 @@ public interface MenuService {
      * @param queryDTO 查询对象
      * @return 菜单树选择列表
      */
-    List<TreeNodeVO> queryTreeSelectList(MenuTreeListQueryDTO queryDTO);
+    List<TreeNodeVO> queryForAsyncTreeFlat(MenuTreeListQueryDTO queryDTO);
 }

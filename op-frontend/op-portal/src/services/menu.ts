@@ -58,10 +58,10 @@ export async function changeMenusVisibility(ids: number[], show: boolean) {
 }
 
 /**
- * 查询菜单树选择列表
+ * 查询菜单异步树
  *
  * @param params 查询参数
  */
-export async function queryMenuTreeSelectList(params?: object): Promise<TreeNode[]> {
-    return request.post('/api/op-admin/menu/queryTreeSelectList', params);
+export async function queryForMenuAsyncTreeFlat(params?: object): Promise<TreeNode[]> {
+    return request.post('/api/op-admin/menu/queryForAsyncTreeFlat', params);
 }

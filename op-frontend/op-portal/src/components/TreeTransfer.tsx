@@ -1,33 +1,38 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {Transfer, Tree} from "antd";
-import {DataNode} from "rc-tree/lib/interface";
+import {DataNode, EventDataNode} from "rc-tree/lib/interface";
 import {TreeNode} from "../models/TreeNode";
 
 type TreeTransferProps = {
     dataSource: TreeNode[];
     targetKeys: string[];
     onChange: (keys: string[]) => void;
+    onLoadData: (node: EventDataNode) => Promise<void>;
 };
 
 const TreeTransfer = (props: TreeTransferProps) => {
-    const {dataSource, targetKeys, onChange} = props;
+    const {dataSource, targetKeys, onChange, onLoadData} = props;
 
-    const transferDataSource: TreeNode[] = [];
+    const [transferDataSource, settTransferDataSource] = useState<TreeNode[]>(dataSource);
 
-    function flatten(list: TreeNode[]) {
-        list.forEach(item => {
-            transferDataSource.push(item);
-            flatten(item.children || []);
+    useEffect(() => {
+        const flatDataSource: TreeNode[] = [];
+        flatten(dataSource, flatDataSource);
+        settTransferDataSource(flatDataSource);
+    }, [dataSource]);
+
+    function flatten(list: TreeNode[], flatList: TreeNode[]) {
+        list && list.forEach(item => {
+            flatList.push(item);
+            flatten(item.children as [], flatList);
         });
     }
-
-    flatten(dataSource);
 
     const generateTree = (treeNodes: DataNode[] = [], checkedKeys: string[] = []): DataNode[] => {
         return treeNodes.map(({children, ...props}) => ({
             ...props,
             disabled: checkedKeys.includes(props.key as string),
-            children: generateTree(children || [], checkedKeys),
+            children: children && generateTree(children, checkedKeys),
         }))
     };
 
@@ -48,17 +53,18 @@ const TreeTransfer = (props: TreeTransferProps) => {
                         <Tree
                             blockNode
                             checkable
-                            expandedKeys={['1']}
-                            defaultExpandedKeys={['1', 1, '2', 2]}
                             checkedKeys={checkedKeys}
-                            treeData={generateTree(dataSource.map(item => {
-                                return {
-                                    key: item.key,
-                                    title: item.title,
-                                    isLeaf: item.isLeaf,
-                                    children: item.children,
-                                } as DataNode;
-                            }), targetKeys)}
+                            treeData={
+                                generateTree(dataSource.map(item => {
+                                    return {
+                                        key: item.key,
+                                        title: item.title,
+                                        isLeaf: item.isLeaf,
+                                        children: item.children,
+                                    } as DataNode;
+                                }), targetKeys)
+                            }
+                            loadData={onLoadData}
                             onCheck={(_, {node: {key}}) => {
                                 onItemSelect(key as string, !isChecked(checkedKeys, key as string));
                             }}

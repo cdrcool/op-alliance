@@ -443,7 +443,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<TreeNodeVO> queryTreeSelectList(OrganizationTreeQueryDTO queryDTO) {
+    public List<TreeNodeVO> queryForAsyncTreeFlat(OrganizationTreeQueryDTO queryDTO) {
         Integer pid = Optional.ofNullable(queryDTO.getPid()).orElse(-1);
         String keyword = queryDTO.getKeyword();
         Integer filteredId = queryDTO.getFilteredId();
@@ -476,18 +476,18 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<TreeNodeVO> queryTreeReferList(OrganizationTreeQueryDTO queryDTO) {
-        queryDTO.setPid(Optional.ofNullable(queryDTO.getPid()).orElse(-1));
-        List<Organization> organizations = queryAllOrganizationsInChain(queryDTO);
+    public List<TreeNodeVO> queryForAsyncTree(OrganizationTreeQueryDTO queryDTO) {
+        Integer pid = Optional.ofNullable(queryDTO.getPid()).orElse(-1);
+        List<TreeNodeVO> nodes = queryForAsyncTreeFlat(queryDTO);
         List<TreeNodeVO> treeList = TreeUtils.buildTreeRecursion(
-                organizations,
-                Organization::getPid,
-                Organization::getId,
-                organizationMapping::toTreeNodeVO,
+                nodes,
+                TreeNodeVO::getPid,
+                TreeNodeVO::getId,
+                (item -> item),
                 TreeNodeVO::setChildren,
-                queryDTO.getPid(),
+                pid,
                 null,
-                Comparator.comparing(Organization::getOrgCode));
+                null);
         return CollectionUtils.isNotEmpty(treeList) ? treeList : new ArrayList<>();
     }
 }

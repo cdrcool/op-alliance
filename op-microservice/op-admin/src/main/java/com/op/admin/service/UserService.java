@@ -117,6 +117,14 @@ public interface UserService {
     void assignResourceActions(Integer id, List<Integer> resourceActionIds);
 
     /**
+     * 组织授权
+     *
+     * @param id                用户 id
+     * @param organizationIds 组织 ids
+     */
+    void assignOrganizations(Integer id, List<Integer> organizationIds);
+
+    /**
      * 获取用户角色分配情况
      *
      * @param id 用户 id
@@ -131,4 +139,12 @@ public interface UserService {
      * @return 资源分类分配 VO 列表
      */
     List<ResourceCategoryAssignVO> loadAssignedResources(Integer id);
+
+    /**
+     * 获取用户授权的组织 ids
+     *
+     * @param id 用户 id
+     * @return 组织 ids
+     */
+    List<Integer> getAssignedOrganizationIds(Integer id);
 }

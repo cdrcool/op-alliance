@@ -88,19 +88,19 @@ export async function loadOrganizationAssignedResources(id: number): Promise<Res
 }
 
 /**
- * 查询组织树选择列表（异步加载）
+ * 查询组织异步树（平展的）
  *
  * @param params 查询参数
  */
-export async function queryOrganizationTreeSelectList(params?: object): Promise<TreeNode[]> {
-    return request.post('/api/op-admin/organization/queryTreeSelectList', params);
+export async function queryForOrganizationAsyncTreeFlat(params?: object): Promise<TreeNode[]> {
+    return request.post('/api/op-admin/organization/queryForAsyncTreeFlat', params);
 }
 
 /**
- * 查询组织树参照列表（异步加载）
+ * 查询组织异步树
  *
  * @param params 查询参数
  */
-export async function queryOrganizationTreeReferList(params?: object): Promise<TreeNode[]> {
-    return request.post('/api/op-admin/organization/queryTreeReferList', params);
+export async function queryForOrganizationAsyncTree(params?: object): Promise<TreeNode[]> {
+    return request.post('/api/op-admin/organization/queryForAsyncTree', params);
 }

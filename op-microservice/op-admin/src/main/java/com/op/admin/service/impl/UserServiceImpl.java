@@ -2,10 +2,7 @@ package com.op.admin.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.op.admin.dto.*;
-import com.op.admin.entity.User;
-import com.op.admin.entity.UserGroupUserRelation;
-import com.op.admin.entity.UserResourceActionRelation;
-import com.op.admin.entity.UserRoleRelation;
+import com.op.admin.entity.*;
 import com.op.admin.mapper.*;
 import com.op.admin.mapping.UserMapping;
 import com.op.admin.service.*;
@@ -56,6 +53,7 @@ public class UserServiceImpl implements UserService {
     private final UserRoleRelationMapper userRoleRelationMapper;
     private final UserResourceActionRelationMapper userResourceActionRelationMapper;
     private final UserGroupUserRelationMapper userGroupUserRelationMapper;
+    private final UserOrganizationRelationMapper userOrganizationRelationMapper;
     private final RoleService roleService;
     private final ResourceCategoryService resourceCategoryService;
     private final ResourceActionService resourceActionService;
@@ -65,9 +63,11 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(UserMapper userMapper, UserMapping userMapping,
                            UserRoleRelationMapper userRoleRelationMapper,
                            UserResourceActionRelationMapper userResourceActionRelationMapper,
-                           UserGroupUserRelationMapper userGroupUserRelationMapper, RoleService roleService,
+                           UserGroupUserRelationMapper userGroupUserRelationMapper,
+                           UserOrganizationRelationMapper userOrganizationRelationMapper,
+                           RoleService roleService,
                            ResourceCategoryService resourceCategoryService,
-                           ResourceActionService resourceActionService, MenuService menuService,
+                           ResourceActionService resourceActionService,
                            UserGroupService userGroupService,
                            @Lazy OrganizationService organizationService) {
         this.userMapper = userMapper;
@@ -75,6 +75,7 @@ public class UserServiceImpl implements UserService {
         this.userRoleRelationMapper = userRoleRelationMapper;
         this.userResourceActionRelationMapper = userResourceActionRelationMapper;
         this.userGroupUserRelationMapper = userGroupUserRelationMapper;
+        this.userOrganizationRelationMapper = userOrganizationRelationMapper;
         this.roleService = roleService;
         this.resourceCategoryService = resourceCategoryService;
         this.resourceActionService = resourceActionService;
@@ -438,6 +439,59 @@ public class UserServiceImpl implements UserService {
         assignedActionIds.addAll(organizationService.getAssignedResourceActionIds(id));
 
         return assignedActionIds;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void assignOrganizations(Integer id, List<Integer> organizationIds) {
+        // 获取已建立关联的组织 ids
+        List<Integer> preOrgIds = this.getAssignedOrganizationIds(id);
+
+        // 获取要新建关联的组织 ids
+        List<Integer> toAddOrgIds = organizationIds.stream()
+                .filter(orgId -> !preOrgIds.contains(orgId)).collect(Collectors.toList());
+
+        // 获取要删除关联的组织 ids
+        List<Integer> toDelOrgIds = preOrgIds.stream()
+                .filter(orgId -> !organizationIds.contains(orgId)).collect(Collectors.toList());
+
+        // 插入要新建的用户-组织关联
+        List<UserOrganizationRelation> relations = toAddOrgIds.stream()
+                .map(orgId -> {
+                    UserOrganizationRelation relation = new UserOrganizationRelation();
+                    relation.setUserId(id);
+                    relation.setOrgId(orgId);
+
+                    return relation;
+                }).collect(Collectors.toList());
+        relations.forEach(userOrganizationRelationMapper::insert);
+
+        // 删除要删除的用户-组织关联
+        if (!CollectionUtils.isEmpty(toDelOrgIds)) {
+            DeleteStatementProvider deleteStatementProvider =
+                    deleteFrom(UserOrganizationRelationDynamicSqlSupport.userOrganizationRelation)
+                            .where(UserOrganizationRelationDynamicSqlSupport.userId, isEqualTo(id))
+                            .and(UserOrganizationRelationDynamicSqlSupport.orgId, isIn(toDelOrgIds))
+                            .build().render(RenderingStrategies.MYBATIS3);
+            userOrganizationRelationMapper.delete(deleteStatementProvider);
+        }
+    }
+
+    /**
+     * 获取用户所分配的组织 ids
+     *
+     * @param id 主键
+     * @return 组织 ids
+     */
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public List<Integer> getAssignedOrganizationIds(Integer id) {
+        SelectStatementProvider selectStatementProvider = select(UserOrganizationRelationDynamicSqlSupport.orgId)
+                .from(UserOrganizationRelationDynamicSqlSupport.userOrganizationRelation)
+                .where(UserResourceActionRelationDynamicSqlSupport.userId, isEqualTo(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        return userOrganizationRelationMapper.selectMany(selectStatementProvider).stream()
+                .map(UserOrganizationRelation::getOrgId).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)

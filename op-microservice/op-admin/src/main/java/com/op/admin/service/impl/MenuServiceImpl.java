@@ -188,7 +188,7 @@ public class MenuServiceImpl implements MenuService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<TreeNodeVO> queryTreeSelectList(MenuTreeListQueryDTO queryDTO) {
+    public List<TreeNodeVO> queryForAsyncTreeFlat(MenuTreeListQueryDTO queryDTO) {
         String keyword = queryDTO.getKeyword();
         Integer id = queryDTO.getId();
 

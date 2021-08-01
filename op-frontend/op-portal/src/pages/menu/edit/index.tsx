@@ -2,7 +2,7 @@ import {Button, Card, Form, Input, InputNumber, Radio, Space, Spin, TreeSelect} 
 import {useHistory, useParams} from "react-router-dom";
 import React, {FC, useEffect, useState} from "react";
 import {PageContainer} from "@ant-design/pro-layout";
-import {getMenu, queryMenuTreeSelectList, saveMenu} from "../../../services/menu";
+import {getMenu, queryForMenuAsyncTreeFlat, saveMenu} from "../../../services/menu";
 import {TreeNode} from "../../../models/TreeNode";
 
 const MenuEditPage: FC = () => {
@@ -31,7 +31,7 @@ const MenuEditPage: FC = () => {
         }
 
         const fetchMenuTreeData = async () => {
-            const menuTreeData = await queryMenuTreeSelectList({
+            const menuTreeData = await queryForMenuAsyncTreeFlat({
                 id: id,
             });
             setMenuTreeData(menuTreeData || []);
