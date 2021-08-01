@@ -34,7 +34,9 @@ const TreeTransfer = (props: TreeTransferProps) => {
     flatten(dataSource, transferDataSource);
 
     const [expandedKeys, setExpandedKeys] = useState<string[]>(['1']);
-    useEffect(() => setExpandedKeys(['1']), []);
+    useEffect(() => {
+        setExpandedKeys(['1']);
+    }, []);
 
     return (
         <Transfer<TreeNode>

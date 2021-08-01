@@ -40,11 +40,7 @@ const UserAssignOrganizationsPage = () => {
     };
 
     const onLoadData = async (node: EventDataNode) => {
-        const {key, children} = node;
-
-        if (children) {
-            return;
-        }
+        const {key} = node;
 
         const treeNodes = await queryForOrganizationAsyncTree({
             pid: key,
