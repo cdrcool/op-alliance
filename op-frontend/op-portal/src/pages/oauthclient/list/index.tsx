@@ -82,7 +82,7 @@ const OauthClientListPage: FC = () => {
                 search={false}
                 options={{
                     search: {
-                        placeholder: "输入客户端标识描述查询",
+                        placeholder: "输入客户端标识查询",
                         style: {width: 400},
                     },
                     fullScreen: true,
