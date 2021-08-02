@@ -34,12 +34,31 @@ const TreeTransfer = (props: TreeTransferProps) => {
     flatten(dataSource, transferDataSource);
 
     const [expandedKeys, setExpandedKeys] = useState<string[]>(['1']);
+
     useEffect(() => {
         setExpandedKeys(['1']);
     }, []);
 
+
+    // 动态调整组织树的滚动条高度
+    const getWindowSize = () => ({
+        innerHeight: document.body.scrollHeight,
+        innerWidth: document.body.scrollWidth,
+    });
+    const [windowSize, setWindowSize] = useState(getWindowSize());
+    const handleResize = () => {
+        setWindowSize(getWindowSize());
+    };
+    useEffect(() => {
+        // 监听
+        window.addEventListener("resize", handleResize);
+        // 销毁
+        return () => window.removeEventListener("resize", handleResize);
+    });
+
     return (
         <Transfer<TreeNode>
+            // listStyle={{height: windowSize.innerHeight - 160}}
             showSelectAll={false}
             onChange={onChange}
             dataSource={transferDataSource}
@@ -51,6 +70,7 @@ const TreeTransfer = (props: TreeTransferProps) => {
                     const checkedKeys = [...selectedKeys, ...targetKeys];
                     return (
                         <Tree
+                            height={windowSize.innerHeight - 160}
                             blockNode
                             checkable
                             expandedKeys={expandedKeys}
