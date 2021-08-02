@@ -54,7 +54,6 @@ const OauthClientDetailPage: FC = () => {
                 <Card>
                     <Descriptions>
                         <Descriptions.Item label="客户端标识">{oauthClient.clientId}</Descriptions.Item>
-                        <Descriptions.Item label="客户端密钥">{oauthClient.clientSecret}</Descriptions.Item>
                         <Descriptions.Item label="授权许可类型">{
                             oauthClient.authorizedGrantTypes &&
                             oauthClient.authorizedGrantTypes.split(',')

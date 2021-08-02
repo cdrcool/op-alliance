@@ -24,10 +24,6 @@ const OauthClientListPage: FC = () => {
             dataIndex: 'clientId',
         },
         {
-            title: '客户端密钥',
-            dataIndex: 'clientSecret',
-        },
-        {
             title: '授权许可类型',
             dataIndex: 'authorizedGrantTypes',
             renderText: (value: string) => {
