@@ -3,6 +3,7 @@ package com.op.admin.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.op.admin.dto.OauthClientDetailsSaveDTO;
 import com.op.admin.mapper.OauthClientDetailsMapper;
+import com.op.admin.mapper.UserDynamicSqlSupport;
 import com.op.admin.mapping.OauthClientDetailsMapping;
 import com.op.admin.dto.OauthClientDetailsDTO;
 import com.op.admin.dto.OauthClientDetailsPageQueryDTO;
@@ -45,15 +46,35 @@ public class OauthClientDetailsServiceImpl implements OauthClientDetailsService 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void save(OauthClientDetailsSaveDTO saveDTO) {
+        // 校验客户端标识是否重复
+        validateClientId(saveDTO.getId(), saveDTO.getClientId());
+
         if (saveDTO.getId() == null) {
             OauthClientDetails oauthClientDetails = oauthClientDetailsMapping.toOauthClientDetails(saveDTO);
             oauthClientDetailsMapper.insert(oauthClientDetails);
         } else {
             Integer id = saveDTO.getId();
             OauthClientDetails oauthClientDetails = oauthClientDetailsMapper.selectByPrimaryKey(id)
-                    .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的 oauth2-client"));
+                    .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的OAuth客户端"));
             oauthClientDetailsMapping.update(saveDTO, oauthClientDetails);
             oauthClientDetailsMapper.updateByPrimaryKey(oauthClientDetails);
+        }
+    }
+
+    /**
+     * 校验客户端标识是否重复
+     *
+     * @param id       主键
+     * @param clientId 客户端标识
+     */
+    private void validateClientId(Integer id, String clientId) {
+        SelectStatementProvider selectStatementProvider = countFrom(OauthClientDetailsDynamicSqlSupport.oauthClientDetails)
+                .where(OauthClientDetailsDynamicSqlSupport.clientId, isEqualTo(clientId))
+                .and(OauthClientDetailsDynamicSqlSupport.id, isNotEqualToWhenPresent(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        long count = oauthClientDetailsMapper.count(selectStatementProvider);
+        if (count > 0) {
+            throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "已存在相同客户端标识的客户端，客户端标识不能重复");
         }
     }
 
@@ -73,7 +94,7 @@ public class OauthClientDetailsServiceImpl implements OauthClientDetailsService 
     @Override
     public OauthClientDetailsVO findById(Integer id) {
         OauthClientDetails resource = oauthClientDetailsMapper.selectByPrimaryKey(id)
-                .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的 oauth2-client"));
+                .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的OAuth客户端"));
         return oauthClientDetailsMapping.toOauthClientDetailsVO(resource);
     }
 
@@ -85,7 +106,7 @@ public class OauthClientDetailsServiceImpl implements OauthClientDetailsService 
                 .where(OauthClientDetailsDynamicSqlSupport.clientId, isEqualTo(clientId))
                 .build().render(RenderingStrategies.MYBATIS3);
         OauthClientDetails oauthClientDetails = oauthClientDetailsMapper.selectOne(selectStatementProvider)
-                .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到clientId为【" + clientId + "】的 oauth2-client"));
+                .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到clientId为【" + clientId + "】的OAuth客户端"));
         return oauthClientDetailsMapping.toOauthClientDetailsDTO(oauthClientDetails);
     }
 
