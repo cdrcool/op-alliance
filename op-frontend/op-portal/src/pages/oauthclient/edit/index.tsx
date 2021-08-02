@@ -19,6 +19,9 @@ const OauthClientEditPage: FC = () => {
             const fetchData = async () => {
                 const oauthClient = await getOauthClient(parseInt(id));
                 form.setFieldsValue(oauthClient);
+                form.setFieldsValue({
+                    'authorizedGrantTypes': oauthClient.authorizedGrantTypes?.split(','),
+                });
                 setLoading(false);
             }
 
@@ -29,6 +32,7 @@ const OauthClientEditPage: FC = () => {
 
     const onSave = () => {
         form.validateFields().then(values => {
+            values.authorizedGrantTypes = values.authorizedGrantTypes.join(',');
             saveOauthClient(values).then(() => {
                 history.push('/admin/oauthClient');
             });

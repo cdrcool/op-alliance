@@ -30,12 +30,17 @@ const OauthClientListPage: FC = () => {
         {
             title: '授权许可类型',
             dataIndex: 'authorizedGrantTypes',
-            valueEnum: {
-                'authorization_code': {text: '授权码模式'},
-                'password': {text: '密码模式'},
-                'implicit': {text: '隐式模式'},
-                'client_credentials': {text: '客户端模式'},
-                'refresh_token': {text: '刷新token'},
+            renderText: (value: string) => {
+                return value && value.split(',')
+                    .map(item => item === 'authorization_code' ? '授权码模式' :
+                        (item === 'password' ? '密码模式' :
+                                (item === 'implicit' ? '隐式模式' :
+                                        (item === 'client_credentials' ? '客户端模式' :
+                                                (item === 'refresh_token' ? '刷新token' : '')
+                                        )
+                                )
+                        ))
+                    .join(',')
             },
             filters: true,
             onFilter: true,

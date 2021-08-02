@@ -57,14 +57,17 @@ const OauthClientDetailPage: FC = () => {
                         <Descriptions.Item label="客户端密钥">{oauthClient.clientSecret}</Descriptions.Item>
                         <Descriptions.Item label="授权许可类型">{
                             oauthClient.authorizedGrantTypes &&
-                            oauthClient.authorizedGrantTypes === 'authorization_code' ? '授权码模式' :
-                                (oauthClient.authorizedGrantTypes === 'password' ? '密码模式' :
-                                        (oauthClient.authorizedGrantTypes === 'implicit' ? '隐式模式' :
-                                                (oauthClient.authorizedGrantTypes === 'client_credentials' ? '客户端模式' :
-                                                        (oauthClient.authorizedGrantTypes === 'refresh_token' ? '刷新token' : '')
-                                                )
-                                        )
-                                )
+                            oauthClient.authorizedGrantTypes.split(',')
+                                .map(item => item === 'authorization_code' ? '授权码模式' :
+                                    (item === 'password' ? '密码模式' :
+                                            (item === 'implicit' ? '隐式模式' :
+                                                    (item === 'client_credentials' ? '客户端模式' :
+                                                            (item === 'refresh_token' ? '刷新token' : '')
+                                                    )
+                                            )
+                                    ))
+                                .join(',')
+
                         }</Descriptions.Item>
                         <Descriptions.Item label="授权范围">{oauthClient.scope}</Descriptions.Item>
                         <Descriptions.Item label="重定向地址">{oauthClient.webServerRedirectUri}</Descriptions.Item>
