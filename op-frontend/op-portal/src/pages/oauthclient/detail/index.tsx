@@ -30,7 +30,7 @@ const OauthClientDetailPage: FC = () => {
     return (
         <PageContainer
             className="page-container"
-            title="Oauth客户端详情"
+            title="OAuth客户端详情"
             header={{
                 breadcrumb: {},
             }}

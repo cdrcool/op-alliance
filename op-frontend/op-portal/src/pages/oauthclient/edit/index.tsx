@@ -4,7 +4,6 @@ import React, {FC, useEffect, useState} from "react";
 import {PageContainer} from "@ant-design/pro-layout";
 import {getOauthClient, saveOauthClient} from "../../../services/oauthclient";
 
-const {TextArea} = Input;
 const {Option} = Select;
 
 const OauthClientEditPage: FC = () => {
@@ -42,7 +41,7 @@ const OauthClientEditPage: FC = () => {
     return (
         <PageContainer
             className="page-container"
-            title={`${id ? '编辑' : '新增'}Oauth客户端`}
+            title={`${id ? '编辑' : '新增'}OAuth客户端`}
             header={{
                 breadcrumb: {},
             }}
