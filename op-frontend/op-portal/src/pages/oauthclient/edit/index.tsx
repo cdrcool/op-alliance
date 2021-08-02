@@ -63,9 +63,6 @@ const OauthClientEditPage: FC = () => {
                         <Form.Item label="客户端标识" name="clientId" rules={[{required: true, message: '请输入客户端标识'}]}>
                             <Input/>
                         </Form.Item>
-                        <Form.Item label="客户端密钥" name="clientSecret" tooltip="当授权许可类型非隐式模式时，该字段必填">
-                            <Input.Password />
-                        </Form.Item>
                         <Form.Item label="授权许可类型" name="authorizedGrantTypes" rules={[{required: true, message: '请选择授权许可类型'}]}
                                    tooltip="可以同时设置多个授权许可类型，用逗号(,)分隔；刷新token只有在授权码模式或密码模式时才有效">
                             <Select mode="multiple">

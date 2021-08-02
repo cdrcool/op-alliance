@@ -1,10 +1,11 @@
-import React, {FC, useRef} from "react";
+import React, {FC, useRef, useState} from "react";
 import {useHistory} from "react-router-dom";
 import {Button, Popconfirm, Space} from "antd";
 import {ExportOutlined, MinusOutlined, PlusOutlined} from "@ant-design/icons";
 import {PageContainer} from "@ant-design/pro-layout";
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
+import ProTable, {TableDropdown} from '@ant-design/pro-table';
+import {ModalForm, ProFormText,} from '@ant-design/pro-form';
 import {Role} from "../../../models/Role";
 import {deleteOauthClients, queryOauthClientPage} from "../../../services/oauthclient";
 import {OauthClient} from "../../../models/OauthClient";
@@ -12,6 +13,8 @@ import {OauthClient} from "../../../models/OauthClient";
 const OauthClientListPage: FC = () => {
     const history = useHistory();
     const ref = useRef<ActionType>();
+
+    const [modalVisit, setModalVisit] = useState<boolean>(false);
 
     const onDeleteOauthClients = (ids: number[]) => {
         // @ts-ignore
@@ -69,6 +72,16 @@ const OauthClientListPage: FC = () => {
                 <a key="view" onClick={() => history.push(`/admin/oauthClient/detail/${record.id}`)}>
                     查看
                 </a>,
+                <TableDropdown
+                    key="actions"
+                    menus={[
+                        {
+                            key: 'resetClientSecret',
+                            name: '重置客户端秘钥',
+                            onClick: () => setModalVisit(true),
+                        },
+                    ]}
+                />,
             ],
         },
     ];
@@ -136,6 +149,17 @@ const OauthClientListPage: FC = () => {
                     pageSize: 10,
                 }}
             />
+            <ModalForm
+                title="重置客户端秘钥"
+                visible={modalVisit}
+                onVisibleChange={setModalVisit}
+                onFinish={async () => {
+                    return true;
+                }}
+            >
+                <ProFormText.Password name="clientSecret" label="客户端秘钥" placeholder="请输入客户端秘钥" rules={[{required: true, message: '请输入客户端秘钥'}]}/>
+                <ProFormText.Password name="confirmClientSecret" label="客户端秘钥确认" placeholder="请再次输入客户端秘钥" rules={[{required: true, message: '请再次输入客户端秘钥'}]}/>
+            </ModalForm>
         </PageContainer>
     )
 };
