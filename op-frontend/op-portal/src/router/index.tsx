@@ -32,6 +32,9 @@ import MenuListPage from "../pages/menu/list";
 import MenuEditPage from "../pages/menu/edit";
 import MenuDetailPage from "../pages/menu/detail";
 import NoFoundPage from "../pages/404";
+import OauthClientListPage from "../pages/oauthclient/list";
+import OauthClientEditPage from "../pages/oauthclient/edit";
+import OauthClientDetailPage from "../pages/oauthclient/detail";
 
 const routes = [
     {
@@ -194,6 +197,21 @@ const routes = [
                 path: "/admin/menu/detail/:id",
                 exact: true,
                 component: MenuDetailPage,
+            },
+            {
+                path: "/admin/oauthClient",
+                exact: true,
+                component: OauthClientListPage,
+            },
+            {
+                path: "/admin/oauthClient/edit/:id?",
+                exact: true,
+                component: OauthClientEditPage,
+            },
+            {
+                path: "/admin/oauthClient/detail/:id",
+                exact: true,
+                component: OauthClientDetailPage,
             },
             {
                 component: NoFoundPage,
