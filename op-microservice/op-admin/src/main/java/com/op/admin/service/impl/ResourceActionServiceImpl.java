@@ -48,6 +48,9 @@ public class ResourceActionServiceImpl implements ResourceActionService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void save(ResourceActionSaveDTO saveDTO) {
+        // 校验同一资源下，动作名称是否重复
+        validateResourceName(saveDTO.getResourceId(), saveDTO.getId(), saveDTO.getActionName());
+
         if (saveDTO.getId() == null) {
             ResourceAction resourceAction = resourceActionMapping.toResourceAction(saveDTO);
             resourceActionMapper.insert(resourceAction);
@@ -57,6 +60,25 @@ public class ResourceActionServiceImpl implements ResourceActionService {
                     .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的资源动作"));
             resourceActionMapping.update(saveDTO, resourceAction);
             resourceActionMapper.updateByPrimaryKey(resourceAction);
+        }
+    }
+
+    /**
+     * 校验同一资源下，动作名称是否重复
+     *
+     * @param resourceId 资源分类 id
+     * @param id         主键
+     * @param actionName 动作名称
+     */
+    private void validateResourceName(Integer resourceId, Integer id, String actionName) {
+        SelectStatementProvider selectStatementProvider = countFrom(ResourceActionDynamicSqlSupport.resourceAction)
+                .where(ResourceActionDynamicSqlSupport.resourceId, isEqualTo(resourceId))
+                .and(ResourceActionDynamicSqlSupport.actionName, isEqualTo(actionName))
+                .and(ResourceActionDynamicSqlSupport.id, isNotEqualToWhenPresent(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        long count = resourceActionMapper.count(selectStatementProvider);
+        if (count > 0) {
+            throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "同一资源下，已存在相同动作名称的子菜单，动作名称不能重复");
         }
     }
 
@@ -97,7 +119,7 @@ public class ResourceActionServiceImpl implements ResourceActionService {
                 .where(ResourceActionDynamicSqlSupport.resourceId, isEqualTo(resourceId))
                 .orderBy(ResourceActionDynamicSqlSupport.actionNo)
                 .build().render(RenderingStrategies.MYBATIS3);
-        List<ResourceAction> actions= resourceActionMapper.selectMany(selectStatementProvider);
+        List<ResourceAction> actions = resourceActionMapper.selectMany(selectStatementProvider);
         return resourceActionMapping.toResourceActionVOList(actions);
     }
 
@@ -108,7 +130,7 @@ public class ResourceActionServiceImpl implements ResourceActionService {
                 .from(ResourceActionDynamicSqlSupport.resourceAction)
                 .where(ResourceActionDynamicSqlSupport.resourceId, isEqualTo(resourceId))
                 .build().render(RenderingStrategies.MYBATIS3);
-        List<ResourceAction> actions= resourceActionMapper.selectMany(selectStatementProvider);
+        List<ResourceAction> actions = resourceActionMapper.selectMany(selectStatementProvider);
         return actions.stream().map(ResourceAction::getId).collect(Collectors.toList());
     }
 

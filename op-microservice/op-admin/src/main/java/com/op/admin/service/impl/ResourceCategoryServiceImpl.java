@@ -52,6 +52,9 @@ public class ResourceCategoryServiceImpl implements ResourceCategoryService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void save(ResourceCategorySaveDTO saveDTO) {
+        // 校验分类名称是否重复
+        validateCategoryName(saveDTO.getId(), saveDTO.getCategoryName());
+
         if (saveDTO.getId() == null) {
             ResourceCategory resourceCategory = resourceCategoryMapping.toResourceCategory(saveDTO);
             resourceCategoryMapper.insert(resourceCategory);
@@ -61,6 +64,23 @@ public class ResourceCategoryServiceImpl implements ResourceCategoryService {
                     .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的资源分类"));
             resourceCategoryMapping.update(saveDTO, resourceCategory);
             resourceCategoryMapper.updateByPrimaryKey(resourceCategory);
+        }
+    }
+
+    /**
+     * 校验分类名称是否重复
+     *
+     * @param id           主键
+     * @param categoryName 分类名称
+     */
+    private void validateCategoryName(Integer id, String categoryName) {
+        SelectStatementProvider selectStatementProvider = countFrom(ResourceCategoryDynamicSqlSupport.resourceCategory)
+                .where(ResourceCategoryDynamicSqlSupport.categoryName, isEqualTo(categoryName))
+                .and(ResourceCategoryDynamicSqlSupport.id, isNotEqualToWhenPresent(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        long count = resourceCategoryMapper.count(selectStatementProvider);
+        if (count > 0) {
+            throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "已存在相同分类名称的的资源分类，分类名称不能重复");
         }
     }
 
@@ -82,7 +102,7 @@ public class ResourceCategoryServiceImpl implements ResourceCategoryService {
     public ResourceCategoryVO findById(Integer id) {
         ResourceCategory resourceCategory = resourceCategoryMapper.selectByPrimaryKey(id)
                 .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的资源分类"));
-        ResourceCategoryVO resourceCategoryVO =  resourceCategoryMapping.toResourceCategoryVO(resourceCategory);
+        ResourceCategoryVO resourceCategoryVO = resourceCategoryMapping.toResourceCategoryVO(resourceCategory);
 
         resourceCategoryVO.setResourceNames(resourceService.findNamesByCategoryId(id));
 

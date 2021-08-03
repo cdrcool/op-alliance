@@ -11,12 +11,10 @@ import com.op.admin.mapping.ResourceMapping;
 import com.op.admin.service.ResourceActionService;
 import com.op.admin.service.ResourceService;
 import com.op.admin.vo.ResourceActionAssignVO;
-import com.op.admin.vo.ResourceActionVO;
 import com.op.admin.vo.ResourceAssignVO;
 import com.op.admin.vo.ResourceVO;
 import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
-import io.swagger.models.auth.In;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.SortSpecification;
@@ -33,7 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
@@ -59,6 +56,9 @@ public class ResourceServiceImpl implements ResourceService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void save(ResourceSaveDTO saveDTO) {
+        // 校验同一分类下，资源名称是否重复
+        validateResourceName(saveDTO.getCategoryId(), saveDTO.getId(), saveDTO.getResourceName());
+
         List<ResourceActionSaveDTO> actions = saveDTO.getActions();
 
         if (saveDTO.getId() == null) {
@@ -91,6 +91,25 @@ public class ResourceServiceImpl implements ResourceService {
             if (!CollectionUtils.isNotEmpty(toDelActionIds)) {
                 resourceActionService.deleteByIds(toDelActionIds);
             }
+        }
+    }
+
+    /**
+     * 校验同一分类下，资源名称是否重复
+     *
+     * @param categoryId   资源分类 id
+     * @param id           主键
+     * @param resourceName 菜单名称
+     */
+    private void validateResourceName(Integer categoryId, Integer id, String resourceName) {
+        SelectStatementProvider selectStatementProvider = countFrom(ResourceDynamicSqlSupport.resource)
+                .where(ResourceDynamicSqlSupport.categoryId, isEqualTo(categoryId))
+                .and(ResourceDynamicSqlSupport.resourceName, isEqualTo(resourceName))
+                .and(ResourceDynamicSqlSupport.id, isNotEqualToWhenPresent(id))
+                .build().render(RenderingStrategies.MYBATIS3);
+        long count = resourceMapper.count(selectStatementProvider);
+        if (count > 0) {
+            throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "同一分类下，已存在相同资源名称的子菜单，资源名称不能重复");
         }
     }
 

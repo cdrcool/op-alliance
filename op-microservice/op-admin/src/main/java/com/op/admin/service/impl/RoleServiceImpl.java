@@ -10,7 +10,6 @@ import com.op.admin.mapper.RoleMapper;
 import com.op.admin.mapper.RoleResourceActionRelationDynamicSqlSupport;
 import com.op.admin.mapper.RoleResourceActionRelationMapper;
 import com.op.admin.mapping.RoleMapping;
-import com.op.admin.service.MenuService;
 import com.op.admin.service.ResourceCategoryService;
 import com.op.admin.service.RoleService;
 import com.op.admin.vo.ResourceCategoryAssignVO;
@@ -52,26 +51,21 @@ public class RoleServiceImpl implements RoleService {
     private final RoleMapping roleMapping;
     private final RoleResourceActionRelationMapper roleResourceActionRelationMapper;
     private final ResourceCategoryService resourceCategoryService;
-    private final MenuService menuService;
 
     public RoleServiceImpl(RoleMapper roleMapper, RoleMapping roleMapping,
                            RoleResourceActionRelationMapper roleResourceActionRelationMapper,
-                           ResourceCategoryService resourceCategoryService,
-                           MenuService menuService) {
+                           ResourceCategoryService resourceCategoryService) {
         this.roleMapper = roleMapper;
         this.roleMapping = roleMapping;
         this.roleResourceActionRelationMapper = roleResourceActionRelationMapper;
         this.resourceCategoryService = resourceCategoryService;
-        this.menuService = menuService;
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void save(RoleSaveDTO saveDTO) {
-        // 校验角色名是否重复
-        validateRoleName(saveDTO.getId(), saveDTO.getRoleName());
-        // 校验角色编码是否重复
-        validateRoleCode(saveDTO.getId(), saveDTO.getRoleCode());
+        // 校验角色名/角色编码是否重复
+        validateRoleNameAndRoleCode(saveDTO.getId(), saveDTO.getRoleName(), saveDTO.getRoleCode());
 
         if (saveDTO.getId() == null) {
             Role role = roleMapping.toRole(saveDTO);
@@ -90,16 +84,21 @@ public class RoleServiceImpl implements RoleService {
      *
      * @param id       主键
      * @param roleName 角色名
+     * @param roleCode 角色编码
      */
-    private void validateRoleName(Integer id, String roleName) {
+    private void validateRoleNameAndRoleCode(Integer id, String roleName,String roleCode) {
         SelectStatementProvider selectStatementProvider = countFrom(RoleDynamicSqlSupport.role)
-                .where(RoleDynamicSqlSupport.roleName, isEqualTo(roleName))
+                .where(RoleDynamicSqlSupport.roleName, isEqualTo(roleName), or(RoleDynamicSqlSupport.roleCode, isEqualTo(roleCode)))
                 .and(RoleDynamicSqlSupport.id, isNotEqualToWhenPresent(id))
                 .build().render(RenderingStrategies.MYBATIS3);
-        long count = roleMapper.count(selectStatementProvider);
-        if (count > 0) {
-            throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "已存在相同角色名的角色，角色名不能重复");
-        }
+        Optional<Role> optional = roleMapper.selectOne(selectStatementProvider);
+        optional.ifPresent(role -> {
+            if (roleName.equals(role.getRoleName())) {
+                throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "已存在相同角色名的角色，角色名不能重复");
+            } else {
+                throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "已存在相同角色编码的角色，角色编码不能重复");
+            }
+        });
     }
 
     /**
