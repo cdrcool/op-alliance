@@ -1,5 +1,6 @@
 package com.onepiece.gateway.config.security;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -23,12 +24,17 @@ import java.util.stream.Collectors;
  *
  * @author cdrcool
  */
+@Slf4j
 @Component
 public class AuthorizationManager implements ReactiveAuthorizationManager<AuthorizationContext> {
     /**
+     * 权限前缀
+     */
+    private static final String AUTHORITY_PREFIX = "SCOPE_";
+    /**
      * 资源及相应权限缓存 key
      */
-    private static final String RESOURCE_ROLES_KEY = "auth:resourceRoles";
+    private static final String RESOURCE_PERMISSION_KEY = "resource:permission";
 
     private final WhiteListConfig whiteListConfig;
     private final RedisTemplate<String, Object> redisTemplate;
@@ -57,25 +63,27 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
         }
 
         // 从缓存中获取资源动作及其所需的权限
-        Map<Object, Object> resourceActionPermissionsMap = redisTemplate.opsForHash().entries(RESOURCE_ROLES_KEY);
-        @SuppressWarnings("unchecked")
+        Map<Object, Object> resourceActionPermissionsMap = redisTemplate.opsForHash().entries(RESOURCE_PERMISSION_KEY);
         List<String> authorities = resourceActionPermissionsMap.keySet().stream()
                 .filter(url -> pathMatcher.match((String) url, uri.getPath()))
-                .map(url -> resourceActionPermissionsMap.getOrDefault(url, new ArrayList<>()))
-                .map(item -> (List<String>) item)
-                .flatMap(Collection::stream)
+                .map(resourceActionPermissionsMap::get)
+                .filter(Objects::nonNull)
+                .map(item -> AUTHORITY_PREFIX + item)
                 .collect(Collectors.toList());
 
         // 对未设置权限的资源直接放行
-        if (CollectionUtils.isEmpty(authorities)) {
+        /*if (CollectionUtils.isEmpty(authorities)) {
             return Mono.just(new AuthorizationDecision(true));
-        }
+        }*/
 
         return mono
                 .filter(Authentication::isAuthenticated)
                 .flatMapIterable(Authentication::getAuthorities)
                 .map(GrantedAuthority::getAuthority)
-                .any(authorities::contains)
+                .any(a -> {
+                    log.info(a);
+                    return authorities.contains(a);
+                })
                 .map(AuthorizationDecision::new)
                 .defaultIfEmpty(new AuthorizationDecision(false));
     }

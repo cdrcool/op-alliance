@@ -33,7 +33,7 @@ spring:
 secure:
   white-list:
     urls:
-      - "/op-auth/oauth/token"
+      - "/op-auth/auth/token"
       - "/op-admin/captcha"
       - "/op-admin/user/login"
       - "/op-admin/user/register"

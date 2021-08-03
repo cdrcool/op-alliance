@@ -3,9 +3,11 @@ package com.op.admin.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.op.admin.dto.ResourceActionPageQueryDTO;
 import com.op.admin.dto.ResourceActionSaveDTO;
+import com.op.admin.dto.ResourcePathPermissionDto;
 import com.op.admin.entity.ResourceAction;
 import com.op.admin.mapper.ResourceActionDynamicSqlSupport;
 import com.op.admin.mapper.ResourceActionMapper;
+import com.op.admin.mapper.extend.ResourceActionMapperExtend;
 import com.op.admin.mapping.ResourceActionMapping;
 import com.op.admin.service.ResourceActionService;
 import com.op.admin.vo.ResourceActionAssignVO;
@@ -18,12 +20,17 @@ import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SimpleSortSpecification;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -37,12 +44,40 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
  */
 @Service
 public class ResourceActionServiceImpl implements ResourceActionService {
-    private final ResourceActionMapper resourceActionMapper;
-    private final ResourceActionMapping resourceActionMapping;
+    /**
+     * 资源及相应权限缓存 key
+     */
+    private static final String RESOURCE_PERMISSION_KEY = "resource:permission";
 
-    public ResourceActionServiceImpl(ResourceActionMapper resourceActionMapper, ResourceActionMapping resourceActionMapping) {
+    private final ResourceActionMapperExtend resourceActionMapper;
+    private final ResourceActionMapping resourceActionMapping;
+    private final RedisTemplate<String, Object> redisTemplate;
+
+    @Value("${spring.application.name}")
+    private String applicationName;
+
+    public ResourceActionServiceImpl(ResourceActionMapperExtend resourceActionMapper, ResourceActionMapping resourceActionMapping, RedisTemplate<String, Object> redisTemplate) {
         this.resourceActionMapper = resourceActionMapper;
         this.resourceActionMapping = resourceActionMapping;
+        this.redisTemplate = redisTemplate;
+    }
+
+    @PostConstruct
+    public Map<String, String> initResourcePathPermissionMap() {
+        Map<String, String> results = new HashMap<>(64);
+        List<ResourcePathPermissionDto> list = resourceActionMapper.queryPathPermissions();
+        list.forEach(item -> {
+            String actionPath = item.getActionPath();
+            if (StringUtils.isNotBlank(actionPath)) {
+                List<String> paths = Arrays.stream(actionPath.split(","))
+                        .map(path -> "/" + applicationName + item.getResourcePath() + path)
+                        .collect(Collectors.toList());
+                results.putAll(paths.stream().collect(Collectors.toMap(path -> path, path -> item.getPermission())));
+            }
+        });
+        redisTemplate.delete(RESOURCE_PERMISSION_KEY);
+        redisTemplate.opsForHash().putAll(RESOURCE_PERMISSION_KEY, results);
+        return results;
     }
 
     @Transactional(rollbackFor = Exception.class)

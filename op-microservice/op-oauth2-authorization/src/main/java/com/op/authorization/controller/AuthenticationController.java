@@ -24,7 +24,7 @@ import java.util.Map;
  * @author cdrcool
  */
 @Api(tags = "身份认证 Controller")
-@RequestMapping("/auth")
+@RequestMapping("/oauth")
 @RestController
 public class AuthenticationController {
     private final TokenEndpoint tokenEndpoint;

@@ -213,7 +213,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO findByUserName(String username) {
-        SelectStatementProvider selectStatementProvider = select(UserDynamicSqlSupport.username,
+        SelectStatementProvider selectStatementProvider = select(UserDynamicSqlSupport.id,
+                UserDynamicSqlSupport.username,
                 UserDynamicSqlSupport.password,
                 UserDynamicSqlSupport.status)
                 .from(UserDynamicSqlSupport.user)
