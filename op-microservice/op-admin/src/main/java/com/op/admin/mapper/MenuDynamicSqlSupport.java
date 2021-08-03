@@ -17,9 +17,6 @@ public final class MenuDynamicSqlSupport {
     public static final SqlColumn<Integer> pid = menu.pid;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<String> parentIds = menu.parentIds;
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> menuName = menu.menuName;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -36,9 +33,6 @@ public final class MenuDynamicSqlSupport {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Integer> menuNo = menu.menuNo;
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<Integer> menuLevel = menu.menuLevel;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Integer> version = menu.version;
@@ -67,8 +61,6 @@ public final class MenuDynamicSqlSupport {
 
         public final SqlColumn<Integer> pid = column("pid", JDBCType.INTEGER);
 
-        public final SqlColumn<String> parentIds = column("parent_ids", JDBCType.VARCHAR);
-
         public final SqlColumn<String> menuName = column("menu_name", JDBCType.VARCHAR);
 
         public final SqlColumn<String> menuIcon = column("menu_icon", JDBCType.VARCHAR);
@@ -80,8 +72,6 @@ public final class MenuDynamicSqlSupport {
         public final SqlColumn<String> permission = column("permission", JDBCType.VARCHAR);
 
         public final SqlColumn<Integer> menuNo = column("menu_no", JDBCType.INTEGER);
-
-        public final SqlColumn<Integer> menuLevel = column("menu_level", JDBCType.INTEGER);
 
         public final SqlColumn<Integer> version = column("version", JDBCType.INTEGER);
 

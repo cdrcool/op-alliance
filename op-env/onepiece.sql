@@ -11,7 +11,7 @@
  Target Server Version : 80025
  File Encoding         : 65001
 
- Date: 30/07/2021 17:44:42
+ Date: 03/08/2021 11:17:48
 */
 
 SET NAMES utf8mb4;
@@ -23,15 +23,13 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `admin_menu`;
 CREATE TABLE `admin_menu`  (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `pid` int NULL DEFAULT NULL COMMENT '上级菜单id',
-  `parent_ids` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '上级菜单ids',
-  `menu_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '菜单名称',
+  `pid` int NOT NULL COMMENT '上级菜单id',
+  `menu_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '菜单名称',
   `menu_icon` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '菜单图标',
   `menu_path` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '菜单路径',
-  `is_hidden` tinyint(1) NULL DEFAULT NULL COMMENT '是否隐藏',
+  `is_hidden` tinyint(1) NOT NULL COMMENT '是否隐藏',
   `permission` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '权限标识',
-  `menu_no` int NULL DEFAULT NULL COMMENT '菜单编号',
-  `menu_level` int NULL DEFAULT NULL COMMENT '菜单层级',
+  `menu_no` int NOT NULL DEFAULT 999 COMMENT '菜单编号',
   `version` int NULL DEFAULT NULL COMMENT '版本号',
   `deleted` tinyint(1) NULL DEFAULT NULL COMMENT '是否逻辑删除',
   `creator_id` int NULL DEFAULT NULL COMMENT '创建人id',
@@ -39,23 +37,25 @@ CREATE TABLE `admin_menu`  (
   `last_modifier_id` int NULL DEFAULT NULL COMMENT '最后修改人id',
   `last_modify_time` datetime NULL DEFAULT NULL COMMENT '最后修改时间',
   `tenant_id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜单' ROW_FORMAT = DYNAMIC;
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `pid_index`(`pid`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 22 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜单' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of admin_menu
 -- ----------------------------
-INSERT INTO `admin_menu` VALUES (1, -1, '', '工作台', 'DesktopOutlined', '/workbench', 0, 'workbench_view', 1, 1, 0, 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `admin_menu` VALUES (2, -1, '10', '管理中心', 'TeamOutlined', '/admin', 0, 'admin_view', 2, 1, 0, 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `admin_menu` VALUES (3, 2, '2', '组织管理', NULL, '/admin/organization', 0, 'organization_view', 1, 2, 0, 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `admin_menu` VALUES (4, 2, '2', '用户管理', NULL, '/admin/user', 0, 'user_view', 2, 2, 0, 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `admin_menu` VALUES (5, 2, '2', '角色管理', NULL, '/admin/role', 0, 'role_view', 4, 2, 0, 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `admin_menu` VALUES (6, 2, '2', '资源分类管理', NULL, '/admin/resourceCategory', 0, 'resource_category_view', 5, 2, 0, 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `admin_menu` VALUES (7, 2, '2', '菜单管理', NULL, '/admin/menu', 0, 'menu_view', 7, 2, 0, 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `admin_menu` VALUES (8, 2, '2', '资源管理', NULL, '/admin/resource', 0, 'resource_view', 6, 2, 0, 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `admin_menu` VALUES (10, -1, '1', '个人中心', '', '/personal/center', 1, 'owner', 3, 2, 0, 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `admin_menu` VALUES (11, -1, '1', '个人设置', NULL, '/personal/settings', 1, 'owner', 4, 1, 0, 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `admin_menu` VALUES (17, 2, '2', '用户组管理', NULL, '/admin/userGroup', 0, 'user_group_view', 3, 2, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_menu` VALUES (1, -1, '工作台', 'DesktopOutlined', '/workbench', 0, 'workbench_view', 1, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_menu` VALUES (2, -1, '管理中心', 'TeamOutlined', '/admin', 0, 'admin_view', 2, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_menu` VALUES (3, 2, '组织管理', NULL, '/admin/organization', 0, 'organization_view', 1, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_menu` VALUES (4, 2, '用户管理', NULL, '/admin/user', 0, 'user_view', 2, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_menu` VALUES (5, 2, '角色管理', NULL, '/admin/role', 0, 'role_view', 4, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_menu` VALUES (6, 2, '资源分类管理', NULL, '/admin/resourceCategory', 0, 'resource_category_view', 5, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_menu` VALUES (7, 2, '菜单管理', NULL, '/admin/menu', 0, 'menu_view', 7, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_menu` VALUES (8, 2, '资源管理', NULL, '/admin/resource', 0, 'resource_view', 6, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_menu` VALUES (10, -1, '个人中心', '', '/personal/center', 1, 'owner', 98, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_menu` VALUES (11, -1, '个人设置', NULL, '/personal/settings', 1, 'owner', 99, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_menu` VALUES (17, 2, '用户组管理', NULL, '/admin/userGroup', 0, 'user_group_view', 3, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_menu` VALUES (21, 2, 'OAuth客户端管理', NULL, '/admin/oauthClient', 0, 'admin_oauth_client_view', 8, 0, 0, NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for admin_oauth_client_details
@@ -64,7 +64,7 @@ DROP TABLE IF EXISTS `admin_oauth_client_details`;
 CREATE TABLE `admin_oauth_client_details`  (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
   `client_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '客户端标识',
-  `client_secret` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '客户端密钥',
+  `client_secret` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '客户端密钥',
   `authorized_grant_types` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '授权许可类型',
   `scope` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '授权范围',
   `web_server_redirect_uri` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '重定向地址',
@@ -74,13 +74,14 @@ CREATE TABLE `admin_oauth_client_details`  (
   `refresh_token_validity` int NULL DEFAULT NULL COMMENT '刷新令牌有效期',
   `autoapprove` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '是否自动授权（只适用于授权码模式，可选值：true|false|read|write）',
   `additional_information` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '其它信息',
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `client_id_index`(`client_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = 'oauth2-client' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of admin_oauth_client_details
 -- ----------------------------
-INSERT INTO `admin_oauth_client_details` VALUES (1, 'client', '$2a$10$ngadERbCpEPqPCXKf7vbjesqK9p.wVTTs9.X2wmqjdg0LaOlpofAm', 'client_credentials', NULL, NULL, NULL, NULL, 86400, NULL, NULL, NULL);
+INSERT INTO `admin_oauth_client_details` VALUES (1, 'client', '$2a$10$ngadERbCpEPqPCXKf7vbjesqK9p.wVTTs9.X2wmqjdg0LaOlpofAm', 'client_credentials,password', NULL, NULL, NULL, NULL, 86400, NULL, NULL, NULL);
 INSERT INTO `admin_oauth_client_details` VALUES (2, 'implicit', '$2a$10$ngadERbCpEPqPCXKf7vbjesqK9p.wVTTs9.X2wmqjdg0LaOlpofAm', 'implicit', NULL, 'https://www.baidu.com', NULL, NULL, 86400, NULL, NULL, NULL);
 INSERT INTO `admin_oauth_client_details` VALUES (3, 'password', '$2a$10$ngadERbCpEPqPCXKf7vbjesqK9p.wVTTs9.X2wmqjdg0LaOlpofAm', 'password,refresh_token', NULL, NULL, NULL, NULL, 86400, 604800, NULL, NULL);
 INSERT INTO `admin_oauth_client_details` VALUES (4, 'code', '$2a$10$ngadERbCpEPqPCXKf7vbjesqK9p.wVTTs9.X2wmqjdg0LaOlpofAm', 'authorization_code,refresh_token', NULL, 'http://localhost:8080/authorized', NULL, NULL, 86400, 604800, 'true', NULL);
@@ -91,11 +92,11 @@ INSERT INTO `admin_oauth_client_details` VALUES (4, 'code', '$2a$10$ngadERbCpEPq
 DROP TABLE IF EXISTS `admin_organization`;
 CREATE TABLE `admin_organization`  (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `pid` int NULL DEFAULT NULL COMMENT '上级组织id',
-  `org_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '组织名称',
-  `org_code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '组织编码',
-  `org_code_link` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '组织编码链（从根组织到当前组织的编码链，用于快速查询）',
-  `org_type` int NULL DEFAULT NULL COMMENT '组织类型（1-集团；2-公司；3-分公司；4-项目部；5-部门）',
+  `pid` int NOT NULL COMMENT '上级组织id',
+  `org_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '组织名称',
+  `org_code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '组织编码',
+  `org_code_link` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '组织编码链（从根组织到当前组织的编码链，用于快速查询）',
+  `org_type` int NOT NULL COMMENT '组织类型（1-集团；2-公司；3-分公司；4-项目部；5-部门）',
   `version` int NULL DEFAULT NULL COMMENT '版本号',
   `deleted` tinyint(1) NULL DEFAULT NULL COMMENT '是否逻辑删除',
   `creator_id` int NULL DEFAULT NULL COMMENT '创建人id',
@@ -103,8 +104,9 @@ CREATE TABLE `admin_organization`  (
   `last_modifier_id` int NULL DEFAULT NULL COMMENT '最后修改人id',
   `last_modify_time` datetime NULL DEFAULT NULL COMMENT '最后修改时间',
   `tenant_id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '组织' ROW_FORMAT = DYNAMIC;
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `pid_index`(`pid`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 22 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '组织' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of admin_organization
@@ -145,7 +147,7 @@ CREATE TABLE `admin_organization_resource_action_relation`  (
   `last_modifier_id` int NULL DEFAULT NULL COMMENT '最后修改人id',
   `last_modify_time` datetime NULL DEFAULT NULL COMMENT '最后修改时间',
   `tenant_id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
-  UNIQUE INDEX `org_id_action_id_index`(`org_id`, `action_id`) USING BTREE
+  INDEX `org_id_index`(`org_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '组织-资源动作关联' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -173,7 +175,8 @@ CREATE TABLE `admin_organization_role_relation`  (
   `last_modifier_id` int NULL DEFAULT NULL COMMENT '最后修改人id',
   `last_modify_time` datetime NULL DEFAULT NULL COMMENT '最后修改时间',
   `tenant_id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
-  UNIQUE INDEX `org_id_role_id_index`(`org_id`, `role_id`) USING BTREE
+  INDEX `org_id_index`(`org_id`) USING BTREE,
+  INDEX `role_id_index`(`role_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '组织-角色关联' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -189,11 +192,11 @@ INSERT INTO `admin_organization_role_relation` VALUES (2, 2, 0, 0, NULL, NULL, N
 DROP TABLE IF EXISTS `admin_resource`;
 CREATE TABLE `admin_resource`  (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `category_id` int NULL DEFAULT NULL COMMENT '资源分类id',
-  `resource_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '资源名称',
-  `resource_path` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '资源路径',
+  `category_id` int NOT NULL COMMENT '资源分类id',
+  `resource_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '资源名称',
+  `resource_path` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '资源路径',
   `resource_desc` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '资源描述',
-  `resource_no` int NULL DEFAULT NULL COMMENT '资源编号',
+  `resource_no` int NOT NULL DEFAULT 999 COMMENT '资源编号',
   `version` int NULL DEFAULT NULL COMMENT '版本号',
   `deleted` tinyint(1) NULL DEFAULT NULL COMMENT '是否逻辑删除',
   `creator_id` int NULL DEFAULT NULL COMMENT '创建人id',
@@ -201,7 +204,8 @@ CREATE TABLE `admin_resource`  (
   `last_modifier_id` int NULL DEFAULT NULL COMMENT '最后修改人id',
   `last_modify_time` datetime NULL DEFAULT NULL COMMENT '最后修改时间',
   `tenant_id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `category_id_index`(`category_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '资源' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -220,11 +224,11 @@ INSERT INTO `admin_resource` VALUES (6, 1, '菜单管理', '/admin/menu', NULL, 
 DROP TABLE IF EXISTS `admin_resource_action`;
 CREATE TABLE `admin_resource_action`  (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `resource_id` int NULL DEFAULT NULL COMMENT '资源id',
-  `action_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '动作名称',
-  `action_path` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '动作路径',
+  `resource_id` int NOT NULL COMMENT '资源id',
+  `action_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '动作名称',
+  `action_path` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '动作路径',
   `action_desc` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '动作描述',
-  `action_no` int NULL DEFAULT NULL COMMENT '动作编号',
+  `action_no` int NOT NULL DEFAULT 999 COMMENT '动作编号',
   `permission` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '权限名',
   `version` int NULL DEFAULT NULL COMMENT '版本号',
   `deleted` tinyint(1) NULL DEFAULT NULL COMMENT '是否逻辑删除',
@@ -233,7 +237,8 @@ CREATE TABLE `admin_resource_action`  (
   `last_modifier_id` int NULL DEFAULT NULL COMMENT '最后修改人id',
   `last_modify_time` datetime NULL DEFAULT NULL COMMENT '最后修改时间',
   `tenant_id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `resource_id_index`(`resource_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 25 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '资源动作' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -270,10 +275,10 @@ INSERT INTO `admin_resource_action` VALUES (24, 6, '导出', '/admin/menu/export
 DROP TABLE IF EXISTS `admin_resource_category`;
 CREATE TABLE `admin_resource_category`  (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `category_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '分类名称',
+  `category_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '分类名称',
   `category_icon` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '分类图标',
-  `server_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '服务名称',
-  `category_no` int NULL DEFAULT NULL COMMENT '分类编号',
+  `server_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '服务名称',
+  `category_no` int NOT NULL DEFAULT 999 COMMENT '分类编号',
   `version` int NULL DEFAULT NULL COMMENT '版本号',
   `deleted` tinyint(1) NULL DEFAULT NULL COMMENT '是否逻辑删除',
   `creator_id` int NULL DEFAULT NULL COMMENT '创建人id',
@@ -306,11 +311,11 @@ INSERT INTO `admin_resource_category` VALUES (12, '文档中心', 'ReadOutlined'
 DROP TABLE IF EXISTS `admin_role`;
 CREATE TABLE `admin_role`  (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `role_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '角色名称',
-  `role_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '角色编码',
+  `role_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '角色名称',
+  `role_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '角色编码',
   `role_desc` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '角色描述',
-  `status` int NULL DEFAULT NULL COMMENT '启用状态（0-禁用；1-启用）',
-  `role_no` int NULL DEFAULT NULL COMMENT '角色编号',
+  `status` int NOT NULL COMMENT '启用状态（0-禁用；1-启用）',
+  `role_no` int NOT NULL DEFAULT 999 COMMENT '角色编号',
   `user_count` int NULL DEFAULT NULL COMMENT '分配了该角色的用户数量',
   `version` int NULL DEFAULT NULL COMMENT '版本号',
   `deleted` tinyint(1) NULL DEFAULT NULL COMMENT '是否逻辑删除',
@@ -364,7 +369,7 @@ CREATE TABLE `admin_role_resource_action_relation`  (
   `last_modifier_id` int NULL DEFAULT NULL COMMENT '最后修改人id',
   `last_modify_time` datetime NULL DEFAULT NULL COMMENT '最后修改时间',
   `tenant_id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
-  UNIQUE INDEX `role_id_action_id_index`(`role_id`, `action_id`) USING BTREE
+  INDEX `role_id_index`(`role_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色-资源动作关联' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -383,18 +388,18 @@ INSERT INTO `admin_role_resource_action_relation` VALUES (2, 23, 0, 0, NULL, NUL
 DROP TABLE IF EXISTS `admin_user`;
 CREATE TABLE `admin_user`  (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `org_id` int NULL DEFAULT NULL COMMENT '组织id',
-  `username` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '用户名',
-  `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '密码',
-  `nickname` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '昵称',
+  `org_id` int NOT NULL COMMENT '组织id',
+  `username` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户名',
+  `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '密码',
+  `nickname` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '昵称',
   `avatar` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '头像',
   `signature` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '个性签名',
   `phone` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '手机号',
   `email` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '邮箱',
   `gender` int NULL DEFAULT NULL COMMENT '性别（1-男；2-女）',
   `birthday` date NULL DEFAULT NULL COMMENT '出生日期',
-  `status` int NULL DEFAULT NULL COMMENT '帐号状态（0-禁用；1-启用；2-过期；3-锁定；4-密码过期）',
-  `user_no` int NULL DEFAULT NULL COMMENT '用户编号',
+  `status` int NOT NULL COMMENT '帐号状态（0-禁用；1-启用；2-过期；3-锁定；4-密码过期）',
+  `user_no` int NOT NULL DEFAULT 999 COMMENT '用户编号',
   `last_login_time` datetime NULL DEFAULT NULL COMMENT '最后登录时间',
   `version` int NULL DEFAULT NULL COMMENT '版本号',
   `deleted` tinyint(1) NULL DEFAULT NULL COMMENT '是否逻辑删除',
@@ -403,7 +408,9 @@ CREATE TABLE `admin_user`  (
   `last_modifier_id` int NULL DEFAULT NULL COMMENT '最后修改人id',
   `last_modify_time` datetime NULL DEFAULT NULL COMMENT '最后修改时间',
   `tenant_id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `username_index`(`username`) USING BTREE,
+  INDEX `org_id_index`(`org_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -419,9 +426,9 @@ INSERT INTO `admin_user` VALUES (3, 9, 'lemon', '$2a$10$pT1QtdGPnICYMT3Vy.R8jOcv
 DROP TABLE IF EXISTS `admin_user_group`;
 CREATE TABLE `admin_user_group`  (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `group_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '用户组名称',
+  `group_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户组名称',
   `group_desc` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '用户组描述',
-  `group_no` int NULL DEFAULT NULL COMMENT '用户编号',
+  `group_no` int NOT NULL DEFAULT 999 COMMENT '用户编号',
   `version` int NULL DEFAULT NULL COMMENT '版本号',
   `deleted` tinyint(1) NULL DEFAULT NULL COMMENT '是否逻辑删除',
   `creator_id` int NULL DEFAULT NULL COMMENT '创建人id',
@@ -451,7 +458,7 @@ CREATE TABLE `admin_user_group_resource_action_relation`  (
   `last_modifier_id` int NULL DEFAULT NULL COMMENT '最后修改人id',
   `last_modify_time` datetime NULL DEFAULT NULL COMMENT '最后修改时间',
   `tenant_id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
-  UNIQUE INDEX `group_id_action_id_index`(`group_id`, `action_id`) USING BTREE
+  INDEX `group_id_index`(`group_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户组-资源动作关联' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -476,7 +483,8 @@ CREATE TABLE `admin_user_group_role_relation`  (
   `last_modifier_id` int NULL DEFAULT NULL COMMENT '最后修改人id',
   `last_modify_time` datetime NULL DEFAULT NULL COMMENT '最后修改时间',
   `tenant_id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
-  UNIQUE INDEX `group_id_role_id_index`(`group_id`, `role_id`) USING BTREE
+  INDEX `group_id_index`(`group_id`) USING BTREE,
+  INDEX `role_id_index`(`role_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户组-角色关联' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -499,7 +507,8 @@ CREATE TABLE `admin_user_group_user_relation`  (
   `last_modifier_id` int NULL DEFAULT NULL COMMENT '最后修改人id',
   `last_modify_time` datetime NULL DEFAULT NULL COMMENT '最后修改时间',
   `tenant_id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
-  UNIQUE INDEX `group_id_user_id_index`(`group_id`, `user_id`) USING BTREE
+  INDEX `group_id_index`(`group_id`) USING BTREE,
+  INDEX `user_id_index`(`user_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户组-用户关联' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -520,12 +529,18 @@ CREATE TABLE `admin_user_organization_relation`  (
   `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
   `last_modifier_id` int NULL DEFAULT NULL COMMENT '最后修改人id',
   `last_modify_time` datetime NULL DEFAULT NULL COMMENT '最后修改时间',
-  `tenant_id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id'
+  `tenant_id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
+  INDEX `user_id_index`(`user_id`) USING BTREE,
+  INDEX `org_id_index`(`org_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户-授权组织关联' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of admin_user_organization_relation
 -- ----------------------------
+INSERT INTO `admin_user_organization_relation` VALUES (1, 2, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_user_organization_relation` VALUES (1, 7, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_user_organization_relation` VALUES (1, 8, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_user_organization_relation` VALUES (1, 3, 0, 0, NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for admin_user_resource_action_relation
@@ -541,7 +556,7 @@ CREATE TABLE `admin_user_resource_action_relation`  (
   `last_modifier_id` int NULL DEFAULT NULL COMMENT '最后修改人id',
   `last_modify_time` datetime NULL DEFAULT NULL COMMENT '最后修改时间',
   `tenant_id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
-  UNIQUE INDEX `user_id_action_id_index`(`user_id`, `action_id`) USING BTREE
+  INDEX `user_id_index`(`user_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户-资源动作关联' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -586,7 +601,8 @@ CREATE TABLE `admin_user_role_relation`  (
   `last_modifier_id` int NULL DEFAULT NULL COMMENT '最后修改人id',
   `last_modify_time` datetime NULL DEFAULT NULL COMMENT '最后修改时间',
   `tenant_id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
-  UNIQUE INDEX `user_id_role_id_index`(`user_id`, `role_id`) USING BTREE
+  INDEX `user_id_index`(`user_id`) USING BTREE,
+  INDEX `role_id_index`(`role_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户-角色关联' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------

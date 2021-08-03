@@ -33,12 +33,12 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 /**
  * @author Mybatis Generator
- * @date 2021/07/30 05:45
+ * @date 2021/08/03 11:12
  */
 @Mapper
 public interface MenuMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(id, pid, parentIds, menuName, menuIcon, menuPath, isHidden, permission, menuNo, menuLevel, version, deleted, creatorId, createTime, lastModifierId, lastModifyTime, tenantId);
+    BasicColumn[] selectList = BasicColumn.columnList(id, pid, menuName, menuIcon, menuPath, isHidden, permission, menuNo, version, deleted, creatorId, createTime, lastModifierId, lastModifyTime, tenantId);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -63,14 +63,12 @@ public interface MenuMapper {
     @Results(id="MenuResult", value = {
         @Result(column="id", property="id", jdbcType=JdbcType.INTEGER, id=true),
         @Result(column="pid", property="pid", jdbcType=JdbcType.INTEGER),
-        @Result(column="parent_ids", property="parentIds", jdbcType=JdbcType.VARCHAR),
         @Result(column="menu_name", property="menuName", jdbcType=JdbcType.VARCHAR),
         @Result(column="menu_icon", property="menuIcon", jdbcType=JdbcType.VARCHAR),
         @Result(column="menu_path", property="menuPath", jdbcType=JdbcType.VARCHAR),
         @Result(column="is_hidden", property="isHidden", jdbcType=JdbcType.BIT),
         @Result(column="permission", property="permission", jdbcType=JdbcType.VARCHAR),
         @Result(column="menu_no", property="menuNo", jdbcType=JdbcType.INTEGER),
-        @Result(column="menu_level", property="menuLevel", jdbcType=JdbcType.INTEGER),
         @Result(column="version", property="version", jdbcType=JdbcType.INTEGER),
         @Result(column="deleted", property="deleted", jdbcType=JdbcType.BIT),
         @Result(column="creator_id", property="creatorId", jdbcType=JdbcType.INTEGER),
@@ -106,14 +104,12 @@ public interface MenuMapper {
     default int insert(Menu record) {
         return MyBatis3Utils.insert(this::insert, record, menu, c ->
             c.map(pid).toProperty("pid")
-            .map(parentIds).toProperty("parentIds")
             .map(menuName).toProperty("menuName")
             .map(menuIcon).toProperty("menuIcon")
             .map(menuPath).toProperty("menuPath")
             .map(isHidden).toProperty("isHidden")
             .map(permission).toProperty("permission")
             .map(menuNo).toProperty("menuNo")
-            .map(menuLevel).toProperty("menuLevel")
             .map(version).toProperty("version")
             .map(deleted).toProperty("deleted")
             .map(creatorId).toProperty("creatorId")
@@ -128,14 +124,12 @@ public interface MenuMapper {
     default int insertSelective(Menu record) {
         return MyBatis3Utils.insert(this::insert, record, menu, c ->
             c.map(pid).toPropertyWhenPresent("pid", record::getPid)
-            .map(parentIds).toPropertyWhenPresent("parentIds", record::getParentIds)
             .map(menuName).toPropertyWhenPresent("menuName", record::getMenuName)
             .map(menuIcon).toPropertyWhenPresent("menuIcon", record::getMenuIcon)
             .map(menuPath).toPropertyWhenPresent("menuPath", record::getMenuPath)
             .map(isHidden).toPropertyWhenPresent("isHidden", record::getIsHidden)
             .map(permission).toPropertyWhenPresent("permission", record::getPermission)
             .map(menuNo).toPropertyWhenPresent("menuNo", record::getMenuNo)
-            .map(menuLevel).toPropertyWhenPresent("menuLevel", record::getMenuLevel)
             .map(version).toPropertyWhenPresent("version", record::getVersion)
             .map(deleted).toPropertyWhenPresent("deleted", record::getDeleted)
             .map(creatorId).toPropertyWhenPresent("creatorId", record::getCreatorId)
@@ -176,14 +170,12 @@ public interface MenuMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     static UpdateDSL<UpdateModel> updateAllColumns(Menu record, UpdateDSL<UpdateModel> dsl) {
         return dsl.set(pid).equalTo(record::getPid)
-                .set(parentIds).equalTo(record::getParentIds)
                 .set(menuName).equalTo(record::getMenuName)
                 .set(menuIcon).equalTo(record::getMenuIcon)
                 .set(menuPath).equalTo(record::getMenuPath)
                 .set(isHidden).equalTo(record::getIsHidden)
                 .set(permission).equalTo(record::getPermission)
                 .set(menuNo).equalTo(record::getMenuNo)
-                .set(menuLevel).equalTo(record::getMenuLevel)
                 .set(version).equalTo(record::getVersion)
                 .set(deleted).equalTo(record::getDeleted)
                 .set(creatorId).equalTo(record::getCreatorId)
@@ -196,14 +188,12 @@ public interface MenuMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     static UpdateDSL<UpdateModel> updateSelectiveColumns(Menu record, UpdateDSL<UpdateModel> dsl) {
         return dsl.set(pid).equalToWhenPresent(record::getPid)
-                .set(parentIds).equalToWhenPresent(record::getParentIds)
                 .set(menuName).equalToWhenPresent(record::getMenuName)
                 .set(menuIcon).equalToWhenPresent(record::getMenuIcon)
                 .set(menuPath).equalToWhenPresent(record::getMenuPath)
                 .set(isHidden).equalToWhenPresent(record::getIsHidden)
                 .set(permission).equalToWhenPresent(record::getPermission)
                 .set(menuNo).equalToWhenPresent(record::getMenuNo)
-                .set(menuLevel).equalToWhenPresent(record::getMenuLevel)
                 .set(version).equalToWhenPresent(record::getVersion)
                 .set(deleted).equalToWhenPresent(record::getDeleted)
                 .set(creatorId).equalToWhenPresent(record::getCreatorId)
@@ -217,14 +207,12 @@ public interface MenuMapper {
     default int updateByPrimaryKey(Menu record) {
         return update(c ->
             c.set(pid).equalTo(record::getPid)
-            .set(parentIds).equalTo(record::getParentIds)
             .set(menuName).equalTo(record::getMenuName)
             .set(menuIcon).equalTo(record::getMenuIcon)
             .set(menuPath).equalTo(record::getMenuPath)
             .set(isHidden).equalTo(record::getIsHidden)
             .set(permission).equalTo(record::getPermission)
             .set(menuNo).equalTo(record::getMenuNo)
-            .set(menuLevel).equalTo(record::getMenuLevel)
             .set(version).equalTo(record::getVersion)
             .set(deleted).equalTo(record::getDeleted)
             .set(creatorId).equalTo(record::getCreatorId)
@@ -240,14 +228,12 @@ public interface MenuMapper {
     default int updateByPrimaryKeySelective(Menu record) {
         return update(c ->
             c.set(pid).equalToWhenPresent(record::getPid)
-            .set(parentIds).equalToWhenPresent(record::getParentIds)
             .set(menuName).equalToWhenPresent(record::getMenuName)
             .set(menuIcon).equalToWhenPresent(record::getMenuIcon)
             .set(menuPath).equalToWhenPresent(record::getMenuPath)
             .set(isHidden).equalToWhenPresent(record::getIsHidden)
             .set(permission).equalToWhenPresent(record::getPermission)
             .set(menuNo).equalToWhenPresent(record::getMenuNo)
-            .set(menuLevel).equalToWhenPresent(record::getMenuLevel)
             .set(version).equalToWhenPresent(record::getVersion)
             .set(deleted).equalToWhenPresent(record::getDeleted)
             .set(creatorId).equalToWhenPresent(record::getCreatorId)

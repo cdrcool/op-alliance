@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author Mybatis Generator
- * @date 2021/07/30 05:45
+ * @date 2021/08/03 11:12
  */
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
@@ -25,12 +25,6 @@ public class Menu extends BaseEntity {
      */
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Integer pid;
-
-    /**
-     * 上级菜单ids
-     */
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String parentIds;
 
     /**
      * 菜单名称
@@ -67,10 +61,4 @@ public class Menu extends BaseEntity {
      */
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Integer menuNo;
-
-    /**
-     * 菜单层级
-     */
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Integer menuLevel;
 }

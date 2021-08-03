@@ -57,7 +57,6 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public MenuVO save(MenuSaveDTO saveDTO) {
         saveDTO.setPid(Optional.ofNullable(saveDTO.getPid()).orElse(-1));
-        saveDTO.setMenuNo(Optional.ofNullable(saveDTO.getMenuNo()).orElse(999));
 
         // 校验同一菜单下，子菜单名称是否重复
         validateMenuName(saveDTO.getPid(), saveDTO.getId(), saveDTO.getMenuName());
