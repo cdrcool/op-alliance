@@ -159,6 +159,18 @@ public class MenuServiceImpl implements MenuService {
         return CollectionUtils.isNotEmpty(treeList) ? treeList : new ArrayList<>();
     }
 
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public List<MenuVO> queryList(String keyword) {
+        SelectStatementProvider selectStatementProvider = SqlBuilder.select(MenuMapper.selectList)
+                .from(MenuDynamicSqlSupport.menu)
+                .where(MenuDynamicSqlSupport.menuName, isLike(keyword).map(v -> "%" + v + "%"))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+        List<Menu> menus = menuMapper.selectMany(selectStatementProvider);
+        return menuMapping.toMenuVOList(menus);
+    }
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public MenuVO changeVisibility(Integer id, boolean show) {

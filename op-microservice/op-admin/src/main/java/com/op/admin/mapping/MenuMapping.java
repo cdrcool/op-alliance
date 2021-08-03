@@ -12,6 +12,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 
+import java.util.List;
+
 /**
  * 菜单 mapping
  *
@@ -43,6 +45,14 @@ public interface MenuMapping {
      * @return 菜单 vo
      */
     MenuVO toMenuVO(Menu menu);
+
+    /**
+     * 菜单列表 -> 菜单 vo 列表
+     *
+     * @param menus 菜单列表
+     * @return 菜单 vo 列表
+     */
+    List<MenuVO> toMenuVOList(List<Menu> menus);
 
     /**
      * 菜单 -> 菜单树 vo

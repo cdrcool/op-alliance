@@ -48,6 +48,15 @@ export async function queryMenuTreeList(params?: object): Promise<Menus[]> {
 }
 
 /**
+ * 查询菜单列表
+ *
+ * @param keyword 关键字
+ */
+export async function queryMenuList(keyword: string): Promise<Menus[]> {
+    return request.get(`/api/op-admin/menu/queryList?keyword=${keyword}`);
+}
+
+/**
  * 显示/隐藏菜单
  *
  * @param ids 菜单 ids

@@ -59,6 +59,12 @@ public class MenuController {
         return menuService.queryTreeList(queryDTO);
     }
 
+    @ApiOperation("查询菜单列表")
+    @GetMapping("queryList")
+    public List<MenuVO> queryList(@RequestParam String keyword) {
+        return menuService.queryList(keyword);
+    }
+
     @ApiOperation("显示/隐藏菜单")
     @PostMapping("changeVisibility")
     public void changeVisibility(@Valid @RequestBody MenuChangeVisibilityDTO changeVisibilityDTO) {

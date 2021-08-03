@@ -7,7 +7,6 @@ export interface Menus {
     isHidden?: boolean;
     permission?: string;
     menuNo?: number;
-    menuLevel?: number;
     parentName?: string;
     children?: Menus[];
 }
