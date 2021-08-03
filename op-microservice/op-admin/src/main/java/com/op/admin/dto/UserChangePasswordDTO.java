@@ -1,6 +1,6 @@
 package com.op.admin.dto;
 
-import com.op.framework.web.common.api.validation.annotation.PasswordMatch;
+import com.op.framework.web.common.api.validation.annotation.FieldsMatch;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
  *
  * @author cdrcool
  */
-@PasswordMatch(password = "password", confirmPassword = "confirmPassword")
+@FieldsMatch(first = "password", second = "confirmPassword")
 @ApiModel(description = "用户修改密码 DTO")
 @Data
 public class UserChangePasswordDTO {

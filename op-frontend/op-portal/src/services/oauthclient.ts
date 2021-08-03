@@ -13,6 +13,15 @@ export async function saveOauthClient(oauthClient: OauthClient) {
 }
 
 /**
+ * 修改 oauth2-client 秘钥
+ *
+ * @param params 查询参数
+ */
+export async function changeOauthClientSecret(params: object) {
+    return request.post('/api/op-admin/oauthClientDetails/changeSecret', params);
+}
+
+/**
  * 删除 Oauth 客户端
  *
  * @param id Oauth 客户端 id

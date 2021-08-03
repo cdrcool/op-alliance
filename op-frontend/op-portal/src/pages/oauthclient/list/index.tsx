@@ -1,20 +1,25 @@
 import React, {FC, useRef, useState} from "react";
 import {useHistory} from "react-router-dom";
-import {Button, Popconfirm, Space} from "antd";
+import {Button, message, Popconfirm, Space} from "antd";
 import {ExportOutlined, MinusOutlined, PlusOutlined} from "@ant-design/icons";
 import {PageContainer} from "@ant-design/pro-layout";
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable, {TableDropdown} from '@ant-design/pro-table';
 import {ModalForm, ProFormText,} from '@ant-design/pro-form';
 import {Role} from "../../../models/Role";
-import {deleteOauthClients, queryOauthClientPage} from "../../../services/oauthclient";
+import {
+    changeOauthClientSecret,
+    deleteOauthClients,
+    queryOauthClientPage
+} from "../../../services/oauthclient";
 import {OauthClient} from "../../../models/OauthClient";
 
 const OauthClientListPage: FC = () => {
     const history = useHistory();
     const ref = useRef<ActionType>();
 
-    const [modalVisit, setModalVisit] = useState<boolean>(false);
+    const [selectedId, setSelectedId] = useState<number | null>();
+    const [modalVisible, setModalVisible] = useState<boolean>(false);
 
     const onDeleteOauthClients = (ids: number[]) => {
         // @ts-ignore
@@ -78,7 +83,10 @@ const OauthClientListPage: FC = () => {
                         {
                             key: 'resetClientSecret',
                             name: '重置客户端秘钥',
-                            onClick: () => setModalVisit(true),
+                            onClick: () => {
+                                setSelectedId(record.id as number)
+                                setModalVisible(true);
+                            },
                         },
                     ]}
                 />,
@@ -151,14 +159,21 @@ const OauthClientListPage: FC = () => {
             />
             <ModalForm
                 title="重置客户端秘钥"
-                visible={modalVisit}
-                onVisibleChange={setModalVisit}
-                onFinish={async () => {
+                visible={modalVisible}
+                onVisibleChange={(visible => {
+                    setModalVisible(visible);
+                    if (!visible) {
+                        setSelectedId(null);
+                    }
+                })}
+                onFinish={async (values) => {
+                    await changeOauthClientSecret({id: selectedId, ...values});
+                    message.success("重置秘钥成功！");
                     return true;
                 }}
             >
-                <ProFormText.Password name="clientSecret" label="客户端秘钥" placeholder="请输入客户端秘钥" rules={[{required: true, message: '请输入客户端秘钥'}]}/>
-                <ProFormText.Password name="confirmClientSecret" label="客户端秘钥确认" placeholder="请再次输入客户端秘钥" rules={[{required: true, message: '请再次输入客户端秘钥'}]}/>
+                <ProFormText.Password name="secret" label="客户端秘钥" placeholder="请输入客户端秘钥" rules={[{required: true, message: '请输入客户端秘钥'}]}/>
+                <ProFormText.Password name="confirmSecret" label="客户端秘钥确认" placeholder="请再次输入客户端秘钥" rules={[{required: true, message: '请再次输入客户端秘钥'}]}/>
             </ModalForm>
         </PageContainer>
     )

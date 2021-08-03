@@ -1,7 +1,9 @@
 package com.op.admin.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.op.admin.dto.OauthClientChangeSecretDTO;
 import com.op.admin.dto.OauthClientDetailsSaveDTO;
+import com.op.admin.entity.User;
 import com.op.admin.mapper.OauthClientDetailsMapper;
 import com.op.admin.mapper.UserDynamicSqlSupport;
 import com.op.admin.mapping.OauthClientDetailsMapping;
@@ -9,6 +11,7 @@ import com.op.admin.dto.OauthClientDetailsDTO;
 import com.op.admin.dto.OauthClientDetailsPageQueryDTO;
 import com.op.admin.entity.OauthClientDetails;
 import com.op.admin.mapper.OauthClientDetailsDynamicSqlSupport;
+import com.op.admin.utils.BCryptPasswordEncoder;
 import com.op.admin.vo.OauthClientDetailsVO;
 import com.op.admin.service.OauthClientDetailsService;
 import com.op.framework.web.common.api.response.ResultCode;
@@ -35,6 +38,11 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
  */
 @Service
 public class OauthClientDetailsServiceImpl implements OauthClientDetailsService {
+    /**
+     * 密码编码器
+     */
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
     private final OauthClientDetailsMapper oauthClientDetailsMapper;
     private final OauthClientDetailsMapping oauthClientDetailsMapping;
 
@@ -76,6 +84,16 @@ public class OauthClientDetailsServiceImpl implements OauthClientDetailsService 
         if (count > 0) {
             throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "已存在相同客户端标识的客户端，客户端标识不能重复");
         }
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void changeSecret(OauthClientChangeSecretDTO changeSecretDTO) {
+        Integer id = changeSecretDTO.getId();
+        OauthClientDetails clientDetails = oauthClientDetailsMapper.selectByPrimaryKey(id)
+                .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的OAuth客户端"));
+        clientDetails.setClientSecret(passwordEncoder.encode(changeSecretDTO.getSecret()));
+        oauthClientDetailsMapper.updateByPrimaryKey(clientDetails);
     }
 
     @Transactional(rollbackFor = Exception.class)

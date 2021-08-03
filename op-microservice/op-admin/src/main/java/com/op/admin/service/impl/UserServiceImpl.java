@@ -128,8 +128,6 @@ public class UserServiceImpl implements UserService {
             throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "旧密码不正确");
         }
 
-        userMapping.update(changePasswordDto, user);
-
         user.setPassword(passwordEncoder.encode(newPassword));
         userMapper.updateByPrimaryKey(user);
     }

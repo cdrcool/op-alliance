@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.hibernate.validator.internal.engine.path.PathImpl;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -15,6 +16,7 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -27,8 +29,10 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * API 响应通知类，对正常返回值与异常进行统一包装后返回
@@ -157,8 +161,10 @@ public class ApiResponseAdvice implements ResponseBodyAdvice<Object> {
     public ApiResponse<Object> handleError(MethodArgumentNotValidException e) {
         log.warn("Method Argument Not Valid", e);
         BindingResult result = e.getBindingResult();
-        FieldError error = result.getFieldError();
-        String message = error != null ? String.format("%s:%s", error.getField(), error.getDefaultMessage()) : "";
+        List<ObjectError> errors = result.getAllErrors();
+        String message = CollectionUtils.isEmpty(errors) ? "" : errors.stream()
+                .map(error -> String.format("%s:%s", (error instanceof FieldError ? ((FieldError) error).getField() : error.getObjectName()), error.getDefaultMessage()))
+                .collect(Collectors.joining("|"));
         return ApiResponse
                 .builder()
                 .code(ResultCode.PARAM_VALID_ERROR)

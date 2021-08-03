@@ -1,8 +1,6 @@
 package com.op.admin.controller;
 
-import com.op.admin.dto.OauthClientDetailsSaveDTO;
-import com.op.admin.dto.OauthClientDetailsDTO;
-import com.op.admin.dto.OauthClientDetailsPageQueryDTO;
+import com.op.admin.dto.*;
 import com.op.admin.vo.OauthClientDetailsVO;
 import com.op.admin.service.OauthClientDetailsService;
 import com.op.framework.web.common.api.response.NoApiResponse;
@@ -10,7 +8,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,6 +33,12 @@ public class OauthClientDetailsController {
     @PostMapping("save")
     public void save(@Valid @RequestBody OauthClientDetailsSaveDTO saveDTO) {
         oauthClientDetailsService.save(saveDTO);
+    }
+
+    @ApiOperation("修改 oauth2-client 秘钥")
+    @PostMapping("changeSecret")
+    public void changeSecret(@Valid @RequestBody OauthClientChangeSecretDTO changeSecretDTO) {
+        oauthClientDetailsService.changeSecret(changeSecretDTO);
     }
 
     @ApiOperation("删除 oauth2-client")

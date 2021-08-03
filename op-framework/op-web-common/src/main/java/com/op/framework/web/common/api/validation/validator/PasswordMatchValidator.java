@@ -1,6 +1,6 @@
 package com.op.framework.web.common.api.validation.validator;
 
-import com.op.framework.web.common.api.validation.annotation.PasswordMatch;
+import com.op.framework.web.common.api.validation.annotation.FieldsMatch;
 import org.hibernate.validator.internal.engine.constraintvalidation.ConstraintValidatorContextImpl;
 import org.springframework.util.ReflectionUtils;
 
@@ -13,15 +13,15 @@ import java.lang.reflect.Field;
  *
  * @author cdrcool
  */
-public class PasswordMatchValidator implements ConstraintValidator<PasswordMatch, Object> {
+public class PasswordMatchValidator implements ConstraintValidator<FieldsMatch, Object> {
 
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
-        PasswordMatch passwordMatch = (PasswordMatch) ((ConstraintValidatorContextImpl) context)
+        FieldsMatch fieldsMatch = (FieldsMatch) ((ConstraintValidatorContextImpl) context)
                 .getConstraintDescriptor().getAnnotation();
 
-        Field passwordField = ReflectionUtils.findField(value.getClass(), passwordMatch.password());
-        Field confirmPasswordField = ReflectionUtils.findField(value.getClass(), passwordMatch.confirmPassword());
+        Field passwordField = ReflectionUtils.findField(value.getClass(), fieldsMatch.first());
+        Field confirmPasswordField = ReflectionUtils.findField(value.getClass(), fieldsMatch.second());
         if (passwordField == null || confirmPasswordField == null) {
             return false;
         }

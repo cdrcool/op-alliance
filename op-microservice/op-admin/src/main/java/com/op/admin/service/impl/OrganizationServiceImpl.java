@@ -66,10 +66,8 @@ public class OrganizationServiceImpl implements OrganizationService {
         Integer id = saveDTO.getId();
         Integer pid = saveDTO.getPid();
 
-        // 校验同一组织下，下级组织名称是否重复
-        validateOrgName(pid, id, saveDTO.getOrgName());
-        // 校验同一组织下，下级组织编码是否重复
-        validateOrgCode(pid, id, saveDTO.getOrgCode());
+        // 校验同一组织下，下级组织名称/组织编码是否重复
+        validateOrgNameAndOrgCode(pid, id, saveDTO.getOrgName(), saveDTO.getOrgCode());
 
         // 获取上级组织
         Organization parent = organizationMapper.selectByPrimaryKey(pid)
@@ -100,41 +98,26 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     /**
-     * 校验同一组织下，下级组织名称是否重复
+     * 校验同一组织下，下级组织名称/组织编码是否重复
      *
      * @param pid     父 id
      * @param id      主键
      * @param orgName 组织名称
      */
-    private void validateOrgName(Integer pid, Integer id, String orgName) {
+    private void validateOrgNameAndOrgCode(Integer pid, Integer id, String orgName, String orgCode) {
         SelectStatementProvider selectStatementProvider = countFrom(OrganizationDynamicSqlSupport.organization)
                 .where(OrganizationDynamicSqlSupport.pid, isEqualTo(pid))
-                .and(OrganizationDynamicSqlSupport.orgName, isEqualTo(orgName))
+                .and(OrganizationDynamicSqlSupport.orgName, isEqualTo(orgName), or(OrganizationDynamicSqlSupport.orgCode, isEqualTo(orgCode)))
                 .and(OrganizationDynamicSqlSupport.id, isNotEqualToWhenPresent(id))
                 .build().render(RenderingStrategies.MYBATIS3);
-        long count = organizationMapper.count(selectStatementProvider);
-        if (count > 0) {
-            throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "同一组织下，已存在相同组织名称的下级组织，组织名称不能重复");
-        }
-    }
-
-    /**
-     * 校验同一组织下，下级组织编码是否重复
-     *
-     * @param pid     父 id
-     * @param id      主键
-     * @param orgCode 组织编码
-     */
-    private void validateOrgCode(Integer pid, Integer id, String orgCode) {
-        SelectStatementProvider selectStatementProvider = countFrom(OrganizationDynamicSqlSupport.organization)
-                .where(OrganizationDynamicSqlSupport.pid, isEqualTo(pid))
-                .and(OrganizationDynamicSqlSupport.orgCode, isEqualTo(orgCode))
-                .and(OrganizationDynamicSqlSupport.id, isNotEqualToWhenPresent(id))
-                .build().render(RenderingStrategies.MYBATIS3);
-        long count = organizationMapper.count(selectStatementProvider);
-        if (count > 0) {
-            throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "同一父组织下，已存在相同组织编码的下级组织，组织编码不能重复");
-        }
+        Optional<Organization> optional = organizationMapper.selectOne(selectStatementProvider);
+        optional.ifPresent(organization -> {
+            if (orgName.equals(organization.getOrgName())) {
+                throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "同一组织下，已存在相同组织名称的下级组织，组织名称不能重复");
+            } else {
+                throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "同一父组织下，已存在相同组织编码的下级组织，组织编码不能重复");
+            }
+        });
     }
 
     @Transactional(rollbackFor = Exception.class)
