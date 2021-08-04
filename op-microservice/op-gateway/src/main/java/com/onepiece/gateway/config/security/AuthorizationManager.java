@@ -67,23 +67,19 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
         List<String> authorities = resourceActionPermissionsMap.keySet().stream()
                 .filter(url -> pathMatcher.match((String) url, uri.getPath()))
                 .map(resourceActionPermissionsMap::get)
-                .filter(Objects::nonNull)
                 .map(item -> AUTHORITY_PREFIX + item)
                 .collect(Collectors.toList());
 
         // 对未设置权限的资源直接放行
-        /*if (CollectionUtils.isEmpty(authorities)) {
+        if (CollectionUtils.isEmpty(authorities)) {
             return Mono.just(new AuthorizationDecision(true));
-        }*/
+        }
 
         return mono
                 .filter(Authentication::isAuthenticated)
                 .flatMapIterable(Authentication::getAuthorities)
                 .map(GrantedAuthority::getAuthority)
-                .any(a -> {
-                    log.info(a);
-                    return authorities.contains(a);
-                })
+                .any(authorities::contains)
                 .map(AuthorizationDecision::new)
                 .defaultIfEmpty(new AuthorizationDecision(false));
     }

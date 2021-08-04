@@ -34,6 +34,3 @@ secure:
   white-list:
     urls:
       - "/op-auth/auth/token"
-      - "/op-admin/captcha"
-      - "/op-admin/user/login"
-      - "/op-admin/user/register"

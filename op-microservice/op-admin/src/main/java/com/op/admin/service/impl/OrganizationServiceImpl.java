@@ -191,8 +191,8 @@ public class OrganizationServiceImpl implements OrganizationService {
                 .from(OrganizationDynamicSqlSupport.organization)
                 .where(OrganizationDynamicSqlSupport.pid, isEqualTo(queryDTO.getPid()))
                 .build().render(RenderingStrategies.MYBATIS3);
-        List<String> orgCodeLinks = organizationMapper.selectMany(childrenSelectStatementProvider).stream()
-                .map(Organization::getOrgCodeLink).collect(Collectors.toList());
+        Set<String> orgCodeLinks = organizationMapper.selectMany(childrenSelectStatementProvider).stream()
+                .map(Organization::getOrgCodeLink).collect(Collectors.toSet());
 
         if (StringUtils.isNotBlank(keyword)) {
             SelectStatementProvider partSelectStatementProvider = select(OrganizationDynamicSqlSupport.orgCodeLink)
@@ -215,7 +215,8 @@ public class OrganizationServiceImpl implements OrganizationService {
                     return organizationMapper.selectMany(selectStatementProvider);
                 })
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+                .collect(Collectors.collectingAndThen(Collectors.toCollection(() ->
+                        new TreeSet<>(Comparator.comparing(Organization::getId))), ArrayList::new));
     }
 
     @Transactional(rollbackFor = Exception.class)
