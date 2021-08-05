@@ -4,8 +4,6 @@ import React, {FC, useEffect, useState} from "react";
 import {PageContainer} from "@ant-design/pro-layout";
 import {getResourceCategory, saveResourceCategory} from "../../../services/resourceCategory";
 
-const {TextArea} = Input;
-
 const ResourceCategoryEditPage: FC = () => {
     const history = useHistory();
     const {id} = useParams<{ id?: string }>();
@@ -64,7 +62,7 @@ const ResourceCategoryEditPage: FC = () => {
                         </Form.Item>
                         <Form.Item label="服务名称" name="serverName"
                                    rules={[{required: true, message: '请输入服务名称'}]}>
-                            <TextArea/>
+                            <Input/>
                         </Form.Item>
                         <Form.Item label="分类编号" name="categoryNo">
                             <InputNumber/>
