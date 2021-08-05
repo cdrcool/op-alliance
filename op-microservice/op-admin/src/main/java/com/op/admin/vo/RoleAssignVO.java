@@ -24,6 +24,9 @@ public class RoleAssignVO {
     @ApiModelProperty("角色描述")
     private String roleDesc;
 
+    @ApiModelProperty("启用状态（0-禁用；1-启用）")
+    private Integer status;
+
     @ApiModelProperty("是否选中")
     private Boolean checked;
 

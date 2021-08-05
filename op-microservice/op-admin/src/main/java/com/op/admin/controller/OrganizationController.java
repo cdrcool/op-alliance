@@ -70,7 +70,7 @@ public class OrganizationController {
     @ApiOperation("获取组织角色分配情况")
     @GetMapping("loadAssignedRoles")
     public List<RoleAssignVO> loadRoles(@RequestParam Integer id) {
-        return organizationService.loadRoles(id);
+        return organizationService.loadAssignedRoles(id);
     }
 
     @ApiOperation("获取组织资源分配情况")

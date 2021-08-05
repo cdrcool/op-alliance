@@ -231,7 +231,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     @Override
     public void assignRoles(Integer id, List<Integer> roleIds) {
         // 获取已建立关联的角色 ids
-        List<Integer> preRoleIds = this.getAssignedRoleIds(Collections.singletonList(id));
+        List<Integer> preRoleIds = getAssignedRoleIds(Collections.singletonList(id), null);
 
         // 获取要新建关联的角色 ids
         List<Integer> toAddRoleIds = roleIds.stream()
@@ -262,13 +262,45 @@ public class UserGroupServiceImpl implements UserGroupService {
         }
     }
 
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public List<RoleAssignVO> loadAssignedRoles(Integer id) {
+        List<Integer> assignedRoleIds = getAssignedRoleIds(Collections.singletonList(id), null);
+
+        List<RoleAssignVO> roles = roleService.findAllForAssign();
+        roles.forEach(role -> {
+            role.setChecked(assignedRoleIds.contains(role.getId()));
+            role.setEnableUncheck(true);
+        });
+
+        return roles;
+    }
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public List<Integer> getAssignedRoleIds(List<Integer> ids, Integer status) {
+        SelectStatementProvider selectStatementProvider = select(UserGroupRoleRelationDynamicSqlSupport.roleId)
+                .from(UserGroupRoleRelationDynamicSqlSupport.userGroupRoleRelation)
+                .join(RoleDynamicSqlSupport.role)
+                .on(RoleDynamicSqlSupport.id, equalTo(UserGroupRoleRelationDynamicSqlSupport.roleId))
+                .where(UserGroupRoleRelationDynamicSqlSupport.groupId, isIn(ids))
+                .and(RoleDynamicSqlSupport.status, isEqualToWhenPresent(status))
+                .build().render(RenderingStrategies.MYBATIS3);
+        return userGroupRoleRelationMapper.selectMany(selectStatementProvider).stream()
+                .map(UserGroupRoleRelation::getRoleId).collect(Collectors.toList());
+    }
+
     @Override
     public void assignResourceActions(Integer id, List<Integer> resourceActionIds) {
+        // 获取继承的分配的资源动作 ids
+        List<Integer> inheritedActionIds = loadInheritedAssignedActionIds(id);
+
         // 获取已建立关联的资源动作 ids
-        List<Integer> preActionIds = this.getAssignedResourceActionIds(Collections.singletonList(id));
+        List<Integer> preActionIds = getAssignedResourceActionIds(Collections.singletonList(id));
 
         // 获取要新建关联的资源动作 ids
         List<Integer> toAddActionIds = resourceActionIds.stream()
+                .filter(actionId -> !inheritedActionIds.contains(actionId))
                 .filter(actionId -> !preActionIds.contains(actionId)).collect(Collectors.toList());
 
         // 获取要删除关联的资源动作 ids
@@ -296,15 +328,47 @@ public class UserGroupServiceImpl implements UserGroupService {
         }
     }
 
+    /**
+     * 获取继承的分配的资源动作 ids
+     *
+     * @param id 用户组 id
+     * @return 继承的分配的资源动作 ids
+     */
+    private List<Integer> loadInheritedAssignedActionIds(Integer id) {
+        List<Integer> assignedActionIds = new ArrayList<>();
+
+        // 获取用户组的角色所分配的资源动作 ids
+        List<Integer> roleIds = getAssignedRoleIds(Collections.singletonList(id), 1);
+        if (!CollectionUtils.isEmpty(roleIds)) {
+            assignedActionIds.addAll(roleService.getAssignedResourceActionIds(roleIds));
+        }
+
+        return assignedActionIds;
+    }
+
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<Integer> getAssignedRoleIds(List<Integer> ids) {
-        SelectStatementProvider selectStatementProvider = select(UserGroupRoleRelationDynamicSqlSupport.roleId)
-                .from(UserGroupRoleRelationDynamicSqlSupport.userGroupRoleRelation)
-                .where(UserGroupRoleRelationDynamicSqlSupport.groupId, isIn(ids))
-                .build().render(RenderingStrategies.MYBATIS3);
-        return userGroupRoleRelationMapper.selectMany(selectStatementProvider).stream()
-                .map(UserGroupRoleRelation::getRoleId).collect(Collectors.toList());
+    public List<ResourceCategoryAssignVO> loadAssignedResources(Integer id) {
+        // 获取用户组所分配的资源动作 ids
+        List<Integer> assignedActionIds = getAssignedResourceActionIds(Collections.singletonList(id));
+
+        // 获取用户组的角色所分配的资源动作 ids
+        List<Integer> roleAssignedActionIds = new ArrayList<>();
+        List<Integer> roleIds = getAssignedRoleIds(Collections.singletonList(id), 1);
+        if (!CollectionUtils.isEmpty(roleIds)) {
+            roleAssignedActionIds.addAll(roleService.getAssignedResourceActionIds(roleIds));
+        }
+
+        List<ResourceCategoryAssignVO> categories = resourceCategoryService.findAllForAssign();
+        categories.forEach(category ->
+                Optional.ofNullable(category.getResources()).orElse(new ArrayList<>()).forEach(resource ->
+                        Optional.ofNullable(resource.getActions()).orElse(new ArrayList<>()).forEach(action -> {
+                            Integer actionId = action.getId();
+                            action.setChecked(assignedActionIds.contains(actionId) || roleAssignedActionIds.contains(actionId));
+                            action.setEnableUncheck(!roleAssignedActionIds.contains(actionId));
+                        })));
+
+        return categories;
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -316,35 +380,5 @@ public class UserGroupServiceImpl implements UserGroupService {
                 .build().render(RenderingStrategies.MYBATIS3);
         return userGroupResourceActionRelationMapper.selectMany(selectStatementProvider).stream()
                 .map(UserGroupResourceActionRelation::getActionId).collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
-    @Override
-    public List<RoleAssignVO> loadAssignedRoles(Integer id) {
-        List<Integer> assignedRoleIds = this.getAssignedRoleIds(Collections.singletonList(id));
-
-        List<RoleAssignVO> roles = roleService.findAllForAssign();
-        roles.forEach(role -> {
-            role.setChecked(assignedRoleIds.contains(role.getId()));
-            role.setEnableUncheck(true);
-        });
-
-        return roles;
-    }
-
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
-    @Override
-    public List<ResourceCategoryAssignVO> loadAssignedResources(Integer id) {
-        List<Integer> assignedActionIds = this.getAssignedResourceActionIds(Collections.singletonList(id));
-
-        List<ResourceCategoryAssignVO> categories = resourceCategoryService.findAllForAssign();
-        categories.forEach(category ->
-                Optional.ofNullable(category.getResources()).orElse(new ArrayList<>()).forEach(resource ->
-                        Optional.ofNullable(resource.getActions()).orElse(new ArrayList<>()).forEach(action -> {
-                            action.setChecked(assignedActionIds.contains(action.getId()));
-                            action.setEnableUncheck(true);
-                        })));
-
-        return categories;
     }
 }

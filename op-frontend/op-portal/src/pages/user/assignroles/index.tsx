@@ -1,6 +1,6 @@
 import React, {FC, useState} from 'react';
 import {useHistory, useParams} from "react-router-dom";
-import {Button, Space, Tag} from "antd";
+import {Badge, Button, Space, Tag} from "antd";
 import {PageContainer} from "@ant-design/pro-layout";
 import ProList from '@ant-design/pro-list';
 import {assignUserRoles, loadUserAssignedRoles} from "../../../services/user";
@@ -45,6 +45,11 @@ const UserAssignRolesPage: FC = () => {
                     title: {
                         title: '角色名称',
                         dataIndex: 'roleName',
+                        render: (_, row) => {
+                            return (
+                                <Badge status={row.status ? (row.status === 1 ? 'success' : 'error'): 'default'} text={row.roleName}/>
+                            );
+                        },
                     },
                     subTitle: {
                         dataIndex: '角色编码',

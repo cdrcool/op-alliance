@@ -202,7 +202,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void assignResourceActions(Integer id, List<Integer> resourceActionIds) {
         // 获取已建立关联的资源动作 ids
-        List<Integer> preActionIds = this.getAssignedResourceActionIds(Collections.singletonList(id));
+        List<Integer> preActionIds = getAssignedResourceActionIds(Collections.singletonList(id));
 
         // 获取要新建关联的资源动作 ids
         List<Integer> toAddActionIds = Optional.of(resourceActionIds).orElse(new ArrayList<>()).stream()
@@ -247,7 +247,7 @@ public class RoleServiceImpl implements RoleService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<ResourceCategoryAssignVO> loadAssignedResources(Integer id) {
-        List<Integer> assignedActionIds = this.getAssignedResourceActionIds(Collections.singletonList(id));
+        List<Integer> assignedActionIds = getAssignedResourceActionIds(Collections.singletonList(id));
 
         List<ResourceCategoryAssignVO> categories = resourceCategoryService.findAllForAssign();
         categories.forEach(category ->

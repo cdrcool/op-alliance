@@ -222,16 +222,12 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void assignRoles(Integer id, List<Integer> roleIds) {
-        // 获取继承的分配的角色 ids
-        List<Integer> inheritedRoleIds = this.loadInheritedAssignedRoleIds(id);
-
-        // 获取已建立关联的角色 ids
-        List<Integer> preRoleIds = this.getAssignedRoleIds(id);
+        List<Integer> preRoleIds = getAssignedRoleIds(id, null);
 
         // 获取要新建关联的角色 ids
         List<Integer> toAddRoleIds = roleIds.stream()
-                .filter(roleId -> !inheritedRoleIds.contains(roleId))
-                .filter(roleId -> !preRoleIds.contains(roleId)).collect(Collectors.toList());
+                .filter(roleId -> !preRoleIds.contains(roleId))
+                .collect(Collectors.toList());
 
         // 获取要删除关联的角色 ids
         List<Integer> toDelRoleIds = preRoleIds.stream()
@@ -259,19 +255,42 @@ public class OrganizationServiceImpl implements OrganizationService {
         }
     }
 
-    /**
-     * 获取继承的分配的角色 ids
-     *
-     * @param id 用户 id
-     * @return 继承的分配的角色 ids
-     */
-    private List<Integer> loadInheritedAssignedRoleIds(Integer id) {
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public List<RoleAssignVO> loadAssignedRoles(Integer id) {
         List<Integer> parentIds = organizationMapper.getParentsIds(id);
-        parentIds.remove(id);
+
+        SelectStatementProvider selectStatementProvider =
+                select(OrganizationRoleRelationDynamicSqlSupport.orgId, OrganizationRoleRelationDynamicSqlSupport.roleId)
+                        .from(OrganizationRoleRelationDynamicSqlSupport.organizationRoleRelation)
+                        .where(OrganizationRoleRelationDynamicSqlSupport.orgId, isIn(parentIds))
+                        .build().render(RenderingStrategies.MYBATIS3);
+        List<OrganizationRoleRelation> relations = organizationRoleRelationMapper.selectMany(selectStatementProvider);
+        Map<Integer, List<OrganizationRoleRelation>> relationsMap = relations.stream()
+                .collect(Collectors.groupingBy(OrganizationRoleRelation::getRoleId));
+
+        List<RoleAssignVO> roles = roleService.findAllForAssign();
+        roles.forEach(role -> {
+            List<Integer> orgIds = relationsMap.getOrDefault(role.getId(), new ArrayList<>()).stream()
+                    .map(OrganizationRoleRelation::getOrgId).collect(Collectors.toList());
+            role.setChecked(CollectionUtils.isNotEmpty(orgIds));
+            role.setEnableUncheck(orgIds.stream().allMatch(id::equals));
+        });
+
+        return roles;
+    }
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public List<Integer> getAssignedRoleIds(Integer id, Integer status) {
+        List<Integer> parentIds = organizationMapper.getParentsIds(id);
 
         SelectStatementProvider selectStatementProvider = select(OrganizationRoleRelationDynamicSqlSupport.roleId)
                 .from(OrganizationRoleRelationDynamicSqlSupport.organizationRoleRelation)
-                .where(OrganizationRoleRelationDynamicSqlSupport.orgId, isEqualTo(id))
+                .join(RoleDynamicSqlSupport.role)
+                .on(RoleDynamicSqlSupport.id, equalTo(OrganizationRoleRelationDynamicSqlSupport.roleId))
+                .where(OrganizationRoleRelationDynamicSqlSupport.orgId, isIn(parentIds))
+                .and(RoleDynamicSqlSupport.status, isEqualToWhenPresent(status))
                 .build().render(RenderingStrategies.MYBATIS3);
         List<OrganizationRoleRelation> relations = organizationRoleRelationMapper.selectMany(selectStatementProvider);
 
@@ -283,10 +302,10 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public void assignResourceActions(Integer id, List<Integer> resourceActionIds) {
         // 获取继承的分配的资源动作 ids
-        List<Integer> inheritedActionIds = this.loadInheritedAssignedActionIds(id);
+        List<Integer> inheritedActionIds = loadInheritedAssignedActionIds(id);
 
         // 获取已建立关联的资源动作 ids
-        List<Integer> preActionIds = this.getAssignedResourceActionIds(id);
+        List<Integer> preActionIds = getAssignedResourceActionIds(id);
 
         // 获取要新建关联的资源动作 ids
         List<Integer> toAddActionIds = resourceActionIds.stream()
@@ -326,71 +345,22 @@ public class OrganizationServiceImpl implements OrganizationService {
      * @return 继承的分配的资源动作 ids
      */
     private List<Integer> loadInheritedAssignedActionIds(Integer id) {
-        List<Integer> parentIds = organizationMapper.getParentsIds(id);
-        parentIds.remove(id);
+        List<Integer> assignedActionIds = new ArrayList<>();
 
-        SelectStatementProvider selectStatementProvider =
-                select(OrganizationResourceActionRelationDynamicSqlSupport.orgId, OrganizationResourceActionRelationDynamicSqlSupport.actionId)
-                        .from(OrganizationResourceActionRelationDynamicSqlSupport.organizationResourceActionRelation)
-                        .where(OrganizationResourceActionRelationDynamicSqlSupport.orgId, isIn(parentIds))
-                        .build().render(RenderingStrategies.MYBATIS3);
-        List<OrganizationResourceActionRelation> relations = organizationResourceActionRelationMapper.selectMany(selectStatementProvider);
+        // 获取组织的角色所分配的资源动作 ids（本上级）
+        List<Integer> roleIds = getAssignedRoleIds(id, 1);
+        if (!CollectionUtils.isEmpty(roleIds)) {
+            assignedActionIds.addAll(roleService.getAssignedResourceActionIds(roleIds));
+        }
 
-        return relations.stream().map(OrganizationResourceActionRelation::getActionId).collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
-    @Override
-    public List<Integer> getAssignedRoleIds(Integer id) {
-        SelectStatementProvider selectStatementProvider = select(OrganizationRoleRelationDynamicSqlSupport.roleId)
-                .from(OrganizationRoleRelationDynamicSqlSupport.organizationRoleRelation)
-                .where(OrganizationRoleRelationDynamicSqlSupport.orgId, isEqualTo(id))
-                .build().render(RenderingStrategies.MYBATIS3);
-        return organizationRoleRelationMapper.selectMany(selectStatementProvider).stream()
-                .map(OrganizationRoleRelation::getRoleId).collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
-    @Override
-    public List<Integer> getAssignedResourceActionIds(Integer id) {
-        SelectStatementProvider selectStatementProvider = select(OrganizationResourceActionRelationDynamicSqlSupport.actionId)
-                .from(OrganizationResourceActionRelationDynamicSqlSupport.organizationResourceActionRelation)
-                .where(OrganizationResourceActionRelationDynamicSqlSupport.orgId, isEqualTo(id))
-                .build().render(RenderingStrategies.MYBATIS3);
-        return organizationResourceActionRelationMapper.selectMany(selectStatementProvider).stream()
-                .map(OrganizationResourceActionRelation::getActionId).collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
-    @Override
-    public List<RoleAssignVO> loadRoles(Integer id) {
-        List<Integer> parentIds = organizationMapper.getParentsIds(id);
-
-        SelectStatementProvider selectStatementProvider =
-                select(OrganizationRoleRelationDynamicSqlSupport.orgId, OrganizationRoleRelationDynamicSqlSupport.roleId)
-                        .from(OrganizationRoleRelationDynamicSqlSupport.organizationRoleRelation)
-                        .where(OrganizationRoleRelationDynamicSqlSupport.orgId, isIn(parentIds))
-                        .build().render(RenderingStrategies.MYBATIS3);
-        List<OrganizationRoleRelation> relations = organizationRoleRelationMapper.selectMany(selectStatementProvider);
-        Map<Integer, List<OrganizationRoleRelation>> relationsMap = relations.stream()
-                .collect(Collectors.groupingBy(OrganizationRoleRelation::getRoleId));
-
-        List<RoleAssignVO> roles = roleService.findAllForAssign();
-        roles.forEach(role -> {
-            List<Integer> orgIds = relationsMap.getOrDefault(role.getId(), new ArrayList<>()).stream()
-                    .map(OrganizationRoleRelation::getOrgId).collect(Collectors.toList());
-            role.setChecked(CollectionUtils.isNotEmpty(orgIds));
-            role.setEnableUncheck(orgIds.stream().allMatch(id::equals));
-        });
-
-        return roles;
+        return assignedActionIds;
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<ResourceCategoryAssignVO> loadAssignedResources(Integer id) {
+        // 获取组织所分配的资源动作 ids（本上级）
         List<Integer> parentIds = organizationMapper.getParentsIds(id);
-
         SelectStatementProvider selectStatementProvider =
                 select(OrganizationResourceActionRelationDynamicSqlSupport.orgId, OrganizationResourceActionRelationDynamicSqlSupport.actionId)
                         .from(OrganizationResourceActionRelationDynamicSqlSupport.organizationResourceActionRelation)
@@ -400,14 +370,22 @@ public class OrganizationServiceImpl implements OrganizationService {
         Map<Integer, List<OrganizationResourceActionRelation>> relationsMap = relations.stream()
                 .collect(Collectors.groupingBy(OrganizationResourceActionRelation::getActionId));
 
+        // 获取组织的角色所分配的资源动作 ids（本上级）
+        List<Integer> roleAssignedActionIds = new ArrayList<>();
+        List<Integer> roleIds = getAssignedRoleIds(id, 1);
+        if (!CollectionUtils.isEmpty(roleIds)) {
+            roleAssignedActionIds.addAll(roleService.getAssignedResourceActionIds(roleIds));
+        }
+
         List<ResourceCategoryAssignVO> categories = resourceCategoryService.findAllForAssign();
         categories.forEach(category ->
                 Optional.ofNullable(category.getResources()).orElse(new ArrayList<>()).forEach(resource ->
                         Optional.ofNullable(resource.getActions()).orElse(new ArrayList<>()).forEach(action -> {
-                            List<Integer> orgIds = relationsMap.getOrDefault(action.getId(), new ArrayList<>()).stream()
+                            Integer actionId = action.getId();
+                            List<Integer> orgIds = relationsMap.getOrDefault(actionId, new ArrayList<>()).stream()
                                     .map(OrganizationResourceActionRelation::getOrgId).collect(Collectors.toList());
-                            action.setChecked(CollectionUtils.isNotEmpty(orgIds));
-                            action.setEnableUncheck(orgIds.stream().allMatch(id::equals));
+                            action.setChecked(CollectionUtils.isNotEmpty(orgIds) || roleAssignedActionIds.contains(actionId));
+                            action.setEnableUncheck((CollectionUtils.isEmpty(orgIds) || orgIds.stream().allMatch(id::equals) ) && !roleAssignedActionIds.contains(actionId));
                         })));
 
         return categories;
@@ -415,14 +393,15 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<Integer> getParentsIds(Integer id) {
-        return organizationMapper.getParentsIds(id);
-    }
+    public List<Integer> getAssignedResourceActionIds(Integer id) {
+        List<Integer> parentIds = organizationMapper.getParentsIds(id);
 
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
-    @Override
-    public List<Integer> getChildrenIds(Integer id) {
-        return organizationMapper.getChildrenIds(id);
+        SelectStatementProvider selectStatementProvider = select(OrganizationResourceActionRelationDynamicSqlSupport.actionId)
+                .from(OrganizationResourceActionRelationDynamicSqlSupport.organizationResourceActionRelation)
+                .where(OrganizationResourceActionRelationDynamicSqlSupport.orgId, isIn(parentIds))
+                .build().render(RenderingStrategies.MYBATIS3);
+        return organizationResourceActionRelationMapper.selectMany(selectStatementProvider).stream()
+                .map(OrganizationResourceActionRelation::getActionId).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -474,5 +453,17 @@ public class OrganizationServiceImpl implements OrganizationService {
                 null,
                 null);
         return CollectionUtils.isNotEmpty(treeList) ? treeList : new ArrayList<>();
+    }
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public List<Integer> getParentsIds(Integer id) {
+        return organizationMapper.getParentsIds(id);
+    }
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public List<Integer> getChildrenIds(Integer id) {
+        return organizationMapper.getChildrenIds(id);
     }
 }

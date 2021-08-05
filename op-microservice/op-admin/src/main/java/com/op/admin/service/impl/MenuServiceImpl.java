@@ -182,7 +182,7 @@ public class MenuServiceImpl implements MenuService {
 
         menuMapper.update(updateStatement);
 
-        return this.findById(id);
+        return findById(id);
     }
 
     @Transactional(rollbackFor = Exception.class)

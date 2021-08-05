@@ -64,6 +64,23 @@ public interface UserGroupService {
     void assignRoles(Integer id, List<Integer> roleIds);
 
     /**
+     * 获取角色分配情况
+     *
+     * @param id 用户组 id
+     * @return 角色分配 VO 列表
+     */
+    List<RoleAssignVO> loadAssignedRoles(Integer id);
+
+    /**
+     * 获取分配的角色 ids
+     *
+     * @param ids 用户组 ids
+     * @param status 角色启用状态
+     * @return 角色 ids
+     */
+    List<Integer> getAssignedRoleIds(List<Integer> ids, Integer status);
+
+    /**
      * 分配资源动作
      *
      * @param id                用户组 id
@@ -72,34 +89,18 @@ public interface UserGroupService {
     void assignResourceActions(Integer id, List<Integer> resourceActionIds);
 
     /**
-     * 获取用户组所分配的角色 ids
-     *
-     * @param ids 用户组 ids
-     * @return 角色 ids
-     */
-    List<Integer> getAssignedRoleIds(List<Integer> ids);
-
-    /**
-     * 获取用户组所分配的资源 ids
-     *
-     * @param ids 用户组 ids
-     * @return 资源 ids
-     */
-    List<Integer> getAssignedResourceActionIds(List<Integer> ids);
-
-    /**
-     * 获取用户组角色分配情况
-     *
-     * @param id 用户组 id
-     * @return 角色分配 VO 列表
-     */
-    List<RoleAssignVO> loadAssignedRoles(Integer id);
-
-    /**
-     * 获取用户组资源分配情况
+     * 获取资源分配情况
      *
      * @param id 用户组 id
      * @return 资源分类分配 VO 列表
      */
     List<ResourceCategoryAssignVO> loadAssignedResources(Integer id);
+
+    /**
+     * 获取分配的资源动作 ids
+     *
+     * @param ids 用户组 ids
+     * @return 资源 ids
+     */
+    List<Integer> getAssignedResourceActionIds(List<Integer> ids);
 }
