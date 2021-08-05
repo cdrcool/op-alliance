@@ -2,6 +2,7 @@ package com.op.admin.controller;
 
 import com.op.admin.dto.ResourceCategoryPageQueryDTO;
 import com.op.admin.dto.ResourceCategorySaveDTO;
+import com.op.admin.service.ResourceActionService;
 import com.op.admin.service.ResourceCategoryService;
 import com.op.admin.vo.ResourceCategoryVO;
 import com.op.admin.vo.SelectOptionVO;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 资源分类 Controller
@@ -26,9 +28,17 @@ import java.util.List;
 @RestController
 public class ResourceCategoryController {
     private final ResourceCategoryService resourceCategoryService;
+    private final ResourceActionService resourceActionService;
 
-    public ResourceCategoryController(ResourceCategoryService resourceCategoryService) {
+    public ResourceCategoryController(ResourceCategoryService resourceCategoryService, ResourceActionService resourceActionService) {
         this.resourceCategoryService = resourceCategoryService;
+        this.resourceActionService = resourceActionService;
+    }
+
+    @ApiOperation("刷新资源权限关联")
+    @PostMapping("refreshResourcePermissions")
+    public Map<String, String> refreshResourcePermissions() {
+        return resourceActionService.refreshResourcePathPermissions();
     }
 
     @ApiOperation("保存资源分类")

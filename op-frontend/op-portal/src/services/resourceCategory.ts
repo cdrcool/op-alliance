@@ -4,6 +4,13 @@ import {SelectOptions} from "../models/SelectOptions";
 import {ResourceCategory} from "../models/ResourceCategory";
 
 /**
+ * 刷新资源权限关联
+ */
+export async function refreshResourcePermissions() {
+    return request.post('/api/op-admin/resourceCategory/refreshResourcePermissions');
+}
+
+/**
  * 保存资源分类
  *
  * @param resourceCategory 资源分类

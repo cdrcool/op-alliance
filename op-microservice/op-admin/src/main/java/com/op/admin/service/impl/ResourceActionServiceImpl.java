@@ -63,7 +63,8 @@ public class ResourceActionServiceImpl implements ResourceActionService {
     }
 
     @PostConstruct
-    public Map<String, String> initResourcePathPermissionMap() {
+    @Override
+    public Map<String, String> refreshResourcePathPermissions() {
         Map<String, String> results = new HashMap<>(64);
         List<ResourcePathPermissionDto> list = resourceActionMapper.queryPathPermissions();
         list.forEach(item -> {

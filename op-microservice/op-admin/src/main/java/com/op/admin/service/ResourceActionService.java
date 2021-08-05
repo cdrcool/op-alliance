@@ -18,6 +18,13 @@ import java.util.Map;
 public interface ResourceActionService {
 
     /**
+     * 刷新资源路径及其对应的权限
+     *
+     * @return 资源路径及其对应的权限 map
+     */
+    Map<String, String> refreshResourcePathPermissions();
+
+    /**
      * 保存资源动作
      *
      * @param saveDTO 资源动作保存 dto
