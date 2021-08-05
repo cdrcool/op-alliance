@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
@@ -108,11 +109,7 @@ public class ResourceCategoryServiceImpl implements ResourceCategoryService {
     public ResourceCategoryVO findById(Integer id) {
         ResourceCategory resourceCategory = resourceCategoryMapper.selectByPrimaryKey(id)
                 .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的资源分类"));
-        ResourceCategoryVO resourceCategoryVO = resourceCategoryMapping.toResourceCategoryVO(resourceCategory);
-
-        resourceCategoryVO.setResourceNames(resourceService.findNamesByCategoryId(id));
-
-        return resourceCategoryVO;
+        return resourceCategoryMapping.toResourceCategoryVO(resourceCategory);
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -139,8 +136,13 @@ public class ResourceCategoryServiceImpl implements ResourceCategoryService {
         com.github.pagehelper.Page<ResourceCategory> result = PageHelper
                 .startPage(pageable.getPageNumber() + 1, pageable.getPageSize())
                 .doSelectPage(() -> resourceCategoryMapper.selectMany(selectStatementProvider));
+        List<ResourceCategoryVO> categories = resourceCategoryMapping.toResourceCategoryVOList(result.getResult());
 
-        return new PageImpl<>(resourceCategoryMapping.toResourceCategoryVOList(result.getResult()), pageable, result.getTotal());
+        List<Integer> categoryIds = categories.stream().map(ResourceCategoryVO::getId).collect(Collectors.toList());
+        Map<Integer, List<String>> categoryResourceNamesMap = resourceService.findNamesByCategoryIds(categoryIds);
+        categories.forEach(category -> category.setResourceNames(categoryResourceNamesMap.get(category.getId())));
+
+        return new PageImpl<>(categories, pageable, result.getTotal());
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)

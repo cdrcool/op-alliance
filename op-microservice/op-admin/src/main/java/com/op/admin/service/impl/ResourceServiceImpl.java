@@ -5,6 +5,7 @@ import com.op.admin.dto.ResourceActionSaveDTO;
 import com.op.admin.dto.ResourcePageQueryDTO;
 import com.op.admin.dto.ResourceSaveDTO;
 import com.op.admin.entity.Resource;
+import com.op.admin.mapper.ResourceCategoryDynamicSqlSupport;
 import com.op.admin.mapper.ResourceDynamicSqlSupport;
 import com.op.admin.mapper.ResourceMapper;
 import com.op.admin.mapping.ResourceMapping;
@@ -29,10 +30,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
@@ -190,12 +188,23 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<String> findNamesByCategoryId(Integer categoryId) {
-        SelectStatementProvider selectStatementProvider = select(ResourceDynamicSqlSupport.resourceName)
+    public Map<Integer, List<String>> findNamesByCategoryIds(List<Integer> categoryIds) {
+        SelectStatementProvider selectStatementProvider = select(ResourceDynamicSqlSupport.categoryId, ResourceDynamicSqlSupport.resourceName)
                 .from(ResourceDynamicSqlSupport.resource)
-                .where(ResourceDynamicSqlSupport.categoryId, isEqualTo(categoryId))
+                .where(ResourceDynamicSqlSupport.categoryId, isIn(categoryIds))
+                .orderBy(ResourceDynamicSqlSupport.resourceNo)
                 .build().render(RenderingStrategies.MYBATIS3);
-        return resourceMapper.selectMany(selectStatementProvider).stream().map(Resource::getResourceName).collect(Collectors.toList());
+        List<Resource> resources = resourceMapper.selectMany(selectStatementProvider);
+
+        Map<Integer, List<String>> result = new HashMap<>();
+        resources.forEach(resource -> {
+            Integer categoryId = resource.getCategoryId();
+            List<String> resourceNames = result.getOrDefault(categoryId, new ArrayList<>());
+            resourceNames.add(resource.getResourceName());
+            result.put(resource.getCategoryId(), resourceNames);
+        });
+
+        return result;
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)

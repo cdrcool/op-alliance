@@ -65,10 +65,10 @@ public interface ResourceService {
     /**
      * 获取指定资源分类下的资源名称列表
      *
-     * @param categoryId 资源分类id
+     * @param categoryIds 资源分类 ids
      * @return 资源名称列表
      */
-    List<String> findNamesByCategoryId(Integer categoryId);
+    Map<Integer, List<String>> findNamesByCategoryIds(List<Integer> categoryIds);
 
     /**
      * 查找所有资源，用于分配资源使用
