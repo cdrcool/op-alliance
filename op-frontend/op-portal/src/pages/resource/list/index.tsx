@@ -147,6 +147,26 @@ const ResourceListPage: FC = () => {
                 pagination={{
                     pageSize: 10,
                 }}
+                expandable={
+                    {
+                        expandedRowRender: (record) => {
+                            return (
+                                <ProTable
+                                    columns={[
+                                        {title: '动作名称', dataIndex: 'actionName'},
+                                        {title: '动作路径', dataIndex: 'actionPath'},
+                                        {title: '权限标识', dataIndex: 'permission'},
+                                    ]}
+                                    headerTitle={false}
+                                    search={false}
+                                    options={false}
+                                    dataSource={record.actions || []}
+                                    pagination={false}
+                                />
+                            );
+                        },
+                    }
+                }
             />
         </PageContainer>
     )

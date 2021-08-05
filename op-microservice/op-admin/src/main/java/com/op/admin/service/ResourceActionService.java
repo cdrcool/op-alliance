@@ -69,6 +69,15 @@ public interface ResourceActionService {
      */
     List<Integer> findIdsByResourceId(Integer resourceId);
 
+
+    /**
+     * 根据资源 ids 查找资源动作列表 map
+     *
+     * @param resourceIds 资源 ids
+     * @return 资源动作列表 map(key: 资源 id; value: 资源动作列表)
+     */
+    Map<Integer, List<ResourceActionVO>> findByResourceIds(List<Integer> resourceIds);
+
     /**
      * 分页查询资源动作
      *

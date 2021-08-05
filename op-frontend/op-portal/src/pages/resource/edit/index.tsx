@@ -121,6 +121,10 @@ const ResourceEditPage: FC = () => {
                         <Panel header="资源动作列表" key="actions" showArrow={false}>
                             <EditableProTable<ResourceAction>
                                 rowKey="id"
+                                options={{
+                                    reload: false,
+                                    fullScreen: true,
+                                }}
                                 columns={[
                                     {title: '动作名称', dataIndex: 'actionName'},
                                     {title: '动作路径', dataIndex: 'actionPath'},
@@ -135,18 +139,11 @@ const ResourceEditPage: FC = () => {
                                             }>
                                                 编辑
                                             </a>,
-                                            <Popconfirm
-                                                title="删除此行？"
-                                                okText="确定"
-                                                cancelText="取消"
-                                                onConfirm={
-                                                    () => onDeleteResourceActions(record.id as number)
-                                                }
-                                            >
-                                                <a key="delete">
-                                                    删除
-                                                </a>
-                                            </Popconfirm>,
+                                            <a key="delete" onClick={
+                                                () => onDeleteResourceActions(record.id as number)
+                                            }>
+                                                删除
+                                            </a>,
                                         ],
                                     },
                                 ]}

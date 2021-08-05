@@ -17,7 +17,6 @@
         <module>op-swagger-samples</module>
         <module>op-mybatis-geneator-samples</module>
         <module>op-admin-samples</module>
-        <module>op-graphql-samples</module>
     </modules>
 
     <properties>

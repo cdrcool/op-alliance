@@ -64,7 +64,7 @@ const ResourceCategoryListPage: FC = () => {
                         dataIndex: 'categoryName',
                         render: (_, row) => {
                             return (
-                                <a onClick={() => history.push('/admin/resource')}>{row.categoryName}</a>
+                                <a onClick={() => history.push('/admin/resource', {categoryId: row.id})}>{row.categoryName}</a>
                             )
                         },
                     },

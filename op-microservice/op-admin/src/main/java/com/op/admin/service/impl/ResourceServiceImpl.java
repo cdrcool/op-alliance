@@ -11,6 +11,7 @@ import com.op.admin.mapping.ResourceMapping;
 import com.op.admin.service.ResourceActionService;
 import com.op.admin.service.ResourceService;
 import com.op.admin.vo.ResourceActionAssignVO;
+import com.op.admin.vo.ResourceActionVO;
 import com.op.admin.vo.ResourceAssignVO;
 import com.op.admin.vo.ResourceVO;
 import com.op.framework.web.common.api.response.ResultCode;
@@ -172,8 +173,13 @@ public class ResourceServiceImpl implements ResourceService {
         com.github.pagehelper.Page<Resource> result = PageHelper
                 .startPage(pageable.getPageNumber() + 1, pageable.getPageSize())
                 .doSelectPage(() -> resourceMapper.selectMany(selectStatementProvider));
+        List<ResourceVO> resources = resourceMapping.toResourceVOList(result.getResult());
 
-        return new PageImpl<>(resourceMapping.toResourceVOList(result.getResult()), pageable, result.getTotal());
+        List<Integer> resourceIds = resources.stream().map(ResourceVO::getId).collect(Collectors.toList());
+        Map<Integer, List<ResourceActionVO>> resourceActionsMap = resourceActionService.findByResourceIds(resourceIds);
+        resources.forEach(resource -> resource.setActions(resourceActionsMap.get(resource.getId())));
+
+        return new PageImpl<>(resources, pageable, result.getTotal());
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
