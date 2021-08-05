@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
@@ -58,7 +59,7 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public void save(ResourceSaveDTO saveDTO) {
         // 校验同一分类下，资源名称是否重复
-        validateResourceName(saveDTO.getCategoryId(), saveDTO.getId(), saveDTO.getResourceName());
+        validateResourceNameAndResourcePath(saveDTO.getCategoryId(), saveDTO.getId(), saveDTO.getResourceName(), saveDTO.getResourcePath());
 
         List<ResourceActionSaveDTO> actions = saveDTO.getActions();
 
@@ -96,22 +97,27 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     /**
-     * 校验同一分类下，资源名称是否重复
+     * 校验同一分类下，资源名称/资源路径是否重复
      *
      * @param categoryId   资源分类 id
      * @param id           主键
-     * @param resourceName 菜单名称
+     * @param resourceName 资源名称
+     * @param resourcePath 资源路径
      */
-    private void validateResourceName(Integer categoryId, Integer id, String resourceName) {
+    private void validateResourceNameAndResourcePath(Integer categoryId, Integer id, String resourceName, String resourcePath) {
         SelectStatementProvider selectStatementProvider = countFrom(ResourceDynamicSqlSupport.resource)
                 .where(ResourceDynamicSqlSupport.categoryId, isEqualTo(categoryId))
-                .and(ResourceDynamicSqlSupport.resourceName, isEqualTo(resourceName))
+                .and(ResourceDynamicSqlSupport.resourceName, isEqualTo(resourceName), or(ResourceDynamicSqlSupport.resourcePath, isEqualTo(resourcePath)))
                 .and(ResourceDynamicSqlSupport.id, isNotEqualToWhenPresent(id))
                 .build().render(RenderingStrategies.MYBATIS3);
-        long count = resourceMapper.count(selectStatementProvider);
-        if (count > 0) {
-            throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "同一分类下，已存在相同资源名称的子菜单，资源名称不能重复");
-        }
+        Optional<Resource> optional = resourceMapper.selectOne(selectStatementProvider);
+        optional.ifPresent(resource -> {
+            if (resourceName.equals(resource.getResourceName())) {
+                throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "已存在相同资源名称的资源，资源名称不能重复");
+            } else {
+                throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "已存在相同资源路径的资源，资源路径不能重复");
+            }
+        });
     }
 
     @Transactional(rollbackFor = Exception.class)

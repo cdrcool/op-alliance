@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
@@ -52,8 +53,8 @@ public class ResourceCategoryServiceImpl implements ResourceCategoryService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void save(ResourceCategorySaveDTO saveDTO) {
-        // 校验分类名称是否重复
-        validateCategoryName(saveDTO.getId(), saveDTO.getCategoryName());
+        // 校验分类名称/服务名称是否重复
+        validateCategoryNameAndServiceName(saveDTO.getId(), saveDTO.getCategoryName(), saveDTO.getServerName());
 
         if (saveDTO.getId() == null) {
             ResourceCategory resourceCategory = resourceCategoryMapping.toResourceCategory(saveDTO);
@@ -68,20 +69,25 @@ public class ResourceCategoryServiceImpl implements ResourceCategoryService {
     }
 
     /**
-     * 校验分类名称是否重复
+     * 校验分类名称/服务名称是否重复
      *
      * @param id           主键
      * @param categoryName 分类名称
+     * @param serviceName  服务名称
      */
-    private void validateCategoryName(Integer id, String categoryName) {
+    private void validateCategoryNameAndServiceName(Integer id, String categoryName, String serviceName) {
         SelectStatementProvider selectStatementProvider = countFrom(ResourceCategoryDynamicSqlSupport.resourceCategory)
-                .where(ResourceCategoryDynamicSqlSupport.categoryName, isEqualTo(categoryName))
+                .where(ResourceCategoryDynamicSqlSupport.categoryName, isEqualTo(categoryName), or(ResourceCategoryDynamicSqlSupport.serverName, isEqualTo(serviceName)))
                 .and(ResourceCategoryDynamicSqlSupport.id, isNotEqualToWhenPresent(id))
                 .build().render(RenderingStrategies.MYBATIS3);
-        long count = resourceCategoryMapper.count(selectStatementProvider);
-        if (count > 0) {
-            throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "已存在相同分类名称的的资源分类，分类名称不能重复");
-        }
+        Optional<ResourceCategory> optional = resourceCategoryMapper.selectOne(selectStatementProvider);
+        optional.ifPresent(resourceCategory -> {
+            if (categoryName.equals(resourceCategory.getCategoryName())) {
+                throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "已存在相同资源名称的资源分类，资源名称不能重复");
+            } else {
+                throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "已存在相同服务名称的资源分类，服务名称不能重复");
+            }
+        });
     }
 
     @Transactional(rollbackFor = Exception.class)

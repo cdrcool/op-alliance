@@ -62,7 +62,8 @@ const ResourceCategoryEditPage: FC = () => {
                         <Form.Item label="分类图标" name="categoryIcon" rules={[{required: true, message: '请输入分类图标'}]}>
                             <Input/>
                         </Form.Item>
-                        <Form.Item label="服务名称" name="serverName">
+                        <Form.Item label="服务名称" name="serverName"
+                                   rules={[{required: true, message: '请输入服务名称'}]}>
                             <TextArea/>
                         </Form.Item>
                         <Form.Item label="分类编号" name="categoryNo">

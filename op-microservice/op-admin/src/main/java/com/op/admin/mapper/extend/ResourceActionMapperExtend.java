@@ -20,8 +20,9 @@ public interface ResourceActionMapperExtend extends ResourceActionMapper {
      *
      * @return 本上级 ids
      */
-    @Select(" SELECT r.resource_path, ra.action_path, ra.permission" +
+    @Select(" SELECT rc.server_name, r.resource_path, ra.action_path, ra.permission" +
             " FROM admin_resource_action ra" +
-            " INNER JOIN admin_resource r ON r.id = ra.resource_id")
+            " INNER JOIN admin_resource r ON r.id = ra.resource_id" +
+            " INNER JOIN admin_resource_category rc ON rc.id = r.category_id")
     List<ResourcePathPermissionDto> queryPathPermissions();
 }

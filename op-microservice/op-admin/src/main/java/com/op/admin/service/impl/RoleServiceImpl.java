@@ -80,13 +80,13 @@ public class RoleServiceImpl implements RoleService {
     }
 
     /**
-     * 校验角色名是否重复
+     * 校验角色名/角色编码是否重复
      *
      * @param id       主键
      * @param roleName 角色名
      * @param roleCode 角色编码
      */
-    private void validateRoleNameAndRoleCode(Integer id, String roleName,String roleCode) {
+    private void validateRoleNameAndRoleCode(Integer id, String roleName, String roleCode) {
         SelectStatementProvider selectStatementProvider = countFrom(RoleDynamicSqlSupport.role)
                 .where(RoleDynamicSqlSupport.roleName, isEqualTo(roleName), or(RoleDynamicSqlSupport.roleCode, isEqualTo(roleCode)))
                 .and(RoleDynamicSqlSupport.id, isNotEqualToWhenPresent(id))

@@ -20,7 +20,6 @@ import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SimpleSortSpecification;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -29,10 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
@@ -53,9 +49,6 @@ public class ResourceActionServiceImpl implements ResourceActionService {
     private final ResourceActionMapping resourceActionMapping;
     private final RedisTemplate<String, Object> redisTemplate;
 
-    @Value("${spring.application.name}")
-    private String applicationName;
-
     public ResourceActionServiceImpl(ResourceActionMapperExtend resourceActionMapper, ResourceActionMapping resourceActionMapping, RedisTemplate<String, Object> redisTemplate) {
         this.resourceActionMapper = resourceActionMapper;
         this.resourceActionMapping = resourceActionMapping;
@@ -71,7 +64,7 @@ public class ResourceActionServiceImpl implements ResourceActionService {
             String actionPath = item.getActionPath();
             if (StringUtils.isNotBlank(actionPath)) {
                 List<String> paths = Arrays.stream(actionPath.split(","))
-                        .map(path -> "/" + applicationName + item.getResourcePath() + path)
+                        .map(path -> "/" + item.getServerName() + item.getResourcePath() + path)
                         .collect(Collectors.toList());
                 results.putAll(paths.stream().collect(Collectors.toMap(path -> path, path -> item.getPermission())));
             }
@@ -84,8 +77,8 @@ public class ResourceActionServiceImpl implements ResourceActionService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void save(ResourceActionSaveDTO saveDTO) {
-        // 校验同一资源下，动作名称是否重复
-        validateResourceName(saveDTO.getResourceId(), saveDTO.getId(), saveDTO.getActionName());
+        // 校验同一资源下，动作名称/动作路径是否重复
+        validateActionNameAndActionPath(saveDTO.getResourceId(), saveDTO.getId(), saveDTO.getActionName(), saveDTO.getActionPath());
 
         if (saveDTO.getId() == null) {
             ResourceAction resourceAction = resourceActionMapping.toResourceAction(saveDTO);
@@ -100,22 +93,27 @@ public class ResourceActionServiceImpl implements ResourceActionService {
     }
 
     /**
-     * 校验同一资源下，动作名称是否重复
+     * 校验同一资源下，动作名称/动作路径是否重复
      *
      * @param resourceId 资源分类 id
      * @param id         主键
      * @param actionName 动作名称
+     * @param actionPath 动作路径
      */
-    private void validateResourceName(Integer resourceId, Integer id, String actionName) {
+    private void validateActionNameAndActionPath(Integer resourceId, Integer id, String actionName, String actionPath) {
         SelectStatementProvider selectStatementProvider = countFrom(ResourceActionDynamicSqlSupport.resourceAction)
                 .where(ResourceActionDynamicSqlSupport.resourceId, isEqualTo(resourceId))
-                .and(ResourceActionDynamicSqlSupport.actionName, isEqualTo(actionName))
+                .and(ResourceActionDynamicSqlSupport.actionName, isEqualTo(actionName), or(ResourceActionDynamicSqlSupport.actionPath, isEqualTo(actionPath)))
                 .and(ResourceActionDynamicSqlSupport.id, isNotEqualToWhenPresent(id))
                 .build().render(RenderingStrategies.MYBATIS3);
-        long count = resourceActionMapper.count(selectStatementProvider);
-        if (count > 0) {
-            throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "同一资源下，已存在相同动作名称的子菜单，动作名称不能重复");
-        }
+        Optional<ResourceAction> optional = resourceActionMapper.selectOne(selectStatementProvider);
+        optional.ifPresent(resourceAction -> {
+            if (actionName.equals(resourceAction.getActionName())) {
+                throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "已存在相同动作名称的资源动作，动作名称不能重复");
+            } else {
+                throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "已存在相同动作名称的资源动作，动作名称不能重复");
+            }
+        });
     }
 
     @Transactional(rollbackFor = Exception.class)

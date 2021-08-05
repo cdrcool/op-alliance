@@ -12,6 +12,11 @@ import lombok.Data;
 @Data
 public class ResourcePathPermissionDto {
     /**
+     * 服务名称
+     */
+    private String serverName;
+
+    /**
      * 资源路径
      */
     private String resourcePath;
