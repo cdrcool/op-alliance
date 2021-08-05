@@ -3,7 +3,6 @@ package com.op.admin.service.impl;
 import com.op.admin.dto.MenuSaveDTO;
 import com.op.admin.dto.MenuTreeListQueryDTO;
 import com.op.admin.entity.Menu;
-import com.op.admin.entity.Organization;
 import com.op.admin.mapper.MenuDynamicSqlSupport;
 import com.op.admin.mapper.MenuMapper;
 import com.op.admin.mapping.MenuMapping;
@@ -154,7 +153,7 @@ public class MenuServiceImpl implements MenuService {
                         Optional.ofNullable(menu.getMenuName()).orElse("").contains(keyword) ||
                         Optional.ofNullable(menu.getMenuPath()).orElse("").contains(keyword) ||
                         Optional.ofNullable(menu.getPermission()).orElse("").contains(keyword),
-                Comparator.comparing(Menu::getMenuNo)
+                Comparator.comparing(Menu::getMenuNo, Comparator.nullsFirst(Comparator.naturalOrder()))
         );
         return CollectionUtils.isNotEmpty(treeList) ? treeList : new ArrayList<>();
     }
@@ -217,7 +216,7 @@ public class MenuServiceImpl implements MenuService {
                                 Optional.ofNullable(menu.getMenuName()).orElse("").contains(keyword) ||
                                 Optional.ofNullable(menu.getMenuPath()).orElse("").contains(keyword) ||
                                 Optional.ofNullable(menu.getPermission()).orElse("").contains(keyword)),
-                Comparator.comparing(Menu::getMenuNo)
+                Comparator.comparing(Menu::getMenuNo, Comparator.nullsFirst(Comparator.naturalOrder()))
         );
         return CollectionUtils.isNotEmpty(treeList) ? treeList : new ArrayList<>();
     }

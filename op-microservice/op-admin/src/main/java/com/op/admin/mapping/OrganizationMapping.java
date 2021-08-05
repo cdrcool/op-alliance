@@ -73,7 +73,8 @@ public interface OrganizationMapping {
             @Mapping(source = "pid", target = "pid"),
             @Mapping(source = "orgName", target = "title"),
             @Mapping(source = "id", target = "value"),
-            @Mapping(target = "isLeaf", expression = "java(Objects.equals(organization.getOrgType(), 5))")
+            @Mapping(target = "isLeaf", expression = "java(Objects.equals(organization.getOrgType(), 5))"),
+            @Mapping(source = "id", target = "nodeNo"),
     })
     TreeNodeVO toTreeNodeVO(Organization organization);
 

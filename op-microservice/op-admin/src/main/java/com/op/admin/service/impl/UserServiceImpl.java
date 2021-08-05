@@ -206,6 +206,7 @@ public class UserServiceImpl implements UserService {
         SelectStatementProvider selectStatementProvider = select(UserMapper.selectList)
                 .from(UserDynamicSqlSupport.user)
                 .where(UserDynamicSqlSupport.id, isIn(ids))
+                .orderBy(UserDynamicSqlSupport.userNo)
                 .build().render(RenderingStrategies.MYBATIS3);
         List<User> users = userMapper.selectMany(selectStatementProvider);
         return userMapping.toUserVOList(users);

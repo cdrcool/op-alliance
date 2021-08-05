@@ -429,6 +429,7 @@ public class OrganizationServiceImpl implements OrganizationService {
                 // 如果是要过滤的组织，则不返回该组织及其下级组织列表
                 .and(OrganizationDynamicSqlSupport.orgCodeLink, isNotLike(orgCodeLink)
                         .filter(StringUtils::isNotBlank).map(v -> v + "%"))
+                .orderBy(OrganizationDynamicSqlSupport.orgCodeLink)
                 .build().render(RenderingStrategies.MYBATIS3);
         List<Organization> organizations = organizationMapper.selectMany(selectStatementProvider);
 

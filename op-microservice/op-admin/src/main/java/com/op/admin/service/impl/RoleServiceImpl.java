@@ -101,23 +101,6 @@ public class RoleServiceImpl implements RoleService {
         });
     }
 
-    /**
-     * 校验角色编码是否重复
-     *
-     * @param id       主键
-     * @param roleCode 角色编码
-     */
-    private void validateRoleCode(Integer id, String roleCode) {
-        SelectStatementProvider selectStatementProvider = countFrom(RoleDynamicSqlSupport.role)
-                .where(RoleDynamicSqlSupport.roleCode, isEqualTo(roleCode))
-                .and(RoleDynamicSqlSupport.id, isNotEqualToWhenPresent(id))
-                .build().render(RenderingStrategies.MYBATIS3);
-        long count = roleMapper.count(selectStatementProvider);
-        if (count > 0) {
-            throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "已存在相同角色编码的用户组，角色编码不能重复");
-        }
-    }
-
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteById(Integer id) {
