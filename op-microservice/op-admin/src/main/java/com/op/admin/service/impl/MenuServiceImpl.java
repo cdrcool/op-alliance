@@ -138,6 +138,29 @@ public class MenuServiceImpl implements MenuService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
+    public List<MenuTreeVO> queryUserTreeList() {
+        SelectStatementProvider selectStatementProvider = select(MenuMapper.selectList)
+                .from(MenuDynamicSqlSupport.menu)
+                .where(MenuDynamicSqlSupport.permission, isIn(""))
+                .orderBy(MenuDynamicSqlSupport.menuNo)
+                .build().render(RenderingStrategies.MYBATIS3);
+        List<Menu> menus = menuMapper.selectMany(selectStatementProvider);
+
+        List<MenuTreeVO> treeList = TreeUtils.buildTreeRecursion(
+                menus,
+                Menu::getPid,
+                Menu::getId,
+                menuMapping::toMenuTreeVO,
+                MenuTreeVO::setChildren,
+                -1,
+                null,
+                null
+        );
+        return CollectionUtils.isNotEmpty(treeList) ? treeList : new ArrayList<>();
+    }
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
     public List<MenuTreeVO> queryTreeList(MenuTreeListQueryDTO queryDTO) {
         String keyword = queryDTO.getKeyword();
         List<Menu> menus = menuMapper.select(SelectDSLCompleter.allRows());
@@ -174,7 +197,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public MenuVO changeVisibility(Integer id, boolean show) {
         UpdateStatementProvider updateStatement = SqlBuilder.update(MenuDynamicSqlSupport.menu)
-                .set(MenuDynamicSqlSupport.isHidden).equalTo(!show)
+                .set(MenuDynamicSqlSupport.isShow).equalTo(show)
                 .where(MenuDynamicSqlSupport.id, isEqualTo(id))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
@@ -188,7 +211,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public void changeVisibility(List<Integer> ids, boolean show) {
         UpdateStatementProvider updateStatement = SqlBuilder.update(MenuDynamicSqlSupport.menu)
-                .set(MenuDynamicSqlSupport.isHidden).equalTo(!show)
+                .set(MenuDynamicSqlSupport.isShow).equalTo(show)
                 .where(MenuDynamicSqlSupport.id, isIn(ids))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author Mybatis Generator
- * @date 2021/08/03 11:12
+ * @date 2021/08/06 11:49
  */
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)

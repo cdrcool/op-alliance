@@ -26,7 +26,7 @@ public final class MenuDynamicSqlSupport {
     public static final SqlColumn<String> menuPath = menu.menuPath;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<Boolean> isHidden = menu.isHidden;
+    public static final SqlColumn<Boolean> isShow = menu.isShow;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> permission = menu.permission;
@@ -67,7 +67,7 @@ public final class MenuDynamicSqlSupport {
 
         public final SqlColumn<String> menuPath = column("menu_path", JDBCType.VARCHAR);
 
-        public final SqlColumn<Boolean> isHidden = column("is_hidden", JDBCType.BIT);
+        public final SqlColumn<Boolean> isShow = column("is_show", JDBCType.BIT);
 
         public final SqlColumn<String> permission = column("permission", JDBCType.VARCHAR);
 

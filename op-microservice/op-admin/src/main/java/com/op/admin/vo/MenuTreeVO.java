@@ -32,17 +32,14 @@ public class MenuTreeVO extends BaseVo {
     @ApiModelProperty("菜单路径")
     private String menuPath;
 
-    @ApiModelProperty("是否隐藏")
-    private Boolean isHidden;
+    @ApiModelProperty("是否显示")
+    private Boolean isShow;
 
     @ApiModelProperty("权限标识")
     private String permission;
 
     @ApiModelProperty("菜单编号")
     private Integer menuNo;
-
-    @ApiModelProperty("菜单层级")
-    private Integer menuLevel;
 
     @ApiModelProperty("子菜单列表")
     private List<MenuTreeVO> children;

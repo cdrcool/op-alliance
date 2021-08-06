@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author Mybatis Generator
- * @date 2021/08/03 11:12
+ * @date 2021/08/06 11:49
  */
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
@@ -45,10 +45,10 @@ public class Menu extends BaseEntity {
     private String menuPath;
 
     /**
-     * 是否隐藏
+     * 是否显示
      */
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Boolean isHidden;
+    private Boolean isShow;
 
     /**
      * 权限标识

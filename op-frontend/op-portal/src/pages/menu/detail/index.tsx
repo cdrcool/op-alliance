@@ -59,7 +59,7 @@ const MenuDetailPage: FC = () => {
                         <Descriptions.Item label="菜单图标">{menu.menuIcon}</Descriptions.Item>
                         <Descriptions.Item label="菜单路径">{menu.menuPath}</Descriptions.Item>
                         <Descriptions.Item
-                            label="是否隐藏">{menu.isHidden === true ? '是' : (menu.isHidden === false ? '否' : null)}</Descriptions.Item>
+                            label="是否显示">{menu.isShow === true ? '是' : (menu.isShow === false ? '否' : null)}</Descriptions.Item>
                         <Descriptions.Item label="权限标识">{menu.permission}</Descriptions.Item>
                         <Descriptions.Item label="菜单编号">{menu.menuNo}</Descriptions.Item>
                     </Descriptions>

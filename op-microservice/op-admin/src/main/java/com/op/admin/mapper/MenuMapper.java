@@ -33,12 +33,12 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 /**
  * @author Mybatis Generator
- * @date 2021/08/03 11:12
+ * @date 2021/08/06 11:49
  */
 @Mapper
 public interface MenuMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(id, pid, menuName, menuIcon, menuPath, isHidden, permission, menuNo, version, deleted, creatorId, createTime, lastModifierId, lastModifyTime, tenantId);
+    BasicColumn[] selectList = BasicColumn.columnList(id, pid, menuName, menuIcon, menuPath, isShow, permission, menuNo, version, deleted, creatorId, createTime, lastModifierId, lastModifyTime, tenantId);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -66,7 +66,7 @@ public interface MenuMapper {
         @Result(column="menu_name", property="menuName", jdbcType=JdbcType.VARCHAR),
         @Result(column="menu_icon", property="menuIcon", jdbcType=JdbcType.VARCHAR),
         @Result(column="menu_path", property="menuPath", jdbcType=JdbcType.VARCHAR),
-        @Result(column="is_hidden", property="isHidden", jdbcType=JdbcType.BIT),
+        @Result(column="is_show", property="isShow", jdbcType=JdbcType.BIT),
         @Result(column="permission", property="permission", jdbcType=JdbcType.VARCHAR),
         @Result(column="menu_no", property="menuNo", jdbcType=JdbcType.INTEGER),
         @Result(column="version", property="version", jdbcType=JdbcType.INTEGER),
@@ -107,7 +107,7 @@ public interface MenuMapper {
             .map(menuName).toProperty("menuName")
             .map(menuIcon).toProperty("menuIcon")
             .map(menuPath).toProperty("menuPath")
-            .map(isHidden).toProperty("isHidden")
+            .map(isShow).toProperty("isShow")
             .map(permission).toProperty("permission")
             .map(menuNo).toProperty("menuNo")
             .map(version).toProperty("version")
@@ -127,7 +127,7 @@ public interface MenuMapper {
             .map(menuName).toPropertyWhenPresent("menuName", record::getMenuName)
             .map(menuIcon).toPropertyWhenPresent("menuIcon", record::getMenuIcon)
             .map(menuPath).toPropertyWhenPresent("menuPath", record::getMenuPath)
-            .map(isHidden).toPropertyWhenPresent("isHidden", record::getIsHidden)
+            .map(isShow).toPropertyWhenPresent("isShow", record::getIsShow)
             .map(permission).toPropertyWhenPresent("permission", record::getPermission)
             .map(menuNo).toPropertyWhenPresent("menuNo", record::getMenuNo)
             .map(version).toPropertyWhenPresent("version", record::getVersion)
@@ -173,7 +173,7 @@ public interface MenuMapper {
                 .set(menuName).equalTo(record::getMenuName)
                 .set(menuIcon).equalTo(record::getMenuIcon)
                 .set(menuPath).equalTo(record::getMenuPath)
-                .set(isHidden).equalTo(record::getIsHidden)
+                .set(isShow).equalTo(record::getIsShow)
                 .set(permission).equalTo(record::getPermission)
                 .set(menuNo).equalTo(record::getMenuNo)
                 .set(version).equalTo(record::getVersion)
@@ -191,7 +191,7 @@ public interface MenuMapper {
                 .set(menuName).equalToWhenPresent(record::getMenuName)
                 .set(menuIcon).equalToWhenPresent(record::getMenuIcon)
                 .set(menuPath).equalToWhenPresent(record::getMenuPath)
-                .set(isHidden).equalToWhenPresent(record::getIsHidden)
+                .set(isShow).equalToWhenPresent(record::getIsShow)
                 .set(permission).equalToWhenPresent(record::getPermission)
                 .set(menuNo).equalToWhenPresent(record::getMenuNo)
                 .set(version).equalToWhenPresent(record::getVersion)
@@ -210,7 +210,7 @@ public interface MenuMapper {
             .set(menuName).equalTo(record::getMenuName)
             .set(menuIcon).equalTo(record::getMenuIcon)
             .set(menuPath).equalTo(record::getMenuPath)
-            .set(isHidden).equalTo(record::getIsHidden)
+            .set(isShow).equalTo(record::getIsShow)
             .set(permission).equalTo(record::getPermission)
             .set(menuNo).equalTo(record::getMenuNo)
             .set(version).equalTo(record::getVersion)
@@ -231,7 +231,7 @@ public interface MenuMapper {
             .set(menuName).equalToWhenPresent(record::getMenuName)
             .set(menuIcon).equalToWhenPresent(record::getMenuIcon)
             .set(menuPath).equalToWhenPresent(record::getMenuPath)
-            .set(isHidden).equalToWhenPresent(record::getIsHidden)
+            .set(isShow).equalToWhenPresent(record::getIsShow)
             .set(permission).equalToWhenPresent(record::getPermission)
             .set(menuNo).equalToWhenPresent(record::getMenuNo)
             .set(version).equalToWhenPresent(record::getVersion)

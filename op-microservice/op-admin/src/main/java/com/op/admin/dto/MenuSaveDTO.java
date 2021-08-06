@@ -27,8 +27,8 @@ public class MenuSaveDTO {
     @ApiModelProperty(value = "菜单路径", required = true)
     private String menuPath;
 
-    @ApiModelProperty(value = "是否隐藏", required = true)
-    private Boolean isHidden;
+    @ApiModelProperty(value = "是否显示", required = true)
+    private Boolean isShow;
 
     @ApiModelProperty("权限标识")
     private String permission;

@@ -4,7 +4,7 @@ export interface Menus {
     menuName?: string;
     menuIcon?: string;
     menuPath?: string;
-    isHidden?: boolean;
+    isShow?: boolean;
     permission?: string;
     menuNo?: number;
     parentName?: string;

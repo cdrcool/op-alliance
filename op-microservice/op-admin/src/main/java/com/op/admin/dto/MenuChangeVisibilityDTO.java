@@ -21,7 +21,7 @@ public class MenuChangeVisibilityDTO {
     @NotEmpty
     private List<Integer> ids;
 
-    @ApiModelProperty(value = "是否显示（1-显示；1-隐藏）", allowableValues = "0, 1")
+    @ApiModelProperty(value = "是否显示（1-显示；0-隐藏）", allowableValues = "1,0")
     @NotNull
     private Boolean show;
 }

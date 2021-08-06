@@ -9,7 +9,7 @@ import {Link, useHistory, useLocation} from "react-router-dom";
 import {renderRoutes} from "react-router-config";
 import defaultSettings from "./defaultSettings";
 import HeaderMenu from "./HeaderMenu";
-import {queryMenuTreeList} from "../services/menu";
+import {queryMenuTreeList, queryUserMenuTreeList} from "../services/menu";
 import {Menus} from "../models/Menus";
 import userContext from "../context/userContext";
 import {getCurrentUser} from "../services/login";
@@ -36,7 +36,7 @@ const DefaultLayout: FC = (props) => {
                         style: {fontSize: '16px'}
                     }
                 ),
-                hideInMenu: item.isHidden,
+                hideInMenu: !item.isShow,
                 children: item.children && convertToAntdMenu(item.children),
             }
         });
@@ -71,7 +71,7 @@ const DefaultLayout: FC = (props) => {
                     }}
                     menu={{
                         request: async () => {
-                            const result = await queryMenuTreeList({});
+                            const result = await queryUserMenuTreeList();
                             return convertToAntdMenu(result);
                         }
                     }}

@@ -17,9 +17,9 @@ const MenuListPage: FC = () => {
         deleteMenus(ids).then(() => ref.current.reloadAndRest());
     };
 
-    const onChangeMenusVisibility = (ids: number[], enable: boolean) => {
+    const onChangeMenusVisibility = (ids: number[], show: boolean) => {
         // @ts-ignore
-        changeMenusVisibility(ids, enable).then(() => ref.current.reload());
+        changeMenusVisibility(ids, show).then(() => ref.current.reload());
     };
 
     const columns: ProColumns<Menus>[] = [
@@ -36,11 +36,11 @@ const MenuListPage: FC = () => {
             dataIndex: 'menuIcon',
         },
         {
-            title: '是否隐藏',
-            dataIndex: 'isHidden',
+            title: '是否显示',
+            dataIndex: 'isShow',
             valueEnum: {
-                true: {text: '是', status: 'Warning'},
-                false: {text: '否', status: 'Success'},
+                true: {text: '是', status: 'Success'},
+                false: {text: '否', status: 'Warning'},
             },
         },
         {
@@ -77,8 +77,8 @@ const MenuListPage: FC = () => {
                     menus={[
                         {
                             key: 'enable',
-                            name: record.isHidden ? '显示' : '隐藏',
-                            onClick: () => onChangeMenusVisibility([record.id] as number[], record.isHidden as boolean),
+                            name: record.isShow ? '隐藏' : '显示',
+                            onClick: () => onChangeMenusVisibility([record.id] as number[], !record.isShow),
                         },
                     ]}
                 />,

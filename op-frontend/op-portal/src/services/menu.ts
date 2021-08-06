@@ -43,6 +43,15 @@ export async function getMenu(id: number): Promise<Menus> {
  *
  * @param params 查询参数
  */
+export async function queryUserMenuTreeList(params?: object): Promise<Menus[]> {
+    return request.get('/api/op-admin/menu/queryUserTreeList', params);
+}
+
+/**
+ * 查询菜单树列表
+ *
+ * @param params 查询参数
+ */
 export async function queryMenuTreeList(params?: object): Promise<Menus[]> {
     return request.post('/api/op-admin/menu/queryTreeList', params);
 }

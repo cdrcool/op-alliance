@@ -48,6 +48,13 @@ public interface MenuService {
     MenuVO findById(Integer id);
 
     /**
+     * 查询用户菜单树列表
+     *
+     * @return 菜单树 vo 列表
+     */
+    List<MenuTreeVO> queryUserTreeList();
+
+    /**
      * 查询菜单树列表
      *
      * @param queryDTO 查询对象

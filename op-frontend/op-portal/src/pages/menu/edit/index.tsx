@@ -88,8 +88,8 @@ const MenuEditPage: FC = () => {
                         <Form.Item label="菜单路径" name="menuPath">
                             <Input/>
                         </Form.Item>
-                        <Form.Item label="是否隐藏" name="isHidden" initialValue={false}
-                                   rules={[{required: true, message: '请勾选是否隐藏'}]}>
+                        <Form.Item label="是否显示" name="isShow" initialValue={true}
+                                   rules={[{required: true, message: '请勾选是否显示'}]}>
                             <Radio.Group>
                                 <Radio value={true}>是</Radio>
                                 <Radio value={false}>否</Radio>
