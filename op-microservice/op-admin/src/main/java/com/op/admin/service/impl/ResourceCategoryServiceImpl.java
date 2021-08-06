@@ -77,7 +77,8 @@ public class ResourceCategoryServiceImpl implements ResourceCategoryService {
      * @param serviceName  服务名称
      */
     private void validateCategoryNameAndServiceName(Integer id, String categoryName, String serviceName) {
-        SelectStatementProvider selectStatementProvider = countFrom(ResourceCategoryDynamicSqlSupport.resourceCategory)
+        SelectStatementProvider selectStatementProvider = select(ResourceCategoryDynamicSqlSupport.categoryName, ResourceCategoryDynamicSqlSupport.serverName)
+                .from(ResourceCategoryDynamicSqlSupport.resourceCategory)
                 .where(ResourceCategoryDynamicSqlSupport.categoryName, isEqualTo(categoryName), or(ResourceCategoryDynamicSqlSupport.serverName, isEqualTo(serviceName)))
                 .and(ResourceCategoryDynamicSqlSupport.id, isNotEqualToWhenPresent(id))
                 .build().render(RenderingStrategies.MYBATIS3);

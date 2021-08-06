@@ -1,6 +1,9 @@
 package com.op.admin.controller;
 
-import com.op.admin.dto.*;
+import com.op.admin.dto.ResourceAssignDTO;
+import com.op.admin.dto.RoleChangeEnabledDTO;
+import com.op.admin.dto.RolePageQueryDTO;
+import com.op.admin.dto.RoleSaveDTO;
 import com.op.admin.service.RoleService;
 import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.RoleVO;
@@ -20,7 +23,7 @@ import java.util.List;
  *
  * @author cdrcool
  */
-@Api(tags = "角色管理")
+@Api(tags = "角色")
 @RequestMapping("role")
 @RestController
 public class RoleController {

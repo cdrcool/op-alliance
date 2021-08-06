@@ -87,7 +87,8 @@ public class RoleServiceImpl implements RoleService {
      * @param roleCode 角色编码
      */
     private void validateRoleNameAndRoleCode(Integer id, String roleName, String roleCode) {
-        SelectStatementProvider selectStatementProvider = countFrom(RoleDynamicSqlSupport.role)
+        SelectStatementProvider selectStatementProvider = select(RoleDynamicSqlSupport.roleName, RoleDynamicSqlSupport.roleCode)
+                .from(RoleDynamicSqlSupport.role)
                 .where(RoleDynamicSqlSupport.roleName, isEqualTo(roleName), or(RoleDynamicSqlSupport.roleCode, isEqualTo(roleCode)))
                 .and(RoleDynamicSqlSupport.id, isNotEqualToWhenPresent(id))
                 .build().render(RenderingStrategies.MYBATIS3);

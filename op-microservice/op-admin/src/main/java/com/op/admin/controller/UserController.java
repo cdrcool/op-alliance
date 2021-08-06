@@ -1,10 +1,10 @@
 package com.op.admin.controller;
 
 import com.op.admin.dto.*;
+import com.op.admin.service.UserService;
 import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.RoleAssignVO;
 import com.op.admin.vo.UserVO;
-import com.op.admin.service.UserService;
 import com.op.framework.web.common.api.response.NoApiResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -22,7 +22,7 @@ import java.util.List;
  *
  * @author cdrcool
  */
-@Api(tags = "用户管理")
+@Api(tags = "用户")
 @RequestMapping("user")
 @RestController
 public class UserController {

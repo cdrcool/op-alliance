@@ -52,4 +52,12 @@ public interface WhiteResourceService {
      * @return 白名单资源 vo 分页列表
      */
     Page<WhiteResourceVO> queryPage(Pageable pageable, WhiteResourcePageQueryDTO queryDTO);
+
+    /**
+     * 启用/禁用白名单资源
+     *
+     * @param ids    白名单资源 ids
+     * @param enable 启用 or 禁用
+     */
+    void changeEnabled(List<Integer> ids, boolean enable);
 }

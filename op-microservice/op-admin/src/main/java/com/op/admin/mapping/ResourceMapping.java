@@ -28,7 +28,7 @@ public interface ResourceMapping {
     /**
      * 根据资源保存 dto 更新资源
      *
-     * @param saveDTO          资源保存 dto
+     * @param saveDTO  资源保存 dto
      * @param resource 资源
      */
     void update(ResourceSaveDTO saveDTO, @MappingTarget Resource resource);

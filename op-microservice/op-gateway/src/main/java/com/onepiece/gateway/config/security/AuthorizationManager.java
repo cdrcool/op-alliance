@@ -32,6 +32,10 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
      */
     private static final String AUTHORITY_PREFIX = "SCOPE_";
     /**
+     * 白名单资源缓存 key
+     */
+    private static final String WHITE_RESOURCE_KEY = "white:resource";
+    /**
      * 资源及相应权限缓存 key
      */
     private static final String RESOURCE_PERMISSION_KEY = "resource:permission";
@@ -52,8 +56,9 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
         PathMatcher pathMatcher = new AntPathMatcher();
 
         // 白名单路径直接放行
-        List<String> whiteList = Optional.ofNullable(whiteListConfig.getUrls()).orElse(new ArrayList<>());
-        if (whiteList.stream().anyMatch(pattern -> pathMatcher.match(pattern, uri.getPath()))) {
+        List<String> whiteResources = (List<String>) redisTemplate.opsForValue().get(WHITE_RESOURCE_KEY);
+        if (!CollectionUtils.isEmpty(whiteResources) && whiteResources.stream()
+                .anyMatch(pattern -> pathMatcher.match(pattern, uri.getPath()))) {
             return Mono.just(new AuthorizationDecision(true));
         }
 

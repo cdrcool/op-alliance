@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author cdrcool
  */
-@Api(tags = "菜单管理")
+@Api(tags = "菜单")
 @RequestMapping("menu")
 @RestController
 public class MenuController {

@@ -35,6 +35,9 @@ import NoFoundPage from "../pages/404";
 import OauthClientListPage from "../pages/oauthclient/list";
 import OauthClientEditPage from "../pages/oauthclient/edit";
 import OauthClientDetailPage from "../pages/oauthclient/detail";
+import WhiteResourceListPage from "../pages/whiteresource/list";
+import WhiteResourceEditPage from "../pages/whiteresource/edit";
+import WhiteResourceDetailPage from "../pages/whiteresource/detail";
 
 const routes = [
     {
@@ -212,6 +215,21 @@ const routes = [
                 path: "/admin/oauthClient/detail/:id",
                 exact: true,
                 component: OauthClientDetailPage,
+            },
+            {
+                path: "/admin/whiteResource",
+                exact: true,
+                component: WhiteResourceListPage,
+            },
+            {
+                path: "/admin/whiteResource/edit/:id?",
+                exact: true,
+                component: WhiteResourceEditPage,
+            },
+            {
+                path: "/admin/whiteResource/detail/:id",
+                exact: true,
+                component: WhiteResourceDetailPage,
             },
             {
                 component: NoFoundPage,

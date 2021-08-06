@@ -1,10 +1,11 @@
 package com.op.admin.mapper;
 
-import java.sql.JDBCType;
-import java.time.LocalDateTime;
-import javax.annotation.Generated;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
+
+import javax.annotation.Generated;
+import java.sql.JDBCType;
+import java.time.LocalDateTime;
 
 public final class ResourceActionDynamicSqlSupport {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")

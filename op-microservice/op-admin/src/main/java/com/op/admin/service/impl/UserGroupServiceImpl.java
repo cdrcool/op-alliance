@@ -62,7 +62,7 @@ public class UserGroupServiceImpl implements UserGroupService {
                                 UserGroupRoleRelationMapper userGroupRoleRelationMapper,
                                 UserGroupResourceActionRelationMapper userGroupResourceActionRelationMapper,
                                 @Lazy
-                                UserService userService,
+                                        UserService userService,
                                 RoleService roleService,
                                 ResourceCategoryService resourceCategoryService) {
         this.userGroupMapper = userGroupMapper;

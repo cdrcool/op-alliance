@@ -23,7 +23,7 @@ import java.util.Map;
  *
  * @author cdrcool
  */
-@Api(tags = "资源分类管理")
+@Api(tags = "资源分类")
 @RequestMapping("resourceCategory")
 @RestController
 public class ResourceCategoryController {

@@ -101,7 +101,8 @@ public class ResourceActionServiceImpl implements ResourceActionService {
      * @param actionPath 动作路径
      */
     private void validateActionNameAndActionPath(Integer resourceId, Integer id, String actionName, String actionPath) {
-        SelectStatementProvider selectStatementProvider = countFrom(ResourceActionDynamicSqlSupport.resourceAction)
+        SelectStatementProvider selectStatementProvider = select(ResourceActionDynamicSqlSupport.actionName, ResourceActionDynamicSqlSupport.actionPath)
+                .from(ResourceActionDynamicSqlSupport.resourceAction)
                 .where(ResourceActionDynamicSqlSupport.resourceId, isEqualTo(resourceId))
                 .and(ResourceActionDynamicSqlSupport.actionName, isEqualTo(actionName), or(ResourceActionDynamicSqlSupport.actionPath, isEqualTo(actionPath)))
                 .and(ResourceActionDynamicSqlSupport.id, isNotEqualToWhenPresent(id))

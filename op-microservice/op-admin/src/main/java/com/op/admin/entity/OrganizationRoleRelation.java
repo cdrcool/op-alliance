@@ -1,10 +1,11 @@
 package com.op.admin.entity;
 
 import com.op.framework.web.common.persistence.entity.BaseEntity;
-import javax.annotation.Generated;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import javax.annotation.Generated;
 
 /**
  * @author Mybatis Generator

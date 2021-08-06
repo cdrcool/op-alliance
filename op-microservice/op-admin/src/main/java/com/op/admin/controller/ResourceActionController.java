@@ -20,7 +20,7 @@ import java.util.List;
  *
  * @author cdrcool
  */
-@Api(tags = "资源动作管理")
+@Api(tags = "资源动作")
 @RequestMapping("resourceAction")
 @RestController
 public class ResourceActionController {

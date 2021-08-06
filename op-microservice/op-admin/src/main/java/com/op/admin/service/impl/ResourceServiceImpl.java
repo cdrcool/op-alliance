@@ -5,7 +5,6 @@ import com.op.admin.dto.ResourceActionSaveDTO;
 import com.op.admin.dto.ResourcePageQueryDTO;
 import com.op.admin.dto.ResourceSaveDTO;
 import com.op.admin.entity.Resource;
-import com.op.admin.mapper.ResourceCategoryDynamicSqlSupport;
 import com.op.admin.mapper.ResourceDynamicSqlSupport;
 import com.op.admin.mapper.ResourceMapper;
 import com.op.admin.mapping.ResourceMapping;

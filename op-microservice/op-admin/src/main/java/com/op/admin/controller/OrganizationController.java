@@ -1,8 +1,11 @@
 package com.op.admin.controller;
 
-import com.op.admin.dto.*;
-import com.op.admin.vo.*;
+import com.op.admin.dto.OrganizationSaveDTO;
+import com.op.admin.dto.OrganizationTreeQueryDTO;
+import com.op.admin.dto.ResourceAssignDTO;
+import com.op.admin.dto.RoleAssignDTO;
 import com.op.admin.service.OrganizationService;
+import com.op.admin.vo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +18,7 @@ import java.util.List;
  *
  * @author cdrcool
  */
-@Api(tags = "组织管理")
+@Api(tags = "组织")
 @RequestMapping("organization")
 @RestController
 public class OrganizationController {

@@ -74,7 +74,7 @@ public interface UserGroupService {
     /**
      * 获取分配的角色 ids
      *
-     * @param ids 用户组 ids
+     * @param ids    用户组 ids
      * @param status 角色启用状态
      * @return 角色 ids
      */

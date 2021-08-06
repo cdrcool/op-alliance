@@ -107,7 +107,8 @@ public class OrganizationServiceImpl implements OrganizationService {
      * @param orgName 组织名称
      */
     private void validateOrgNameAndOrgCode(Integer pid, Integer id, String orgName, String orgCode) {
-        SelectStatementProvider selectStatementProvider = countFrom(OrganizationDynamicSqlSupport.organization)
+        SelectStatementProvider selectStatementProvider = select(OrganizationDynamicSqlSupport.orgName, OrganizationDynamicSqlSupport.orgCode)
+                .from(OrganizationDynamicSqlSupport.organization)
                 .where(OrganizationDynamicSqlSupport.pid, isEqualTo(pid))
                 .and(OrganizationDynamicSqlSupport.orgName, isEqualTo(orgName), or(OrganizationDynamicSqlSupport.orgCode, isEqualTo(orgCode)))
                 .and(OrganizationDynamicSqlSupport.id, isNotEqualToWhenPresent(id))
@@ -387,7 +388,7 @@ public class OrganizationServiceImpl implements OrganizationService {
                             List<Integer> orgIds = relationsMap.getOrDefault(actionId, new ArrayList<>()).stream()
                                     .map(OrganizationResourceActionRelation::getOrgId).collect(Collectors.toList());
                             action.setChecked(CollectionUtils.isNotEmpty(orgIds) || roleAssignedActionIds.contains(actionId));
-                            action.setEnableUncheck((CollectionUtils.isEmpty(orgIds) || orgIds.stream().allMatch(id::equals) ) && !roleAssignedActionIds.contains(actionId));
+                            action.setEnableUncheck((CollectionUtils.isEmpty(orgIds) || orgIds.stream().allMatch(id::equals)) && !roleAssignedActionIds.contains(actionId));
                         })));
 
         return categories;

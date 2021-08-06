@@ -1,13 +1,8 @@
 package com.op.admin.service;
 
-import com.op.admin.dto.MenuTreeListQueryDTO;
-import com.op.admin.dto.OrganizationListQueryDTO;
 import com.op.admin.dto.OrganizationSaveDTO;
 import com.op.admin.dto.OrganizationTreeQueryDTO;
-import com.op.admin.entity.Organization;
 import com.op.admin.vo.*;
-import com.op.admin.vo.*;
-import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -74,7 +69,7 @@ public interface OrganizationService {
     /**
      * 获取分配的角色 ids（本上级）
      *
-     * @param id 组织 id
+     * @param id     组织 id
      * @param status 角色启用状态
      * @return 角色 ids
      */

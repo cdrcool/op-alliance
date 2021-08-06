@@ -1,8 +1,11 @@
 package com.op.admin.controller;
 
-import com.op.admin.dto.*;
-import com.op.admin.vo.OauthClientDetailsVO;
+import com.op.admin.dto.OauthClientChangeSecretDTO;
+import com.op.admin.dto.OauthClientDetailsDTO;
+import com.op.admin.dto.OauthClientDetailsPageQueryDTO;
+import com.op.admin.dto.OauthClientDetailsSaveDTO;
 import com.op.admin.service.OauthClientDetailsService;
+import com.op.admin.vo.OauthClientDetailsVO;
 import com.op.framework.web.common.api.response.NoApiResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -19,7 +22,7 @@ import java.util.List;
  *
  * @author cdrcool
  */
-@Api(tags = "oauth2-client 管理")
+@Api(tags = "oauth2-client")
 @RequestMapping("oauthClientDetails")
 @RestController
 public class OauthClientDetailsController {

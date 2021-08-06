@@ -141,7 +141,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public List<MenuTreeVO> queryUserTreeList() {
         List<String> authorities = SecurityContextHolder.getContext().getAuthorities();
-        
+
         List<Menu> menus = menuMapper.select(SelectDSLCompleter.allRows());
 
         List<MenuTreeVO> treeList = TreeUtils.buildTreeRecursion(

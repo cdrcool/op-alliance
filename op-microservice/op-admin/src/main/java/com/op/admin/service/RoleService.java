@@ -1,10 +1,10 @@
 package com.op.admin.service;
 
-import com.op.admin.dto.RoleSaveDTO;
 import com.op.admin.dto.RolePageQueryDTO;
-import com.op.admin.vo.RoleVO;
+import com.op.admin.dto.RoleSaveDTO;
 import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.RoleAssignVO;
+import com.op.admin.vo.RoleVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -65,7 +65,7 @@ public interface RoleService {
     /**
      * 启用/禁用角色
      *
-     * @param ids     角色 ids
+     * @param ids    角色 ids
      * @param enable 启用 or 禁用
      */
     void changeEnabled(List<Integer> ids, boolean enable);

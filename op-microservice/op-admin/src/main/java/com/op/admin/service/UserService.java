@@ -95,7 +95,7 @@ public interface UserService {
     /**
      * 启用/禁用用户
      *
-     * @param ids     用户 ids
+     * @param ids    用户 ids
      * @param enable 启用 or 禁用
      */
     void changeEnabled(List<Integer> ids, boolean enable);
@@ -135,7 +135,7 @@ public interface UserService {
     /**
      * 组织授权
      *
-     * @param id                用户 id
+     * @param id              用户 id
      * @param organizationIds 组织 ids
      */
     void assignOrganizations(Integer id, List<Integer> organizationIds);

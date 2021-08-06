@@ -1,9 +1,12 @@
 package com.op.admin.controller;
 
-import com.op.admin.dto.*;
+import com.op.admin.dto.ResourceAssignDTO;
+import com.op.admin.dto.RoleAssignDTO;
+import com.op.admin.dto.UserGroupPageQueryDTO;
+import com.op.admin.dto.UserGroupSaveDTO;
+import com.op.admin.service.UserGroupService;
 import com.op.admin.vo.ResourceCategoryAssignVO;
 import com.op.admin.vo.RoleAssignVO;
-import com.op.admin.service.UserGroupService;
 import com.op.admin.vo.UserGroupVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -21,7 +24,7 @@ import java.util.List;
  *
  * @author cdrcool
  */
-@Api(tags = "用户组管理")
+@Api(tags = "用户组")
 @RequestMapping("userGroup")
 @RestController
 public class UserGroupController {

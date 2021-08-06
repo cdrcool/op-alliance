@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.op.admin.dto.WhiteResourcePageQueryDTO;
 import com.op.admin.dto.WhiteResourceSaveDTO;
 import com.op.admin.entity.WhiteResource;
+import com.op.admin.mapper.RoleDynamicSqlSupport;
 import com.op.admin.mapper.WhiteResourceDynamicSqlSupport;
 import com.op.admin.mapper.WhiteResourceMapper;
 import com.op.admin.mapping.WhiteResourceMapping;
@@ -13,9 +14,12 @@ import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.SortSpecification;
+import org.mybatis.dynamic.sql.SqlBuilder;
+import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SimpleSortSpecification;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -93,7 +97,10 @@ public class WhiteResourceServiceImpl implements WhiteResourceService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteByIds(List<Integer> ids) {
-
+        DeleteStatementProvider deleteStatementProvider = deleteFrom(WhiteResourceDynamicSqlSupport.whiteResource)
+                .where(WhiteResourceDynamicSqlSupport.id, isIn(ids))
+                .build().render(RenderingStrategies.MYBATIS3);
+        whiteResourceMapper.delete(deleteStatementProvider);
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -130,6 +137,17 @@ public class WhiteResourceServiceImpl implements WhiteResourceService {
                 .doSelectPage(() -> whiteResourceMapper.selectMany(selectStatementProvider));
 
         return new PageImpl<>(whiteResourceMapping.toWhiteResourceVOList(result.getResult()), pageable, result.getTotal());
+    }
 
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void changeEnabled(List<Integer> ids, boolean enable) {
+        UpdateStatementProvider updateStatement = SqlBuilder.update(WhiteResourceDynamicSqlSupport.whiteResource)
+                .set(RoleDynamicSqlSupport.status).equalTo(enable ? 1 : 0)
+                .where(RoleDynamicSqlSupport.id, isIn(ids))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        whiteResourceMapper.update(updateStatement);
     }
 }

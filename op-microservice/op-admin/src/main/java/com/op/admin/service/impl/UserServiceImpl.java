@@ -269,7 +269,7 @@ public class UserServiceImpl implements UserService {
     /**
      * 获取分配的角色 ids
      *
-     * @param id 主键
+     * @param id     主键
      * @param status 角色启用状态
      * @return 角色 ids
      */
