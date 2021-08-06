@@ -13,6 +13,7 @@ import com.op.admin.vo.MenuVO;
 import com.op.admin.vo.TreeNodeVO;
 import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
+import com.op.framework.web.common.security.SecurityContextHolder;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.SqlBuilder;
@@ -139,12 +140,9 @@ public class MenuServiceImpl implements MenuService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<MenuTreeVO> queryUserTreeList() {
-        SelectStatementProvider selectStatementProvider = select(MenuMapper.selectList)
-                .from(MenuDynamicSqlSupport.menu)
-                .where(MenuDynamicSqlSupport.permission, isIn(""))
-                .orderBy(MenuDynamicSqlSupport.menuNo)
-                .build().render(RenderingStrategies.MYBATIS3);
-        List<Menu> menus = menuMapper.selectMany(selectStatementProvider);
+        List<String> authorities = SecurityContextHolder.getContext().getAuthorities();
+        
+        List<Menu> menus = menuMapper.select(SelectDSLCompleter.allRows());
 
         List<MenuTreeVO> treeList = TreeUtils.buildTreeRecursion(
                 menus,
@@ -153,8 +151,8 @@ public class MenuServiceImpl implements MenuService {
                 menuMapping::toMenuTreeVO,
                 MenuTreeVO::setChildren,
                 -1,
-                null,
-                null
+                menu -> StringUtils.isBlank(menu.getPermission()) || authorities.contains(menu.getPermission()),
+                Comparator.comparing(Menu::getMenuNo, Comparator.nullsFirst(Comparator.naturalOrder()))
         );
         return CollectionUtils.isNotEmpty(treeList) ? treeList : new ArrayList<>();
     }

@@ -225,7 +225,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到用户名为【" + username + "】的用户"));
 
         UserDTO userDTO = userMapping.toUserDto(user);
-        userDTO.setPermissions(loadAssignPermissions(user.getId(), user.getOrgId()));
+        userDTO.setPermissions(loadAssignedPermissions(user.getId(), user.getOrgId()));
 
         return userDTO;
     }
@@ -237,7 +237,7 @@ public class UserServiceImpl implements UserService {
      * @param orgId 组织 id
      * @return 权限列表
      */
-    private List<String> loadAssignPermissions(Integer id, Integer orgId) {
+    private List<String> loadAssignedPermissions(Integer id, Integer orgId) {
         // 获取用户所分配的资源动作 ids
         List<Integer> userAssignedActionIds = getAssignedResourceActionIds(id);
 
@@ -279,7 +279,7 @@ public class UserServiceImpl implements UserService {
                 .join(RoleDynamicSqlSupport.role)
                 .on(RoleDynamicSqlSupport.id, equalTo(UserRoleRelationDynamicSqlSupport.roleId))
                 .where(UserRoleRelationDynamicSqlSupport.userId, isEqualTo(id))
-                .and(RoleDynamicSqlSupport.status, isEqualTo(1))
+                .and(RoleDynamicSqlSupport.status, isEqualTo(status))
                 .build().render(RenderingStrategies.MYBATIS3);
         return userRoleRelationMapper.selectMany(selectStatementProvider).stream()
                 .map(UserRoleRelation::getRoleId).collect(Collectors.toList());

@@ -228,6 +228,7 @@ public class ResourceActionServiceImpl implements ResourceActionService {
         SelectStatementProvider selectStatementProvider =
                 select(ResourceActionDynamicSqlSupport.permission)
                         .from(ResourceActionDynamicSqlSupport.resourceAction)
+                        .where(ResourceActionDynamicSqlSupport.id, isIn(ids))
                         .build().render(RenderingStrategies.MYBATIS3);
         List<ResourceAction> actions = resourceActionMapper.selectMany(selectStatementProvider);
         return actions.stream().map(ResourceAction::getPermission).collect(Collectors.toList());

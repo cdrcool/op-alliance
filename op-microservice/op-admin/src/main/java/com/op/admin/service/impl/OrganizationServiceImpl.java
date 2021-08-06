@@ -70,20 +70,22 @@ public class OrganizationServiceImpl implements OrganizationService {
         validateOrgNameAndOrgCode(pid, id, saveDTO.getOrgName(), saveDTO.getOrgCode());
 
         // 获取上级组织
-        Organization parent = organizationMapper.selectByPrimaryKey(pid)
+        Organization parent = pid == -1 ? null : organizationMapper.selectByPrimaryKey(pid)
                 .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + pid + "】的上级组织"));
 
         if (id == null) {
             Organization organization = organizationMapping.toOrganization(saveDTO);
-            organization.setOrgCodeLink(parent.getOrgCodeLink() + "." + organization.getOrgCodeLink());
+            if (parent != null) {
+                organization.setOrgCodeLink(parent.getOrgCodeLink() + "." + organization.getOrgCodeLink());
+            }
             organizationMapper.insert(organization);
         } else {
             Organization organization = organizationMapper.selectByPrimaryKey(id)
                     .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的组织"));
             // 记录前组织编码链
             String preOrgCodeLink = organization.getOrgCodeLink();
-            // 设置当前组织编码连
-            String curOrgCodeLink = parent.getOrgCodeLink() + "." + organization.getOrgCode();
+            // 设置当前组织编码链
+            String curOrgCodeLink = parent == null ? saveDTO.getOrgCode() : parent.getOrgCodeLink() + "." + saveDTO.getOrgCode();
             organization.setOrgCodeLink(curOrgCodeLink);
 
             // 更新组织

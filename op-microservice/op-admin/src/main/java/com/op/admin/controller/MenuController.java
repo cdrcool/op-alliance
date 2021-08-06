@@ -11,7 +11,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -56,7 +55,7 @@ public class MenuController {
 
     @ApiOperation("查询用户菜单树列表")
     @GetMapping("queryUserTreeList")
-    public List<MenuTreeVO> queryUserTreeList(HttpServletRequest request) {
+    public List<MenuTreeVO> queryUserTreeList() {
         return menuService.queryUserTreeList();
     }
 
