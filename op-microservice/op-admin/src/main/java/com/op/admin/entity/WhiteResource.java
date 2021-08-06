@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class UserGroup extends BaseEntity {
+public class WhiteResource extends BaseEntity {
     /**
      * 主键
      */
@@ -21,20 +21,32 @@ public class UserGroup extends BaseEntity {
     private Integer id;
 
     /**
-     * 用户组名称
+     * 资源名称
      */
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String groupName;
+    private String resourceName;
 
     /**
-     * 用户组描述
+     * 资源路径
      */
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String groupDesc;
+    private String resourcePath;
 
     /**
-     * 用户编号
+     * 资源描述
      */
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Integer groupNo;
+    private String resourceDesc;
+
+    /**
+     * 启用状态（0-禁用；1-启用）
+     */
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private Integer status;
+
+    /**
+     * 资源编号
+     */
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private Integer resourceNo;
 }

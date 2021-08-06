@@ -103,7 +103,8 @@ public class ResourceServiceImpl implements ResourceService {
      * @param resourcePath 资源路径
      */
     private void validateResourceNameAndResourcePath(Integer categoryId, Integer id, String resourceName, String resourcePath) {
-        SelectStatementProvider selectStatementProvider = countFrom(ResourceDynamicSqlSupport.resource)
+        SelectStatementProvider selectStatementProvider = select(ResourceDynamicSqlSupport.resourceName, ResourceDynamicSqlSupport.resourcePath)
+                .from(ResourceDynamicSqlSupport.resource)
                 .where(ResourceDynamicSqlSupport.categoryId, isEqualTo(categoryId))
                 .and(ResourceDynamicSqlSupport.resourceName, isEqualTo(resourceName), or(ResourceDynamicSqlSupport.resourcePath, isEqualTo(resourcePath)))
                 .and(ResourceDynamicSqlSupport.id, isNotEqualToWhenPresent(id))

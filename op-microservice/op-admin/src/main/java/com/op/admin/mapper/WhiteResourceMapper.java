@@ -1,9 +1,9 @@
 package com.op.admin.mapper;
 
-import static com.op.admin.mapper.RoleDynamicSqlSupport.*;
+import static com.op.admin.mapper.WhiteResourceDynamicSqlSupport.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
-import com.op.admin.entity.Role;
+import com.op.admin.entity.WhiteResource;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Generated;
@@ -36,9 +36,9 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
  * @date 2021/08/06 05:58
  */
 @Mapper
-public interface RoleMapper {
+public interface WhiteResourceMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(id, roleName, roleCode, roleDesc, status, roleNo, userCount, version, deleted, creatorId, createTime, lastModifierId, lastModifyTime, tenantId);
+    BasicColumn[] selectList = BasicColumn.columnList(id, resourceName, resourcePath, resourceDesc, status, resourceNo, version, deleted, creatorId, createTime, lastModifierId, lastModifyTime, tenantId);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -51,23 +51,22 @@ public interface RoleMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     @SelectKey(statement="SELECT LAST_INSERT_ID()", keyProperty="record.id", before=false, resultType=Integer.class)
-    int insert(InsertStatementProvider<Role> insertStatement);
+    int insert(InsertStatementProvider<WhiteResource> insertStatement);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
-    @ResultMap("RoleResult")
-    Optional<Role> selectOne(SelectStatementProvider selectStatement);
+    @ResultMap("WhiteResourceResult")
+    Optional<WhiteResource> selectOne(SelectStatementProvider selectStatement);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
-    @Results(id="RoleResult", value = {
+    @Results(id="WhiteResourceResult", value = {
         @Result(column="id", property="id", jdbcType=JdbcType.INTEGER, id=true),
-        @Result(column="role_name", property="roleName", jdbcType=JdbcType.VARCHAR),
-        @Result(column="role_code", property="roleCode", jdbcType=JdbcType.VARCHAR),
-        @Result(column="role_desc", property="roleDesc", jdbcType=JdbcType.VARCHAR),
+        @Result(column="resource_name", property="resourceName", jdbcType=JdbcType.VARCHAR),
+        @Result(column="resource_path", property="resourcePath", jdbcType=JdbcType.VARCHAR),
+        @Result(column="resource_desc", property="resourceDesc", jdbcType=JdbcType.VARCHAR),
         @Result(column="status", property="status", jdbcType=JdbcType.INTEGER),
-        @Result(column="role_no", property="roleNo", jdbcType=JdbcType.INTEGER),
-        @Result(column="user_count", property="userCount", jdbcType=JdbcType.INTEGER),
+        @Result(column="resource_no", property="resourceNo", jdbcType=JdbcType.INTEGER),
         @Result(column="version", property="version", jdbcType=JdbcType.INTEGER),
         @Result(column="deleted", property="deleted", jdbcType=JdbcType.BIT),
         @Result(column="creator_id", property="creatorId", jdbcType=JdbcType.INTEGER),
@@ -76,7 +75,7 @@ public interface RoleMapper {
         @Result(column="last_modify_time", property="lastModifyTime", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="tenant_id", property="tenantId", jdbcType=JdbcType.VARCHAR)
     })
-    List<Role> selectMany(SelectStatementProvider selectStatement);
+    List<WhiteResource> selectMany(SelectStatementProvider selectStatement);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @UpdateProvider(type=SqlProviderAdapter.class, method="update")
@@ -84,12 +83,12 @@ public interface RoleMapper {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default long count(CountDSLCompleter completer) {
-        return MyBatis3Utils.countFrom(this::count, role, completer);
+        return MyBatis3Utils.countFrom(this::count, whiteResource, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int delete(DeleteDSLCompleter completer) {
-        return MyBatis3Utils.deleteFrom(this::delete, role, completer);
+        return MyBatis3Utils.deleteFrom(this::delete, whiteResource, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -100,14 +99,13 @@ public interface RoleMapper {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    default int insert(Role record) {
-        return MyBatis3Utils.insert(this::insert, record, role, c ->
-            c.map(roleName).toProperty("roleName")
-            .map(roleCode).toProperty("roleCode")
-            .map(roleDesc).toProperty("roleDesc")
+    default int insert(WhiteResource record) {
+        return MyBatis3Utils.insert(this::insert, record, whiteResource, c ->
+            c.map(resourceName).toProperty("resourceName")
+            .map(resourcePath).toProperty("resourcePath")
+            .map(resourceDesc).toProperty("resourceDesc")
             .map(status).toProperty("status")
-            .map(roleNo).toProperty("roleNo")
-            .map(userCount).toProperty("userCount")
+            .map(resourceNo).toProperty("resourceNo")
             .map(version).toProperty("version")
             .map(deleted).toProperty("deleted")
             .map(creatorId).toProperty("creatorId")
@@ -119,14 +117,13 @@ public interface RoleMapper {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    default int insertSelective(Role record) {
-        return MyBatis3Utils.insert(this::insert, record, role, c ->
-            c.map(roleName).toPropertyWhenPresent("roleName", record::getRoleName)
-            .map(roleCode).toPropertyWhenPresent("roleCode", record::getRoleCode)
-            .map(roleDesc).toPropertyWhenPresent("roleDesc", record::getRoleDesc)
+    default int insertSelective(WhiteResource record) {
+        return MyBatis3Utils.insert(this::insert, record, whiteResource, c ->
+            c.map(resourceName).toPropertyWhenPresent("resourceName", record::getResourceName)
+            .map(resourcePath).toPropertyWhenPresent("resourcePath", record::getResourcePath)
+            .map(resourceDesc).toPropertyWhenPresent("resourceDesc", record::getResourceDesc)
             .map(status).toPropertyWhenPresent("status", record::getStatus)
-            .map(roleNo).toPropertyWhenPresent("roleNo", record::getRoleNo)
-            .map(userCount).toPropertyWhenPresent("userCount", record::getUserCount)
+            .map(resourceNo).toPropertyWhenPresent("resourceNo", record::getResourceNo)
             .map(version).toPropertyWhenPresent("version", record::getVersion)
             .map(deleted).toPropertyWhenPresent("deleted", record::getDeleted)
             .map(creatorId).toPropertyWhenPresent("creatorId", record::getCreatorId)
@@ -138,22 +135,22 @@ public interface RoleMapper {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    default Optional<Role> selectOne(SelectDSLCompleter completer) {
-        return MyBatis3Utils.selectOne(this::selectOne, selectList, role, completer);
+    default Optional<WhiteResource> selectOne(SelectDSLCompleter completer) {
+        return MyBatis3Utils.selectOne(this::selectOne, selectList, whiteResource, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    default List<Role> select(SelectDSLCompleter completer) {
-        return MyBatis3Utils.selectList(this::selectMany, selectList, role, completer);
+    default List<WhiteResource> select(SelectDSLCompleter completer) {
+        return MyBatis3Utils.selectList(this::selectMany, selectList, whiteResource, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    default List<Role> selectDistinct(SelectDSLCompleter completer) {
-        return MyBatis3Utils.selectDistinct(this::selectMany, selectList, role, completer);
+    default List<WhiteResource> selectDistinct(SelectDSLCompleter completer) {
+        return MyBatis3Utils.selectDistinct(this::selectMany, selectList, whiteResource, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    default Optional<Role> selectByPrimaryKey(Integer id_) {
+    default Optional<WhiteResource> selectByPrimaryKey(Integer id_) {
         return selectOne(c ->
             c.where(id, isEqualTo(id_))
         );
@@ -161,17 +158,16 @@ public interface RoleMapper {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int update(UpdateDSLCompleter completer) {
-        return MyBatis3Utils.update(this::update, role, completer);
+        return MyBatis3Utils.update(this::update, whiteResource, completer);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    static UpdateDSL<UpdateModel> updateAllColumns(Role record, UpdateDSL<UpdateModel> dsl) {
-        return dsl.set(roleName).equalTo(record::getRoleName)
-                .set(roleCode).equalTo(record::getRoleCode)
-                .set(roleDesc).equalTo(record::getRoleDesc)
+    static UpdateDSL<UpdateModel> updateAllColumns(WhiteResource record, UpdateDSL<UpdateModel> dsl) {
+        return dsl.set(resourceName).equalTo(record::getResourceName)
+                .set(resourcePath).equalTo(record::getResourcePath)
+                .set(resourceDesc).equalTo(record::getResourceDesc)
                 .set(status).equalTo(record::getStatus)
-                .set(roleNo).equalTo(record::getRoleNo)
-                .set(userCount).equalTo(record::getUserCount)
+                .set(resourceNo).equalTo(record::getResourceNo)
                 .set(version).equalTo(record::getVersion)
                 .set(deleted).equalTo(record::getDeleted)
                 .set(creatorId).equalTo(record::getCreatorId)
@@ -182,13 +178,12 @@ public interface RoleMapper {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    static UpdateDSL<UpdateModel> updateSelectiveColumns(Role record, UpdateDSL<UpdateModel> dsl) {
-        return dsl.set(roleName).equalToWhenPresent(record::getRoleName)
-                .set(roleCode).equalToWhenPresent(record::getRoleCode)
-                .set(roleDesc).equalToWhenPresent(record::getRoleDesc)
+    static UpdateDSL<UpdateModel> updateSelectiveColumns(WhiteResource record, UpdateDSL<UpdateModel> dsl) {
+        return dsl.set(resourceName).equalToWhenPresent(record::getResourceName)
+                .set(resourcePath).equalToWhenPresent(record::getResourcePath)
+                .set(resourceDesc).equalToWhenPresent(record::getResourceDesc)
                 .set(status).equalToWhenPresent(record::getStatus)
-                .set(roleNo).equalToWhenPresent(record::getRoleNo)
-                .set(userCount).equalToWhenPresent(record::getUserCount)
+                .set(resourceNo).equalToWhenPresent(record::getResourceNo)
                 .set(version).equalToWhenPresent(record::getVersion)
                 .set(deleted).equalToWhenPresent(record::getDeleted)
                 .set(creatorId).equalToWhenPresent(record::getCreatorId)
@@ -199,14 +194,13 @@ public interface RoleMapper {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    default int updateByPrimaryKey(Role record) {
+    default int updateByPrimaryKey(WhiteResource record) {
         return update(c ->
-            c.set(roleName).equalTo(record::getRoleName)
-            .set(roleCode).equalTo(record::getRoleCode)
-            .set(roleDesc).equalTo(record::getRoleDesc)
+            c.set(resourceName).equalTo(record::getResourceName)
+            .set(resourcePath).equalTo(record::getResourcePath)
+            .set(resourceDesc).equalTo(record::getResourceDesc)
             .set(status).equalTo(record::getStatus)
-            .set(roleNo).equalTo(record::getRoleNo)
-            .set(userCount).equalTo(record::getUserCount)
+            .set(resourceNo).equalTo(record::getResourceNo)
             .set(version).equalTo(record::getVersion)
             .set(deleted).equalTo(record::getDeleted)
             .set(creatorId).equalTo(record::getCreatorId)
@@ -219,14 +213,13 @@ public interface RoleMapper {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    default int updateByPrimaryKeySelective(Role record) {
+    default int updateByPrimaryKeySelective(WhiteResource record) {
         return update(c ->
-            c.set(roleName).equalToWhenPresent(record::getRoleName)
-            .set(roleCode).equalToWhenPresent(record::getRoleCode)
-            .set(roleDesc).equalToWhenPresent(record::getRoleDesc)
+            c.set(resourceName).equalToWhenPresent(record::getResourceName)
+            .set(resourcePath).equalToWhenPresent(record::getResourcePath)
+            .set(resourceDesc).equalToWhenPresent(record::getResourceDesc)
             .set(status).equalToWhenPresent(record::getStatus)
-            .set(roleNo).equalToWhenPresent(record::getRoleNo)
-            .set(userCount).equalToWhenPresent(record::getUserCount)
+            .set(resourceNo).equalToWhenPresent(record::getResourceNo)
             .set(version).equalToWhenPresent(record::getVersion)
             .set(deleted).equalToWhenPresent(record::getDeleted)
             .set(creatorId).equalToWhenPresent(record::getCreatorId)
