@@ -43,7 +43,8 @@ public class WhiteListRemoveJwtFilter implements WebFilter {
             whiteResources = whiteResourceFeignClient.getWhiteResourcePaths();
         }
         if (whiteResources.stream().anyMatch(pattern -> pathMatcher.match(pattern, uri.getPath()))) {
-            request = exchange.getRequest().mutate().header(AuthConstant.JWT_TOKEN_HEADER, "").build();
+            // 不移除 JWT 请求头，不然在请求用户相关接口（菜单）时不能获取当前用户信息，后面有需要移除时再增加 是否移除 配置项
+//          request = exchange.getRequest().mutate().header(AuthConstant.JWT_TOKEN_HEADER, "").build();
             exchange = exchange.mutate().request(request).build();
             return chain.filter(exchange);
         }
