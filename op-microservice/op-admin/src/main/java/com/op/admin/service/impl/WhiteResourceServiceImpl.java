@@ -23,11 +23,14 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
@@ -38,12 +41,21 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
  */
 @Service
 public class WhiteResourceServiceImpl implements WhiteResourceService {
+    /**
+     * 白名单资源缓存 key
+     */
+    public static final String WHITE_RESOURCE_KEY = "white:resource";
+
     private final WhiteResourceMapper whiteResourceMapper;
     private final WhiteResourceMapping whiteResourceMapping;
+    private final RedisTemplate<String, Object> redisTemplate;
 
-    public WhiteResourceServiceImpl(WhiteResourceMapper whiteResourceMapper, WhiteResourceMapping whiteResourceMapping) {
+    public WhiteResourceServiceImpl(WhiteResourceMapper whiteResourceMapper,
+                                    WhiteResourceMapping whiteResourceMapping,
+                                    RedisTemplate<String, Object> redisTemplate) {
         this.whiteResourceMapper = whiteResourceMapper;
         this.whiteResourceMapping = whiteResourceMapping;
+        this.redisTemplate = redisTemplate;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -149,5 +161,19 @@ public class WhiteResourceServiceImpl implements WhiteResourceService {
                 .render(RenderingStrategies.MYBATIS3);
 
         whiteResourceMapper.update(updateStatement);
+    }
+
+    @PostConstruct
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public List<String> getWhiteResourcePaths() {
+        SelectStatementProvider selectStatementProvider = select(WhiteResourceDynamicSqlSupport.resourcePath)
+                .from(WhiteResourceDynamicSqlSupport.whiteResource)
+                .where(WhiteResourceDynamicSqlSupport.status, isEqualTo(1))
+                .build().render(RenderingStrategies.MYBATIS3);
+        List<String> list = whiteResourceMapper.selectMany(selectStatementProvider).stream()
+                .map((WhiteResource::getResourcePath)).collect(Collectors.toList());
+        redisTemplate.opsForValue().set(WHITE_RESOURCE_KEY, list);
+        return list;
     }
 }

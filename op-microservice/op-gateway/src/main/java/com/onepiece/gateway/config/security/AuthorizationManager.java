@@ -1,5 +1,7 @@
 package com.onepiece.gateway.config.security;
 
+import com.onepiece.gateway.feignclient.ResourcePermissionFeignClient;
+import com.onepiece.gateway.feignclient.WhiteResourceFeignClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
@@ -16,7 +18,8 @@ import org.springframework.util.PathMatcher;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -34,18 +37,22 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
     /**
      * 白名单资源缓存 key
      */
-    private static final String WHITE_RESOURCE_KEY = "white:resource";
+    public static final String WHITE_RESOURCE_KEY = "white:resource";
     /**
      * 资源及相应权限缓存 key
      */
     private static final String RESOURCE_PERMISSION_KEY = "resource:permission";
 
-    private final WhiteListConfig whiteListConfig;
     private final RedisTemplate<String, Object> redisTemplate;
+    private final WhiteResourceFeignClient whiteResourceFeignClient;
+    private final ResourcePermissionFeignClient resourcePermissionFeignClient;
 
-    public AuthorizationManager(WhiteListConfig whiteListConfig, RedisTemplate<String, Object> redisTemplate) {
-        this.whiteListConfig = whiteListConfig;
+    public AuthorizationManager(RedisTemplate<String, Object> redisTemplate,
+                                WhiteResourceFeignClient whiteResourceFeignClient,
+                                ResourcePermissionFeignClient resourcePermissionFeignClient) {
         this.redisTemplate = redisTemplate;
+        this.whiteResourceFeignClient = whiteResourceFeignClient;
+        this.resourcePermissionFeignClient = resourcePermissionFeignClient;
     }
 
     @Override
@@ -57,6 +64,9 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
 
         // 白名单路径直接放行
         List<String> whiteResources = (List<String>) redisTemplate.opsForValue().get(WHITE_RESOURCE_KEY);
+        if (whiteResources == null) {
+            whiteResources = whiteResourceFeignClient.getWhiteResourcePaths();
+        }
         if (!CollectionUtils.isEmpty(whiteResources) && whiteResources.stream()
                 .anyMatch(pattern -> pathMatcher.match(pattern, uri.getPath()))) {
             return Mono.just(new AuthorizationDecision(true));
@@ -68,9 +78,17 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
         }
 
         // 从缓存中获取资源动作及其所需的权限
-        Map<Object, Object> resourceActionPermissionsMap = redisTemplate.opsForHash().entries(RESOURCE_PERMISSION_KEY);
+        Map<String, String> resourceActionPermissionsMap;
+        if (redisTemplate.hasKey(RESOURCE_PERMISSION_KEY)) {
+            Map<Object, Object> cacheMap = redisTemplate.opsForHash().entries(RESOURCE_PERMISSION_KEY);
+            resourceActionPermissionsMap = cacheMap.entrySet().stream()
+                    .collect(Collectors.toMap(e -> (String) e.getKey(), e -> (String) e.getValue()));
+        } else {
+            resourceActionPermissionsMap = resourcePermissionFeignClient.refreshResourcePermissions();
+        }
+
         List<String> authorities = resourceActionPermissionsMap.keySet().stream()
-                .filter(url -> pathMatcher.match((String) url, uri.getPath()))
+                .filter(url -> pathMatcher.match(url, uri.getPath()))
                 .map(resourceActionPermissionsMap::get)
                 .map(item -> AUTHORITY_PREFIX + item)
                 .collect(Collectors.toList());

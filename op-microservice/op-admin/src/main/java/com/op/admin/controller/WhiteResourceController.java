@@ -67,4 +67,10 @@ public class WhiteResourceController {
     public void changeEnabled(@Valid @RequestBody WhiteResourceChangeEnabledDTO changeEnabledDTO) {
         whiteResourceService.changeEnabled(changeEnabledDTO.getIds(), changeEnabledDTO.getEnable());
     }
+
+    @ApiOperation("获取白名单资源路径列表")
+    @PostMapping("getWhiteResourcePaths")
+    public List<String> getWhiteResourcePaths() {
+        return whiteResourceService.getWhiteResourcePaths();
+    }
 }

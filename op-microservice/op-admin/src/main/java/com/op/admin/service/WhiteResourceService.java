@@ -60,4 +60,11 @@ public interface WhiteResourceService {
      * @param enable 启用 or 禁用
      */
     void changeEnabled(List<Integer> ids, boolean enable);
+
+    /**
+     * 获取白名单资源路径列表
+     *
+     * @return 白名单资源路径列表
+     */
+    List<String> getWhiteResourcePaths();
 }

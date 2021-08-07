@@ -56,6 +56,7 @@ public class ResourceActionServiceImpl implements ResourceActionService {
     }
 
     @PostConstruct
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public Map<String, String> refreshResourcePathPermissions() {
         Map<String, String> results = new HashMap<>(64);

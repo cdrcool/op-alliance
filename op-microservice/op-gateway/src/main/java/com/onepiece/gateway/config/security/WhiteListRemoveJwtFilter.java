@@ -1,6 +1,7 @@
 package com.onepiece.gateway.config.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.onepiece.gateway.feignclient.WhiteResourceFeignClient;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
@@ -11,9 +12,9 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
+import static com.onepiece.gateway.config.security.AuthorizationManager.WHITE_RESOURCE_KEY;
 
 /**
  * 访问白名单路径时，需要移除 JWT 请求头
@@ -22,7 +23,13 @@ import java.util.Optional;
  */
 @Component
 public class WhiteListRemoveJwtFilter implements WebFilter {
-    private WhiteListConfig whiteListConfig;
+    private final RedisTemplate<String, Object> redisTemplate;
+    private final WhiteResourceFeignClient whiteResourceFeignClient;
+
+    public WhiteListRemoveJwtFilter(RedisTemplate<String, Object> redisTemplate, WhiteResourceFeignClient whiteResourceFeignClient) {
+        this.redisTemplate = redisTemplate;
+        this.whiteResourceFeignClient = whiteResourceFeignClient;
+    }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
@@ -31,18 +38,16 @@ public class WhiteListRemoveJwtFilter implements WebFilter {
 
         PathMatcher pathMatcher = new AntPathMatcher();
 
-        List<String> whiteList = Optional.ofNullable(whiteListConfig.getUrls()).orElse(new ArrayList<>());
-        if (whiteList.stream().anyMatch(pattern -> pathMatcher.match(pattern, uri.getPath()))) {
+        List<String> whiteResources = (List<String>) redisTemplate.opsForValue().get(WHITE_RESOURCE_KEY);
+        if (whiteResources == null) {
+            whiteResources = whiteResourceFeignClient.getWhiteResourcePaths();
+        }
+        if (whiteResources.stream().anyMatch(pattern -> pathMatcher.match(pattern, uri.getPath()))) {
             request = exchange.getRequest().mutate().header(AuthConstant.JWT_TOKEN_HEADER, "").build();
             exchange = exchange.mutate().request(request).build();
             return chain.filter(exchange);
         }
 
         return chain.filter(exchange);
-    }
-
-    @Autowired
-    public void setWhiteListConfig(WhiteListConfig whiteListConfig) {
-        this.whiteListConfig = whiteListConfig;
     }
 }
