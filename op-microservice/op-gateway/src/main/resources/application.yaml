@@ -29,8 +29,3 @@ spring:
           #          jwk-set-uri: 'http://localhost:8081/oauth2/jwks'
           jwk-set-uri: 'http://localhost:8081/.well-known/jwks.json'
   #          issuer-uri: 'http://localhost:8081'
-
-secure:
-  white-list:
-    urls:
-      - "/op-auth/auth/token"
