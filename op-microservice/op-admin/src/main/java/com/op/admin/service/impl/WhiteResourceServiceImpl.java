@@ -156,7 +156,7 @@ public class WhiteResourceServiceImpl implements WhiteResourceService {
         return findById(id);
     }
 
-    @Cacheable(key = "'resourcePaths'", sync = true)
+    @Cacheable(cacheNames = "whiteResourcePaths", key = "''", sync = true)
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<String> initWhiteResourcePaths() {

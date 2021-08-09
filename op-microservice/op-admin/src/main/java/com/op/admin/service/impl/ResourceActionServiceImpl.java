@@ -166,7 +166,7 @@ public class ResourceActionServiceImpl implements ResourceActionService {
         return actions.stream().map(ResourceAction::getPermission).collect(Collectors.toList());
     }
 
-    @Cacheable(value = "resource", key = "'resourcePathPermissions'", sync = true)
+    @Cacheable(cacheNames = "resourcePathPermissions", key = "''", sync = true)
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public Map<String, String> initResourcePathPermissions() {
