@@ -6,11 +6,9 @@ import {PageContainer} from "@ant-design/pro-layout";
 import ProList from '@ant-design/pro-list';
 import {ActionType} from "@ant-design/pro-table";
 import {ResourceCategory} from "../../../models/ResourceCategory";
-import {
-    deleteResourceCategories,
-    queryResourceCategoryPage,
-    refreshResourcePermissions
-} from "../../../services/resourceCategory";
+import {deleteResourceCategories, queryResourceCategoryPage} from "../../../services/resourceCategory";
+import {initResourcePathPermissions} from "../../../services/resourceAction";
+import {ExportOutlined} from "@ant-design/icons";
 
 const ResourceCategoryListPage: FC = () => {
     const history = useHistory();
@@ -46,8 +44,11 @@ const ResourceCategoryListPage: FC = () => {
                         <Button key="add" type="primary" onClick={() => history.push('/admin/resourceCategory/edit')}>
                             新建
                         </Button>,
-                        <Button key="refresh" onClick={() => refreshResourcePermissions().then(() => message.success("刷新资源权限关联成功"))}>
-                            刷新资源权限关联
+                        <Button key="button" icon={<ExportOutlined/>}>
+                            导出
+                        </Button>,
+                        <Button key="refresh" onClick={() => initResourcePathPermissions().then(() => message.success("初始化资源路径权限关联成功"))}>
+                            初始化资源路径权限关联
                         </Button>,
                     ];
                 }}

@@ -1,7 +1,5 @@
 package com.op.admin.service.impl;
 
-import com.github.pagehelper.PageHelper;
-import com.op.admin.dto.ResourceActionPageQueryDTO;
 import com.op.admin.dto.ResourceActionSaveDTO;
 import com.op.admin.dto.ResourcePathPermissionDto;
 import com.op.admin.entity.ResourceAction;
@@ -14,20 +12,15 @@ import com.op.admin.vo.ResourceActionAssignVO;
 import com.op.admin.vo.ResourceActionVO;
 import com.op.framework.web.common.api.response.ResultCode;
 import com.op.framework.web.common.api.response.exception.BusinessException;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
-import org.mybatis.dynamic.sql.select.SimpleSortSpecification;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -40,39 +33,13 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
  */
 @Service
 public class ResourceActionServiceImpl implements ResourceActionService {
-    /**
-     * 资源及相应权限缓存 key
-     */
-    private static final String RESOURCE_PERMISSION_KEY = "resource:permission";
 
     private final ResourceActionMapperExtend resourceActionMapper;
     private final ResourceActionMapping resourceActionMapping;
-    private final RedisTemplate<String, Object> redisTemplate;
 
-    public ResourceActionServiceImpl(ResourceActionMapperExtend resourceActionMapper, ResourceActionMapping resourceActionMapping, RedisTemplate<String, Object> redisTemplate) {
+    public ResourceActionServiceImpl(ResourceActionMapperExtend resourceActionMapper, ResourceActionMapping resourceActionMapping) {
         this.resourceActionMapper = resourceActionMapper;
         this.resourceActionMapping = resourceActionMapping;
-        this.redisTemplate = redisTemplate;
-    }
-
-    @PostConstruct
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
-    @Override
-    public Map<String, String> refreshResourcePathPermissions() {
-        Map<String, String> results = new HashMap<>(64);
-        List<ResourcePathPermissionDto> list = resourceActionMapper.queryPathPermissions();
-        list.forEach(item -> {
-            String actionPath = item.getActionPath();
-            if (StringUtils.isNotBlank(actionPath)) {
-                List<String> paths = Arrays.stream(actionPath.split(","))
-                        .map(path -> "/" + item.getServerName() + item.getResourcePath() + path)
-                        .collect(Collectors.toList());
-                results.putAll(paths.stream().collect(Collectors.toMap(path -> path, path -> item.getPermission())));
-            }
-        });
-        redisTemplate.delete(RESOURCE_PERMISSION_KEY);
-        redisTemplate.opsForHash().putAll(RESOURCE_PERMISSION_KEY, results);
-        return results;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -120,31 +87,22 @@ public class ResourceActionServiceImpl implements ResourceActionService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void deleteById(Integer id) {
-        resourceActionMapper.deleteByPrimaryKey(id);
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    @Override
     public void deleteByIds(List<Integer> ids) {
-        ids.forEach(this::deleteById);
+        if (CollectionUtils.isNotEmpty(ids)) {
+            DeleteStatementProvider deleteStatementProvider = deleteFrom(ResourceActionDynamicSqlSupport.resourceAction)
+                    .where(ResourceActionDynamicSqlSupport.id, isIn(ids))
+                    .build().render(RenderingStrategies.MYBATIS3);
+            resourceActionMapper.delete(deleteStatementProvider);
+        }
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void deleteByResourceId(Integer categoryId) {
+    public void deleteByResourceId(Integer resourceId) {
         DeleteStatementProvider deleteStatementProvider = deleteFrom(ResourceActionDynamicSqlSupport.resourceAction)
-                .where(ResourceActionDynamicSqlSupport.resourceId, isEqualTo(categoryId))
+                .where(ResourceActionDynamicSqlSupport.resourceId, isEqualTo(resourceId))
                 .build().render(RenderingStrategies.MYBATIS3);
         resourceActionMapper.delete(deleteStatementProvider);
-    }
-
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
-    @Override
-    public ResourceActionVO findById(Integer id) {
-        ResourceAction resource = resourceActionMapper.selectByPrimaryKey(id)
-                .orElseThrow(() -> new BusinessException(ResultCode.PARAM_VALID_ERROR, "找不到id为【" + id + "】的资源动作"));
-        return resourceActionMapping.toResourceActionVO(resource);
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -185,34 +143,6 @@ public class ResourceActionServiceImpl implements ResourceActionService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public Page<ResourceActionVO> queryPage(Pageable pageable, ResourceActionPageQueryDTO queryDTO) {
-        SortSpecification[] specifications = pageable.getSort().stream()
-                .map(order -> {
-                    SortSpecification specification = SimpleSortSpecification.of(order.getProperty());
-                    if (order.isDescending()) {
-                        return specification.descending();
-                    }
-                    return specification;
-                }).toArray(SortSpecification[]::new);
-
-        SelectStatementProvider selectStatementProvider = select(ResourceActionMapper.selectList)
-                .from(ResourceActionDynamicSqlSupport.resourceAction)
-                .where(ResourceActionDynamicSqlSupport.actionName, isLike(queryDTO.getKeyword())
-                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"),
-                        or(ResourceActionDynamicSqlSupport.actionPath, isLike(queryDTO.getKeyword())
-                                .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%")))
-                .orderBy(specifications)
-                .build().render(RenderingStrategies.MYBATIS3);
-
-        com.github.pagehelper.Page<ResourceAction> result = PageHelper
-                .startPage(pageable.getPageNumber() + 1, pageable.getPageSize())
-                .doSelectPage(() -> resourceActionMapper.selectMany(selectStatementProvider));
-
-        return new PageImpl<>(resourceActionMapping.toResourceActionVOList(result.getResult()), pageable, result.getTotal());
-    }
-
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
-    @Override
     public Map<Integer, List<ResourceActionAssignVO>> findAllForAssign() {
         SelectStatementProvider selectStatementProvider =
                 select(ResourceActionDynamicSqlSupport.id, ResourceActionDynamicSqlSupport.resourceId, ResourceActionDynamicSqlSupport.actionName)
@@ -234,5 +164,23 @@ public class ResourceActionServiceImpl implements ResourceActionService {
                         .build().render(RenderingStrategies.MYBATIS3);
         List<ResourceAction> actions = resourceActionMapper.selectMany(selectStatementProvider);
         return actions.stream().map(ResourceAction::getPermission).collect(Collectors.toList());
+    }
+
+    @Cacheable(value = "resource", key = "'resourcePathPermissions'", sync = true)
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Override
+    public Map<String, String> initResourcePathPermissions() {
+        Map<String, String> results = new HashMap<>(64);
+        List<ResourcePathPermissionDto> list = resourceActionMapper.queryPathPermissions();
+        list.forEach(item -> {
+            String actionPath = item.getActionPath();
+            if (StringUtils.isNotBlank(actionPath)) {
+                List<String> paths = Arrays.stream(actionPath.split(","))
+                        .map(path -> "/" + item.getServerName() + item.getResourcePath() + path)
+                        .collect(Collectors.toList());
+                results.putAll(paths.stream().collect(Collectors.toMap(path -> path, path -> item.getPermission())));
+            }
+        });
+        return results;
     }
 }

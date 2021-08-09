@@ -1,13 +1,18 @@
 import React, {FC, useRef} from "react";
 import {useHistory} from "react-router-dom";
-import {Button, Dropdown, Menu, Popconfirm, Space} from "antd";
+import {Button, Dropdown, Menu, message, Popconfirm, Space} from "antd";
 import {ExportOutlined, MinusOutlined, PlusOutlined} from "@ant-design/icons";
 import {PageContainer} from "@ant-design/pro-layout";
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable, {TableDropdown} from '@ant-design/pro-table';
 import {Role} from "../../../models/Role";
 import {WhiteResource} from "../../../models/WhiteResource";
-import {changeWhiteResourcesEnabled, queryWhiteResourcePage} from "../../../services/whiteResource";
+import {
+    changeWhiteResourcesEnabled,
+    deleteWhiteResources, initWhiteResourcePaths,
+    queryWhiteResourcePage
+} from "../../../services/whiteResource";
+import {initResourcePathPermissions} from "../../../services/resourceAction";
 
 const WhiteResourceListPage: FC = () => {
     const history = useHistory();
@@ -102,6 +107,9 @@ const WhiteResourceListPage: FC = () => {
                     </Button>,
                     <Button key="button" icon={<ExportOutlined/>}>
                         导出
+                    </Button>,
+                    <Button key="refresh" onClick={() => initWhiteResourcePaths().then(() => message.success("初始化白名单资源列表成功"))}>
+                        初始化白名单资源列表
                     </Button>,
                 ]}
                 tableAlertOptionRender={({selectedRowKeys}) => {

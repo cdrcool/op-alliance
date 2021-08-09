@@ -41,7 +41,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
  *
  * @author cdrcool
  */
-@CacheConfig(cacheNames = "menus")
+@CacheConfig(cacheNames = "menu")
 @Service
 public class MenuServiceImpl implements MenuService {
     private final MenuMapper menuMapper;
@@ -96,7 +96,7 @@ public class MenuServiceImpl implements MenuService {
         }
     }
 
-    @CacheEvict(allEntries = true, beforeInvocation = true)
+    @CacheEvict(key = "#id", beforeInvocation = true)
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteById(Integer id) {
@@ -119,13 +119,6 @@ public class MenuServiceImpl implements MenuService {
     private List<Integer> findChildrenIds(Integer id) {
         List<Menu> menus = menuMapper.select(SelectDSLCompleter.allRows());
         return TreeUtils.getDescendantIds(menus, Menu::getPid, Menu::getId, id);
-    }
-
-    @CacheEvict(allEntries = true, beforeInvocation = true)
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public void deleteByIds(List<Integer> ids) {
-        ids.forEach(this::deleteById);
     }
 
     @Cacheable(key = "#id", sync = true)
@@ -191,6 +184,7 @@ public class MenuServiceImpl implements MenuService {
         return menuMapping.toMenuVOList(menus);
     }
 
+    @CachePut(key = "#id")
     @Transactional(rollbackFor = Exception.class)
     @Override
     public MenuVO changeVisibility(Integer id, boolean show) {
@@ -203,18 +197,6 @@ public class MenuServiceImpl implements MenuService {
         menuMapper.update(updateStatement);
 
         return findById(id);
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public void changeVisibility(List<Integer> ids, boolean show) {
-        UpdateStatementProvider updateStatement = SqlBuilder.update(MenuDynamicSqlSupport.menu)
-                .set(MenuDynamicSqlSupport.isShow).equalTo(show)
-                .where(MenuDynamicSqlSupport.id, isIn(ids))
-                .build()
-                .render(RenderingStrategies.MYBATIS3);
-
-        menuMapper.update(updateStatement);
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)

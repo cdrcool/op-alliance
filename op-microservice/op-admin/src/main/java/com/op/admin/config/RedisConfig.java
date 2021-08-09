@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -26,6 +27,8 @@ import java.time.Duration;
  */
 @Configuration
 public class RedisConfig {
+    @Value("${spring.application.name}")
+    private String appName;
 
     @Bean
     public RedisSerializer<Object> redisSerializer() {
@@ -59,6 +62,7 @@ public class RedisConfig {
                                                RedisSerializer<Object> serializer) {
         RedisCacheWriter redisCacheWriter = RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory);
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
+                .prefixCacheNameWith(appName + "::")
                 .entryTtl(Duration.ofHours(2))
                 .disableCachingNullValues()
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(serializer));

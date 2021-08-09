@@ -37,11 +37,11 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
     /**
      * 白名单资源缓存 key
      */
-    public static final String WHITE_RESOURCE_KEY = "white:resource";
+    public static final String WHITE_RESOURCE_KEY = "op-admin::whiteResource::resourcePaths";
     /**
-     * 资源及相应权限缓存 key
+     * 资源路径及相应权限缓存 key
      */
-    private static final String RESOURCE_PERMISSION_KEY = "resource:permission";
+    private static final String RESOURCE_PERMISSION_KEY = "op-admin::resource::resourcePathPermissions";
 
     private final RedisTemplate<String, Object> redisTemplate;
     private final WhiteResourceFeignClient whiteResourceFeignClient;
@@ -64,9 +64,9 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
 
         // 白名单路径直接放行
         List<String> whiteResources = (List<String>) redisTemplate.opsForValue().get(WHITE_RESOURCE_KEY);
-        if (whiteResources == null) {
-            whiteResources = whiteResourceFeignClient.getWhiteResourcePaths();
-        }
+//        if (whiteResources == null) {
+//            whiteResources = whiteResourceFeignClient.getWhiteResourcePaths();
+//        }
         if (!CollectionUtils.isEmpty(whiteResources) && whiteResources.stream()
                 .anyMatch(pattern -> pathMatcher.match(pattern, uri.getPath()))) {
             return Mono.just(new AuthorizationDecision(true));
@@ -78,14 +78,10 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
         }
 
         // 从缓存中获取资源动作及其所需的权限
-        Map<String, String> resourceActionPermissionsMap;
-        if (redisTemplate.hasKey(RESOURCE_PERMISSION_KEY)) {
-            Map<Object, Object> cacheMap = redisTemplate.opsForHash().entries(RESOURCE_PERMISSION_KEY);
-            resourceActionPermissionsMap = cacheMap.entrySet().stream()
-                    .collect(Collectors.toMap(e -> (String) e.getKey(), e -> (String) e.getValue()));
-        } else {
-            resourceActionPermissionsMap = resourcePermissionFeignClient.refreshResourcePermissions();
-        }
+        Map<String, String> resourceActionPermissionsMap =  (Map<String, String>) redisTemplate.opsForValue().get(RESOURCE_PERMISSION_KEY);
+//        if (resourceActionPermissionsMap == null) {
+//            resourceActionPermissionsMap = resourcePermissionFeignClient.refreshResourcePermissions();
+//        }
 
         List<String> authorities = resourceActionPermissionsMap.keySet().stream()
                 .filter(url -> pathMatcher.match(url, uri.getPath()))

@@ -19,7 +19,6 @@ import com.op.framework.web.common.api.response.exception.BusinessException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.SortSpecification;
-import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SimpleSortSpecification;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -134,10 +133,13 @@ public class ResourceServiceImpl implements ResourceService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteByCategoryId(Integer categoryId) {
-        DeleteStatementProvider deleteStatementProvider = deleteFrom(ResourceDynamicSqlSupport.resource)
+        SelectStatementProvider selectStatementProvider = select(ResourceDynamicSqlSupport.id)
+                .from(ResourceDynamicSqlSupport.resource)
                 .where(ResourceDynamicSqlSupport.categoryId, isEqualTo(categoryId))
                 .build().render(RenderingStrategies.MYBATIS3);
-        resourceMapper.delete(deleteStatementProvider);
+        List<Integer> ids = resourceMapper.selectMany(selectStatementProvider).stream()
+                .map(Resource::getId).collect(Collectors.toList());
+        deleteByIds(ids);
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -196,7 +198,7 @@ public class ResourceServiceImpl implements ResourceService {
                 .build().render(RenderingStrategies.MYBATIS3);
         List<Resource> resources = resourceMapper.selectMany(selectStatementProvider);
 
-        Map<Integer, List<String>> result = new HashMap<>();
+        Map<Integer, List<String>> result = new HashMap<>(16);
         resources.forEach(resource -> {
             Integer categoryId = resource.getCategoryId();
             List<String> resourceNames = result.getOrDefault(categoryId, new ArrayList<>());

@@ -58,3 +58,11 @@ export async function queryWhiteResourcePage(page: number, size: number, params:
 export async function changeWhiteResourcesEnabled(ids: number[], enable: boolean) {
     return request.post('/api/op-admin/whiteResource/changeEnabled', {ids, enable});
 }
+
+/**
+ * 初始化白名单资源路径列表
+ *
+ */
+export async function initWhiteResourcePaths() {
+    return request.post('/api/op-admin/whiteResource/initWhiteResourcePaths');
+}

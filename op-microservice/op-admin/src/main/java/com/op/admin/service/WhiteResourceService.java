@@ -19,8 +19,9 @@ public interface WhiteResourceService {
      * 保存白名单资源
      *
      * @param saveDTO 白名单资源保存 dto
+     * @return 白名单资源 vo
      */
-    void save(WhiteResourceSaveDTO saveDTO);
+    WhiteResourceVO save(WhiteResourceSaveDTO saveDTO);
 
     /**
      * 删除白名单资源
@@ -28,13 +29,6 @@ public interface WhiteResourceService {
      * @param id 白名单资源 id
      */
     void deleteById(Integer id);
-
-    /**
-     * 批量删除白名单资源
-     *
-     * @param ids 白名单资源 id
-     */
-    void deleteByIds(List<Integer> ids);
 
     /**
      * 查找白名单资源
@@ -56,15 +50,16 @@ public interface WhiteResourceService {
     /**
      * 启用/禁用白名单资源
      *
-     * @param ids    白名单资源 ids
+     * @param id     菜单 id
      * @param enable 启用 or 禁用
+     * @return 白名单资源 vo
      */
-    void changeEnabled(List<Integer> ids, boolean enable);
+    WhiteResourceVO changeEnabled(Integer id, boolean enable);
 
     /**
-     * 获取白名单资源路径列表
+     * 初始化白名单资源路径列表
      *
      * @return 白名单资源路径列表
      */
-    List<String> getWhiteResourcePaths();
+    List<String> initWhiteResourcePaths();
 }

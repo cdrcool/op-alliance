@@ -46,7 +46,7 @@ public class WhiteResourceController {
     @ApiOperation("批量删除白名单资源")
     @PostMapping("batchDelete")
     public void batchDelete(@RequestBody List<Integer> ids) {
-        whiteResourceService.deleteByIds(ids);
+        ids.forEach(whiteResourceService::deleteById);
     }
 
     @ApiOperation("查看白名单资源详情")
@@ -65,12 +65,12 @@ public class WhiteResourceController {
     @ApiOperation("启用/禁用角色")
     @PostMapping("changeEnabled")
     public void changeEnabled(@Valid @RequestBody WhiteResourceChangeEnabledDTO changeEnabledDTO) {
-        whiteResourceService.changeEnabled(changeEnabledDTO.getIds(), changeEnabledDTO.getEnable());
+        changeEnabledDTO.getIds().forEach(id -> whiteResourceService.changeEnabled(id, changeEnabledDTO.getEnable()));
     }
 
-    @ApiOperation("获取白名单资源路径列表")
-    @PostMapping("getWhiteResourcePaths")
-    public List<String> getWhiteResourcePaths() {
-        return whiteResourceService.getWhiteResourcePaths();
+    @ApiOperation("初始化白名单资源路径列表")
+    @PostMapping("initWhiteResourcePaths")
+    public List<String> initWhiteResourcePaths() {
+        return whiteResourceService.initWhiteResourcePaths();
     }
 }
