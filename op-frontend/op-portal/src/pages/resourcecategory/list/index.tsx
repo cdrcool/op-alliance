@@ -2,13 +2,14 @@ import React, {FC, useRef} from 'react';
 import {useHistory} from "react-router-dom";
 import {Button, message, Popconfirm, Tag} from 'antd';
 import * as Icon from "@ant-design/icons";
+import {ExportOutlined} from "@ant-design/icons";
 import {PageContainer} from "@ant-design/pro-layout";
 import ProList from '@ant-design/pro-list';
 import {ActionType} from "@ant-design/pro-table";
 import {ResourceCategory} from "../../../models/ResourceCategory";
 import {deleteResourceCategories, queryResourceCategoryPage} from "../../../services/resourceCategory";
 import {initResourcePathPermissions} from "../../../services/resourceAction";
-import {ExportOutlined} from "@ant-design/icons";
+import Authority from "../../../components/Authority";
 
 const ResourceCategoryListPage: FC = () => {
     const history = useHistory();
@@ -41,15 +42,23 @@ const ResourceCategoryListPage: FC = () => {
                 }}
                 toolBarRender={() => {
                     return [
-                        <Button key="add" type="primary" onClick={() => history.push('/admin/resourceCategory/edit')}>
-                            新建
-                        </Button>,
-                        <Button key="button" icon={<ExportOutlined/>}>
-                            导出
-                        </Button>,
-                        <Button key="refresh" onClick={() => initResourcePathPermissions().then(() => message.success("初始化资源路径权限关联成功"))}>
-                            初始化资源路径权限关联
-                        </Button>,
+                        <Authority value="resource_category_save">
+                            <Button key="add" type="primary"
+                                    onClick={() => history.push('/admin/resourceCategory/edit')}>
+                                新建
+                            </Button>
+                        </Authority>,
+                        <Authority value="resource_category_export">
+                            <Button key="button" icon={<ExportOutlined/>}>
+                                导出
+                            </Button>
+                        </Authority>,
+                        <Authority value="resource_category_save">
+                            <Button key="refresh"
+                                    onClick={() => initResourcePathPermissions().then(() => message.success("初始化资源路径权限关联成功"))}>
+                                初始化资源路径权限关联
+                            </Button>
+                        </Authority>,
                     ];
                 }}
                 metas={{
@@ -89,16 +98,22 @@ const ResourceCategoryListPage: FC = () => {
                     type: {},
                     actions: {
                         render: (text, row) => [
-                            <a onClick={() => history.push(`/admin/resourceCategory/edit/${row.id}`)}>编辑</a>,
-                            <Popconfirm
-                                title="确定要删除吗？"
-                                okText="确定"
-                                cancelText="取消"
-                                onConfirm={() => onDeleteResourceCategory([row.id] as number[])}
-                            >
-                                <a>删除</a>
-                            </Popconfirm>,
-                            <a onClick={() => history.push(`/admin/resourceCategory/detail/${row.id}`)}>查看</a>,
+                            <Authority value="resource_category_save">
+                                <a onClick={() => history.push(`/admin/resourceCategory/edit/${row.id}`)}>编辑</a>
+                            </Authority>,
+                            <Authority value="resource_category_delete">
+                                <Popconfirm
+                                    title="确定要删除吗？"
+                                    okText="确定"
+                                    cancelText="取消"
+                                    onConfirm={() => onDeleteResourceCategory([row.id] as number[])}
+                                >
+                                    <a>删除</a>
+                                </Popconfirm>
+                            </Authority>,
+                            <Authority value="resource_category_view">
+                                <a onClick={() => history.push(`/admin/resourceCategory/detail/${row.id}`)}>查看</a>
+                            </Authority>,
                         ],
                     },
                     content: {

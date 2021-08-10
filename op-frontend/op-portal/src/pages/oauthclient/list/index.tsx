@@ -4,15 +4,13 @@ import {Button, message, Popconfirm, Space} from "antd";
 import {ExportOutlined, MinusOutlined, PlusOutlined} from "@ant-design/icons";
 import {PageContainer} from "@ant-design/pro-layout";
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
-import ProTable, {TableDropdown} from '@ant-design/pro-table';
+import ProTable from '@ant-design/pro-table';
 import {ModalForm, ProFormText,} from '@ant-design/pro-form';
 import {Role} from "../../../models/Role";
-import {
-    changeOauthClientSecret,
-    deleteOauthClients,
-    queryOauthClientPage
-} from "../../../services/oauthclient";
+import {changeOauthClientSecret, deleteOauthClients, queryOauthClientPage} from "../../../services/oauthclient";
 import {OauthClient} from "../../../models/OauthClient";
+import Authority from "../../../components/Authority";
+import AuthTableDropDown from "../../../components/AuthTableDropdown";
 
 const OauthClientListPage: FC = () => {
     const history = useHistory();
@@ -61,26 +59,34 @@ const OauthClientListPage: FC = () => {
             title: '操作',
             valueType: 'option',
             render: (text, record, _, action) => [
-                <a key="edit" onClick={() => history.push(`/admin/oauthClient/edit/${record.id}`)}>
-                    编辑
-                </a>,
-                <Popconfirm
-                    title="确定要删除吗？"
-                    okText="确定"
-                    cancelText="取消"
-                    onConfirm={() => onDeleteOauthClients([record.id] as number[])}
-                >
-                    <a key="delete">
-                        删除
+                <Authority value="oauth_client_save">
+                    <a key="edit" onClick={() => history.push(`/admin/oauthClient/edit/${record.id}`)}>
+                        编辑
                     </a>
-                </Popconfirm>,
-                <a key="view" onClick={() => history.push(`/admin/oauthClient/detail/${record.id}`)}>
-                    查看
-                </a>,
-                <TableDropdown
+                </Authority>,
+                <Authority value="oauth_client_delete">
+                    <Popconfirm
+                        title="确定要删除吗？"
+                        okText="确定"
+                        cancelText="取消"
+                        onConfirm={() => onDeleteOauthClients([record.id] as number[])}
+                    >
+                        <a key="delete">
+                            删除
+                        </a>
+                    </Popconfirm>
+                </Authority>,
+                <Authority value="oauth_client_view">
+                    <a key="view" onClick={() => history.push(`/admin/oauthClient/detail/${record.id}`)}>
+                        查看
+                    </a>
+                </Authority>,
+                <AuthTableDropDown
                     key="actions"
                     menus={[
                         {
+                            // @ts-ignore
+                            authority: 'oauth_client_save',
                             key: 'resetClientSecret',
                             name: '重置客户端秘钥',
                             onClick: () => {
@@ -110,27 +116,33 @@ const OauthClientListPage: FC = () => {
                     fullScreen: true,
                 }}
                 toolBarRender={() => [
-                    <Button key="button" type="primary" icon={<PlusOutlined/>}
-                            onClick={() => history.push('/admin/oauthClient/edit')}>
-                        新建
-                    </Button>,
-                    <Button key="button" icon={<ExportOutlined/>}>
-                        导出
-                    </Button>,
+                    <Authority value="oauth_client_save">
+                        <Button key="button" type="primary" icon={<PlusOutlined/>}
+                                onClick={() => history.push('/admin/oauthClient/edit')}>
+                            新建
+                        </Button>
+                    </Authority>,
+                    <Authority value="oauth_client_export">
+                        <Button key="button" icon={<ExportOutlined/>}>
+                            导出
+                        </Button>
+                    </Authority>,
                 ]}
                 tableAlertOptionRender={({selectedRowKeys}) => {
                     return (
                         <Space>
-                            <Popconfirm
-                                title="确定要删除吗？"
-                                okText="确定"
-                                cancelText="取消"
-                                onConfirm={() => onDeleteOauthClients(selectedRowKeys as number[])}
-                            >
-                                <Button key="batchDelete" icon={<MinusOutlined/>}>
-                                    批量删除
-                                </Button>
-                            </Popconfirm>
+                            <Authority value="oauth_client_delete">
+                                <Popconfirm
+                                    title="确定要删除吗？"
+                                    okText="确定"
+                                    cancelText="取消"
+                                    onConfirm={() => onDeleteOauthClients(selectedRowKeys as number[])}
+                                >
+                                    <Button key="batchDelete" icon={<MinusOutlined/>}>
+                                        批量删除
+                                    </Button>
+                                </Popconfirm>
+                            </Authority>
                         </Space>
                     );
                 }}
@@ -172,8 +184,10 @@ const OauthClientListPage: FC = () => {
                     return true;
                 }}
             >
-                <ProFormText.Password name="secret" label="客户端秘钥" placeholder="请输入客户端秘钥" rules={[{required: true, message: '请输入客户端秘钥'}]}/>
-                <ProFormText.Password name="confirmSecret" label="客户端秘钥确认" placeholder="请再次输入客户端秘钥" rules={[{required: true, message: '请再次输入客户端秘钥'}]}/>
+                <ProFormText.Password name="secret" label="客户端秘钥" placeholder="请输入客户端秘钥"
+                                      rules={[{required: true, message: '请输入客户端秘钥'}]}/>
+                <ProFormText.Password name="confirmSecret" label="客户端秘钥确认" placeholder="请再次输入客户端秘钥"
+                                      rules={[{required: true, message: '请再次输入客户端秘钥'}]}/>
             </ModalForm>
         </PageContainer>
     )
