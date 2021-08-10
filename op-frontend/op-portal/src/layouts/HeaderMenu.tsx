@@ -1,13 +1,12 @@
+import React, {FC, useContext, useState} from "react";
+import {Link, useHistory} from "react-router-dom";
 import {AutoComplete, Avatar, Badge, Input, Menu, Popover, Tooltip} from "antd";
 import {BellOutlined, BookOutlined, SearchOutlined} from "@ant-design/icons";
 import Notice from "./Notice";
 import avatar from "../assets/avatar.png";
-import {Link, useHistory} from "react-router-dom";
-import React, {FC, useContext, useState} from "react";
-
-import "./HeaderMenu.css";
 import userContext from "../context/userContext";
-import {queryMenuList} from "../services/menu";
+import {queryUserMenuList} from "../services/menu";
+import "./HeaderMenu.css";
 
 const {SubMenu} = Menu;
 
@@ -28,7 +27,7 @@ const HeaderMenu: FC = () => {
             return;
         }
 
-        const menus = await queryMenuList(keyword);
+        const menus = await queryUserMenuList(keyword);
         setMenuOptions(menus.map(menu => {
             return {
                 label: menu.menuName as string,

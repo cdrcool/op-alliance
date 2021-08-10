@@ -57,12 +57,12 @@ export async function queryMenuTreeList(params?: object): Promise<Menus[]> {
 }
 
 /**
- * 查询菜单列表
+ * 查询用户菜单列表
  *
  * @param keyword 关键字
  */
-export async function queryMenuList(keyword: string): Promise<Menus[]> {
-    return request.get(`/api/op-admin/menu/queryList?keyword=${keyword}`);
+export async function queryUserMenuList(keyword: string): Promise<Menus[]> {
+    return request.get(`/api/op-admin/menu/queryUserList?keyword=${keyword}`);
 }
 
 /**
