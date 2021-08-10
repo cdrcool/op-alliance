@@ -53,7 +53,7 @@ public class MenuController {
         return menuService.findById(id);
     }
 
-    @ApiOperation("查询用户菜单树列表")
+    @ApiOperation("查询当前用户的菜单树列表")
     @GetMapping("queryUserTreeList")
     public List<MenuTreeVO> queryUserTreeList() {
         return menuService.queryUserTreeList();
@@ -65,10 +65,10 @@ public class MenuController {
         return menuService.queryTreeList(queryDTO);
     }
 
-    @ApiOperation("查询菜单列表")
-    @GetMapping("queryList")
-    public List<MenuVO> queryList(@RequestParam String keyword) {
-        return menuService.queryList(keyword);
+    @ApiOperation("查询当前用户的菜单列表")
+    @GetMapping("queryUserList")
+    public List<MenuVO> queryUserList(@RequestParam String keyword) {
+        return menuService.queryUserList(keyword);
     }
 
     @ApiOperation("显示/隐藏菜单")

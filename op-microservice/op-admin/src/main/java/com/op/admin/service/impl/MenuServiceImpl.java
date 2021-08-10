@@ -174,10 +174,13 @@ public class MenuServiceImpl implements MenuService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
-    public List<MenuVO> queryList(String keyword) {
+    public List<MenuVO> queryUserList(String keyword) {
+        List<String> authorities = SecurityContextHolder.getContext().getAuthorities();
+
         SelectStatementProvider selectStatementProvider = SqlBuilder.select(MenuMapper.selectList)
                 .from(MenuDynamicSqlSupport.menu)
                 .where(MenuDynamicSqlSupport.menuName, isLike(keyword).map(v -> "%" + v + "%"))
+                .and(MenuDynamicSqlSupport.permission, isIn(authorities))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
         List<Menu> menus = menuMapper.selectMany(selectStatementProvider);

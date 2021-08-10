@@ -54,12 +54,12 @@ public interface MenuService {
     List<MenuTreeVO> queryTreeList(MenuTreeListQueryDTO queryDTO);
 
     /**
-     * 查询菜单列表
+     * 查询当前用户的菜单列表
      *
      * @param keyword 关键字
      * @return 菜单 vo 列表
      */
-    List<MenuVO> queryList(String keyword);
+    List<MenuVO> queryUserList(String keyword);
 
     /**
      * 显示/隐藏菜单
