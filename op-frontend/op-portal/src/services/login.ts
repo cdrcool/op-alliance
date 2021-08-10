@@ -1,5 +1,6 @@
 import request from "../utils/request";
 import {OauthToken} from "../models/OauthToken";
+import {UserInfo} from "../models/UserInfo";
 
 /**
  * 登录参数
@@ -25,6 +26,6 @@ export async function login(loginParams: LoginParams): Promise<OauthToken> {
 /**
  * 用户登录
  */
-export async function getCurrentUser() {
+export async function getCurrentUser(): Promise<UserInfo> {
     return request.get('/api/oauth/userInfo');
 }

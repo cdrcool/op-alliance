@@ -1,6 +1,11 @@
 import React from "react";
-import {User} from "../models/User";
+import {UserInfo} from "../models/UserInfo";
 
-const userContext = React.createContext<{name: string}>({name: ''});
+interface Context {
+    state: UserInfo,
+    dispatch: any,
+}
+
+const userContext = React.createContext<Context>({state: {}, dispatch: null});
 
 export default userContext;

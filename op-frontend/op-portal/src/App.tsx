@@ -1,18 +1,40 @@
-import React from 'react';
+import React, {useReducer} from 'react';
 import {BrowserRouter} from 'react-router-dom';
 import {renderRoutes} from 'react-router-config';
 import {ConfigProvider} from 'antd';
 import 'moment/locale/zh-cn';
 import locale from 'antd/lib/locale/zh_CN';
 import routes from './router';
+import {UserInfo} from "./models/UserInfo";
+import userContext from './context/userContext';
+
+const initialState: UserInfo = {
+    name: '',
+    authorities: [],
+};
+
+const loginReducer = (state: UserInfo, action: { type: 'loginSuccess', payload: any }) => {
+    switch (action.type) {
+        case 'loginSuccess':
+            return {...state, ...action.payload}
+        default:
+            return state;
+    }
+};
 
 const App = () => {
+    const [state, dispatch] = useReducer(loginReducer, initialState);
+
     return (
-        // 全局化配置（https://ant.design/components/config-provider-cn/#header）
         <ConfigProvider locale={locale}>
-            <BrowserRouter>
-                {renderRoutes(routes)}
-            </BrowserRouter>
+            <userContext.Provider value={{
+                state,
+                dispatch
+            }}>
+                <BrowserRouter>
+                    {renderRoutes(routes)}
+                </BrowserRouter>
+            </userContext.Provider>
         </ConfigProvider>
     )
 }

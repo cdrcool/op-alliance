@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useContext, useState} from 'react';
 import {useHistory} from "react-router-dom";
 import {Helmet} from 'react-helmet';
 import {message, Space, Tabs} from 'antd';
@@ -13,14 +13,17 @@ import {
 } from '@ant-design/icons';
 import {DefaultFooter} from '@ant-design/pro-layout';
 import ProForm, {ProFormCaptcha, ProFormCheckbox, ProFormText} from '@ant-design/pro-form';
-import {login, LoginParams} from "../../services/login";
+import {getCurrentUser, login, LoginParams} from "../../services/login";
 import logo from "../../assets/logo.svg";
 
 import "./index.css";
+import userContext from "../../context/userContext";
 
 const {TabPane} = Tabs;
 
 const LoginPage: FC = () => {
+    const {dispatch} = useContext(userContext);
+
     const history = useHistory();
 
     const [type, setType] = useState<string>('account');
@@ -36,6 +39,13 @@ const LoginPage: FC = () => {
             localStorage.setItem('refreshToken', refreshToken);
             localStorage.setItem('expiresIn', expiresIn + '');
             setSubmitting(false);
+
+            const userInfo = await getCurrentUser();
+            if (!userInfo) {
+                history.push('/login');
+            }
+            dispatch({type: 'loginSuccess', payload: userInfo});
+
             history.push('/');
         } catch (error) {
             setSubmitting(false);
@@ -52,7 +62,7 @@ const LoginPage: FC = () => {
                         <span className="title">One Piece</span>
                     </div>
                     <div className="desc">
-                        微服务标准实现
+                        集成各主流开源框架，构建微服务标准实现
                     </div>
                 </div>
                 <div className="main">

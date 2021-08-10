@@ -9,11 +9,8 @@ import {Link, useHistory, useLocation} from "react-router-dom";
 import {renderRoutes} from "react-router-config";
 import defaultSettings from "./defaultSettings";
 import HeaderMenu from "./HeaderMenu";
-import {queryMenuTreeList, queryUserMenuTreeList} from "../services/menu";
+import {queryUserMenuTreeList} from "../services/menu";
 import {Menus} from "../models/Menus";
-import userContext from "../context/userContext";
-import {getCurrentUser} from "../services/login";
-import {User} from "../models/User";
 
 const DefaultLayout: FC = (props) => {
     const history = useHistory();
@@ -22,7 +19,6 @@ const DefaultLayout: FC = (props) => {
     const location = useLocation();
 
     const [collapsed, setCollapsed] = useState<boolean>(false);
-    const [user, setUser] = useState<User>({});
 
     const convertToAntdMenu = (menus: Menus[]): MenuDataItem[] => {
         return menus && menus.map(item => {
@@ -47,89 +43,75 @@ const DefaultLayout: FC = (props) => {
         if (!accessToken) {
             history.push('/login');
         }
-
-        const fetchData = async () => {
-            const user = await getCurrentUser();
-            if (!user) {
-                history.push('/login');
-            }
-            setUser(user || {});
-        }
-
-        fetchData().then(() => {
-        });
     }, []);
 
     return (
-        //@ts-ignore
-        <userContext.Provider value={user}>
-            <div id="default-layout">
-                <ProLayout
-                    logo={logo}
-                    location={{
-                        pathname: location.pathname,
-                    }}
-                    menu={{
-                        request: async () => {
-                            const result = await queryUserMenuTreeList();
-                            return convertToAntdMenu(result);
-                        }
-                    }}
-                    headerContentRender={() => {
-                        return (
-                            <div
-                                onClick={() => setCollapsed(!collapsed)}
-                                style={{
-                                    cursor: 'pointer',
-                                    fontSize: '16px',
-                                }}
-                            >
-                                {collapsed ? <MenuUnfoldOutlined/> : <MenuFoldOutlined/>}
-                            </div>
-                        );
-                    }}
-                    collapsed={collapsed}
-                    onCollapse={setCollapsed}
-                    collapsedButtonRender={false}
-                    menuHeaderRender={(logo, title) => (
+        <div id="default-layout">
+            <ProLayout
+                logo={logo}
+                location={{
+                    pathname: location.pathname,
+                }}
+                menu={{
+                    request: async () => {
+                        const result = await queryUserMenuTreeList();
+                        return convertToAntdMenu(result);
+                    }
+                }}
+                headerContentRender={() => {
+                    return (
                         <div
-                            onClick={() => {
-                                window.open('https://remaxjs.org/');
+                            onClick={() => setCollapsed(!collapsed)}
+                            style={{
+                                cursor: 'pointer',
+                                fontSize: '16px',
                             }}
                         >
-                            {logo}
-                            {title}
+                            {collapsed ? <MenuUnfoldOutlined/> : <MenuFoldOutlined/>}
                         </div>
-                    )}
-                    onMenuHeaderClick={(e) => console.log(e)}
-                    menuItemRender={
-                        (menuDataItem, dom) => {
-                            if (!menuDataItem.path) {
-                                return dom;
-                            }
-                            return <Link to={menuDataItem.path}>{dom}</Link>;
+                    );
+                }}
+                collapsed={collapsed}
+                onCollapse={setCollapsed}
+                collapsedButtonRender={false}
+                menuHeaderRender={(logo, title) => (
+                    <div
+                        onClick={() => {
+                            window.open('https://remaxjs.org/');
+                        }}
+                    >
+                        {logo}
+                        {title}
+                    </div>
+                )}
+                onMenuHeaderClick={(e) => console.log(e)}
+                menuItemRender={
+                    (menuDataItem, dom) => {
+                        if (!menuDataItem.path) {
+                            return dom;
                         }
+                        return <Link to={menuDataItem.path}>{dom}</Link>;
                     }
-                    rightContentRender={() => <HeaderMenu/>}
-                    {...settings}
-                >
-                    {
-                        // @ts-ignore
-                        renderRoutes(props.route.routes)
-                    }
+                }
+                rightContentRender={() => <HeaderMenu/>}
+                {...settings}
+            >
+                {
+                    // @ts-ignore
+                    renderRoutes(props.route.routes)
+                }
 
-                </ProLayout>
-                <SettingDrawer
-                    pathname={location.pathname}
-                    getContainer={() => document.getElementById('default-layout')}
-                    settings={settings}
-                    onSettingChange={(changeSetting) => {
-                        setSetting(changeSetting);
-                    }}
-                    disableUrlParams
-                />
-            </div>
-        </userContext.Provider>
+            </ProLayout>
+            <SettingDrawer
+                pathname={location.pathname}
+                getContainer={() => document.getElementById('default-layout')}
+                settings={settings}
+                onSettingChange={(changeSetting) => {
+                    setSetting(changeSetting);
+                }}
+                disableUrlParams
+            />
+        </div>
     );
 };
 

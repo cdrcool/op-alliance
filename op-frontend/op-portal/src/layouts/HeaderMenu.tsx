@@ -14,7 +14,7 @@ const {SubMenu} = Menu;
 const HeaderMenu: FC = () => {
     const history = useHistory();
 
-    const context = useContext(userContext);
+    const {state} = useContext(userContext);
     const [menuOptions, setMenuOptions] = useState<{ label: string, value: string, path: string }[]>([]);
 
     const onLogout = () => {
@@ -63,7 +63,7 @@ const HeaderMenu: FC = () => {
             <SubMenu key="avatar" icon={
                 <>
                     <Avatar src={avatar} className="avatar"/>
-                    <span className="avatar-text">{context.name}</span>
+                    <span className="avatar-text">{state.name}</span>
                 </>
             }>
                 <Menu.Item key="center">
