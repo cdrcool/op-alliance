@@ -65,6 +65,13 @@ const WhiteResourceEditPage: FC = () => {
                         <Form.Item label="资源描述" name="resourceDesc">
                             <TextArea/>
                         </Form.Item>
+                        <Form.Item label="是否移除身份认证" name="removeAuthorization" initialValue={false}
+                                   rules={[{required: true, message: '请勾选是否移除身份认证'}]}>
+                            <Radio.Group>
+                                <Radio value={true}>是</Radio>
+                                <Radio value={false}>否</Radio>
+                            </Radio.Group>
+                        </Form.Item>
                         <Form.Item label="是否启用" name="status" initialValue={1}
                                    rules={[{required: true, message: '请勾选是否启用'}]}>
                             <Radio.Group>

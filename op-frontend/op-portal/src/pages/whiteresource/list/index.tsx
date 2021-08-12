@@ -44,6 +44,16 @@ const WhiteResourceListPage: FC = () => {
             dataIndex: 'resourceDesc',
         },
         {
+            title: '是否移除身份认证',
+            dataIndex: 'removeAuthorization',
+            valueEnum: {
+                true: {text: '是', status: 'Error'},
+                false: {text: '否', status: 'Success'},
+            },
+            filters: true,
+            onFilter: true,
+        },
+        {
             title: '启用状态',
             dataIndex: 'status',
             valueEnum: {

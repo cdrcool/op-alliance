@@ -160,11 +160,12 @@ public class WhiteResourceServiceImpl implements WhiteResourceService {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public List<String> initWhiteResourcePaths() {
-        SelectStatementProvider selectStatementProvider = select(WhiteResourceDynamicSqlSupport.resourcePath)
+        SelectStatementProvider selectStatementProvider = select(WhiteResourceDynamicSqlSupport.resourcePath, WhiteResourceDynamicSqlSupport.removeAuthorization)
                 .from(WhiteResourceDynamicSqlSupport.whiteResource)
                 .where(WhiteResourceDynamicSqlSupport.status, isEqualTo(1))
                 .build().render(RenderingStrategies.MYBATIS3);
         return whiteResourceMapper.selectMany(selectStatementProvider).stream()
-                .map((WhiteResource::getResourcePath)).collect(Collectors.toList());
+                .map(resource -> resource.getRemoveAuthorization() ? resource.getResourcePath() + "$removeAuthorization" : resource.getResourcePath())
+                .collect(Collectors.toList());
     }
 }

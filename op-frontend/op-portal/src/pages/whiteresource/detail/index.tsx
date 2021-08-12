@@ -57,6 +57,9 @@ const WhiteResourceDetailPage: FC = () => {
                         <Descriptions.Item label="资源路径">{whiteResource.resourcePath}</Descriptions.Item>
                         <Descriptions.Item label="资源描述">{whiteResource.resourceDesc}</Descriptions.Item>
                         <Descriptions.Item
+                            label="是否移除身份认证">{whiteResource.removeAuthorization && (whiteResource.removeAuthorization ? '是' : '否')}</Descriptions.Item>
+                        <Descriptions.Item label="资源编号">{whiteResource.resourceNo}</Descriptions.Item>
+                        <Descriptions.Item
                             label="是否启用">{whiteResource.status && (whiteResource.status === 1 ? '启用' : '禁用')}</Descriptions.Item>
                         <Descriptions.Item label="资源编号">{whiteResource.resourceNo}</Descriptions.Item>
                     </Descriptions>

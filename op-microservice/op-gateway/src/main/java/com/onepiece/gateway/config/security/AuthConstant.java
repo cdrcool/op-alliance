@@ -26,4 +26,9 @@ public interface AuthConstant {
      */
     String SECURITY_CONTEXT_HEADER = "security-context";
 
+    /**
+     * 移除身份认证信息标识
+     */
+    String REMOVE_AUTHORIZATION_FLAG = "$removeAuthorization";
+
 }

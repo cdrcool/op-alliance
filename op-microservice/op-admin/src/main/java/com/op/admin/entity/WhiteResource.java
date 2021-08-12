@@ -1,15 +1,14 @@
 package com.op.admin.entity;
 
 import com.op.framework.web.common.persistence.entity.BaseEntity;
+import javax.annotation.Generated;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.annotation.Generated;
-
 /**
  * @author Mybatis Generator
- * @date 2021/08/06 05:58
+ * @date 2021/08/12 05:32
  */
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
@@ -38,6 +37,12 @@ public class WhiteResource extends BaseEntity {
      */
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String resourceDesc;
+
+    /**
+     * 是否移除身份认证信息
+     */
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private Boolean removeAuthorization;
 
     /**
      * 启用状态（0-禁用；1-启用）

@@ -27,6 +27,9 @@ public class WhiteResourceVO extends BaseEntity {
     @ApiModelProperty("资源描述")
     private String resourceDesc;
 
+    @ApiModelProperty("是否移除身份认证")
+    private Boolean removeAuthorization;
+
     @ApiModelProperty("启用状态（0-禁用；1-启用）")
     private Integer status;
 

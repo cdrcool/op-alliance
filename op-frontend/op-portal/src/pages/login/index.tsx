@@ -13,7 +13,7 @@ import {
 } from '@ant-design/icons';
 import {DefaultFooter} from '@ant-design/pro-layout';
 import ProForm, {ProFormCaptcha, ProFormCheckbox, ProFormText} from '@ant-design/pro-form';
-import {getCurrentUser, login, LoginParams} from "../../services/login";
+import {getUserInfo, getAccessToken, LoginParams} from "../../services/token";
 import logo from "../../assets/logo.svg";
 
 import "./index.css";
@@ -32,7 +32,7 @@ const LoginPage: FC = () => {
     const onSubmit = async (values: LoginParams) => {
         setSubmitting(true);
         try {
-            const oathToken = await login({...values, clientId: 'password'});
+            const oathToken = await getAccessToken(values);
             const {accessToken, tokenType, refreshToken, expiresIn} = oathToken;
             localStorage.setItem('accessToken', accessToken);
             localStorage.setItem('tokenType', tokenType);
@@ -40,7 +40,7 @@ const LoginPage: FC = () => {
             localStorage.setItem('expiresIn', expiresIn + '');
             setSubmitting(false);
 
-            const userInfo = await getCurrentUser();
+            const userInfo = await getUserInfo();
             if (!userInfo) {
                 history.push('/login');
             }

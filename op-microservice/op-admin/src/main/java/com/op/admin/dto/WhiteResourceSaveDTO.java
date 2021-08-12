@@ -29,6 +29,9 @@ public class WhiteResourceSaveDTO {
     @ApiModelProperty("资源描述")
     private String resourceDesc;
 
+    @ApiModelProperty("是否移除身份认证")
+    private Boolean removeAuthorization;
+
     @ApiModelProperty(value = "启用状态（0-禁用；1-启用）", allowableValues = "0,1")
     @NotNull
     private Integer status;

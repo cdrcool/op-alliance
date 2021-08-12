@@ -33,7 +33,7 @@ public class AuthenticationController {
     }
 
     @ApiOperation("获取 Oauth2 Token")
-    @PostMapping("/token")
+    @PostMapping("/getToken")
     public OauthTokenResponse getAccessToken(@Valid @RequestBody OauthTokenRequest request)
             throws HttpRequestMethodNotSupportedException {
         // 构造请求参数

@@ -1,11 +1,10 @@
 package com.op.admin.mapper;
 
-import org.mybatis.dynamic.sql.SqlColumn;
-import org.mybatis.dynamic.sql.SqlTable;
-
-import javax.annotation.Generated;
 import java.sql.JDBCType;
 import java.time.LocalDateTime;
+import javax.annotation.Generated;
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
 
 public final class WhiteResourceDynamicSqlSupport {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -22,6 +21,9 @@ public final class WhiteResourceDynamicSqlSupport {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> resourceDesc = whiteResource.resourceDesc;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<Boolean> removeAuthorization = whiteResource.removeAuthorization;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Integer> status = whiteResource.status;
@@ -59,6 +61,8 @@ public final class WhiteResourceDynamicSqlSupport {
         public final SqlColumn<String> resourcePath = column("resource_path", JDBCType.VARCHAR);
 
         public final SqlColumn<String> resourceDesc = column("resource_desc", JDBCType.VARCHAR);
+
+        public final SqlColumn<Boolean> removeAuthorization = column("remove_authorization", JDBCType.BIT);
 
         public final SqlColumn<Integer> status = column("status", JDBCType.INTEGER);
 

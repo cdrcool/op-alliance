@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.onepiece.gateway.config.security.AuthConstant.REMOVE_AUTHORIZATION_FLAG;
+
 /**
  * 鉴权管理器，用于判断是否有资源访问权限
  *
@@ -62,6 +64,7 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
             whiteResources = new ArrayList<>();
         }
         if (!CollectionUtils.isEmpty(whiteResources) && whiteResources.stream()
+                .map(url -> url.replace(REMOVE_AUTHORIZATION_FLAG, ""))
                 .anyMatch(pattern -> pathMatcher.match(pattern, uri.getPath()))) {
             return Mono.just(new AuthorizationDecision(true));
         }
