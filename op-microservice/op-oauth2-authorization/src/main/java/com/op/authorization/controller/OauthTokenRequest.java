@@ -14,10 +14,6 @@ import javax.validation.constraints.NotEmpty;
 @ApiModel("Oauth2 Token 请求对象")
 @Data
 public class OauthTokenRequest {
-    @ApiModelProperty("客户端标识")
-    @NotEmpty
-    private String clientId;
-
     @ApiModelProperty("用户名")
     @NotEmpty
     private String username;

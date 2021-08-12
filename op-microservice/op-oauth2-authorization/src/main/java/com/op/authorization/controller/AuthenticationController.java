@@ -7,10 +7,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.endpoint.TokenEndpoint;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -27,6 +24,8 @@ import java.util.Map;
 @RequestMapping("/auth")
 @RestController
 public class AuthenticationController {
+    private static final String CLIENT_ID = "password";
+    private static final String CLIENT_SECRET = "secret";
     private final TokenEndpoint tokenEndpoint;
 
     public AuthenticationController(TokenEndpoint tokenEndpoint) {
@@ -45,10 +44,38 @@ public class AuthenticationController {
         parameters.put("scope", "all");
 
         // 请求 Oauth2 Token
-        Principal principal = new UsernamePasswordAuthenticationToken(request.getClientId(), null, new ArrayList<>());
+        Principal principal = new UsernamePasswordAuthenticationToken(CLIENT_ID, null, new ArrayList<>());
         OAuth2AccessToken accessToken = tokenEndpoint.postAccessToken(principal, parameters).getBody();
         if (accessToken == null) {
             throw new BusinessException("获取 Oauth2 访问令牌失败，值为空");
+        }
+
+        // 构造请求响应
+        return OauthTokenResponse.builder()
+                .accessToken(accessToken.getValue())
+                .tokenType("Bearer")
+                .refreshToken(accessToken.getRefreshToken().getValue())
+                .expiresIn(accessToken.getExpiresIn())
+                .build();
+    }
+
+    @ApiOperation("刷新 Oauth2 Token")
+    @PostMapping("/refreshToken")
+    public OauthTokenResponse refreshAccessToken(@Valid @RequestParam String refreshToken)
+            throws HttpRequestMethodNotSupportedException {
+        // 构造请求参数
+        Map<String, String> parameters = new HashMap<>(4);
+        parameters.put("client_id", CLIENT_ID);
+        parameters.put("client_secret", CLIENT_SECRET);
+        parameters.put("grant_type", "refresh_token");
+        parameters.put("refresh_token", refreshToken);
+        parameters.put("scope", "all");
+
+        // 刷新 Oauth2 Token
+        Principal principal = new UsernamePasswordAuthenticationToken(CLIENT_ID, null, new ArrayList<>());
+        OAuth2AccessToken accessToken = tokenEndpoint.postAccessToken(principal, parameters).getBody();
+        if (accessToken == null) {
+            throw new BusinessException("刷新 Oauth2 访问令牌失败，值为空");
         }
 
         // 构造请求响应

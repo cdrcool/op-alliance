@@ -23,7 +23,7 @@ public class AuthenticationConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .mvcMatchers("/.well-known/jwks.json").permitAll()
-                .antMatchers("/auth/token").permitAll()
+                .antMatchers("/auth/token", "/auth/refreshToken").permitAll()
                 .anyRequest().authenticated().and()
                 .csrf().ignoringRequestMatchers(request -> "/introspect".equals(request.getRequestURI())).disable()
                 .exceptionHandling()

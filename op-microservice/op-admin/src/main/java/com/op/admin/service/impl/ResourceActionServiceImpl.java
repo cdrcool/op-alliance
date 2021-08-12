@@ -17,7 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -166,7 +166,7 @@ public class ResourceActionServiceImpl implements ResourceActionService {
         return actions.stream().map(ResourceAction::getPermission).collect(Collectors.toList());
     }
 
-    @Cacheable(cacheNames = "resourcePathPermissions", key = "''", sync = true)
+    @CachePut(cacheNames = "resourcePathPermissions", key = "''")
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     @Override
     public Map<String, String> initResourcePathPermissions() {
