@@ -8,15 +8,14 @@ import routes from './router';
 import {UserInfo} from "./models/UserInfo";
 import userContext from './context/userContext';
 
-const initialState: UserInfo = {
-    name: '',
-    authorities: [],
-};
+const initialState: UserInfo = JSON.parse(localStorage.getItem('user-context') || '');
 
 const loginReducer = (state: UserInfo, action: { type: 'loginSuccess', payload: any }) => {
     switch (action.type) {
         case 'loginSuccess':
-            return {...state, ...action.payload}
+            const newState = {...state, ...action.payload};
+            localStorage.setItem('user-context', JSON.stringify(newState));
+            return newState;
         default:
             return state;
     }
