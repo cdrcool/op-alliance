@@ -134,8 +134,8 @@ const WhiteResourceListPage: FC = () => {
                     </Authority>,
                     <Authority value="white_resource_save">
                         <Button key="refresh"
-                                onClick={() => initWhiteResourcePaths().then(() => message.success("初始化白名单资源列表成功"))}>
-                            初始化白名单资源列表
+                                onClick={() => initWhiteResourcePaths().then(() => message.success("同步白名单资源缓存成功"))}>
+                            同步白名单资源缓存
                         </Button>
                     </Authority>,
                 ]}

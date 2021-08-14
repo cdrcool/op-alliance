@@ -55,8 +55,8 @@ const ResourceCategoryListPage: FC = () => {
                         </Authority>,
                         <Authority value="resource_category_save">
                             <Button key="refresh"
-                                    onClick={() => initResourcePathPermissions().then(() => message.success("初始化资源路径权限关联成功"))}>
-                                初始化资源路径权限关联
+                                    onClick={() => initResourcePathPermissions().then(() => message.success("同步资源路径权限缓存成功"))}>
+                                同步资源路径权限缓存
                             </Button>
                         </Authority>,
                     ];

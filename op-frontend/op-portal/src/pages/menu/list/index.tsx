@@ -87,7 +87,7 @@ const MenuListPage: FC = () => {
                     menus={[
                         {
                             // @ts-ignore
-                            menu: 'menu_change_visibility',
+                            authority: 'menu_change_visibility',
                             key: 'enable',
                             name: record.isShow ? '隐藏' : '显示',
                             onClick: () => onChangeMenusVisibility([record.id] as number[], !record.isShow),

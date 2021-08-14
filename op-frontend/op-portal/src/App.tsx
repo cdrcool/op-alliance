@@ -8,7 +8,7 @@ import routes from './router';
 import {UserInfo} from "./models/UserInfo";
 import userContext from './context/userContext';
 
-const initialState: UserInfo = JSON.parse(localStorage.getItem('user-context') || '');
+const initialState: UserInfo = JSON.parse(localStorage.getItem('user-context') || '{}');
 
 const loginReducer = (state: UserInfo, action: { type: 'loginSuccess', payload: any }) => {
     switch (action.type) {
