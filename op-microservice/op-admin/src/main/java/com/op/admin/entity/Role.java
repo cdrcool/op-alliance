@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author Mybatis Generator
- * @date 2021/08/12 05:32
+ * @date 2021/08/14 10:50
  */
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
@@ -49,10 +49,4 @@ public class Role extends BaseEntity {
      */
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Integer roleNo;
-
-    /**
-     * 分配了该角色的用户数量
-     */
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Integer userCount;
 }
