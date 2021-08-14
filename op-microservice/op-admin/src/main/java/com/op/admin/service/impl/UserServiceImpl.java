@@ -279,7 +279,7 @@ public class UserServiceImpl implements UserService {
                 .join(RoleDynamicSqlSupport.role)
                 .on(RoleDynamicSqlSupport.id, equalTo(UserRoleRelationDynamicSqlSupport.roleId))
                 .where(UserRoleRelationDynamicSqlSupport.userId, isEqualTo(id))
-                .and(RoleDynamicSqlSupport.status, isEqualTo(status))
+                .and(RoleDynamicSqlSupport.status, isEqualToWhenPresent(status))
                 .build().render(RenderingStrategies.MYBATIS3);
         return userRoleRelationMapper.selectMany(selectStatementProvider).stream()
                 .map(UserRoleRelation::getRoleId).collect(Collectors.toList());
