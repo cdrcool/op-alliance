@@ -62,7 +62,7 @@ const LoginPage: FC = () => {
                         <span className="title">One Piece</span>
                     </div>
                     <div className="desc">
-                        集成各主流开源框架，构建微服务标准实现
+                        集成各主流开源框架，构建微服务生产级标准实现
                     </div>
                 </div>
                 <div className="main">
