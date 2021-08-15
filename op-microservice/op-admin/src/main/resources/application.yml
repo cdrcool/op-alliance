@@ -3,7 +3,7 @@ server:
 
 spring:
   profiles:
-    active: local
+    active: dev
   task:
     execution:
       pool:
@@ -28,3 +28,7 @@ mybatis:
   configuration:
     database-id: mysql
     map-underscore-to-camel-case: true
+
+task:
+  cron:
+    xx-task: "0/10 * * * * ?"
