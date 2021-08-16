@@ -33,12 +33,12 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 /**
  * @author Mybatis Generator
- * @date 2021/08/14 12:07
+ * @date 2021/08/16 02:00
  */
 @Mapper
 public interface UserMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(id, orgId, username, password, nickname, avatar, signature, phone, email, gender, birthday, status, userNo, version, deleted, creatorId, createTime, lastModifierId, lastModifyTime, tenantId);
+    BasicColumn[] selectList = BasicColumn.columnList(id, orgId, username, password, nickname, avatar, signature, phone, email, gender, birthday, status, userNo, lastLoginTime, version, deleted, creatorId, createTime, lastModifierId, lastModifyTime, tenantId);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -74,6 +74,7 @@ public interface UserMapper {
         @Result(column="birthday", property="birthday", jdbcType=JdbcType.DATE),
         @Result(column="status", property="status", jdbcType=JdbcType.INTEGER),
         @Result(column="user_no", property="userNo", jdbcType=JdbcType.INTEGER),
+        @Result(column="last_login_time", property="lastLoginTime", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="version", property="version", jdbcType=JdbcType.INTEGER),
         @Result(column="deleted", property="deleted", jdbcType=JdbcType.BIT),
         @Result(column="creator_id", property="creatorId", jdbcType=JdbcType.INTEGER),
@@ -120,6 +121,7 @@ public interface UserMapper {
             .map(birthday).toProperty("birthday")
             .map(status).toProperty("status")
             .map(userNo).toProperty("userNo")
+            .map(lastLoginTime).toProperty("lastLoginTime")
             .map(version).toProperty("version")
             .map(deleted).toProperty("deleted")
             .map(creatorId).toProperty("creatorId")
@@ -145,6 +147,7 @@ public interface UserMapper {
             .map(birthday).toPropertyWhenPresent("birthday", record::getBirthday)
             .map(status).toPropertyWhenPresent("status", record::getStatus)
             .map(userNo).toPropertyWhenPresent("userNo", record::getUserNo)
+            .map(lastLoginTime).toPropertyWhenPresent("lastLoginTime", record::getLastLoginTime)
             .map(version).toPropertyWhenPresent("version", record::getVersion)
             .map(deleted).toPropertyWhenPresent("deleted", record::getDeleted)
             .map(creatorId).toPropertyWhenPresent("creatorId", record::getCreatorId)
@@ -196,6 +199,7 @@ public interface UserMapper {
                 .set(birthday).equalTo(record::getBirthday)
                 .set(status).equalTo(record::getStatus)
                 .set(userNo).equalTo(record::getUserNo)
+                .set(lastLoginTime).equalTo(record::getLastLoginTime)
                 .set(version).equalTo(record::getVersion)
                 .set(deleted).equalTo(record::getDeleted)
                 .set(creatorId).equalTo(record::getCreatorId)
@@ -219,6 +223,7 @@ public interface UserMapper {
                 .set(birthday).equalToWhenPresent(record::getBirthday)
                 .set(status).equalToWhenPresent(record::getStatus)
                 .set(userNo).equalToWhenPresent(record::getUserNo)
+                .set(lastLoginTime).equalToWhenPresent(record::getLastLoginTime)
                 .set(version).equalToWhenPresent(record::getVersion)
                 .set(deleted).equalToWhenPresent(record::getDeleted)
                 .set(creatorId).equalToWhenPresent(record::getCreatorId)
@@ -243,6 +248,7 @@ public interface UserMapper {
             .set(birthday).equalTo(record::getBirthday)
             .set(status).equalTo(record::getStatus)
             .set(userNo).equalTo(record::getUserNo)
+            .set(lastLoginTime).equalTo(record::getLastLoginTime)
             .set(version).equalTo(record::getVersion)
             .set(deleted).equalTo(record::getDeleted)
             .set(creatorId).equalTo(record::getCreatorId)
@@ -269,6 +275,7 @@ public interface UserMapper {
             .set(birthday).equalToWhenPresent(record::getBirthday)
             .set(status).equalToWhenPresent(record::getStatus)
             .set(userNo).equalToWhenPresent(record::getUserNo)
+            .set(lastLoginTime).equalToWhenPresent(record::getLastLoginTime)
             .set(version).equalToWhenPresent(record::getVersion)
             .set(deleted).equalToWhenPresent(record::getDeleted)
             .set(creatorId).equalToWhenPresent(record::getCreatorId)

@@ -51,6 +51,9 @@ public final class UserDynamicSqlSupport {
     public static final SqlColumn<Integer> userNo = user.userNo;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<LocalDateTime> lastLoginTime = user.lastLoginTime;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Integer> version = user.version;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -98,6 +101,8 @@ public final class UserDynamicSqlSupport {
         public final SqlColumn<Integer> status = column("status", JDBCType.INTEGER);
 
         public final SqlColumn<Integer> userNo = column("user_no", JDBCType.INTEGER);
+
+        public final SqlColumn<LocalDateTime> lastLoginTime = column("last_login_time", JDBCType.TIMESTAMP);
 
         public final SqlColumn<Integer> version = column("version", JDBCType.INTEGER);
 

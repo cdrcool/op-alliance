@@ -142,7 +142,7 @@ public class RoleServiceImpl implements RoleService {
 
         SelectStatementProvider selectStatementProvider = select(RoleMapper.selectList)
                 .from(RoleDynamicSqlSupport.role)
-                .where(RoleDynamicSqlSupport.status, isInWhenPresent(queryDTO.getStatus()))
+                .where(RoleDynamicSqlSupport.status, isEqualToWhenPresent(queryDTO.getStatus()))
                 .and(RoleDynamicSqlSupport.roleName, isLike(queryDTO.getKeyword())
                                 .filter(StringUtils::isNotBlank).map(v -> "%" + v + "%"),
                         or(RoleDynamicSqlSupport.roleCode, isLike(queryDTO.getKeyword())

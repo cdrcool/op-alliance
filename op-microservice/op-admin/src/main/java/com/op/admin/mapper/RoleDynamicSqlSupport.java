@@ -29,6 +29,9 @@ public final class RoleDynamicSqlSupport {
     public static final SqlColumn<Integer> roleNo = role.roleNo;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<Integer> userCount = role.userCount;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Integer> version = role.version;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -62,6 +65,8 @@ public final class RoleDynamicSqlSupport {
         public final SqlColumn<Integer> status = column("status", JDBCType.INTEGER);
 
         public final SqlColumn<Integer> roleNo = column("role_no", JDBCType.INTEGER);
+
+        public final SqlColumn<Integer> userCount = column("user_count", JDBCType.INTEGER);
 
         public final SqlColumn<Integer> version = column("version", JDBCType.INTEGER);
 

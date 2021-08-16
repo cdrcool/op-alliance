@@ -4,6 +4,10 @@ server:
 spring:
   profiles:
     active: dev
+  quartz:
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: never
   task:
     execution:
       pool:

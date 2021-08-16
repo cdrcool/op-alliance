@@ -1,4 +1,4 @@
-package com.op.admin.entity;
+package com.op.admin.job;
 
 import com.op.framework.web.common.persistence.entity.BaseEntity;
 import javax.annotation.Generated;
@@ -8,12 +8,12 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author Mybatis Generator
- * @date 2021/08/16 02:00
+ * @date 2021/08/16 03:51
  */
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class Role extends BaseEntity {
+public class QuartzJob extends BaseEntity {
     /**
      * 主键
      */
@@ -21,38 +21,32 @@ public class Role extends BaseEntity {
     private Integer id;
 
     /**
-     * 角色名称
+     * 任务标识
      */
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String roleName;
+    private String jobId;
 
     /**
-     * 角色编码
+     * 任务名称
      */
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String roleCode;
+    private String jobName;
 
     /**
-     * 角色描述
+     * 任务执行类
      */
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String roleDesc;
+    private String jobClass;
 
     /**
-     * 启用状态（0-禁用；1-启用）
+     * cron表达式
+     */
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String cronExps;
+
+    /**
+     * 启用状态（0-暂停；1-正常运行）
      */
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Integer status;
-
-    /**
-     * 角色编号
-     */
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Integer roleNo;
-
-    /**
-     * 分配了该角色的用户数量
-     */
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Integer userCount;
 }

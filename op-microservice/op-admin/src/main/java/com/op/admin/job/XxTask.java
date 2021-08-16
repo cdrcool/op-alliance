@@ -1,10 +1,9 @@
-package com.op.admin.task;
+package com.op.admin.job;
 
 import com.op.admin.config.TaskCronProperties;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.scheduling.support.CronTrigger;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,7 +13,7 @@ import java.time.format.DateTimeFormatter;
  *
  * @author cdrcool
  */
-@Component
+//@Component
 public class XxTask implements SchedulingConfigurer {
     private final TaskCronProperties properties;
 
