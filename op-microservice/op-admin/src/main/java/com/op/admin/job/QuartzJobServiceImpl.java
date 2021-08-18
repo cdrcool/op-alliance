@@ -43,39 +43,14 @@ public class QuartzJobServiceImpl implements QuartzJobService {
 
     @PostConstruct
     public void init() {
-        SelectStatementProvider selectStatementProvider = select(QuartzJobMapper.selectList)
-                .from(QuartzJobDynamicSqlSupport.qrtzJob)
-                .where(QuartzJobDynamicSqlSupport.status, isEqualTo(1))
-                .build().render(RenderingStrategies.MYBATIS3);
-        List<QuartzJob> jobList = quartzJobMapper.selectMany(selectStatementProvider);
-        jobList.forEach(job -> {
-            Class<? extends Job> jobClass;
-            try {
-                jobClass = (Class<? extends Job>) Class.forName(job.getJobClass());
-            } catch (ClassNotFoundException e) {
-                log.error("获取任务执行类【{}】异常", job.getJobClass(), e);
-                throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "获取任务执行类【" + job.getJobClass() + "】异常", e);
-            }
-
-            // 构建定时任务信息
-            JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(job.getJobId()).build();
-            // 设置定时任务执行方式
-            CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(job.getCronExps());
-            // 构建触发器 trigger
-            CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(job.getJobId()).withSchedule(scheduleBuilder).build();
-            try {
-                // 执行任务调度
-                scheduler.scheduleJob(jobDetail, trigger);
-            } catch (SchedulerException e) {
-                log.error("执行定时任务【{}】异常", job.getJobId(), e);
-            }
-        });
+            //scheduler.start();
     }
 
     @Override
     public void save(QuartzJobSaveDTO saveDTO) {
         Class<? extends Job> jobClass;
         try {
+            //noinspection unchecked
             jobClass = (Class<? extends Job>) Class.forName(saveDTO.getJobClass());
         } catch (ClassNotFoundException e) {
             log.error("获取任务执行类【{}】异常", saveDTO.getJobClass(), e);
@@ -85,7 +60,7 @@ public class QuartzJobServiceImpl implements QuartzJobService {
         // 构建定时任务信息
         JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(saveDTO.getJobId()).build();
         // 设置定时任务执行方式
-        CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(saveDTO.getCronExps());
+        CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(saveDTO.getCronExps()).withMisfireHandlingInstructionDoNothing();
 
         if (saveDTO.getId() == null) {
             // 构建触发器 trigger
