@@ -18,7 +18,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
@@ -39,11 +38,6 @@ public class QuartzJobServiceImpl implements QuartzJobService {
         this.quartzJobMapper = quartzJobMapper;
         this.quartzJobMapping = quartzJobMapping;
         this.scheduler = scheduler;
-    }
-
-    @PostConstruct
-    public void init() {
-            //scheduler.start();
     }
 
     @Override
