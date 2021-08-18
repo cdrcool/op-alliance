@@ -34,7 +34,7 @@ public class QuartzJobSaveDTO {
     @NotEmpty
     private String cronExps;
 
-    @ApiModelProperty("启用状态（0-暂停；1-正常运行）")
+    @ApiModelProperty(value = "运行状态（0-已暂停；1-运行中）", allowableValues = "0,1", required = true)
     @NotNull
     private Integer status;
 }

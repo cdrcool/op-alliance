@@ -32,7 +32,7 @@ public class WhiteResourceSaveDTO {
     @ApiModelProperty("是否移除身份认证")
     private Boolean removeAuthorization;
 
-    @ApiModelProperty(value = "启用状态（0-禁用；1-启用）", allowableValues = "0,1")
+    @ApiModelProperty(value = "启用状态（0-禁用；1-启用）", allowableValues = "0,1", required = true)
     @NotNull
     private Integer status;
 

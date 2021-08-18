@@ -49,9 +49,23 @@ public class QuartzJobServiceImpl implements QuartzJobService {
                 .build().render(RenderingStrategies.MYBATIS3);
         List<QuartzJob> jobList = quartzJobMapper.selectMany(selectStatementProvider);
         jobList.forEach(job -> {
-            JobKey jobKey = JobKey.jobKey(job.getJobId());
+            Class<? extends Job> jobClass;
             try {
-                scheduler.triggerJob(jobKey);
+                jobClass = (Class<? extends Job>) Class.forName(job.getJobClass());
+            } catch (ClassNotFoundException e) {
+                log.error("获取任务执行类【{}】异常", job.getJobClass(), e);
+                throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "获取任务执行类【" + job.getJobClass() + "】异常", e);
+            }
+
+            // 构建定时任务信息
+            JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(job.getJobId()).build();
+            // 设置定时任务执行方式
+            CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(job.getCronExps());
+            // 构建触发器 trigger
+            CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(job.getJobId()).withSchedule(scheduleBuilder).build();
+            try {
+                // 执行任务调度
+                scheduler.scheduleJob(jobDetail, trigger);
             } catch (SchedulerException e) {
                 log.error("执行定时任务【{}】异常", job.getJobId(), e);
             }
@@ -72,10 +86,10 @@ public class QuartzJobServiceImpl implements QuartzJobService {
         JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(saveDTO.getJobId()).build();
         // 设置定时任务执行方式
         CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(saveDTO.getCronExps());
-        // 构建触发器 trigger
-        CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(saveDTO.getJobId()).withSchedule(scheduleBuilder).build();
 
         if (saveDTO.getId() == null) {
+            // 构建触发器 trigger
+            CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(saveDTO.getJobId()).withSchedule(scheduleBuilder).build();
             try {
                 // 执行任务调度
                 scheduler.scheduleJob(jobDetail, trigger);
@@ -87,9 +101,18 @@ public class QuartzJobServiceImpl implements QuartzJobService {
             QuartzJob quartzJob = quartzJobMapping.toQuartzJob(saveDTO);
             quartzJobMapper.insert(quartzJob);
         } else {
+            // 更新触发器 trigger
             TriggerKey triggerKey = TriggerKey.triggerKey(saveDTO.getJobId());
+            CronTrigger trigger;
             try {
                 trigger = (CronTrigger) scheduler.getTrigger(triggerKey);
+            } catch (SchedulerException e) {
+                log.error("获取定时任务【{}】触发器异常", saveDTO.getJobId(), e);
+                throw new BusinessException(ResultCode.PARAM_VALID_ERROR, "获取定时任务【" + saveDTO.getJobId() + "】触发器异常", e);
+            }
+            trigger = trigger.getTriggerBuilder().withIdentity(triggerKey).withSchedule(scheduleBuilder).build();
+
+            try {
                 // 重新执行任务调度
                 scheduler.rescheduleJob(triggerKey, trigger);
             } catch (SchedulerException e) {
@@ -106,7 +129,7 @@ public class QuartzJobServiceImpl implements QuartzJobService {
     }
 
     @Override
-    public void deleteById(String jobId) {
+    public void deleteByJobId(String jobId) {
         JobKey jobKey = JobKey.jobKey(jobId);
         try {
             scheduler.deleteJob(jobKey);
@@ -122,8 +145,8 @@ public class QuartzJobServiceImpl implements QuartzJobService {
     }
 
     @Override
-    public void deleteByIds(List<String> jobIds) {
-        jobIds.forEach(this::deleteById);
+    public void deleteByJobIds(List<String> jobIds) {
+        jobIds.forEach(this::deleteByJobId);
     }
 
     @Override
@@ -183,7 +206,7 @@ public class QuartzJobServiceImpl implements QuartzJobService {
     public void resume(String jobId) {
         JobKey jobKey = JobKey.jobKey(jobId);
         try {
-            scheduler.pauseJob(jobKey);
+            scheduler.resumeJob(jobKey);
 
             UpdateStatementProvider updateStatement = SqlBuilder.update(QuartzJobDynamicSqlSupport.qrtzJob)
                     .set(QuartzJobDynamicSqlSupport.status).equalTo(1)

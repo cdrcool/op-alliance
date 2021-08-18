@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
+
 /**
  * 资源动作保存 DTO
  *
@@ -15,13 +17,15 @@ public class ResourceActionSaveDTO {
     @ApiModelProperty("资源动作id")
     private Integer id;
 
-    @ApiModelProperty(value = "资源id", required = true)
+    @ApiModelProperty(value = "资源id")
     private Integer resourceId;
 
     @ApiModelProperty(value = "动作名称", required = true)
+    @NotEmpty
     private String actionName;
 
     @ApiModelProperty(value = "动作路径", required = true)
+    @NotEmpty
     private String actionPath;
 
     @ApiModelProperty("动作描述")

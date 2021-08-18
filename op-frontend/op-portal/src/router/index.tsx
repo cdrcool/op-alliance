@@ -37,6 +37,9 @@ import OauthClientDetailPage from "../pages/oauthclient/detail";
 import WhiteResourceListPage from "../pages/whiteresource/list";
 import WhiteResourceEditPage from "../pages/whiteresource/edit";
 import WhiteResourceDetailPage from "../pages/whiteresource/detail";
+import JobListPage from "../pages/job/list";
+import JobEditPage from "../pages/job/edit";
+import JobDetailPage from "../pages/job/detail";
 import Authority from "../components/Authority";
 import UnauthorizedPage from "../pages/403";
 import NoFoundPage from "../pages/404";
@@ -267,6 +270,21 @@ const routes = [
                 exact: true,
                 component: WhiteResourceDetailPage,
                 render: () => <Authority value="white_resource_view" redirect><WhiteResourceDetailPage/></Authority>,
+            },
+            {
+                path: "/config/job",
+                exact: true,
+                component: JobListPage,
+            },
+            {
+                path: "/config/job/edit/:id?",
+                exact: true,
+                component: JobEditPage,
+            },
+            {
+                path: "/config/job/detail/:id",
+                exact: true,
+                component: JobDetailPage,
             },
             {
                 path: "/403",

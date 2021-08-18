@@ -27,6 +27,6 @@ public class QuartzJobVO {
     @ApiModelProperty("cron表达式")
     private String cronExps;
 
-    @ApiModelProperty("启用状态（0-暂停；1-正常运行）")
+    @ApiModelProperty("运行状态（0-已暂停；1-运行中）")
     private Integer status;
 }

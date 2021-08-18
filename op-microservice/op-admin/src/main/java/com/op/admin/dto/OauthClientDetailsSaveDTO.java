@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
+
 /**
  * oauth2-client保存 DTO
  *
@@ -16,12 +18,15 @@ public class OauthClientDetailsSaveDTO {
     private Integer id;
 
     @ApiModelProperty(value = "客户端标识", required = true)
+    @NotEmpty
     private String clientId;
 
     @ApiModelProperty(value = "客户端密钥", required = true)
+    @NotEmpty
     private String clientSecret;
 
     @ApiModelProperty(value = "授权许可类型", required = true)
+    @NotEmpty
     private String authorizedGrantTypes;
 
     @ApiModelProperty("授权范围")

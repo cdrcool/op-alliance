@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 /**
@@ -18,6 +19,7 @@ public class UserGroupSaveDTO {
     private Integer id;
 
     @ApiModelProperty(value = "用户组名称", required = true)
+    @NotEmpty
     private String groupName;
 
     @ApiModelProperty("用户组描述")

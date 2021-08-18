@@ -33,12 +33,12 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 /**
  * @author Mybatis Generator
- * @date 2021/08/16 02:00
+ * @date 2021/08/18 10:31
  */
 @Mapper
 public interface RoleMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(id, roleName, roleCode, roleDesc, status, roleNo, userCount, version, deleted, creatorId, createTime, lastModifierId, lastModifyTime, tenantId);
+    BasicColumn[] selectList = BasicColumn.columnList(id, roleName, roleCode, roleDesc, status, roleNo, version, deleted, creatorId, createTime, lastModifierId, lastModifyTime, tenantId);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -67,7 +67,6 @@ public interface RoleMapper {
         @Result(column="role_desc", property="roleDesc", jdbcType=JdbcType.VARCHAR),
         @Result(column="status", property="status", jdbcType=JdbcType.INTEGER),
         @Result(column="role_no", property="roleNo", jdbcType=JdbcType.INTEGER),
-        @Result(column="user_count", property="userCount", jdbcType=JdbcType.INTEGER),
         @Result(column="version", property="version", jdbcType=JdbcType.INTEGER),
         @Result(column="deleted", property="deleted", jdbcType=JdbcType.BIT),
         @Result(column="creator_id", property="creatorId", jdbcType=JdbcType.INTEGER),
@@ -107,7 +106,6 @@ public interface RoleMapper {
             .map(roleDesc).toProperty("roleDesc")
             .map(status).toProperty("status")
             .map(roleNo).toProperty("roleNo")
-            .map(userCount).toProperty("userCount")
             .map(version).toProperty("version")
             .map(deleted).toProperty("deleted")
             .map(creatorId).toProperty("creatorId")
@@ -126,7 +124,6 @@ public interface RoleMapper {
             .map(roleDesc).toPropertyWhenPresent("roleDesc", record::getRoleDesc)
             .map(status).toPropertyWhenPresent("status", record::getStatus)
             .map(roleNo).toPropertyWhenPresent("roleNo", record::getRoleNo)
-            .map(userCount).toPropertyWhenPresent("userCount", record::getUserCount)
             .map(version).toPropertyWhenPresent("version", record::getVersion)
             .map(deleted).toPropertyWhenPresent("deleted", record::getDeleted)
             .map(creatorId).toPropertyWhenPresent("creatorId", record::getCreatorId)
@@ -171,7 +168,6 @@ public interface RoleMapper {
                 .set(roleDesc).equalTo(record::getRoleDesc)
                 .set(status).equalTo(record::getStatus)
                 .set(roleNo).equalTo(record::getRoleNo)
-                .set(userCount).equalTo(record::getUserCount)
                 .set(version).equalTo(record::getVersion)
                 .set(deleted).equalTo(record::getDeleted)
                 .set(creatorId).equalTo(record::getCreatorId)
@@ -188,7 +184,6 @@ public interface RoleMapper {
                 .set(roleDesc).equalToWhenPresent(record::getRoleDesc)
                 .set(status).equalToWhenPresent(record::getStatus)
                 .set(roleNo).equalToWhenPresent(record::getRoleNo)
-                .set(userCount).equalToWhenPresent(record::getUserCount)
                 .set(version).equalToWhenPresent(record::getVersion)
                 .set(deleted).equalToWhenPresent(record::getDeleted)
                 .set(creatorId).equalToWhenPresent(record::getCreatorId)
@@ -206,7 +201,6 @@ public interface RoleMapper {
             .set(roleDesc).equalTo(record::getRoleDesc)
             .set(status).equalTo(record::getStatus)
             .set(roleNo).equalTo(record::getRoleNo)
-            .set(userCount).equalTo(record::getUserCount)
             .set(version).equalTo(record::getVersion)
             .set(deleted).equalTo(record::getDeleted)
             .set(creatorId).equalTo(record::getCreatorId)
@@ -226,7 +220,6 @@ public interface RoleMapper {
             .set(roleDesc).equalToWhenPresent(record::getRoleDesc)
             .set(status).equalToWhenPresent(record::getStatus)
             .set(roleNo).equalToWhenPresent(record::getRoleNo)
-            .set(userCount).equalToWhenPresent(record::getUserCount)
             .set(version).equalToWhenPresent(record::getVersion)
             .set(deleted).equalToWhenPresent(record::getDeleted)
             .set(creatorId).equalToWhenPresent(record::getCreatorId)

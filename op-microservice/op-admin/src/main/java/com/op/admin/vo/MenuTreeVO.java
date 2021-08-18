@@ -32,7 +32,7 @@ public class MenuTreeVO extends BaseVo {
     @ApiModelProperty("菜单路径")
     private String menuPath;
 
-    @ApiModelProperty("是否显示")
+    @ApiModelProperty("是否显示（0-隐藏；1-显示）")
     private Boolean isShow;
 
     @ApiModelProperty("权限标识")

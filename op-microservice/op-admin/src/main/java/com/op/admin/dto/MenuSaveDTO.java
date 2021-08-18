@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
+
 /**
  * 菜单保存 DTO
  *
@@ -19,15 +21,19 @@ public class MenuSaveDTO {
     private Integer pid;
 
     @ApiModelProperty(value = "菜单名称", required = true)
+    @NotEmpty
     private String menuName;
 
     @ApiModelProperty(value = "菜单图标", required = true)
+    @NotEmpty
     private String menuIcon;
 
     @ApiModelProperty(value = "菜单路径", required = true)
+    @NotEmpty
     private String menuPath;
 
-    @ApiModelProperty(value = "是否显示", required = true)
+    @ApiModelProperty(value = "是否显示（0-隐藏；1-显示）", allowableValues = "0,1", required = true)
+    @NotEmpty
     private Boolean isShow;
 
     @ApiModelProperty("权限标识")

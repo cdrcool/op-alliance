@@ -26,14 +26,14 @@ public interface QuartzJobService {
      *
      * @param jobId job 标识
      */
-    void deleteById(String jobId);
+    void deleteByJobId(String jobId);
 
     /**
      * 批量删除 Quartz Job
      *
      * @param jobIds job 标识列表
      */
-    void deleteByIds(List<String> jobIds);
+    void deleteByJobIds(List<String> jobIds);
 
     /**
      * 查找 Quartz Job

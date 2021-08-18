@@ -33,13 +33,13 @@ public class QuartzJobController {
     @ApiOperation("删除定时任务")
     @PostMapping("delete")
     public void delete(@RequestParam String jobId) {
-        quartzJobService.deleteById(jobId);
+        quartzJobService.deleteByJobId(jobId);
     }
 
     @ApiOperation("批量删除定时任务")
     @PostMapping("batchDelete")
     public void batchDelete(@RequestBody List<String> jobIds) {
-        jobIds.forEach(quartzJobService::deleteById);
+        jobIds.forEach(quartzJobService::deleteByJobId);
     }
 
     @ApiOperation("查看定时任务详情")
@@ -70,6 +70,6 @@ public class QuartzJobController {
     @ApiOperation("触发定时任务")
     @PostMapping("trigger")
     public void trigger(@Valid @RequestParam String jobId) {
-        quartzJobService.resume(jobId);
+        quartzJobService.trigger(jobId);
     }
 }

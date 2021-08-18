@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author Mybatis Generator
- * @date 2021/08/16 02:00
+ * @date 2021/08/18 10:31
  */
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
@@ -51,7 +51,7 @@ public class ResourceAction extends BaseEntity {
     private Integer actionNo;
 
     /**
-     * 权限名
+     * 权限标识
      */
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String permission;
