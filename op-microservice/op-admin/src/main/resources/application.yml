@@ -33,6 +33,11 @@ mybatis:
     database-id: mysql
     map-underscore-to-camel-case: true
 
+org:
+  quartz:
+    scheduler:
+      instanceName : AllianceClusteredScheduler
+
 task:
   cron:
     xx-task: "0/10 * * * * ?"
