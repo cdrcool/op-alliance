@@ -26,9 +26,13 @@ public class AuthenticationConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/auth/getToken", "/auth/refreshToken").permitAll()
                 .anyRequest().authenticated().and()
                 .csrf().ignoringRequestMatchers(request -> "/introspect".equals(request.getRequestURI())).disable()
-                .exceptionHandling()
-                // 自定义身份认证入口点，默认会跳转到登录页面
-                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
+                // 需要设置 formLogin 或 basic 认证，不然授权码模式和简化模式时会报 403
+                .formLogin();
+                // 不能添加以下设置，不然授权码模式和简化模式时会报 401
+//                .and()
+//                .exceptionHandling()
+//                // 自定义身份认证入口点，默认会跳转到登录页面（授权码模式或简化模式不要设置这个）
+//                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
     }
 
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
