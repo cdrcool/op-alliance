@@ -73,6 +73,11 @@ CREATE TABLE `xxl_job_lock`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '任务调度锁表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of xxl_job_lock
+-- ----------------------------
+INSERT INTO `xxl_job_lock` VALUES ('schedule_lock');
+
+-- ----------------------------
 -- Table structure for xxl_job_log
 -- ----------------------------
 DROP TABLE IF EXISTS `xxl_job_log`;
