@@ -4,5 +4,6 @@ target/
 *.iml
 logs/
 nacos-logs/
+xxl-job-logs/
 node_moudules/
 *.lock

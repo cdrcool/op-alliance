@@ -11,11 +11,281 @@
  Target Server Version : 80025
  File Encoding         : 65001
 
- Date: 15/08/2021 21:20:21
+ Date: 22/08/2021 13:31:00
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for QRTZ_BLOB_TRIGGERS
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_BLOB_TRIGGERS`;
+CREATE TABLE `QRTZ_BLOB_TRIGGERS`  (
+  `SCHED_NAME` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `TRIGGER_NAME` varchar(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `TRIGGER_GROUP` varchar(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `BLOB_DATA` blob NULL,
+  PRIMARY KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) USING BTREE,
+  INDEX `SCHED_NAME`(`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) USING BTREE,
+  CONSTRAINT `QRTZ_BLOB_TRIGGERS_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) REFERENCES `QRTZ_TRIGGERS` (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of QRTZ_BLOB_TRIGGERS
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for QRTZ_CALENDARS
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_CALENDARS`;
+CREATE TABLE `QRTZ_CALENDARS`  (
+  `SCHED_NAME` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `CALENDAR_NAME` varchar(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `CALENDAR` blob NOT NULL,
+  PRIMARY KEY (`SCHED_NAME`, `CALENDAR_NAME`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of QRTZ_CALENDARS
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for QRTZ_CRON_TRIGGERS
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_CRON_TRIGGERS`;
+CREATE TABLE `QRTZ_CRON_TRIGGERS`  (
+  `SCHED_NAME` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `TRIGGER_NAME` varchar(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `TRIGGER_GROUP` varchar(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `CRON_EXPRESSION` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `TIME_ZONE_ID` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) USING BTREE,
+  CONSTRAINT `QRTZ_CRON_TRIGGERS_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) REFERENCES `QRTZ_TRIGGERS` (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of QRTZ_CRON_TRIGGERS
+-- ----------------------------
+INSERT INTO `QRTZ_CRON_TRIGGERS` VALUES ('AdminClusteredScheduler', 'xxJob', 'DEFAULT', '0/5 * * * * ?', 'Asia/Shanghai');
+
+-- ----------------------------
+-- Table structure for QRTZ_FIRED_TRIGGERS
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_FIRED_TRIGGERS`;
+CREATE TABLE `QRTZ_FIRED_TRIGGERS`  (
+  `SCHED_NAME` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `ENTRY_ID` varchar(95) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `TRIGGER_NAME` varchar(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `TRIGGER_GROUP` varchar(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `INSTANCE_NAME` varchar(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `FIRED_TIME` bigint NOT NULL,
+  `SCHED_TIME` bigint NOT NULL,
+  `PRIORITY` int NOT NULL,
+  `STATE` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `JOB_NAME` varchar(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `JOB_GROUP` varchar(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `IS_NONCONCURRENT` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `REQUESTS_RECOVERY` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`SCHED_NAME`, `ENTRY_ID`) USING BTREE,
+  INDEX `IDX_QRTZ_FT_TRIG_INST_NAME`(`SCHED_NAME`, `INSTANCE_NAME`) USING BTREE,
+  INDEX `IDX_QRTZ_FT_INST_JOB_REQ_RCVRY`(`SCHED_NAME`, `INSTANCE_NAME`, `REQUESTS_RECOVERY`) USING BTREE,
+  INDEX `IDX_QRTZ_FT_J_G`(`SCHED_NAME`, `JOB_NAME`, `JOB_GROUP`) USING BTREE,
+  INDEX `IDX_QRTZ_FT_JG`(`SCHED_NAME`, `JOB_GROUP`) USING BTREE,
+  INDEX `IDX_QRTZ_FT_T_G`(`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) USING BTREE,
+  INDEX `IDX_QRTZ_FT_TG`(`SCHED_NAME`, `TRIGGER_GROUP`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of QRTZ_FIRED_TRIGGERS
+-- ----------------------------
+INSERT INTO `QRTZ_FIRED_TRIGGERS` VALUES ('AdminClusteredScheduler', 'DESKTOP-8G5LND716296074388771629607439411', 'xxJob', 'DEFAULT', 'DESKTOP-8G5LND71629607438877', 1629610260546, 1629610265000, 5, 'ACQUIRED', NULL, NULL, '0', '0');
+
+-- ----------------------------
+-- Table structure for QRTZ_JOB
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_JOB`;
+CREATE TABLE `QRTZ_JOB`  (
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `job_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '任务标识',
+  `job_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '任务名称',
+  `job_class` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '任务执行类',
+  `cron_exps` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'cron表达式',
+  `status` int NOT NULL COMMENT '运行状态（0-已暂停；1-运行中）',
+  `version` int NULL DEFAULT NULL COMMENT '版本号',
+  `deleted` tinyint(1) NULL DEFAULT NULL COMMENT '是否逻辑删除',
+  `creator_id` int NULL DEFAULT NULL COMMENT '创建人id',
+  `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+  `last_modifier_id` int NULL DEFAULT NULL COMMENT '最后修改人id',
+  `last_modify_time` datetime NULL DEFAULT NULL COMMENT '最后修改时间',
+  `tenant_id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = 'Quratz任务' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of QRTZ_JOB
+-- ----------------------------
+INSERT INTO `QRTZ_JOB` VALUES (2, 'xxJob', 'xx Job', 'com.op.admin.job.XxJob', '0/5 * * * * ?', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
+-- ----------------------------
+-- Table structure for QRTZ_JOB_DETAILS
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_JOB_DETAILS`;
+CREATE TABLE `QRTZ_JOB_DETAILS`  (
+  `SCHED_NAME` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `JOB_NAME` varchar(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `JOB_GROUP` varchar(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `DESCRIPTION` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `JOB_CLASS_NAME` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `IS_DURABLE` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `IS_NONCONCURRENT` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `IS_UPDATE_DATA` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `REQUESTS_RECOVERY` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `JOB_DATA` blob NULL,
+  PRIMARY KEY (`SCHED_NAME`, `JOB_NAME`, `JOB_GROUP`) USING BTREE,
+  INDEX `IDX_QRTZ_J_REQ_RECOVERY`(`SCHED_NAME`, `REQUESTS_RECOVERY`) USING BTREE,
+  INDEX `IDX_QRTZ_J_GRP`(`SCHED_NAME`, `JOB_GROUP`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of QRTZ_JOB_DETAILS
+-- ----------------------------
+INSERT INTO `QRTZ_JOB_DETAILS` VALUES ('AdminClusteredScheduler', 'xxJob', 'DEFAULT', NULL, 'com.op.admin.job.XxJob', '0', '0', '0', '0', 0x230D0A23467269204175672032302031313A33363A34302043535420323032310D0A);
+
+-- ----------------------------
+-- Table structure for QRTZ_LOCKS
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_LOCKS`;
+CREATE TABLE `QRTZ_LOCKS`  (
+  `SCHED_NAME` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `LOCK_NAME` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  PRIMARY KEY (`SCHED_NAME`, `LOCK_NAME`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of QRTZ_LOCKS
+-- ----------------------------
+INSERT INTO `QRTZ_LOCKS` VALUES ('AdminClusteredScheduler', 'STATE_ACCESS');
+INSERT INTO `QRTZ_LOCKS` VALUES ('AdminClusteredScheduler', 'TRIGGER_ACCESS');
+
+-- ----------------------------
+-- Table structure for QRTZ_PAUSED_TRIGGER_GRPS
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_PAUSED_TRIGGER_GRPS`;
+CREATE TABLE `QRTZ_PAUSED_TRIGGER_GRPS`  (
+  `SCHED_NAME` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `TRIGGER_GROUP` varchar(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  PRIMARY KEY (`SCHED_NAME`, `TRIGGER_GROUP`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of QRTZ_PAUSED_TRIGGER_GRPS
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for QRTZ_SCHEDULER_STATE
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_SCHEDULER_STATE`;
+CREATE TABLE `QRTZ_SCHEDULER_STATE`  (
+  `SCHED_NAME` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `INSTANCE_NAME` varchar(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `LAST_CHECKIN_TIME` bigint NOT NULL,
+  `CHECKIN_INTERVAL` bigint NOT NULL,
+  PRIMARY KEY (`SCHED_NAME`, `INSTANCE_NAME`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of QRTZ_SCHEDULER_STATE
+-- ----------------------------
+INSERT INTO `QRTZ_SCHEDULER_STATE` VALUES ('AdminClusteredScheduler', 'DESKTOP-8G5LND71629607438877', 1629610255789, 20000);
+
+-- ----------------------------
+-- Table structure for QRTZ_SIMPLE_TRIGGERS
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_SIMPLE_TRIGGERS`;
+CREATE TABLE `QRTZ_SIMPLE_TRIGGERS`  (
+  `SCHED_NAME` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `TRIGGER_NAME` varchar(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `TRIGGER_GROUP` varchar(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `REPEAT_COUNT` bigint NOT NULL,
+  `REPEAT_INTERVAL` bigint NOT NULL,
+  `TIMES_TRIGGERED` bigint NOT NULL,
+  PRIMARY KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) USING BTREE,
+  CONSTRAINT `QRTZ_SIMPLE_TRIGGERS_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) REFERENCES `QRTZ_TRIGGERS` (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of QRTZ_SIMPLE_TRIGGERS
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for QRTZ_SIMPROP_TRIGGERS
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_SIMPROP_TRIGGERS`;
+CREATE TABLE `QRTZ_SIMPROP_TRIGGERS`  (
+  `SCHED_NAME` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `TRIGGER_NAME` varchar(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `TRIGGER_GROUP` varchar(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `STR_PROP_1` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `STR_PROP_2` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `STR_PROP_3` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `INT_PROP_1` int NULL DEFAULT NULL,
+  `INT_PROP_2` int NULL DEFAULT NULL,
+  `LONG_PROP_1` bigint NULL DEFAULT NULL,
+  `LONG_PROP_2` bigint NULL DEFAULT NULL,
+  `DEC_PROP_1` decimal(13, 4) NULL DEFAULT NULL,
+  `DEC_PROP_2` decimal(13, 4) NULL DEFAULT NULL,
+  `BOOL_PROP_1` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `BOOL_PROP_2` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) USING BTREE,
+  CONSTRAINT `QRTZ_SIMPROP_TRIGGERS_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) REFERENCES `QRTZ_TRIGGERS` (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of QRTZ_SIMPROP_TRIGGERS
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for QRTZ_TRIGGERS
+-- ----------------------------
+DROP TABLE IF EXISTS `QRTZ_TRIGGERS`;
+CREATE TABLE `QRTZ_TRIGGERS`  (
+  `SCHED_NAME` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `TRIGGER_NAME` varchar(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `TRIGGER_GROUP` varchar(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `JOB_NAME` varchar(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `JOB_GROUP` varchar(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `DESCRIPTION` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `NEXT_FIRE_TIME` bigint NULL DEFAULT NULL,
+  `PREV_FIRE_TIME` bigint NULL DEFAULT NULL,
+  `PRIORITY` int NULL DEFAULT NULL,
+  `TRIGGER_STATE` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `TRIGGER_TYPE` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `START_TIME` bigint NOT NULL,
+  `END_TIME` bigint NULL DEFAULT NULL,
+  `CALENDAR_NAME` varchar(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `MISFIRE_INSTR` smallint NULL DEFAULT NULL,
+  `JOB_DATA` blob NULL,
+  PRIMARY KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) USING BTREE,
+  INDEX `IDX_QRTZ_T_J`(`SCHED_NAME`, `JOB_NAME`, `JOB_GROUP`) USING BTREE,
+  INDEX `IDX_QRTZ_T_JG`(`SCHED_NAME`, `JOB_GROUP`) USING BTREE,
+  INDEX `IDX_QRTZ_T_C`(`SCHED_NAME`, `CALENDAR_NAME`) USING BTREE,
+  INDEX `IDX_QRTZ_T_G`(`SCHED_NAME`, `TRIGGER_GROUP`) USING BTREE,
+  INDEX `IDX_QRTZ_T_STATE`(`SCHED_NAME`, `TRIGGER_STATE`) USING BTREE,
+  INDEX `IDX_QRTZ_T_N_STATE`(`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`, `TRIGGER_STATE`) USING BTREE,
+  INDEX `IDX_QRTZ_T_N_G_STATE`(`SCHED_NAME`, `TRIGGER_GROUP`, `TRIGGER_STATE`) USING BTREE,
+  INDEX `IDX_QRTZ_T_NEXT_FIRE_TIME`(`SCHED_NAME`, `NEXT_FIRE_TIME`) USING BTREE,
+  INDEX `IDX_QRTZ_T_NFT_ST`(`SCHED_NAME`, `TRIGGER_STATE`, `NEXT_FIRE_TIME`) USING BTREE,
+  INDEX `IDX_QRTZ_T_NFT_MISFIRE`(`SCHED_NAME`, `MISFIRE_INSTR`, `NEXT_FIRE_TIME`) USING BTREE,
+  INDEX `IDX_QRTZ_T_NFT_ST_MISFIRE`(`SCHED_NAME`, `MISFIRE_INSTR`, `NEXT_FIRE_TIME`, `TRIGGER_STATE`) USING BTREE,
+  INDEX `IDX_QRTZ_T_NFT_ST_MISFIRE_GRP`(`SCHED_NAME`, `MISFIRE_INSTR`, `NEXT_FIRE_TIME`, `TRIGGER_GROUP`, `TRIGGER_STATE`) USING BTREE,
+  CONSTRAINT `QRTZ_TRIGGERS_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `JOB_NAME`, `JOB_GROUP`) REFERENCES `QRTZ_JOB_DETAILS` (`SCHED_NAME`, `JOB_NAME`, `JOB_GROUP`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of QRTZ_TRIGGERS
+-- ----------------------------
+INSERT INTO `QRTZ_TRIGGERS` VALUES ('AdminClusteredScheduler', 'xxJob', 'DEFAULT', 'xxJob', 'DEFAULT', NULL, 1629610265000, 1629610260000, 5, 'ACQUIRED', 'CRON', 1629430600000, 0, NULL, 2, '');
 
 -- ----------------------------
 -- Table structure for admin_menu
@@ -27,7 +297,7 @@ CREATE TABLE `admin_menu`  (
   `menu_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '菜单名称',
   `menu_icon` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '菜单图标',
   `menu_path` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '菜单路径',
-  `is_show` tinyint(1) NOT NULL COMMENT '是否显示',
+  `is_show` tinyint(1) NOT NULL COMMENT '是否显示（0-隐藏；1-显示）',
   `permission` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '权限标识',
   `menu_no` int NULL DEFAULT NULL COMMENT '菜单编号',
   `version` int NULL DEFAULT NULL COMMENT '版本号',
@@ -39,7 +309,7 @@ CREATE TABLE `admin_menu`  (
   `tenant_id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `pid_index`(`pid`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 33 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜单' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜单' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of admin_menu
@@ -57,6 +327,8 @@ INSERT INTO `admin_menu` VALUES (10, 2, '菜单管理', NULL, '/admin/menu', 1, 
 INSERT INTO `admin_menu` VALUES (11, 2, 'OAuth客户端管理', NULL, '/admin/oauthClient', 1, 'oauth_client_view', 9, 0, 0, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `admin_menu` VALUES (12, -1, '个人中心', '', '/personal/center', 0, '', 98, 0, 0, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `admin_menu` VALUES (13, -1, '个人设置', NULL, '/personal/settings', 0, '', 99, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_menu` VALUES (14, -1, '配置中心', 'ToolOutlined', '/config', 1, '', 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `admin_menu` VALUES (15, 14, '定时任务', NULL, '/config/job', 1, '', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for admin_oauth_client_details
@@ -77,15 +349,15 @@ CREATE TABLE `admin_oauth_client_details`  (
   `additional_information` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '其它信息',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `client_id_index`(`client_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = 'oauth2-client' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = 'oauth2-client' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of admin_oauth_client_details
 -- ----------------------------
-INSERT INTO `admin_oauth_client_details` VALUES (1, 'client', '$2a$10$ngadERbCpEPqPCXKf7vbjesqK9p.wVTTs9.X2wmqjdg0LaOlpofAm', 'client_credentials,password', NULL, NULL, NULL, NULL, 86400, NULL, NULL, NULL);
+INSERT INTO `admin_oauth_client_details` VALUES (1, 'client', '$2a$10$ngadERbCpEPqPCXKf7vbjesqK9p.wVTTs9.X2wmqjdg0LaOlpofAm', 'client_credentials,refresh_token', NULL, NULL, NULL, NULL, 86400, NULL, NULL, NULL);
 INSERT INTO `admin_oauth_client_details` VALUES (2, 'implicit', '$2a$10$ngadERbCpEPqPCXKf7vbjesqK9p.wVTTs9.X2wmqjdg0LaOlpofAm', 'implicit', NULL, 'https://www.baidu.com', NULL, NULL, 86400, NULL, NULL, NULL);
-INSERT INTO `admin_oauth_client_details` VALUES (3, 'password', NULL, 'password,refresh_token', NULL, NULL, NULL, NULL, 86400, 604800, NULL, NULL);
-INSERT INTO `admin_oauth_client_details` VALUES (4, 'code', '$2a$10$ngadERbCpEPqPCXKf7vbjesqK9p.wVTTs9.X2wmqjdg0LaOlpofAm', 'authorization_code,refresh_token', NULL, 'http://localhost:8080/authorized', NULL, NULL, 86400, 604800, 'true', NULL);
+INSERT INTO `admin_oauth_client_details` VALUES (3, 'password', '$2a$10$ngadERbCpEPqPCXKf7vbjesqK9p.wVTTs9.X2wmqjdg0LaOlpofAm', 'password,refresh_token', NULL, NULL, NULL, NULL, 86400, 604800, NULL, NULL);
+INSERT INTO `admin_oauth_client_details` VALUES (4, 'code', '$2a$10$ngadERbCpEPqPCXKf7vbjesqK9p.wVTTs9.X2wmqjdg0LaOlpofAm', 'authorization_code,refresh_token', 'all', 'http://localhost:8080/authorized', NULL, NULL, 86400, 604800, 'true', NULL);
 
 -- ----------------------------
 -- Table structure for admin_organization
@@ -198,7 +470,7 @@ CREATE TABLE `admin_resource`  (
   `tenant_id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `category_id_index`(`category_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '资源' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '资源' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of admin_resource
@@ -234,7 +506,7 @@ CREATE TABLE `admin_resource_action`  (
   `tenant_id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `resource_id_index`(`resource_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '资源动作' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 47 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '资源动作' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of admin_resource_action
@@ -304,7 +576,7 @@ CREATE TABLE `admin_resource_category`  (
   `last_modify_time` datetime NULL DEFAULT NULL COMMENT '最后修改时间',
   `tenant_id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '资源分类' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '资源分类' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of admin_resource_category
@@ -341,7 +613,7 @@ CREATE TABLE `admin_role`  (
   `last_modify_time` datetime NULL DEFAULT NULL COMMENT '最后修改时间',
   `tenant_id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 24 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of admin_role
@@ -476,7 +748,7 @@ CREATE TABLE `admin_user`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `username_index`(`username`) USING BTREE,
   INDEX `org_id_index`(`org_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of admin_user
@@ -693,7 +965,7 @@ CREATE TABLE `admin_white_resource`  (
   `last_modify_time` datetime NULL DEFAULT NULL COMMENT '最后修改时间',
   `tenant_id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '白名单资源' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '白名单资源' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of admin_white_resource

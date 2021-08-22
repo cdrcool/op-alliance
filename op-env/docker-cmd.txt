@@ -209,3 +209,25 @@ docker run -d `
     -p 7071:8081 `
     mongo
 --------------------------------------------------
+
+xxl-job-admin
+--------------------------------------------------
+docker run -d `
+    --network op_net `
+    --hostname xxl-job-admin `
+    --name xxl-job-admin `
+    -p 8090:8080 `
+    -v /d/Workspace/IdeaProjects/onepiece/op-alliance/xxl-job-logs/:/data/applogs `
+    -e PARAMS="--spring.datasource.url=jdbc:mysql://host.docker.internal:3306/xxl_job?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai
+    --spring.datasource.username=root `
+    --spring.datasource.password=root `
+    --spring.mail.host=smtp.qq.com `
+    --spring.mail.port=25 `
+    --spring.mail.username=373652466@qq.com `
+    --spring.mail.password=cdr_3924 `
+    --spring.mail.properties.mail.smtp.auth=true `
+    --spring.mail.properties.mail.smtp.starttls.enable=true `
+    --spring.mail.properties.mail.smtp.starttls.required=true `
+    --spring.mail.properties.mail.smtp.socketFactory.class=javax.net.ssl.SSLSocketFactory" `
+    xuxueli/xxl-job-admin:2.3.0
+--------------------------------------------------
