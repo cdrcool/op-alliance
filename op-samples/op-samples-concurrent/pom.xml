@@ -17,6 +17,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+
         <!-- 使用 log4j2 日志框架 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

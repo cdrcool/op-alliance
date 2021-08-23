@@ -1,5 +1,6 @@
 package com.op.samples.concurrent.task;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,10 +23,10 @@ public class TaskExecutor {
     private final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
             9,
             9,
-            0L,
+            200L,
             TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<>(),
-            new TaskThreadFactory());
+            new ThreadFactoryBuilder().setNameFormat("task-pool-%d").build());
 
     /**
      * 使用 {@link Thread#join()} 执行并发任务
