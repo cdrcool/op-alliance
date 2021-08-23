@@ -17,7 +17,7 @@ public class Task1 implements Callable<String> {
         log.info("execute task-1 begin");
 
         // 模拟任务耗时
-        Thread.sleep(1000);
+        Thread.sleep(5000);
 
         log.info("execute task-1 end");
 

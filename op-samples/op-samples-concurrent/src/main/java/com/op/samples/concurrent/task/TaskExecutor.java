@@ -19,19 +19,23 @@ import java.util.stream.Stream;
  */
 @Slf4j
 public class TaskExecutor {
-    private static final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
+    private final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
             9,
             9,
             0L,
             TimeUnit.MILLISECONDS,
-            new LinkedBlockingQueue<>());
+            new LinkedBlockingQueue<>(),
+            new TaskThreadFactory());
 
     /**
      * 使用 {@link Thread#join()} 执行并发任务
+     * <p>
+     * 需要显示创建线程，因而不能利用线程池以减少资源的消耗
      *
      * @throws InterruptedException 线程中断异常
      * @throws ExecutionException   任务结果获取异常
      */
+    @SuppressWarnings("AlibabaAvoidManuallyCreateThread")
     public void executeByThreadJoin() throws InterruptedException, ExecutionException {
         FutureTask<String> futureTask1 = new FutureTask<>(new Task1());
         FutureTask<String> futureTask2 = new FutureTask<>(new Task2());
@@ -66,7 +70,14 @@ public class TaskExecutor {
         List<Future<String>> results = threadPoolExecutor.invokeAll(Arrays.asList(new Task1(), new Task2(), new Task3()));
 
         // 输出子任务的结果集
-        log.info("results: {}", results);
+        log.info("results: {}", results.stream().map(result -> {
+            try {
+                return result.get();
+            } catch (InterruptedException | ExecutionException e) {
+                log.error("获取任务结果异常", e);
+                return null;
+            }
+        }).collect(Collectors.toList()));
     }
 
     /**
