@@ -193,6 +193,8 @@ public class TaskExecutor {
 
     /**
      * 使用 {@link CompletionService} 执行并发任务
+     * <p>
+     * 采用轮询的方式，可以做到异步非阻塞获取执行结果
      */
     public void executeByCompletionService() {
         CompletionService<String> completionService = new ExecutorCompletionService<>(threadPoolExecutor);
@@ -242,10 +244,16 @@ public class TaskExecutor {
             }
         }, threadPoolExecutor);
 
+        // 方式1
         List<String> results = Stream.of(future1, future2, future3)
                 .map(CompletableFuture::join)
                 .collect(Collectors.toList());
-        System.out.println("所有任务已执行结束，任务结果：" + results);
+        log.info("所有任务已执行结束，任务结果：{}", results);
+
+        // 方式2
+        CompletableFuture.allOf(future1, future2, future3)
+                .thenRun(() -> log.info("所有任务已执行结束，任务结果：{}", results))
+                .join();
     }
 
     /**
@@ -260,6 +268,6 @@ public class TaskExecutor {
                 log.error("执行任务：{}异常", task.getClass().getSimpleName(), e);
             }
         });
-        System.out.println("所有任务已执行结束，任务结果：" + results);
+        log.info("所有任务已执行结束，任务结果：{}", results);
     }
 }
