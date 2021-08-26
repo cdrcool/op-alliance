@@ -1,6 +1,6 @@
 import React, {FC, useRef} from 'react';
 import {useHistory} from "react-router-dom";
-import {Button, message, Popconfirm, Tag} from 'antd';
+import {Button, message, Popconfirm, Tag, Tooltip} from 'antd';
 import * as Icon from "@ant-design/icons";
 import {ExportOutlined} from "@ant-design/icons";
 import {PageContainer} from "@ant-design/pro-layout";
@@ -54,10 +54,12 @@ const ResourceCategoryListPage: FC = () => {
                             </Button>
                         </Authority>,
                         <Authority value="resource_category_save">
-                            <Button key="refresh"
-                                    onClick={() => initResourcePathPermissions().then(() => message.success("同步资源路径权限缓存成功"))}>
-                                同步资源路径权限缓存
-                            </Button>
+                            <Tooltip title="修改资源配置后，需手动同步缓存">
+                                <Button key="refresh"
+                                        onClick={() => initResourcePathPermissions().then(() => message.success("同步资源路径权限缓存成功"))}>
+                                    同步资源路径权限缓存
+                                </Button>
+                            </Tooltip>
                         </Authority>,
                     ];
                 }}
