@@ -12,6 +12,7 @@
     <artifactId>op-boot</artifactId>
     <packaging>pom</packaging>
     <modules>
+        <module>op-boot-mall-starter</module>
     </modules>
 
     <properties>
