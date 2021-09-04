@@ -12,11 +12,12 @@
     <artifactId>op-samples</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>op-async-request-samples</module>
-        <module>op-rabbitmq-samples</module>
-        <module>op-swagger-samples</module>
-        <module>op-mybatis-geneator-samples</module>
-        <module>op-admin-samples</module>
+        <module>op-samples-admin</module>
+        <module>op-samples-async-request</module>
+        <module>op-samples-concurrent</module>
+        <module>op-samples-mybatis-geneator</module>
+        <module>op-samples-rabbitmq</module>
+        <module>op-samples-swagger</module>
     </modules>
 
     <properties>

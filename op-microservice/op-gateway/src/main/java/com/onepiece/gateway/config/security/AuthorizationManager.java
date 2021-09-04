@@ -58,6 +58,11 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
 
         PathMatcher pathMatcher = new AntPathMatcher();
 
+        // 对跨域的预检请求直接放行
+        if (request.getMethod() == HttpMethod.OPTIONS) {
+            return Mono.just(new AuthorizationDecision(true));
+        }
+
         // 白名单路径直接放行
         List<String> whiteResources = (List<String>) redisTemplate.opsForValue().get(WHITE_RESOURCE_KEY);
         if (whiteResources == null) {
@@ -66,11 +71,6 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
         if (!CollectionUtils.isEmpty(whiteResources) && whiteResources.stream()
                 .map(url -> url.replace(REMOVE_AUTHORIZATION_FLAG, ""))
                 .anyMatch(pattern -> pathMatcher.match(pattern, uri.getPath()))) {
-            return Mono.just(new AuthorizationDecision(true));
-        }
-
-        // 对跨域的预检请求直接放行
-        if (request.getMethod() == HttpMethod.OPTIONS) {
             return Mono.just(new AuthorizationDecision(true));
         }
 

@@ -24,8 +24,12 @@ import java.util.Map;
 @RequestMapping("/auth")
 @RestController
 public class AuthenticationController {
+    private static final String TOKEN_TYPE = "Bearer";
     private static final String CLIENT_ID = "password";
     private static final String CLIENT_SECRET = "secret";
+    private static final String GRANT_TYPE_PASSWORD = "password";
+    private static final String GRANT_TYPE_REFRESH = "refresh_token";
+    private static final String SCOPE = "scope";
     private final TokenEndpoint tokenEndpoint;
 
     public AuthenticationController(TokenEndpoint tokenEndpoint) {
@@ -40,8 +44,8 @@ public class AuthenticationController {
         Map<String, String> parameters = new HashMap<>(4);
         parameters.put("username", request.getUsername());
         parameters.put("password", request.getPassword());
-        parameters.put("grant_type", "password");
-        parameters.put("scope", "all");
+        parameters.put("grant_type", GRANT_TYPE_PASSWORD);
+        parameters.put("scope", SCOPE);
 
         // 请求 Oauth2 Token
         Principal principal = new UsernamePasswordAuthenticationToken(CLIENT_ID, null, new ArrayList<>());
@@ -53,7 +57,7 @@ public class AuthenticationController {
         // 构造请求响应
         return OauthTokenResponse.builder()
                 .accessToken(accessToken.getValue())
-                .tokenType("Bearer")
+                .tokenType(TOKEN_TYPE)
                 .refreshToken(accessToken.getRefreshToken().getValue())
                 .expiresIn(accessToken.getExpiresIn())
                 .build();
@@ -67,9 +71,9 @@ public class AuthenticationController {
         Map<String, String> parameters = new HashMap<>(4);
         parameters.put("client_id", CLIENT_ID);
         parameters.put("client_secret", CLIENT_SECRET);
-        parameters.put("grant_type", "refresh_token");
+        parameters.put("grant_type", GRANT_TYPE_REFRESH);
         parameters.put("refresh_token", refreshToken);
-        parameters.put("scope", "all");
+        parameters.put("scope", SCOPE);
 
         // 刷新 Oauth2 Token
         Principal principal = new UsernamePasswordAuthenticationToken(CLIENT_ID, null, new ArrayList<>());
@@ -81,7 +85,7 @@ public class AuthenticationController {
         // 构造请求响应
         return OauthTokenResponse.builder()
                 .accessToken(accessToken.getValue())
-                .tokenType("Bearer")
+                .tokenType(TOKEN_TYPE)
                 .refreshToken(accessToken.getRefreshToken().getValue())
                 .expiresIn(accessToken.getExpiresIn())
                 .build();

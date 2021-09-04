@@ -1,6 +1,6 @@
 import React, {FC, useRef} from "react";
 import {useHistory} from "react-router-dom";
-import {Button, Dropdown, Menu, message, Popconfirm, Space} from "antd";
+import {Button, Dropdown, Menu, message, Popconfirm, Space, Tooltip} from "antd";
 import {ExportOutlined, MinusOutlined, PlusOutlined} from "@ant-design/icons";
 import {PageContainer} from "@ant-design/pro-layout";
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
@@ -133,10 +133,12 @@ const WhiteResourceListPage: FC = () => {
                         </Button>
                     </Authority>,
                     <Authority value="white_resource_save">
-                        <Button key="refresh"
-                                onClick={() => initWhiteResourcePaths().then(() => message.success("同步白名单资源缓存成功"))}>
-                            同步白名单资源缓存
-                        </Button>
+                        <Tooltip title="修改白名单资源配置后，需手动同步缓存">
+                            <Button key="refresh"
+                                    onClick={() => initWhiteResourcePaths().then(() => message.success("同步白名单资源缓存成功"))}>
+                                同步白名单资源缓存
+                            </Button>
+                        </Tooltip>
                     </Authority>,
                 ]}
                 tableAlertOptionRender={({selectedRowKeys}) => {

@@ -43,6 +43,7 @@ import JobDetailPage from "../pages/job/detail";
 import Authority from "../components/Authority";
 import UnauthorizedPage from "../pages/403";
 import NoFoundPage from "../pages/404";
+import RedirectExternal from "../components/RedirectExternal";
 
 const routes = [
     {
@@ -272,19 +273,26 @@ const routes = [
                 render: () => <Authority value="white_resource_view" redirect><WhiteResourceDetailPage/></Authority>,
             },
             {
-                path: "/config/job",
+                path: "/job/quartzJob",
                 exact: true,
                 component: JobListPage,
             },
             {
-                path: "/config/job/edit/:id?",
+                path: "/job/quartzJob/edit/:id?",
                 exact: true,
                 component: JobEditPage,
             },
             {
-                path: "/config/job/detail/:id",
+                path: "/job/quartzJob/detail/:id",
                 exact: true,
                 component: JobDetailPage,
+            },
+            {
+                path: "/job/xxlJob",
+                exact: true,
+                render: () => (
+                    <RedirectExternal url = "http://localhost:8090/xxl-job-admin/"/>
+                ),
             },
             {
                 path: "/403",
