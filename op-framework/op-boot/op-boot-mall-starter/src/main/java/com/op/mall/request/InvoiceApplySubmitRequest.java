@@ -1,5 +1,6 @@
 package com.op.mall.request;
 
+import com.op.mall.constans.MallMethodConstants;
 import com.op.mall.constans.MallType;
 import com.op.mall.response.InvoiceApplySubmitResponse;
 
@@ -18,7 +19,7 @@ public class InvoiceApplySubmitRequest extends MallRequest<InvoiceApplySubmitRes
 
     @Override
     public String getRequestMethod() {
-        return null;
+        return MallMethodConstants.INVOICE_APPLY_SUBMIT;
     }
 
     @Override

@@ -15,6 +15,7 @@
         <module>op-samples-admin</module>
         <module>op-samples-async-request</module>
         <module>op-samples-concurrent</module>
+        <module>op-samples-job</module>
         <module>op-samples-mybatis-geneator</module>
         <module>op-samples-rabbitmq</module>
         <module>op-samples-swagger</module>
