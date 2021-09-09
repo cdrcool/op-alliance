@@ -9,11 +9,38 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>op-boot-mall-purchase-starter</artifactId>
+    <artifactId>op-boot-mall-starter</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.mall.jd</groupId>
+            <artifactId>open-api-sdk</artifactId>
+            <version>2.0</version>
+            <scope>system</scope>
+            <systemPath>D:/Workspace/IdeaProjects/onepiece/op-alliance/op-libaries/open-api-sdk-2.0-jdk1.8.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.mall.sn</groupId>
+            <artifactId>suning-sdk</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>D:/Workspace/IdeaProjects/onepiece/op-alliance/op-libaries/suning-sdk-java-standard-1.0-jdk1.8.jar</systemPath>
+        </dependency>
+    </dependencies>
 </project>
