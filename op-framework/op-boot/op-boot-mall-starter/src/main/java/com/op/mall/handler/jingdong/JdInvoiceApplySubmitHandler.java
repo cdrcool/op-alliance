@@ -2,8 +2,6 @@ package com.op.mall.handler.jingdong;
 
 import com.jd.open.api.sdk.JdClient;
 import com.op.mall.constans.MallMethodConstants;
-import com.op.mall.constans.MallType;
-import com.op.mall.handler.MallRequestHandler;
 import com.op.mall.handler.MallRequestHandlerRegistry;
 import com.op.mall.request.InvoiceApplySubmitRequest;
 import com.op.mall.request.MallRequest;
@@ -14,7 +12,7 @@ import com.op.mall.response.MallResponse;
  *
  * @author chengdr01
  */
-public class JdInvoiceApplySubmitHandler implements MallRequestHandler {
+public class JdInvoiceApplySubmitHandler implements JdMallRequestHandler {
     /**
      * 京东 sdk client
      */
@@ -32,11 +30,11 @@ public class JdInvoiceApplySubmitHandler implements MallRequestHandler {
 
     @Override
     public void postConstruct() {
-        MallRequestHandlerRegistry.addHandler(MallType.JINGDONG, MallMethodConstants.INVOICE_APPLY_SUBMIT, this);
+        MallRequestHandlerRegistry.addHandler(mallType(), MallMethodConstants.INVOICE_APPLY_SUBMIT, this);
     }
 
     @Override
     public void preDestroy() {
-        MallRequestHandlerRegistry.removeHandler(MallType.JINGDONG, MallMethodConstants.INVOICE_APPLY_SUBMIT);
+        MallRequestHandlerRegistry.removeHandler(mallType(), MallMethodConstants.INVOICE_APPLY_SUBMIT);
     }
 }
