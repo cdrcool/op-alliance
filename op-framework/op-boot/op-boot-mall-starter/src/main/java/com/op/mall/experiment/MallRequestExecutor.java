@@ -1,0 +1,27 @@
+package com.op.mall.experiment;
+
+import com.op.mall.request.MallRequest;
+import com.op.mall.response.MallResponse;
+
+import java.util.concurrent.ConcurrentHashMap;
+
+/**
+ * @author chengdr01
+ */
+public class MallRequestExecutor {
+    private static final ConcurrentHashMap<String, MallRequestExecutorStrategy> STRATEGY_MAP = new ConcurrentHashMap<>();
+
+    /**
+     * 电商类型
+     */
+    private final String mallType;
+
+    public MallRequestExecutor(String mallType) {
+        this.mallType = mallType;
+    }
+
+    public <T extends MallResponse> T handle(MallRequest<T> mallRequest) {
+        MallRequestExecutorStrategy strategy = STRATEGY_MAP.get(mallType);
+        return strategy.handle(mallRequest);
+    }
+}
