@@ -4,6 +4,8 @@ import com.op.mall.request.MallRequest;
 import com.op.mall.response.MallResponse;
 
 /**
+ * 电商请求执行策略接口
+ *
  * @author chengdr01
  */
 public interface MallRequestExecutorStrategy {

@@ -6,6 +6,8 @@ import com.op.mall.response.MallResponse;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * 电商请求执行类
+ *
  * @author chengdr01
  */
 public class MallRequestExecutor {
