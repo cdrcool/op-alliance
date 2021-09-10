@@ -16,14 +16,14 @@ public class MallRequestExecutor {
     /**
      * 电商类型
      */
-    private final String mallType;
-
-    public MallRequestExecutor(String mallType) {
-        this.mallType = mallType;
-    }
+    private String mallType;
 
     public <T extends MallResponse> T handle(MallRequest<T> mallRequest) {
         MallRequestExecutorStrategy strategy = STRATEGY_MAP.get(mallType);
         return strategy.handle(mallRequest);
+    }
+
+    public void setMallType(String mallType) {
+        this.mallType = mallType;
     }
 }

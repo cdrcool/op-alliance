@@ -15,7 +15,7 @@ public interface MallRequestHandlerProxy extends MallRequestHandler {
      * @param mallType 电商类型
      * @return true or false
      */
-    boolean supports(MallType mallType);
+    boolean supports(String mallType);
 
     /**
      * 对象创建后要执行的动作

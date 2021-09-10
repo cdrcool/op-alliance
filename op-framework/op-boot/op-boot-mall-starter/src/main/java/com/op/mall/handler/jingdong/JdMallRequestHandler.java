@@ -15,7 +15,7 @@ public interface JdMallRequestHandler extends MallRequestHandler {
      *
      * @return 电商类型
      */
-    default MallType mallType() {
-        return MallType.JINGDONG;
+    default String mallType() {
+        return MallType.JINGDONG.getValue();
     }
 }

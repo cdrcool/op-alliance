@@ -21,7 +21,7 @@ public class JdMallRequestHandlerProxy implements MallRequestHandlerProxy {
     }
 
     @Override
-    public boolean supports(MallType mallType) {
-        return MallType.JINGDONG.equals(mallType);
+    public boolean supports(String mallType) {
+        return MallType.JINGDONG.getValue().equals(mallType);
     }
 }

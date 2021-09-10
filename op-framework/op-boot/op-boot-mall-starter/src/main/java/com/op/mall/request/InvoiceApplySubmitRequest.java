@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public class InvoiceApplySubmitRequest extends MallRequest<InvoiceApplySubmitResponse> {
 
-    protected InvoiceApplySubmitRequest(MallType mallType) {
+    public InvoiceApplySubmitRequest(String mallType) {
         super(mallType);
     }
 

@@ -15,7 +15,12 @@ public abstract class MallResponse implements Serializable {
     /**
      * 电商类型
      */
-    private MallType mallType;
+    private String mallType;
+
+    /**
+     * 是否成功
+     */
+    private boolean success;
 
     /**
      * 错误码

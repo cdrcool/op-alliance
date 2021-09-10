@@ -14,9 +14,14 @@ public abstract class MallRequest<T extends MallResponse> {
     /**
      * 电商类型
      */
-    private final MallType mallType;
+    private final String mallType;
 
-    protected MallRequest(MallType mallType) {
+    /**
+     * 请求参数
+     */
+    private Map<String, Object> requestParams;
+
+    public MallRequest(String mallType) {
         this.mallType = mallType;
     }
 
@@ -25,8 +30,16 @@ public abstract class MallRequest<T extends MallResponse> {
      *
      * @return 电商类型
      */
-    public final MallType getMallType() {
+    public final String getMallType() {
         return this.mallType;
+    }
+
+    public Map<String, Object> getRequestParams() {
+        return requestParams;
+    }
+
+    public void setRequestParams(Map<String, Object> requestParams) {
+        this.requestParams = requestParams;
     }
 
     /**
@@ -42,11 +55,4 @@ public abstract class MallRequest<T extends MallResponse> {
      * @return 请求响应类的 class
      */
     public abstract Class<T> getResponseClass();
-
-    /**
-     * 返回请求参数
-     *
-     * @return 请求参数
-     */
-    public abstract Map<String, Object> getRequestParams();
 }

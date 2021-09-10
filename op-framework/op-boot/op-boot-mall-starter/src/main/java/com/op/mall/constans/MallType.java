@@ -15,34 +15,28 @@ public enum MallType {
     /**
      * 京东电商
      */
-    JINGDONG(1, "京东", "jd"),
+    JINGDONG("jingdong", "京东"),
 
     /**
      * 苏宁电商
      */
-    SUNING(2, "苏宁", "sn"),
+    SUNING("suning", "苏宁"),
 
     ;
 
     /**
      * 值
      */
-    private final Integer value;
+    private final String value;
 
     /**
      * 名称
      */
     private final String name;
 
-    /**
-     * 编码
-     */
-    private final String code;
-
-    MallType(Integer value, String name, String code) {
+    MallType(String value, String name) {
         this.value = value;
         this.name = name;
-        this.code = code;
     }
 
     /**
@@ -51,7 +45,7 @@ public enum MallType {
      * @param value 值
      * @return 枚举值
      */
-    public static MallType getByValue(Integer value) {
+    public static MallType getByValue(String value) {
         return Arrays.stream(values()).filter(item -> item.value.equals(value)).findAny()
                 .orElseThrow(() -> new MallException("不支持的电商类型枚举值：" + value));
     }
