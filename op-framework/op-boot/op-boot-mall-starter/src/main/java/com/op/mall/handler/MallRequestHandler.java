@@ -1,13 +1,12 @@
 package com.op.mall.handler;
 
 import com.op.mall.request.MallRequest;
-import com.op.mall.constans.MallType;
 import com.op.mall.response.MallResponse;
 
 /**
- * 电商请求处理接口
+ * 电商请求处理类接口
  *
- * @author chengdr01
+ * @author cdrcool
  */
 public interface MallRequestHandler {
 
@@ -20,10 +19,12 @@ public interface MallRequestHandler {
     <T extends MallResponse> T handle(MallRequest<T> mallRequest);
 
     /**
-     * 如果可以处理当前电商请求对象，就返回 true
-     *
-     * @param mallType 电商类型
-     * @return true or false
+     * 对象创建后要执行的动作
      */
-    boolean supports(MallType mallType);
+    void postConstruct();
+
+    /**
+     * 对象销毁前要执行的动作
+     */
+    void preDestroy();
 }

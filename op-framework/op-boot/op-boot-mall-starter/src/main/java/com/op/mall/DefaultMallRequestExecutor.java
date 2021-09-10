@@ -1,7 +1,7 @@
 package com.op.mall;
 
 import com.op.mall.exception.MallException;
-import com.op.mall.handler.MallRequestHandler;
+import com.op.mall.handler.MallRequestHandlerProxy;
 import com.op.mall.request.MallRequest;
 import com.op.mall.response.MallResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -24,18 +24,18 @@ import java.util.stream.IntStream;
 @Slf4j
 public class DefaultMallRequestExecutor implements MallRequestExecutor {
     private final ThreadPoolExecutor threadPoolExecutor;
-    private final List<MallRequestHandler> handlers;
+    private final List<MallRequestHandlerProxy> handlerProxies;
 
-    public DefaultMallRequestExecutor(ThreadPoolExecutor threadPoolExecutor, List<MallRequestHandler> handlers) {
+    public DefaultMallRequestExecutor(ThreadPoolExecutor threadPoolExecutor, List<MallRequestHandlerProxy> handlerProxies) {
         this.threadPoolExecutor = threadPoolExecutor;
-        this.handlers = handlers;
+        this.handlerProxies = handlerProxies;
     }
 
     @Override
     public <T extends MallResponse> T execute(MallRequest<T> mallRequest) {
-        Optional<MallRequestHandler> optional = handlers.stream()
+        Optional<MallRequestHandlerProxy> optional = handlerProxies.stream()
                 .filter(handler -> handler.supports(mallRequest.getMallType())).findFirst();
-        MallRequestHandler handler = optional.orElseThrow(() -> new MallException("不支持的电商类型：" + mallRequest.getMallType()));
+        MallRequestHandlerProxy handler = optional.orElseThrow(() -> new MallException("不支持的电商类型：" + mallRequest.getMallType()));
         T mallResponse = handler.handle(mallRequest);
         mallResponse.setMallType(mallRequest.getMallType());
         return mallResponse;
