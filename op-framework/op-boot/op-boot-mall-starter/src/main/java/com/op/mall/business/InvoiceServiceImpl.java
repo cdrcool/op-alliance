@@ -1,8 +1,11 @@
 package com.op.mall.business;
 
+import com.jd.open.api.sdk.request.vopfp.VopInvoiceSubmitInvoiceApplyRequest;
 import com.op.mall.MallRequestExecutor;
+import com.op.mall.constans.MallMethodConstants;
 import com.op.mall.constans.MallType;
 import com.op.mall.request.InvoiceApplySubmitRequest;
+import com.op.mall.request.MallRequestAction;
 import com.op.mall.response.InvoiceApplySubmitResponse;
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,13 +45,14 @@ public class InvoiceServiceImpl implements InvoiceService {
         // 模拟获取订单的开票信息
         OrderInvoiceInfo invoiceInfo = new OrderInvoiceInfo();
 
-        // 3. 构造电商的发票申请提交参数
-        Map<String, Supplier<Map<String, Object>>> requestParamsMap = buildMallInvoiceApplySubmitParams(order, invoiceInfo);
+        // 3. 构造发票申请提交的请求对象提供者 map
+        Map<String, Supplier<InvoiceApplySubmitRequest>> requestSupplierMap = new HashMap<>(8);
+        requestSupplierMap.put(MallType.JINGDONG.getValue(), () -> buildJdInvoiceApplySubmitParams(order, invoiceInfo));
+        requestSupplierMap.put(MallType.SUNING.getValue(), () -> buildSnInvoiceApplySubmitParams(order, invoiceInfo));
 
-        // 4. 创建电商发票申请提交对象 -> 发起请求
-        InvoiceApplySubmitRequest request = new InvoiceApplySubmitRequest(order.getMallType());
-        request.setRequestParams(requestParamsMap.getOrDefault(order.getMallType(), () -> new HashMap<>(0)).get());
-        InvoiceApplySubmitResponse response = mallRequestExecutor.execute(request);
+        // 4. 设置电商请求动作 -> 发起电商请求
+        MallRequestAction action = new MallRequestAction(order.getMallType(), MallMethodConstants.INVOICE_APPLY_SUBMIT);
+        InvoiceApplySubmitResponse response = mallRequestExecutor.execute(action, requestSupplierMap);
         if (!response.isSuccess()) {
             // 请求失败 -> 输出异常日志 + 抛出异常
             String message = MessageFormat.format("提交发票申请异常，错误码：{0}，错误描述{1}",
@@ -57,63 +61,50 @@ public class InvoiceServiceImpl implements InvoiceService {
             throw new BusinessException(message);
         }
 
-        // 4. 请求成功 -> 保存发票申请提交请求 + 更新供货单状态为开票中
+        // 5. 请求成功 -> 保存发票申请提交请求 + 更新供货单状态为开票中
     }
 
-    /**
-     * 构建电商的发票申请提交参数
-     *
-     * @param order       订单及订单下的供货单信息
-     * @param invoiceInfo 订单的开票信息
-     * @return 电商的发票申请提交参数（key：电商类型；value：发票申请提交参数）
-     */
-    private Map<String, Supplier<Map<String, Object>>> buildMallInvoiceApplySubmitParams(OrderInfo order, OrderInvoiceInfo invoiceInfo) {
-        Map<String, Supplier<Map<String, Object>>> map = new HashMap<>(8);
-        map.put(MallType.JINGDONG.getValue(), () -> buildJdInvoiceApplySubmitParams(order, invoiceInfo));
-        map.put(MallType.SUNING.getValue(), () -> buildSnInvoiceApplySubmitParams(order, invoiceInfo));
-        return map;
-    }
-
-    private Map<String, Object> buildJdInvoiceApplySubmitParams(OrderInfo order, OrderInvoiceInfo invoiceInfo) {
+    private InvoiceApplySubmitRequest buildJdInvoiceApplySubmitParams(OrderInfo order, OrderInvoiceInfo invoiceInfo) {
         List<SupplyOrderInfo> supplyOrders = order.getSupplyOrders();
 
-        Map<String, Object> params = new HashMap<>(32);
-        params.put("invoiceOrg", 10);
-        params.put("bizInvoiceContent", 1);
-        params.put("markId", "MingYuan" + UUID.randomUUID().toString().replace("-", ""));
-        params.put("settlementId", String.valueOf(order.getOrderId()));
-        params.put("subOrderIds", supplyOrders.stream().map(SupplyOrderInfo::getThirdSubOrderId).collect(Collectors.toList()));
-        params.put("invoiceType", invoiceInfo.getInvoiceType());
-        params.put("invoiceDate", new SimpleDateFormat("yyyy-MM-dd").format(invoiceInfo.getInvoiceDate()));
-        params.put("title", invoiceInfo.getInvoiceTitle());
-        params.put("enterpriseTaxpayer", invoiceInfo.getEnterpriseTaxpayer());
-        params.put("enterpriseRegPhone", invoiceInfo.getEnterpriseRegTel());
-        params.put("enterpriseRegAddress", invoiceInfo.getEnterpriseRegAddress());
-        params.put("enterpriseBankName", invoiceInfo.getEnterpriseBankName());
-        params.put("enterpriseBankAccount", invoiceInfo.getEnterpriseBankAccount());
-        params.put("billToer", invoiceInfo.getBillReceiver());
-        params.put("billToContact", invoiceInfo.getBillToContact());
-        params.put("billToAddress", invoiceInfo.getAddress());
-        params.put("totalBatchInvoiceAmount", supplyOrders.stream().map(SupplyOrderInfo::getTotalPrice).reduce(BigDecimal::add));
-        params.put("totalBatch", 1);
-        params.put("currentBatch", 1);
-        params.put("invoiceNum", order.getSupplyOrders().size());
-        params.put("invoicePrice", supplyOrders.stream().map(SupplyOrderInfo::getTotalPrice).reduce(BigDecimal::add));
-        params.put("Remark", "");
+        VopInvoiceSubmitInvoiceApplyRequest jdRequest = new VopInvoiceSubmitInvoiceApplyRequest();
+        jdRequest.setInvoiceOrg(10);
+        jdRequest.setBizInvoiceContent(1);
+        jdRequest.setMarkId("MingYuan" + UUID.randomUUID().toString().replace("-", ""));
+        jdRequest.setSettlementId(String.valueOf(order.getOrderId()));
+        jdRequest.setSupplierOrder(supplyOrders.stream().map(SupplyOrderInfo::getThirdSubOrderId).map(String::valueOf).collect(Collectors.joining()));
+        jdRequest.setInvoiceType(invoiceInfo.getInvoiceType());
+        jdRequest.setInvoiceDate(new SimpleDateFormat("yyyy-MM-dd").format(invoiceInfo.getInvoiceDate()));
+        jdRequest.setTitle(invoiceInfo.getInvoiceTitle());
+        jdRequest.setEnterpriseTaxpayer(invoiceInfo.getEnterpriseTaxpayer());
+        jdRequest.setEnterpriseRegPhone(invoiceInfo.getEnterpriseRegTel());
+        jdRequest.setEnterpriseRegAddress(invoiceInfo.getEnterpriseRegAddress());
+        jdRequest.setEnterpriseBankName(invoiceInfo.getEnterpriseBankName());
+        jdRequest.setEnterpriseBankAccount(invoiceInfo.getEnterpriseBankAccount());
+        jdRequest.setBillToer(invoiceInfo.getBillReceiver());
+        jdRequest.setBillToContact(invoiceInfo.getBillToContact());
+        jdRequest.setBillToAddress(invoiceInfo.getAddress());
+        jdRequest.setTotalBatchInvoiceAmount(supplyOrders.stream().map(SupplyOrderInfo::getTotalPrice).reduce(new BigDecimal("0"), BigDecimal::add));
+        jdRequest.setTotalBatch(1);
+        jdRequest.setCurrentBatch(1);
+        jdRequest.setInvoiceNum(order.getSupplyOrders().size());
+        jdRequest.setInvoicePrice(supplyOrders.stream().map(SupplyOrderInfo::getTotalPrice).reduce(new BigDecimal("0"), BigDecimal::add));
+        jdRequest.setInvoiceRemark("");
 
         // 如果是专用发票，还需传递四级地址信息
         if (InvoiceType.TAX_INVOICE.getValue().equals(invoiceInfo.getInvoiceType())) {
             // 省去了地址编码转换
-            params.put("billToProvince", invoiceInfo.getProvinceCode());
-            params.put("billToCity", invoiceInfo.getCityCode());
-            params.put("billToCounty", invoiceInfo.getCountyCode());
-            params.put("billToTown", invoiceInfo.getTownCode());
+            jdRequest.setBillToProvince(invoiceInfo.getProvinceCode());
+            jdRequest.setBillToCity(invoiceInfo.getCityCode());
+            jdRequest.setBillToCounty(invoiceInfo.getCountyCode());
+            jdRequest.setBillToTown(invoiceInfo.getTownCode());
         }
 
-        return params;
+        return new InvoiceApplySubmitRequest(jdRequest);
     }
 
-    private Map<String, Object> buildSnInvoiceApplySubmitParams(OrderInfo order, OrderInvoiceInfo invoiceInfo) {
-        return new HashMap<>(32);
+    private InvoiceApplySubmitRequest buildSnInvoiceApplySubmitParams(OrderInfo order, OrderInvoiceInfo invoiceInfo) {
+        // 待补充
+        return new InvoiceApplySubmitRequest(null);
     }
 }

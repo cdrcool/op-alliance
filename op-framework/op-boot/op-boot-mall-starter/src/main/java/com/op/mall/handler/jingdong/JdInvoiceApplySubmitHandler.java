@@ -1,17 +1,16 @@
 package com.op.mall.handler.jingdong;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jd.open.api.sdk.JdClient;
 import com.jd.open.api.sdk.request.vopfp.VopInvoiceSubmitInvoiceApplyRequest;
-import com.op.mall.constans.MallMethodConstants;
-import com.op.mall.handler.MallRequestHandlerRegistry;
+import com.jd.open.api.sdk.response.vopfp.VopInvoiceSubmitInvoiceApplyResponse;
 import com.op.mall.request.InvoiceApplySubmitRequest;
 import com.op.mall.request.MallRequest;
+import com.op.mall.response.InvoiceApplySubmitResponse;
 import com.op.mall.response.MallResponse;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.util.Map;
+import java.text.MessageFormat;
 
 /**
  * 京东发票申请提交处理类
@@ -19,43 +18,38 @@ import java.util.Map;
  * @author chengdr01
  */
 @Slf4j
-public class JdInvoiceApplySubmitHandler implements JdMallRequestHandler {
-    /**
-     * 京东 sdk client
-     */
-    private final JdClient jdClient;
+public class JdInvoiceApplySubmitHandler extends JdMallRequestHandler {
 
     public JdInvoiceApplySubmitHandler(JdClient jdClient) {
-        this.jdClient = jdClient;
+        super(jdClient);
     }
 
     @Override
-    public <T extends MallResponse> T handle(MallRequest<T> mallRequest) {
-        InvoiceApplySubmitRequest request = (InvoiceApplySubmitRequest) mallRequest;
-        Map<String, Object> requestParams = request.getRequestParams();
+    public <T extends MallRequest<R>, R extends MallResponse> R handle(T request) {
+        // 1. 转换为京东电商请求对象
+        InvoiceApplySubmitRequest concreteRequest = (InvoiceApplySubmitRequest) request;
+        Object requestObj = concreteRequest.getRequestObj();
+        VopInvoiceSubmitInvoiceApplyRequest jdRequest = (VopInvoiceSubmitInvoiceApplyRequest) requestObj;
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        VopInvoiceSubmitInvoiceApplyRequest jdRequest = null;
+        // 2. 执行京东电商请求
         try {
-            jdRequest = objectMapper.readValue(objectMapper.writeValueAsBytes(requestParams), VopInvoiceSubmitInvoiceApplyRequest.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            jdClient.execute(jdRequest);
+            VopInvoiceSubmitInvoiceApplyResponse jdResponse = getJdClient().execute(jdRequest);
         } catch (Exception e) {
-            e.printStackTrace();
+            String appJsonParams;
+            try {
+                appJsonParams = jdRequest.getAppJsonParams();
+            } catch (IOException ioException) {
+                log.error("获取京东电商请求参数异常", e);
+                appJsonParams = "";
+            }
+            String message = MessageFormat.format("执行京东电商请求失败，请求方法：{0}，请求参数：{1}",
+                    jdRequest.getApiMethod(), appJsonParams);
+            return new MallResponse.ErrorBuilder().errorMsg(message).build(request.getResponseClass());
         }
-        return null;
-    }
 
-    @Override
-    public void postConstruct() {
-        MallRequestHandlerRegistry.addHandler(mallType(), MallMethodConstants.INVOICE_APPLY_SUBMIT, this);
-    }
-
-    @Override
-    public void preDestroy() {
-        MallRequestHandlerRegistry.removeHandler(mallType(), MallMethodConstants.INVOICE_APPLY_SUBMIT);
+        // 3. 解析为标准电商请求响应
+        // 模拟京东电商请求响应解析
+        InvoiceApplySubmitResponse response = new InvoiceApplySubmitResponse();
+        return (R) response;
     }
 }

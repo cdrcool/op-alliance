@@ -1,8 +1,7 @@
 package com.op.mall.handler;
 
-import com.op.mall.constans.MallType;
+import com.op.mall.request.MallRequestAction;
 
-import java.text.MessageFormat;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -11,21 +10,17 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author cdrcool
  */
 public class MallRequestHandlerRegistry {
-    private static final ConcurrentHashMap<String, MallRequestHandler> STORE = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<MallRequestAction, MallRequestHandler> STORE = new ConcurrentHashMap<>();
 
-    public static void addHandler(String mallType, String method, MallRequestHandler handler) {
-        STORE.put(formatKey(mallType, method), handler);
+    public static void addHandler(MallRequestAction action, MallRequestHandler handler) {
+        STORE.put(action, handler);
     }
 
-    public static void removeHandler(String mallType, String method) {
-        STORE.remove(formatKey(mallType, method));
+    public static void removeHandler(MallRequestAction action) {
+        STORE.remove(action);
     }
 
-    public static MallRequestHandler getHandler(String mallType, String method) {
-        return STORE.get(formatKey(mallType, method));
-    }
-
-    private static String formatKey(String mallType, String method) {
-        return MessageFormat.format("{0}-{1}", mallType, method);
+    public static MallRequestHandler getHandler(MallRequestAction action) {
+        return STORE.get(action);
     }
 }
