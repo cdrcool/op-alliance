@@ -69,7 +69,7 @@ public abstract class MallResponse implements Serializable {
             try {
                 response = responseClass.newInstance();
             } catch (InstantiationException | IllegalAccessException e) {
-                log.error("示例化请求相应类：【" + responseClass.getName() + "】异常", e);
+                log.error("实例化请求响应类：【" + responseClass.getName() + "】异常", e);
                 return null;
             }
             response.setMallType(this.mallType);

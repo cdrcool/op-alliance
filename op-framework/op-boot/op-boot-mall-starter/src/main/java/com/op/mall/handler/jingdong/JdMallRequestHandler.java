@@ -1,6 +1,6 @@
 package com.op.mall.handler.jingdong;
 
-import com.jd.open.api.sdk.JdClient;
+import com.op.mall.client.jingdong.JdMallClient;
 import com.op.mall.handler.MallRequestHandler;
 import lombok.Getter;
 
@@ -12,11 +12,11 @@ import lombok.Getter;
 @Getter
 public abstract class JdMallRequestHandler implements MallRequestHandler {
     /**
-     * 京东 sdk client
+     * 京东电商 client
      */
-    private final JdClient jdClient;
+    private final JdMallClient jdMallClient;
 
-    public JdMallRequestHandler(JdClient jdClient) {
-        this.jdClient = jdClient;
+    public JdMallRequestHandler(JdMallClient jdMallClient) {
+        this.jdMallClient = jdMallClient;
     }
 }
