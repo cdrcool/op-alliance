@@ -7,7 +7,7 @@ import com.op.mall.constans.MallType;
  *
  * @author cdrcool
  */
-public interface MallAuthenticationProvider<T extends MallAuthentication> {
+public interface MallAuthenticationProvider {
 
     /**
      * 获取电商身份认证凭据

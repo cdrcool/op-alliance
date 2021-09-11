@@ -15,14 +15,14 @@ import java.util.Optional;
  */
 @Slf4j
 public class MallAuthenticationManager {
-    private final List<MallAuthenticationProvider<? extends MallAuthentication>> providers;
+    private final List<MallAuthenticationProvider> providers;
 
-    public MallAuthenticationManager(List<MallAuthenticationProvider<? extends MallAuthentication>> providers) {
+    public MallAuthenticationManager(List<MallAuthenticationProvider> providers) {
         this.providers = providers;
     }
 
     public MallAuthentication getAuthentication(MallType mallType, String taxpayerId) {
-        Optional<MallAuthenticationProvider<? extends MallAuthentication>> optional = providers.stream()
+        Optional<MallAuthenticationProvider> optional = providers.stream()
                 .filter(provider -> provider.supports(mallType))
                 .findAny();
         if (optional.isPresent()) {

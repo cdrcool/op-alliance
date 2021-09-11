@@ -9,7 +9,7 @@ import com.op.mall.constans.MallType;
  *
  * @author cdrcool
  */
-public class JdMallAuthenticationProvider implements MallAuthenticationProvider<JdMallMallAuthentication> {
+public class JdMallAuthenticationProvider implements MallAuthenticationProvider {
 
     @Override
     public JdMallMallAuthentication getAuthentication(String taxpayerId) {
