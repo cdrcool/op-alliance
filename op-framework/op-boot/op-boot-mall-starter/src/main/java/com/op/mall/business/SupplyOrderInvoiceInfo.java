@@ -10,7 +10,12 @@ import java.util.Date;
  * @author cdrcool
  */
 @Data
-public class OrderInvoiceInfo {
+public class SupplyOrderInvoiceInfo {
+    /**
+     * 电商类型
+     */
+    private String mallType;
+
     /**
      * 请求开票日期
      */
@@ -110,4 +115,9 @@ public class OrderInvoiceInfo {
      * 第三方申请单号（申请开票之后有值）
      */
     private String markId;
+
+    /**
+     * 第三方子单号（申请开票之后有值）
+     */
+    private Long thirdSubOrderId;
 }

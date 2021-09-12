@@ -7,11 +7,22 @@ package com.op.mall.constans;
  */
 public class MallMethodConstants {
     /**
-     * 发票申请请求方法
+     * 订单提交
      */
-    public static final String INVOICE_SUBMIT_APPLY = "invoice_apply_submit";
+    public static final String ORDER_SUBMIT = "order_submit";
+    
     /**
-     * 发票申请请求方法
+     * 订单取消
      */
-    public static final String INVOICE_QUERY_DELIVERY = "invoice_query_delivery";
+    public static final String ORDER_CANCEL = "order_cancel";
+
+    /**
+     * 发票提交申请
+     */
+    public static final String INVOICE_SUBMIT_APPLY = "invoice_submit_apply";
+
+    /**
+     * 发票查询详情
+     */
+    public static final String INVOICE_QUERY_DETAIL = "invoice_query_detail";
 }

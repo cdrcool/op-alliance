@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * 发票申请提交 DTO
+ * 发票提交申请 DTO
  *
  * @author cdrcool
  */

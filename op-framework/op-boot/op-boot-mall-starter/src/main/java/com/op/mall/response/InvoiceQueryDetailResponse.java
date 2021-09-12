@@ -5,18 +5,17 @@ import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 /**
- * 发票查询发票详情响应
+ * 发票查询详情响应
  *
  * @author cdrcool
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class InvoiceQueryDetailResponse extends MallResponse {
-    private List<InvoiceQueryDetailItemResponse> items;
+    private List<InvoiceQueryDetailItemResponse> invoiceItems;
 
     @Data
     public static class InvoiceQueryDetailItemResponse {
@@ -41,7 +40,7 @@ public class InvoiceQueryDetailResponse extends MallResponse {
         private Integer invoiceType;
 
         /**
-         * 开票日期
+         * 发票日期
          */
         private LocalDateTime invoiceDate;
 
@@ -51,19 +50,24 @@ public class InvoiceQueryDetailResponse extends MallResponse {
         private String invoiceTitle;
 
         /**
-         * 开票金额
+         * 开票金额（价税合计）
          */
-        private BigDecimal totalPrice;
+        private BigDecimal invoiceAmount;
+
+        /**
+         * 开票金额（裸价）
+         */
+        private BigDecimal invoiceNakedAmount;
 
         /**
          * 税额
          */
-        private BigDecimal totalTaxPrice;
+        private BigDecimal invoiceTaxAmount;
 
         /**
          * 税率
          */
-        private BigDecimal taxRate;
+        private BigDecimal invoiceTaxRate;
 
         /**
          * 备注
@@ -74,5 +78,10 @@ public class InvoiceQueryDetailResponse extends MallResponse {
          * 电子发票下载地址
          */
         private String fileUrl;
+
+        /**
+         * 是否成功
+         */
+        private Boolean success;
     }
 }

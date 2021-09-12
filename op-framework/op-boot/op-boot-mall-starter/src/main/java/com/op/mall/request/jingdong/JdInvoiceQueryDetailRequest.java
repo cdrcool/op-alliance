@@ -3,7 +3,7 @@ package com.op.mall.request.jingdong;
 import lombok.Data;
 
 /**
- * 京东发票查询物流信息请求
+ * 京东发票查询详情请求
  *
  * @author cdrcool
  */

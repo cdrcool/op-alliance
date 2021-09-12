@@ -5,7 +5,7 @@ import com.op.mall.constans.MallMethodConstants;
 import com.op.mall.response.InvoiceQueryDetailResponse;
 
 /**
- * 发票查询发票详情请求
+ * 发票查询详情请求
  *
  * @author chengdr01
  */
@@ -17,7 +17,7 @@ public class InvoiceQueryDetailRequest extends MallRequest<InvoiceQueryDetailRes
 
     @Override
     public String getRequestMethod() {
-        return MallMethodConstants.INVOICE_QUERY_DELIVERY;
+        return MallMethodConstants.INVOICE_QUERY_DETAIL;
     }
 
     @Override

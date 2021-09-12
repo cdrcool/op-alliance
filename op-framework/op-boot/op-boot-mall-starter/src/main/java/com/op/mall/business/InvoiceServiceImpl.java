@@ -4,8 +4,11 @@ import com.jd.open.api.sdk.request.vopfp.VopInvoiceSubmitInvoiceApplyRequest;
 import com.op.mall.MallRequestExecutor;
 import com.op.mall.client.MallAuthentication;
 import com.op.mall.client.MallAuthenticationProvider;
+import com.op.mall.constans.InvoiceType;
 import com.op.mall.constans.MallType;
+import com.op.mall.request.InvoiceQueryDetailRequest;
 import com.op.mall.request.InvoiceSubmitApplyRequest;
+import com.op.mall.request.jingdong.JdInvoiceQueryDetailRequest;
 import com.op.mall.response.InvoiceQueryDetailResponse;
 import com.op.mall.response.InvoiceSubmitApplyResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -50,14 +53,14 @@ public class InvoiceServiceImpl implements InvoiceService {
 
         // 2. 获取并校验订单/供货单的开票信息，如：电商类型、开票金额、开票信息、收票信息等
         // 模拟获取订单的开票信息
-        OrderInvoiceInfo invoiceInfo = new OrderInvoiceInfo();
+        SupplyOrderInvoiceInfo invoiceInfo = new SupplyOrderInvoiceInfo();
 
-        // 3. 构造发票申请提交的请求对象提供者 map
+        // 3. 构造发票提交申请请求的提供者 map
         Map<String, Supplier<InvoiceSubmitApplyRequest>> requestSupplierMap = new HashMap<>(8);
-        requestSupplierMap.put(MallType.JINGDONG.getValue(), () -> buildJdInvoiceApplySubmitParams(order, invoiceInfo));
-        requestSupplierMap.put(MallType.SUNING.getValue(), () -> buildSnInvoiceApplySubmitParams(order, invoiceInfo));
+        requestSupplierMap.put(MallType.JINGDONG.getValue(), () -> buildJdInvoiceApplySubmitRequest(order, invoiceInfo));
+        requestSupplierMap.put(MallType.SUNING.getValue(), () -> buildSnInvoiceApplySubmitRequest(order, invoiceInfo));
 
-        // 4. 设置电商请求动作 -> 发起电商请求
+        // 4. 发起发票提交申请请求
         InvoiceSubmitApplyResponse response = mallRequestExecutor.execute(order.getMallType(), requestSupplierMap);
 
         // 5. 请求失败 -> 输出异常日志 + 抛出异常
@@ -68,14 +71,14 @@ public class InvoiceServiceImpl implements InvoiceService {
             throw new BusinessException(message);
         }
 
-        // 6. 请求成功 -> 保存发票申请提交请求 + 更新供货单状态为开票中
+        // 6. 请求成功 -> 保存发票提交申请请求 + 更新供货单状态为开票中
     }
 
-    private InvoiceSubmitApplyRequest buildJdInvoiceApplySubmitParams(OrderInfo order, OrderInvoiceInfo invoiceInfo) {
+    private InvoiceSubmitApplyRequest buildJdInvoiceApplySubmitRequest(OrderInfo order, SupplyOrderInvoiceInfo invoiceInfo) {
         // 1. 获取京东电商身份认证凭据
         MallAuthentication mallAuthentication = mallAuthenticationProvider.getAuthentication(invoiceInfo.getEnterpriseTaxpayer());
 
-        // 2. 构建京东电商发票申请提交的请求对象
+        // 2. 构建京东电商发票提交申请请求
         List<SupplyOrderInfo> supplyOrders = order.getSupplyOrders();
         VopInvoiceSubmitInvoiceApplyRequest jdRequest = new VopInvoiceSubmitInvoiceApplyRequest();
         jdRequest.setInvoiceOrg(10);
@@ -113,22 +116,51 @@ public class InvoiceServiceImpl implements InvoiceService {
         return new InvoiceSubmitApplyRequest(mallAuthentication, jdRequest);
     }
 
-    private InvoiceSubmitApplyRequest buildSnInvoiceApplySubmitParams(OrderInfo order, OrderInvoiceInfo invoiceInfo) {
-        // 待补充
+    private InvoiceSubmitApplyRequest buildSnInvoiceApplySubmitRequest(OrderInfo order, SupplyOrderInvoiceInfo invoiceInfo) {
         return new InvoiceSubmitApplyRequest(null, null);
     }
 
     @Override
     public InvoiceQueryDetailResponse viewInvoiceDetail(InvoiceQueryDetailDTO queryDetailDTO) {
-        // 1. 获取订单/供货单信息
-        // 模拟获取订单/供货单信息（包含电商类型、第三方父子订单号）
-        OrderInfo order = new OrderInfo();
-
-        // 2. 获取并校验订单/供货单的开票信息，如：电商类型、开票金额、开票信息、收票信息等
+        // 1. 获取供货单的开票信息
         // 模拟获取订单的开票信息
-        OrderInvoiceInfo invoiceInfo = new OrderInvoiceInfo();
+        SupplyOrderInvoiceInfo invoiceInfo = new SupplyOrderInvoiceInfo();
 
+        // 2. 构造发票查询详情请求对象的提供者 map
+        Map<String, Supplier<InvoiceQueryDetailRequest>> requestSupplierMap = new HashMap<>(8);
+        requestSupplierMap.put(MallType.JINGDONG.getValue(), () -> buildJdInvoiceQueryDetailRequest(invoiceInfo));
+        requestSupplierMap.put(MallType.SUNING.getValue(), () -> buildSnInvoiceQueryDetailRequest(invoiceInfo));
+
+        // 3. 发起发票查询详情请求
+        InvoiceQueryDetailResponse response = mallRequestExecutor.execute(invoiceInfo.getMallType(), requestSupplierMap);
+
+        // 5. 请求失败 -> 输出异常日志 + 抛出异常
+        if (!response.isSuccess()) {
+            String message = MessageFormat.format("提交发票申请异常，错误码：{0}，错误描述{1}",
+                    response.getErrorCode(), response.getErrorMsg());
+            log.error(message);
+            throw new BusinessException(message);
+        }
+
+        // 6. 请求成功 -> 保存发票提交申请请求 + 更新供货单状态为开票中
 
         return null;
+    }
+
+    private InvoiceQueryDetailRequest buildJdInvoiceQueryDetailRequest(SupplyOrderInvoiceInfo invoiceInfo) {
+        // 1. 获取京东电商身份认证凭据
+        MallAuthentication mallAuthentication = mallAuthenticationProvider.getAuthentication(invoiceInfo.getEnterpriseTaxpayer());
+
+        // 2. 构建京东电商发票发票查询详情请求
+        JdInvoiceQueryDetailRequest jdRequest = new JdInvoiceQueryDetailRequest();
+        jdRequest.setInvoiceType(invoiceInfo.getInvoiceType());
+        jdRequest.setMarkId(invoiceInfo.getMarkId());
+        jdRequest.setSubOrderId(invoiceInfo.getThirdSubOrderId());
+
+        return new InvoiceQueryDetailRequest(mallAuthentication, jdRequest);
+    }
+
+    private InvoiceQueryDetailRequest buildSnInvoiceQueryDetailRequest(SupplyOrderInvoiceInfo invoiceInfo) {
+        return new InvoiceQueryDetailRequest(null, null);
     }
 }
