@@ -2,14 +2,12 @@ package com.op.mall.handler.jingdong;
 
 import com.op.mall.client.jingdong.JdMallClient;
 import com.op.mall.handler.MallRequestHandler;
-import lombok.Getter;
 
 /**
  * 京东电商请求处理抽象类
  *
  * @author cdrcool
  */
-@Getter
 public abstract class JdMallRequestHandler implements MallRequestHandler {
     /**
      * 京东电商 client
@@ -18,5 +16,14 @@ public abstract class JdMallRequestHandler implements MallRequestHandler {
 
     public JdMallRequestHandler(JdMallClient jdMallClient) {
         this.jdMallClient = jdMallClient;
+    }
+
+    /**
+     * 返回京东电商 client
+     *
+     * @return 京东电商 client
+     */
+    protected JdMallClient getJdMallClient() {
+        return jdMallClient;
     }
 }
