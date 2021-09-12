@@ -2,6 +2,7 @@ package com.op.mall.client.jingdong;
 
 import com.jd.open.api.sdk.request.JdRequest;
 import com.jd.open.api.sdk.response.AbstractResponse;
+import com.op.mall.client.MallAuthentication;
 import lombok.Data;
 
 /**
@@ -12,17 +13,17 @@ import lombok.Data;
 @Data
 public class JdMallRequest<T extends AbstractResponse> {
     /**
-     * 纳税人识别号
+     * 电商身份认证凭证凭据
      */
-    private String taxpayerId;
+    private MallAuthentication authentication;
 
     /**
      * 京东请求对象
      */
     private JdRequest<T> jdRequest;
 
-    public JdMallRequest(String taxpayerId, JdRequest<T> jdRequest) {
-        this.taxpayerId = taxpayerId;
+    public JdMallRequest(MallAuthentication authentication, JdRequest<T> jdRequest) {
+        this.authentication = authentication;
         this.jdRequest = jdRequest;
     }
 }

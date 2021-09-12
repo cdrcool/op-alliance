@@ -30,7 +30,7 @@ public class JdInvoiceApplySubmitHandler extends JdMallRequestHandler {
         VopInvoiceSubmitInvoiceApplyRequest jdRequest = (VopInvoiceSubmitInvoiceApplyRequest) requestObj;
 
         // 2. 执行京东电商请求
-        JdMallRequest<VopInvoiceSubmitInvoiceApplyResponse> jdMallRequest = new JdMallRequest<>(jdRequest.getEnterpriseTaxpayer(), jdRequest);
+        JdMallRequest<VopInvoiceSubmitInvoiceApplyResponse> jdMallRequest = new JdMallRequest<>(request.getAuthentication(), jdRequest);
         VopInvoiceSubmitInvoiceApplyResponse jdResponse = getJdMallClient().execute(jdMallRequest);
 
         // 3. 解析为标准电商请求响应

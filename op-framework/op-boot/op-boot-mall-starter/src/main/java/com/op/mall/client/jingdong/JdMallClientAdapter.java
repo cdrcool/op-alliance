@@ -5,8 +5,7 @@ import com.jd.open.api.sdk.JdClient;
 import com.jd.open.api.sdk.internal.util.JsonUtil;
 import com.jd.open.api.sdk.request.JdRequest;
 import com.jd.open.api.sdk.response.AbstractResponse;
-import com.op.mall.client.MallAuthenticationManager;
-import com.op.mall.constans.MallType;
+import com.op.mall.client.MallAuthentication;
 import com.op.mall.exception.JdMallException;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,11 +24,9 @@ public class JdMallClientAdapter implements JdMallClient {
     private static final String SUCCESS_CODE = "0";
 
     private final JdMallProperties properties;
-    private final MallAuthenticationManager authenticationManager;
 
-    public JdMallClientAdapter(JdMallProperties properties, MallAuthenticationManager authenticationManager) {
+    public JdMallClientAdapter(JdMallProperties properties) {
         this.properties = properties;
-        this.authenticationManager = authenticationManager;
     }
 
     @Override
@@ -37,7 +34,7 @@ public class JdMallClientAdapter implements JdMallClient {
         JdRequest<T> jdRequest = request.getJdRequest();
 
         try {
-            JdClient jdClient = createJdClient(request.getTaxpayerId());
+            JdClient jdClient = createJdClient(request.getAuthentication());
 
             T response = jdClient.execute(jdRequest);
 
@@ -60,12 +57,12 @@ public class JdMallClientAdapter implements JdMallClient {
     /**
      * 创建 {@link JdClient}
      *
-     * @param taxpayerId 纳税人识别号
+     * @param authentication 电商身份认证凭证凭据
      * @return JdClient
      */
-    private JdClient createJdClient(String taxpayerId) {
-        JdMallMallAuthentication authentication = (JdMallMallAuthentication) authenticationManager.getAuthentication(MallType.JINGDONG, taxpayerId);
-        return new DefaultJdClient(properties.getServerUrl(), authentication.getAccessToken(), authentication.getAppKey(), authentication.getAppSecret());
+    private JdClient createJdClient(MallAuthentication authentication) {
+        JdMallMallAuthentication jdMallAuthentication = (JdMallMallAuthentication) authentication;
+        return new DefaultJdClient(properties.getServerUrl(), jdMallAuthentication.getAccessToken(), jdMallAuthentication.getAppKey(), jdMallAuthentication.getAppSecret());
     }
 
     /**

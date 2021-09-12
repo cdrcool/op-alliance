@@ -1,5 +1,6 @@
 package com.op.mall.request;
 
+import com.op.mall.client.MallAuthentication;
 import com.op.mall.response.InvoiceApplySubmitResponse;
 
 /**
@@ -9,8 +10,8 @@ import com.op.mall.response.InvoiceApplySubmitResponse;
  */
 public class InvoiceApplySubmitRequest extends MallRequest<InvoiceApplySubmitResponse> {
 
-    public InvoiceApplySubmitRequest(Object requestParams) {
-        super(requestParams);
+    public InvoiceApplySubmitRequest(MallAuthentication authentication, Object requestObj) {
+        super(authentication, requestObj);
     }
 
     @Override

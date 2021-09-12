@@ -2,6 +2,8 @@ package com.op.mall.business;
 
 import com.jd.open.api.sdk.request.vopfp.VopInvoiceSubmitInvoiceApplyRequest;
 import com.op.mall.MallRequestExecutor;
+import com.op.mall.client.MallAuthentication;
+import com.op.mall.client.MallAuthenticationProvider;
 import com.op.mall.constans.MallMethodConstants;
 import com.op.mall.constans.MallType;
 import com.op.mall.request.InvoiceApplySubmitRequest;
@@ -27,11 +29,17 @@ import java.util.stream.Collectors;
 @Slf4j
 public class InvoiceServiceImpl implements InvoiceService {
     /**
-     * 电商请求执行类
+     * 电商身份认证凭据管理者
+     */
+    private final MallAuthenticationProvider mallAuthenticationProvider;
+
+    /**
+     * 电商请求执行者
      */
     private final MallRequestExecutor mallRequestExecutor;
 
-    public InvoiceServiceImpl(MallRequestExecutor mallRequestExecutor) {
+    public InvoiceServiceImpl(MallAuthenticationProvider mallAuthenticationProvider, MallRequestExecutor mallRequestExecutor) {
+        this.mallAuthenticationProvider = mallAuthenticationProvider;
         this.mallRequestExecutor = mallRequestExecutor;
     }
 
@@ -65,8 +73,11 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     private InvoiceApplySubmitRequest buildJdInvoiceApplySubmitParams(OrderInfo order, OrderInvoiceInfo invoiceInfo) {
-        List<SupplyOrderInfo> supplyOrders = order.getSupplyOrders();
+        // 1. 获取京东电商身份认证凭据
+        MallAuthentication mallAuthentication = mallAuthenticationProvider.getAuthentication(invoiceInfo.getEnterpriseTaxpayer());
 
+        // 2. 构建京东电商发票申请提交的请求对象
+        List<SupplyOrderInfo> supplyOrders = order.getSupplyOrders();
         VopInvoiceSubmitInvoiceApplyRequest jdRequest = new VopInvoiceSubmitInvoiceApplyRequest();
         jdRequest.setInvoiceOrg(10);
         jdRequest.setBizInvoiceContent(1);
@@ -100,11 +111,11 @@ public class InvoiceServiceImpl implements InvoiceService {
             jdRequest.setBillToTown(invoiceInfo.getTownCode());
         }
 
-        return new InvoiceApplySubmitRequest(jdRequest);
+        return new InvoiceApplySubmitRequest(mallAuthentication, jdRequest);
     }
 
     private InvoiceApplySubmitRequest buildSnInvoiceApplySubmitParams(OrderInfo order, OrderInvoiceInfo invoiceInfo) {
         // 待补充
-        return new InvoiceApplySubmitRequest(null);
+        return new InvoiceApplySubmitRequest(null, null);
     }
 }
