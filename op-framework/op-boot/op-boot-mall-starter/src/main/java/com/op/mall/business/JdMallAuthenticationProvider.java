@@ -12,7 +12,7 @@ import com.op.mall.constans.MallType;
 public class JdMallAuthenticationProvider implements MallAuthenticationProvider {
 
     @Override
-    public JdMallAuthentication getAuthentication(String taxpayerId) {
+    public JdMallAuthentication loadAuthentication(String taxpayerId) {
         return null;
     }
 

@@ -1,6 +1,7 @@
 package com.op.mall;
 
 import com.op.mall.business.BusinessException;
+import com.op.mall.constans.MallType;
 import com.op.mall.handler.MallRequestHandler;
 import com.op.mall.handler.MallRequestHandlerRegistry;
 import com.op.mall.request.MallRequest;
@@ -43,7 +44,7 @@ public class MallRequestExecutor {
      * @return 请求响应
      */
     public <T extends MallRequest<R>, R extends MallResponse> R execute(
-            String mallType, Map<String, Supplier<T>> requestSupplierMap) {
+            MallType mallType, Map<MallType, Supplier<T>> requestSupplierMap) {
         // 1. 获取当前电商请求对象
         T request = requestSupplierMap.getOrDefault(mallType, () -> null).get();
 
@@ -71,13 +72,13 @@ public class MallRequestExecutor {
      * @return 请求响应列表
      */
     public <T extends MallRequest<R>, R extends MallResponse> List<R> executeConcurrent(
-            List<String> mallTypes, Map<String, Supplier<T>> requestSupplierMap) {
+            List<MallType> mallTypes, Map<MallType, Supplier<T>> requestSupplierMap) {
         try {
             List<Callable<R>> callables = mallTypes.stream()
                     .map(mallType -> (Callable<R>) () -> execute(mallType, requestSupplierMap)).collect(Collectors.toList());
             List<Future<R>> futures = threadPoolExecutor.invokeAll(callables);
             return IntStream.range(0, futures.size()).mapToObj(index -> {
-                String mallType = mallTypes.get(index);
+                MallType mallType = mallTypes.get(index);
                 Future<R> future = futures.get(index);
                 try {
                     return future.get();

@@ -1,5 +1,6 @@
 package com.op.mall.request;
 
+import com.op.mall.constans.MallType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -16,12 +17,12 @@ public class MallRequestAction {
     /**
      * 电商类型
      */
-    private String mallType;
+    private MallType mallType;
 
     /**
      * 请求方法
      */
-    private String method;
+    private String requestMethod;
 
     @Override
     public boolean equals(Object o) {
@@ -32,11 +33,11 @@ public class MallRequestAction {
             return false;
         }
         MallRequestAction that = (MallRequestAction) o;
-        return Objects.equals(mallType, that.mallType) && Objects.equals(method, that.method);
+        return Objects.equals(mallType, that.mallType) && Objects.equals(requestMethod, that.requestMethod);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(mallType, method);
+        return Objects.hash(mallType, requestMethod);
     }
 }

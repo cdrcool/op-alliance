@@ -5,6 +5,8 @@ import com.op.mall.response.MallResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.io.Serializable;
+
 /**
  * 电商请求对象抽象类
  *
@@ -12,7 +14,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public abstract class MallRequest<T extends MallResponse> {
+public abstract class MallRequest<T extends MallResponse> implements Serializable {
     /**
      * 身份认证凭据
      */

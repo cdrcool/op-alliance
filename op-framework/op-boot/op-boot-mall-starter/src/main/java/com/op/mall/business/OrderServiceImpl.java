@@ -3,7 +3,7 @@ package com.op.mall.business;
 import com.jd.open.api.sdk.request.vopdd.VopOrderCancelOrderRequest;
 import com.op.mall.MallRequestExecutor;
 import com.op.mall.client.MallAuthentication;
-import com.op.mall.client.MallAuthenticationProvider;
+import com.op.mall.client.MallAuthenticationManager;
 import com.op.mall.constans.MallType;
 import com.op.mall.exception.MallException;
 import com.op.mall.request.OrderCancelRequest;
@@ -29,15 +29,15 @@ public class OrderServiceImpl implements OrderService {
     /**
      * 电商身份认证凭据管理者
      */
-    private final MallAuthenticationProvider mallAuthenticationProvider;
+    private final MallAuthenticationManager mallAuthenticationManager;
 
     /**
      * 电商请求执行者
      */
     private final MallRequestExecutor mallRequestExecutor;
 
-    public OrderServiceImpl(MallAuthenticationProvider mallAuthenticationProvider, MallRequestExecutor mallRequestExecutor) {
-        this.mallAuthenticationProvider = mallAuthenticationProvider;
+    public OrderServiceImpl(MallAuthenticationManager mallAuthenticationManager, MallRequestExecutor mallRequestExecutor) {
+        this.mallAuthenticationManager = mallAuthenticationManager;
         this.mallRequestExecutor = mallRequestExecutor;
     }
 
@@ -48,12 +48,16 @@ public class OrderServiceImpl implements OrderService {
         // 2. 获取并校验其他相关信息
 
         // 3. 构造订单提交请求的提供者 map
-        Map<String, Supplier<OrderSubmitRequest>> requestSupplierMap = new HashMap<>(8);
-        requestSupplierMap.put(MallType.JINGDONG.getValue(), () -> buildJdOrderSubmitRequest(submitDTO));
-        requestSupplierMap.put(MallType.SUNING.getValue(), () -> buildSnOrderSubmitRequest(submitDTO));
+        Map<MallType, Supplier<OrderSubmitRequest>> requestSupplierMap = new HashMap<>(8);
+        requestSupplierMap.put(MallType.JINGDONG, () -> buildJdOrderSubmitRequest(submitDTO));
+        requestSupplierMap.put(MallType.SUNING, () -> buildSnOrderSubmitRequest(submitDTO));
 
         // 4. 发起订单提交请求
-        List<String> mallTypes = submitDTO.getSkuInfoList().stream().map(OrderSubmitDTO.SkuInfo::getMallType).distinct().collect(Collectors.toList());
+        List<MallType> mallTypes = submitDTO.getSkuInfoList().stream()
+                .map(OrderSubmitDTO.SkuInfo::getMallType)
+                .distinct()
+                .map(MallType::get)
+                .collect(Collectors.toList());
         List<OrderSubmitResponse> responses = mallRequestExecutor.executeConcurrent(mallTypes, requestSupplierMap);
 
         // 5. 如果存在任一电商提交订单失败，就回滚所有电商成功的提交订单
@@ -61,20 +65,20 @@ public class OrderServiceImpl implements OrderService {
         if (successResponses.size() < mallTypes.size()) {
             if (successResponses.size() > 0) {
                 // 5.1. 构造订单取消请求的提供者 map
-                Map<String, Supplier<OrderCancelRequest>> cancelRequestSupplierMap = new HashMap<>(8);
+                Map<MallType, Supplier<OrderCancelRequest>> cancelRequestSupplierMap = new HashMap<>(8);
 
                 List<String> undefinedMallTypes = new ArrayList<>();
                 successResponses.forEach(response -> {
-                    String mallType = response.getMallType();
+                    MallType mallType = response.getMallType();
                     cancelRequestSupplierMap.put(mallType, () -> {
-                        if (MallType.JINGDONG.getValue().equals(mallType)) {
+                        if (MallType.JINGDONG.equals(mallType)) {
                             return buildJdOrderCancelRequest(submitDTO.getTaxpayerId(), response.getThirdOrderId());
                         }
-                        if (MallType.SUNING.getValue().equals(mallType)) {
+                        if (MallType.SUNING.equals(mallType)) {
                             return buildSnOrderCancelRequest(submitDTO.getTaxpayerId(), response.getThirdOrderId());
                         }
                         log.error("未定义订单取消请求提供者，电商类型：{}", response.getMallType());
-                        undefinedMallTypes.add(mallType);
+                        undefinedMallTypes.add(mallType.getName());
                         return null;
                     });
                 });
@@ -84,7 +88,9 @@ public class OrderServiceImpl implements OrderService {
                 }
 
                 // 5.2. 发起订单取消请求（尚未实现订单取消请求失败后的补偿机制）
-                List<String> successMallTypes = successResponses.stream().map(MallResponse::getMallType).collect(Collectors.toList());
+                List<MallType> successMallTypes = successResponses.stream()
+                        .map(MallResponse::getMallType)
+                        .collect(Collectors.toList());
                 mallRequestExecutor.executeConcurrent(successMallTypes, cancelRequestSupplierMap);
             } else {
                 String message = "提交订单失败";
@@ -99,14 +105,14 @@ public class OrderServiceImpl implements OrderService {
 
     private OrderSubmitRequest buildJdOrderSubmitRequest(OrderSubmitDTO submitDTO, Object... otherArgs) {
         // 获取京东电商身份认证凭据
-        MallAuthentication mallAuthentication = mallAuthenticationProvider.getAuthentication(submitDTO.getTaxpayerId());
+        MallAuthentication mallAuthentication = mallAuthenticationManager.loadAuthentication(MallType.JINGDONG, submitDTO.getTaxpayerId());
 
         return new OrderSubmitRequest(mallAuthentication, null);
     }
 
     private OrderCancelRequest buildJdOrderCancelRequest(String taxpayerId, Long thirdOrderId) {
         // 获取京东电商身份认证凭据
-        MallAuthentication mallAuthentication = mallAuthenticationProvider.getAuthentication(taxpayerId);
+        MallAuthentication mallAuthentication = mallAuthenticationManager.loadAuthentication(MallType.JINGDONG, taxpayerId);
 
         VopOrderCancelOrderRequest jdRequest = new VopOrderCancelOrderRequest();
         jdRequest.setJdOrderId(thirdOrderId);

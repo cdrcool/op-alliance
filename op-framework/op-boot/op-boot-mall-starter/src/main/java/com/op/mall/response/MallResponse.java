@@ -1,5 +1,6 @@
 package com.op.mall.response;
 
+import com.op.mall.constans.MallType;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,7 +17,7 @@ public abstract class MallResponse implements Serializable {
     /**
      * 电商类型
      */
-    private String mallType;
+    private MallType mallType;
 
     /**
      * 是否成功
@@ -37,7 +38,7 @@ public abstract class MallResponse implements Serializable {
         /**
          * 电商类型
          */
-        private String mallType;
+        private MallType mallType;
 
         /**
          * 错误码
@@ -49,7 +50,7 @@ public abstract class MallResponse implements Serializable {
          */
         private String errorMsg;
 
-        public ErrorBuilder mallType(String mallType) {
+        public ErrorBuilder mallType(MallType mallType) {
             this.mallType = mallType;
             return this;
         }

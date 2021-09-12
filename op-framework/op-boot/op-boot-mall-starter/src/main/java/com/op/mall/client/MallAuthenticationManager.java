@@ -21,12 +21,19 @@ public class MallAuthenticationManager {
         this.providers = providers;
     }
 
-    public MallAuthentication getAuthentication(MallType mallType, String taxpayerId) {
+    /**
+     * 获取电商身份认证凭据
+     *
+     * @param mallType   电商类型
+     * @param taxpayerId 纳税人识别号
+     * @return 电商身份认证凭据
+     */
+    public MallAuthentication loadAuthentication(MallType mallType, String taxpayerId) {
         Optional<MallAuthenticationProvider> optional = providers.stream()
                 .filter(provider -> provider.supports(mallType))
                 .findAny();
         if (optional.isPresent()) {
-            return optional.get().getAuthentication(taxpayerId);
+            return optional.get().loadAuthentication(taxpayerId);
         }
 
         String message = MessageFormat.format("未定义电商：【{0}】身份认证凭据提供者", mallType.getName());

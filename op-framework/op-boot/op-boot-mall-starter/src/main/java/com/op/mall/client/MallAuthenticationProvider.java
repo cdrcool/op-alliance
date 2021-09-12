@@ -15,7 +15,7 @@ public interface MallAuthenticationProvider {
      * @param taxpayerId 纳税人识别号
      * @return 电商身份认证凭据
      */
-    MallAuthentication getAuthentication(String taxpayerId);
+    MallAuthentication loadAuthentication(String taxpayerId);
 
     /**
      * 如果可以处理当前请求，就返回 true

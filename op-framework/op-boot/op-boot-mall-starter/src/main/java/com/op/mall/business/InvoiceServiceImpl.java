@@ -3,7 +3,7 @@ package com.op.mall.business;
 import com.jd.open.api.sdk.request.vopfp.VopInvoiceSubmitInvoiceApplyRequest;
 import com.op.mall.MallRequestExecutor;
 import com.op.mall.client.MallAuthentication;
-import com.op.mall.client.MallAuthenticationProvider;
+import com.op.mall.client.MallAuthenticationManager;
 import com.op.mall.constans.InvoiceType;
 import com.op.mall.constans.MallType;
 import com.op.mall.request.InvoiceQueryDetailRequest;
@@ -33,15 +33,15 @@ public class InvoiceServiceImpl implements InvoiceService {
     /**
      * 电商身份认证凭据管理者
      */
-    private final MallAuthenticationProvider mallAuthenticationProvider;
+    private final MallAuthenticationManager mallAuthenticationManager;
 
     /**
      * 电商请求执行者
      */
     private final MallRequestExecutor mallRequestExecutor;
 
-    public InvoiceServiceImpl(MallAuthenticationProvider mallAuthenticationProvider, MallRequestExecutor mallRequestExecutor) {
-        this.mallAuthenticationProvider = mallAuthenticationProvider;
+    public InvoiceServiceImpl(MallAuthenticationManager mallAuthenticationManager, MallRequestExecutor mallRequestExecutor) {
+        this.mallAuthenticationManager = mallAuthenticationManager;
         this.mallRequestExecutor = mallRequestExecutor;
     }
 
@@ -56,12 +56,12 @@ public class InvoiceServiceImpl implements InvoiceService {
         SupplyOrderInvoiceInfo invoiceInfo = new SupplyOrderInvoiceInfo();
 
         // 3. 构造发票提交申请请求的提供者 map
-        Map<String, Supplier<InvoiceSubmitApplyRequest>> requestSupplierMap = new HashMap<>(8);
-        requestSupplierMap.put(MallType.JINGDONG.getValue(), () -> buildJdInvoiceApplySubmitRequest(order, invoiceInfo));
-        requestSupplierMap.put(MallType.SUNING.getValue(), () -> buildSnInvoiceApplySubmitRequest(order, invoiceInfo));
+        Map<MallType, Supplier<InvoiceSubmitApplyRequest>> requestSupplierMap = new HashMap<>(8);
+        requestSupplierMap.put(MallType.JINGDONG, () -> buildJdInvoiceApplySubmitRequest(order, invoiceInfo));
+        requestSupplierMap.put(MallType.SUNING, () -> buildSnInvoiceApplySubmitRequest(order, invoiceInfo));
 
         // 4. 发起发票提交申请请求
-        InvoiceSubmitApplyResponse response = mallRequestExecutor.execute(order.getMallType(), requestSupplierMap);
+        InvoiceSubmitApplyResponse response = mallRequestExecutor.execute(MallType.get(order.getMallType()), requestSupplierMap);
 
         // 5. 请求失败 -> 输出异常日志 + 抛出异常
         if (!response.isSuccess()) {
@@ -76,7 +76,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     private InvoiceSubmitApplyRequest buildJdInvoiceApplySubmitRequest(OrderInfo order, SupplyOrderInvoiceInfo invoiceInfo) {
         // 1. 获取京东电商身份认证凭据
-        MallAuthentication mallAuthentication = mallAuthenticationProvider.getAuthentication(invoiceInfo.getEnterpriseTaxpayer());
+        MallAuthentication mallAuthentication = mallAuthenticationManager.loadAuthentication(MallType.JINGDONG, invoiceInfo.getEnterpriseTaxpayer());
 
         // 2. 构建京东电商发票提交申请请求
         List<SupplyOrderInfo> supplyOrders = order.getSupplyOrders();
@@ -127,12 +127,12 @@ public class InvoiceServiceImpl implements InvoiceService {
         SupplyOrderInvoiceInfo invoiceInfo = new SupplyOrderInvoiceInfo();
 
         // 2. 构造发票查询详情请求对象的提供者 map
-        Map<String, Supplier<InvoiceQueryDetailRequest>> requestSupplierMap = new HashMap<>(8);
-        requestSupplierMap.put(MallType.JINGDONG.getValue(), () -> buildJdInvoiceQueryDetailRequest(invoiceInfo));
-        requestSupplierMap.put(MallType.SUNING.getValue(), () -> buildSnInvoiceQueryDetailRequest(invoiceInfo));
+        Map<MallType, Supplier<InvoiceQueryDetailRequest>> requestSupplierMap = new HashMap<>(8);
+        requestSupplierMap.put(MallType.JINGDONG, () -> buildJdInvoiceQueryDetailRequest(invoiceInfo));
+        requestSupplierMap.put(MallType.SUNING, () -> buildSnInvoiceQueryDetailRequest(invoiceInfo));
 
         // 3. 发起发票查询详情请求
-        InvoiceQueryDetailResponse response = mallRequestExecutor.execute(invoiceInfo.getMallType(), requestSupplierMap);
+        InvoiceQueryDetailResponse response = mallRequestExecutor.execute(MallType.get(invoiceInfo.getMallType()), requestSupplierMap);
 
         // 5. 请求失败 -> 输出异常日志 + 抛出异常
         if (!response.isSuccess()) {
@@ -149,7 +149,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     private InvoiceQueryDetailRequest buildJdInvoiceQueryDetailRequest(SupplyOrderInvoiceInfo invoiceInfo) {
         // 1. 获取京东电商身份认证凭据
-        MallAuthentication mallAuthentication = mallAuthenticationProvider.getAuthentication(invoiceInfo.getEnterpriseTaxpayer());
+        MallAuthentication mallAuthentication = mallAuthenticationManager.loadAuthentication(MallType.JINGDONG, invoiceInfo.getEnterpriseTaxpayer());
 
         // 2. 构建京东电商发票发票查询详情请求
         JdInvoiceQueryDetailRequest jdRequest = new JdInvoiceQueryDetailRequest();
