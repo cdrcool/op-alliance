@@ -1,7 +1,7 @@
 package com.op.mall.business;
 
 import com.op.mall.client.MallAuthenticationProvider;
-import com.op.mall.client.jingdong.JdMallMallAuthentication;
+import com.op.mall.client.jingdong.JdMallAuthentication;
 import com.op.mall.constans.MallType;
 
 /**
@@ -12,7 +12,7 @@ import com.op.mall.constans.MallType;
 public class JdMallAuthenticationProvider implements MallAuthenticationProvider {
 
     @Override
-    public JdMallMallAuthentication getAuthentication(String taxpayerId) {
+    public JdMallAuthentication getAuthentication(String taxpayerId) {
         return null;
     }
 

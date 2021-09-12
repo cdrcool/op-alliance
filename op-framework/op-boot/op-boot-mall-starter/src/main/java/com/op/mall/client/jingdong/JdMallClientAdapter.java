@@ -61,7 +61,7 @@ public class JdMallClientAdapter implements JdMallClient {
      * @return JdClient
      */
     private JdClient createJdClient(MallAuthentication authentication) {
-        JdMallMallAuthentication jdMallAuthentication = (JdMallMallAuthentication) authentication;
+        JdMallAuthentication jdMallAuthentication = (JdMallAuthentication) authentication;
         return new DefaultJdClient(properties.getServerUrl(), jdMallAuthentication.getAccessToken(), jdMallAuthentication.getAppKey(), jdMallAuthentication.getAppSecret());
     }
 

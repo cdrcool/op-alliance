@@ -9,7 +9,7 @@ import lombok.Data;
  * @author cdrcool
  */
 @Data
-public class JdMallMallAuthentication implements MallAuthentication {
+public class JdMallAuthentication implements MallAuthentication {
     /**
      * App Key
      */

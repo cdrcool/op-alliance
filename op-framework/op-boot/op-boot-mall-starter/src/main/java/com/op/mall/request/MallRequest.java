@@ -24,6 +24,13 @@ public abstract class MallRequest<T extends MallResponse> {
     private final Object requestObj;
 
     /**
+     * 返回请求方法
+     *
+     * @return 请求方法
+     */
+    public abstract String getRequestMethod();
+
+    /**
      * 返回请求响应的 class
      *
      * @return 请求响应的 class

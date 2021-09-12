@@ -4,11 +4,10 @@ import com.jd.open.api.sdk.request.vopfp.VopInvoiceSubmitInvoiceApplyRequest;
 import com.op.mall.MallRequestExecutor;
 import com.op.mall.client.MallAuthentication;
 import com.op.mall.client.MallAuthenticationProvider;
-import com.op.mall.constans.MallMethodConstants;
 import com.op.mall.constans.MallType;
-import com.op.mall.request.InvoiceApplySubmitRequest;
-import com.op.mall.request.MallRequestAction;
-import com.op.mall.response.InvoiceApplySubmitResponse;
+import com.op.mall.request.InvoiceSubmitApplyRequest;
+import com.op.mall.response.InvoiceQueryDetailResponse;
+import com.op.mall.response.InvoiceSubmitApplyResponse;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
@@ -46,33 +45,33 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public void submitInvoiceApply(InvoiceApplySubmitDTO submitDTO) {
         // 1. 执行业务校验，如：订单/供货单是否存在、供货单状态是否允许开票、第三方父/子订单是否存在
-        // 模拟获取订单及订单下的供货单信息（订单中包含电商类型）
+        // 模拟获取订单及订单下的供货单信息（包含电商类型、第三方父子订单号）
         OrderInfo order = new OrderInfo();
 
-        // 2. 获取并校验其他信息，如：电商类型、开票金额、开票信息、收票信息等
+        // 2. 获取并校验订单/供货单的开票信息，如：电商类型、开票金额、开票信息、收票信息等
         // 模拟获取订单的开票信息
         OrderInvoiceInfo invoiceInfo = new OrderInvoiceInfo();
 
         // 3. 构造发票申请提交的请求对象提供者 map
-        Map<String, Supplier<InvoiceApplySubmitRequest>> requestSupplierMap = new HashMap<>(8);
+        Map<String, Supplier<InvoiceSubmitApplyRequest>> requestSupplierMap = new HashMap<>(8);
         requestSupplierMap.put(MallType.JINGDONG.getValue(), () -> buildJdInvoiceApplySubmitParams(order, invoiceInfo));
         requestSupplierMap.put(MallType.SUNING.getValue(), () -> buildSnInvoiceApplySubmitParams(order, invoiceInfo));
 
         // 4. 设置电商请求动作 -> 发起电商请求
-        MallRequestAction action = new MallRequestAction(order.getMallType(), MallMethodConstants.INVOICE_APPLY_SUBMIT);
-        InvoiceApplySubmitResponse response = mallRequestExecutor.execute(action, requestSupplierMap);
+        InvoiceSubmitApplyResponse response = mallRequestExecutor.execute(order.getMallType(), requestSupplierMap);
+
+        // 5. 请求失败 -> 输出异常日志 + 抛出异常
         if (!response.isSuccess()) {
-            // 请求失败 -> 输出异常日志 + 抛出异常
             String message = MessageFormat.format("提交发票申请异常，错误码：{0}，错误描述{1}",
                     response.getErrorCode(), response.getErrorMsg());
             log.error(message);
             throw new BusinessException(message);
         }
 
-        // 5. 请求成功 -> 保存发票申请提交请求 + 更新供货单状态为开票中
+        // 6. 请求成功 -> 保存发票申请提交请求 + 更新供货单状态为开票中
     }
 
-    private InvoiceApplySubmitRequest buildJdInvoiceApplySubmitParams(OrderInfo order, OrderInvoiceInfo invoiceInfo) {
+    private InvoiceSubmitApplyRequest buildJdInvoiceApplySubmitParams(OrderInfo order, OrderInvoiceInfo invoiceInfo) {
         // 1. 获取京东电商身份认证凭据
         MallAuthentication mallAuthentication = mallAuthenticationProvider.getAuthentication(invoiceInfo.getEnterpriseTaxpayer());
 
@@ -111,11 +110,25 @@ public class InvoiceServiceImpl implements InvoiceService {
             jdRequest.setBillToTown(invoiceInfo.getTownCode());
         }
 
-        return new InvoiceApplySubmitRequest(mallAuthentication, jdRequest);
+        return new InvoiceSubmitApplyRequest(mallAuthentication, jdRequest);
     }
 
-    private InvoiceApplySubmitRequest buildSnInvoiceApplySubmitParams(OrderInfo order, OrderInvoiceInfo invoiceInfo) {
+    private InvoiceSubmitApplyRequest buildSnInvoiceApplySubmitParams(OrderInfo order, OrderInvoiceInfo invoiceInfo) {
         // 待补充
-        return new InvoiceApplySubmitRequest(null, null);
+        return new InvoiceSubmitApplyRequest(null, null);
+    }
+
+    @Override
+    public InvoiceQueryDetailResponse viewInvoiceDetail(InvoiceQueryDetailDTO queryDetailDTO) {
+        // 1. 获取订单/供货单信息
+        // 模拟获取订单/供货单信息（包含电商类型、第三方父子订单号）
+        OrderInfo order = new OrderInfo();
+
+        // 2. 获取并校验订单/供货单的开票信息，如：电商类型、开票金额、开票信息、收票信息等
+        // 模拟获取订单的开票信息
+        OrderInvoiceInfo invoiceInfo = new OrderInvoiceInfo();
+
+
+        return null;
     }
 }

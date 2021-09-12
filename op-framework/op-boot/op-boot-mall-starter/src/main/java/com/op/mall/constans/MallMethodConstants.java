@@ -9,5 +9,9 @@ public class MallMethodConstants {
     /**
      * 发票申请请求方法
      */
-    public static final String INVOICE_APPLY_SUBMIT = "invoice_apply_submit";
+    public static final String INVOICE_SUBMIT_APPLY = "invoice_apply_submit";
+    /**
+     * 发票申请请求方法
+     */
+    public static final String INVOICE_QUERY_DELIVERY = "invoice_query_delivery";
 }

@@ -2,7 +2,6 @@ package com.op.mall.business;
 
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -21,6 +20,11 @@ public class OrderInfo {
      * 订单ID
      */
     private String orderId;
+
+    /**
+     * 第三方订单号
+     */
+    private Long thirdOrderId;
 
     /**
      * 供货单信息列表

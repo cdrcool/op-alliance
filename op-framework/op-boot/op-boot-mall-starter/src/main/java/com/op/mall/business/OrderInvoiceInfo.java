@@ -5,13 +5,12 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- * 供货单的发票信息
+ * 订单/供货单的开票信息
  *
  * @author cdrcool
  */
 @Data
 public class OrderInvoiceInfo {
-
     /**
      * 请求开票日期
      */
@@ -106,4 +105,9 @@ public class OrderInvoiceInfo {
      * 收票人地址-详细地址
      */
     private String address;
+
+    /**
+     * 第三方申请单号（申请开票之后有值）
+     */
+    private String markId;
 }

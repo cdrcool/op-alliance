@@ -12,12 +12,12 @@ import java.math.BigDecimal;
 @Data
 public class SupplyOrderInfo {
     /**
-     * 供货单总金额
-     */
-    private BigDecimal totalPrice;
-
-    /**
      * 第三方子单号
      */
     private Long thirdSubOrderId;
+
+    /**
+     * 供货单总金额
+     */
+    private BigDecimal totalPrice;
 }
