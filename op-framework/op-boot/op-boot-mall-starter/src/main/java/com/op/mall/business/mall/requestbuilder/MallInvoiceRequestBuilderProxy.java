@@ -32,6 +32,6 @@ public class MallInvoiceRequestBuilderProxy {
     }
 
     private Optional<MallInvoiceRequestBuilder> getMallInvoiceRequestBuilder(String mallType) {
-        return invoiceRequestBuilders.stream().filter(builder -> builder.supports(MallType.get(mallType))).findAny();
+        return invoiceRequestBuilders.stream().filter(builder -> builder.supports(MallType.getMallType(mallType))).findAny();
     }
 }

@@ -26,7 +26,7 @@ public abstract class MallRequestBuilder {
      * @param taxpayerId 纳税人识别号
      * @return 电商身份认证凭据
      */
-    public final MallAuthentication loadMallAuthentication(MallType mallType, String taxpayerId) {
+    protected final MallAuthentication loadMallAuthentication(MallType mallType, String taxpayerId) {
         return mallAuthenticationManager.loadAuthentication(mallType, taxpayerId);
     }
 
@@ -36,5 +36,5 @@ public abstract class MallRequestBuilder {
      * @param mallType 电商类型
      * @return true or false
      */
-    public abstract boolean supports(MallType mallType);
+    protected abstract boolean supports(MallType mallType);
 }

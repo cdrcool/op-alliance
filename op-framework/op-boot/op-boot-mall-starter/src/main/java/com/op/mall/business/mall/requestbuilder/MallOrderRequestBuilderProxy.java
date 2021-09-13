@@ -46,6 +46,6 @@ public class MallOrderRequestBuilderProxy {
     }
 
     private Optional<MallOrderRequestBuilder> getMallOrderRequestBuilder(String mallType) {
-        return orderRequestBuilders.stream().filter(builder -> builder.supports(MallType.get(mallType))).findAny();
+        return orderRequestBuilders.stream().filter(builder -> builder.supports(MallType.getMallType(mallType))).findAny();
     }
 }
