@@ -1,4 +1,4 @@
-package com.op.mall.business;
+package com.op.mall.business.mall.authentication;
 
 import com.op.mall.client.MallAuthenticationProvider;
 import com.op.mall.client.jingdong.JdMallAuthentication;

@@ -1,5 +1,6 @@
-package com.op.mall.business;
+package com.op.mall.business.mall.requestbuilder;
 
+import com.op.mall.business.dto.OrderSubmitDTO;
 import com.op.mall.client.MallAuthentication;
 import com.op.mall.client.MallAuthenticationManager;
 import com.op.mall.constans.MallType;
@@ -23,7 +24,7 @@ public class JdMallOrderRequestBuilder extends MallOrderRequestBuilder {
     @Override
     public OrderSubmitRequest buildOrderSubmitRequest(OrderSubmitDTO orderSubmitDTO, Map<String, Supplier<Object>> supplierMap) {
         // 获取京东电商身份认证凭据
-        MallAuthentication mallAuthentication = getMallAuthenticationManager().loadAuthentication(MallType.JINGDONG, orderSubmitDTO.getTaxpayerId());
+        MallAuthentication mallAuthentication = super.loadMallAuthentication(MallType.JINGDONG, orderSubmitDTO.getTaxpayerId());
 
         return new OrderSubmitRequest(MallType.JINGDONG, mallAuthentication, null);
     }
@@ -31,7 +32,7 @@ public class JdMallOrderRequestBuilder extends MallOrderRequestBuilder {
     @Override
     public OrderCancelRequest buildOrderCancelRequest(String taxpayerId, Long thirdOrderId, Map<String, Supplier<Object>> supplierMap) {
         // 获取京东电商身份认证凭据
-        MallAuthentication mallAuthentication = getMallAuthenticationManager().loadAuthentication(MallType.JINGDONG, taxpayerId);
+        MallAuthentication mallAuthentication = super.loadMallAuthentication(MallType.JINGDONG, taxpayerId);
 
         return new OrderCancelRequest(MallType.JINGDONG, mallAuthentication, null);
     }

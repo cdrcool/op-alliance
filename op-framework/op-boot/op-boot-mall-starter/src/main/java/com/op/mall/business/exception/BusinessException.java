@@ -1,4 +1,4 @@
-package com.op.mall.business;
+package com.op.mall.business.exception;
 
 /**
  * 业务异常

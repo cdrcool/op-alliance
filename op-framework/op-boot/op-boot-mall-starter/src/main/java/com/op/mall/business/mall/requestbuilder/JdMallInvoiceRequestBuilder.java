@@ -1,6 +1,9 @@
-package com.op.mall.business;
+package com.op.mall.business.mall.requestbuilder;
 
 import com.jd.open.api.sdk.request.vopfp.VopInvoiceSubmitInvoiceApplyRequest;
+import com.op.mall.business.dto.OrderInfo;
+import com.op.mall.business.dto.SupplyOrderInfo;
+import com.op.mall.business.dto.SupplyOrderInvoiceInfo;
 import com.op.mall.client.MallAuthentication;
 import com.op.mall.client.MallAuthenticationManager;
 import com.op.mall.constans.InvoiceType;
@@ -31,7 +34,7 @@ public class JdMallInvoiceRequestBuilder extends MallInvoiceRequestBuilder {
     @Override
     public InvoiceSubmitApplyRequest buildInvoiceSubmitApplyRequest(OrderInfo orderInfo, SupplyOrderInvoiceInfo invoiceInfo, Map<String, Supplier<Object>> supplierMap) {
         // 1. 获取京东电商身份认证凭据
-        MallAuthentication mallAuthentication = getMallAuthenticationManager().loadAuthentication(MallType.JINGDONG, invoiceInfo.getEnterpriseTaxpayer());
+        MallAuthentication mallAuthentication = super.loadMallAuthentication(MallType.JINGDONG, invoiceInfo.getEnterpriseTaxpayer());
 
         // 2. 构建京东电商发票提交申请请求
         List<SupplyOrderInfo> supplyOrders = orderInfo.getSupplyOrders();
@@ -74,7 +77,7 @@ public class JdMallInvoiceRequestBuilder extends MallInvoiceRequestBuilder {
     @Override
     public InvoiceQueryDetailRequest buildInvoiceQueryDetailRequest(SupplyOrderInvoiceInfo invoiceInfo, Map<String, Supplier<Object>> supplierMap) {
         // 1. 获取京东电商身份认证凭据
-        MallAuthentication mallAuthentication = getMallAuthenticationManager().loadAuthentication(MallType.JINGDONG, invoiceInfo.getEnterpriseTaxpayer());
+        MallAuthentication mallAuthentication = super.loadMallAuthentication(MallType.JINGDONG, invoiceInfo.getEnterpriseTaxpayer());
 
         // 2. 构建京东电商发票发票查询详情请求
         JdInvoiceQueryDetailRequest jdRequest = new JdInvoiceQueryDetailRequest();

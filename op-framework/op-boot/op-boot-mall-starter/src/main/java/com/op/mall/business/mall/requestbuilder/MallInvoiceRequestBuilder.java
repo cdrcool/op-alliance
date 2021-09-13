@@ -1,5 +1,7 @@
-package com.op.mall.business;
+package com.op.mall.business.mall.requestbuilder;
 
+import com.op.mall.business.dto.OrderInfo;
+import com.op.mall.business.dto.SupplyOrderInvoiceInfo;
 import com.op.mall.client.MallAuthenticationManager;
 import com.op.mall.request.InvoiceQueryDetailRequest;
 import com.op.mall.request.InvoiceSubmitApplyRequest;

@@ -1,7 +1,6 @@
 package com.op.mall;
 
-import com.op.mall.business.BusinessException;
-import com.op.mall.constans.MallType;
+import com.op.mall.business.exception.BusinessException;
 import com.op.mall.handler.MallRequestHandler;
 import com.op.mall.handler.MallRequestHandlerRegistry;
 import com.op.mall.request.MallRequest;

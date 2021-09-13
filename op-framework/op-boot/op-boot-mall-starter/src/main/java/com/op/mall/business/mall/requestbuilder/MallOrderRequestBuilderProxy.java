@@ -1,5 +1,6 @@
-package com.op.mall.business;
+package com.op.mall.business.mall.requestbuilder;
 
+import com.op.mall.business.dto.OrderSubmitDTO;
 import com.op.mall.constans.MallType;
 import com.op.mall.request.OrderCancelRequest;
 import com.op.mall.request.OrderSubmitRequest;

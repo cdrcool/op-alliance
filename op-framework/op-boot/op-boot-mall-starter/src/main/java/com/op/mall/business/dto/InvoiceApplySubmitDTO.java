@@ -1,4 +1,4 @@
-package com.op.mall.business;
+package com.op.mall.business.dto;
 
 import lombok.Data;
 
