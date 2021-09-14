@@ -24,7 +24,7 @@ import java.text.MessageFormat;
 @Slf4j
 public class InvoiceServiceImpl implements InvoiceService {
     /**
-     * 电商身份认证凭据管理者
+     * 电商发票请求构造者
      */
     private final MallInvoiceRequestBuilderProxy mallInvoiceRequestBuilderProxy;
 
