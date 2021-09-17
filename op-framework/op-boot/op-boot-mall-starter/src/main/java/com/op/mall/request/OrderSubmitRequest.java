@@ -2,6 +2,7 @@ package com.op.mall.request;
 
 import com.op.mall.client.MallAuthentication;
 import com.op.mall.constans.MallMethodConstants;
+import com.op.mall.constans.MallType;
 import com.op.mall.response.OrderSubmitResponse;
 
 /**
@@ -11,8 +12,8 @@ import com.op.mall.response.OrderSubmitResponse;
  */
 public class OrderSubmitRequest extends MallRequest<OrderSubmitResponse> {
 
-    public OrderSubmitRequest(MallAuthentication authentication, Object requestObj) {
-        super(authentication, requestObj);
+    public OrderSubmitRequest(MallType mallType, MallAuthentication authentication, Object requestObj) {
+        super(mallType, authentication, requestObj);
     }
 
     @Override

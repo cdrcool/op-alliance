@@ -1,6 +1,7 @@
 package com.op.mall.request;
 
 import com.op.mall.client.MallAuthentication;
+import com.op.mall.constans.MallType;
 import com.op.mall.response.MallResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,6 +16,11 @@ import java.io.Serializable;
 @Getter
 @AllArgsConstructor
 public abstract class MallRequest<T extends MallResponse> implements Serializable {
+    /**
+     * 电商类型
+     */
+    private final MallType mallType;
+
     /**
      * 身份认证凭据
      */

@@ -2,6 +2,7 @@ package com.op.mall.request;
 
 import com.op.mall.client.MallAuthentication;
 import com.op.mall.constans.MallMethodConstants;
+import com.op.mall.constans.MallType;
 import com.op.mall.response.InvoiceQueryDetailResponse;
 
 /**
@@ -11,8 +12,8 @@ import com.op.mall.response.InvoiceQueryDetailResponse;
  */
 public class InvoiceQueryDetailRequest extends MallRequest<InvoiceQueryDetailResponse> {
 
-    public InvoiceQueryDetailRequest(MallAuthentication authentication, Object requestObj) {
-        super(authentication, requestObj);
+    public InvoiceQueryDetailRequest(MallType mallType, MallAuthentication authentication, Object requestObj) {
+        super(mallType, authentication, requestObj);
     }
 
     @Override

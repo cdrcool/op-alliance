@@ -1,4 +1,4 @@
-package com.op.mall.business;
+package com.op.mall.business.dto;
 
 import lombok.Data;
 
@@ -11,7 +11,7 @@ import java.util.List;
  * @author cdrcool
  */
 @Data
-public class OrderSubmitDTO {
+public class OrderSubmitDTO implements Cloneable {
     /**
      * 纳税人识别号
      */
@@ -36,7 +36,7 @@ public class OrderSubmitDTO {
      * 商品 SKU 信息
      */
     @Data
-    public static class SkuInfo {
+    public static class SkuInfo implements Cloneable {
         /**
          * 电商类型
          */
@@ -61,14 +61,31 @@ public class OrderSubmitDTO {
     /**
      * 订单收货信息
      */
-    private static class ConsigneeInfo {
-
+    private static class ConsigneeInfo implements Cloneable {
+        @Override
+        public ConsigneeInfo clone() throws CloneNotSupportedException {
+            return (ConsigneeInfo) super.clone();
+        }
     }
 
     /**
      * 发票信息
      */
-    private static class InvoiceInfo {
-
+    private static class InvoiceInfo implements Cloneable {
+        @Override
+        public InvoiceInfo clone() throws CloneNotSupportedException {
+            return (InvoiceInfo) super.clone();
+        }
     }
+
+    @Override
+    public OrderSubmitDTO clone() throws CloneNotSupportedException {
+        OrderSubmitDTO submitDTO = (OrderSubmitDTO) super.clone();
+        if (submitDTO != null) {
+            submitDTO.setConsigneeInfo(consigneeInfo.clone());
+            submitDTO.setInvoiceInfo(invoiceInfo.clone());
+        }
+        return submitDTO;
+    }
+
 }

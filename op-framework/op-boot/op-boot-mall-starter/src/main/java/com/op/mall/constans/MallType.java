@@ -45,7 +45,7 @@ public enum MallType {
      * @param value 值
      * @return 枚举值
      */
-    public static MallType get(String value) {
+    public static MallType getMallType(String value) {
         return Arrays.stream(values()).filter(item -> item.value.equals(value)).findAny()
                 .orElseThrow(() -> new MallException("不支持的电商类型枚举值：" + value));
     }

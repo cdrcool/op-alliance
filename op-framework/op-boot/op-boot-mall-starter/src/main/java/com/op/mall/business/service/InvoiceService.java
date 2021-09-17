@@ -1,5 +1,7 @@
-package com.op.mall.business;
+package com.op.mall.business.service;
 
+import com.op.mall.business.dto.InvoiceApplySubmitDTO;
+import com.op.mall.business.dto.InvoiceQueryDetailDTO;
 import com.op.mall.response.InvoiceQueryDetailResponse;
 
 /**

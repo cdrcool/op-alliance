@@ -1,4 +1,4 @@
-package com.op.mall.business;
+package com.op.mall.business.vo;
 
 /**
  * 订单提交 VO
