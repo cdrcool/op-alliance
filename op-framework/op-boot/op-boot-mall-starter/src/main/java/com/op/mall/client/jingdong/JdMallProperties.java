@@ -17,12 +17,12 @@ public class JdMallProperties {
     /**
      * 连接超时
      */
-    private int connectTimeout;
+    private long connectTimeout;
 
     /**
      * 读超时
      */
-    private int readTimeout;
+    private long readTimeout;
 
     /**
      * 待明确
