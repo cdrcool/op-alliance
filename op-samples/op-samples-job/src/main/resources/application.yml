@@ -1,0 +1,9 @@
+spring:
+  task:
+    scheduling:
+      thread-name-prefix: schedule-task-pool-
+      pool:
+        size: 9
+      shutdown:
+        await-termination: true
+        await-termination-period: 60S
