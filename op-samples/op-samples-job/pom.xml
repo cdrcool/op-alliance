@@ -33,6 +33,16 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <!-- 在spring data redis中，使用lettuce客户端且配置了连接池，需引入以下依赖 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+        </dependency>
+
         <!-- 使用 log4j2 日志框架 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
