@@ -16,8 +16,12 @@ import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.scheduling.support.CronTrigger;
+import org.springframework.scheduling.support.SimpleTriggerContext;
 
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
@@ -50,15 +54,39 @@ public class ScheduleConfig implements SchedulingConfigurer {
         taskRegistrar.setScheduler(scheduler);*/
 
 
-        List<JobDefinition> definitions = jobDefinitionRepository.listAll();
-        definitions.forEach(definition -> {
-            Runnable runnable = new ScheduledRunnable(definition, taskService, distributedLock);
-            TimingTask timingTask = taskService.findByJobName(definition.getJobName());
+        List<TimingTask> tasks = taskService.findAll();
+        tasks.forEach(task -> {
+            try {
+                String jobName = task.getJobName();
+                JobDefinition jobDefinition = jobDefinitionRepository.get(jobName);
+                if (jobDefinition == null) {
+                    log.warn("未找到定时任务：{}", jobName);
 
-            taskRegistrar.addTriggerTask(runnable, triggerContext -> {
-                CronTrigger trigger = new CronTrigger(timingTask.getCronExpression());
-                return trigger.nextExecutionTime(triggerContext);
-            });
+                    // 可能是由于代码中移除了该任务，导致数据库中有记录，但应用程序中没有，此时需在数据库记录中标记该认为为已移除
+                    task.setStatus(TimingTask.TaskStatus.REMOVED.getValue());
+                    taskService.save(task);
+
+                    return;
+                }
+
+                Runnable runnable = new ScheduledRunnable(jobDefinition, taskService, distributedLock);
+                // 自定义 Trigger：使用 CronTrigger 计算任务的下一次执行时间
+                taskRegistrar.addTriggerTask(runnable, triggerContext -> {
+                    CronTrigger cronTrigger = new CronTrigger(task.getCronExpression());
+
+                    // 更新定时任务的下次执行时间与状态
+                    Date nextExecuteTime = cronTrigger.nextExecutionTime(new SimpleTriggerContext());
+                    if (nextExecuteTime != null) {
+                        task.setNextExecuteTime(nextExecuteTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+                    }
+                    task.setStatus(TimingTask.TaskStatus.WAITING.getValue());
+                    taskService.save(task);
+
+                    return cronTrigger.nextExecutionTime(triggerContext);
+                });
+            } catch (Exception e) {
+                log.error("调度定时任务【{}】失败", task.getJobName(), e);
+            }
         });
     }
 

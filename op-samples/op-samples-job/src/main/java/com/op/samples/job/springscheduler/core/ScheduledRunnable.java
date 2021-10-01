@@ -7,6 +7,7 @@ import com.op.samples.job.utils.lock.DistributedLock;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -30,15 +31,20 @@ public class ScheduledRunnable implements Runnable {
     public void run() {
         String jobName = jobDefinition.getJobName();
 
-        TimingTask task = taskService.findByJobName(jobName);
-        task.setStatus(TimingTask.TaskStatus.RUNNING.getValue());
-        LocalDateTime now = LocalDateTime.now();
-        if (task.getLastExecuteTime() == null) {
-            task.setFirstExecuteTime(now);
+        TimingTask timingTask = taskService.findByJobName(jobName);
+        if (Objects.equals(timingTask.getStatus(), TimingTask.TaskStatus.PAUSED.getValue())) {
+            log.info("任务【{}】已暂停，直接返回", jobName);
+            return;
         }
-        task.setLastExecuteTime(now);
-        task.setExecuteCount(Optional.ofNullable(task.getExecuteCount()).orElse(0) + 1);
-        taskService.save(task);
+
+        timingTask.setStatus(TimingTask.TaskStatus.RUNNING.getValue());
+        LocalDateTime now = LocalDateTime.now();
+        if (timingTask.getLastExecuteTime() == null) {
+            timingTask.setFirstExecuteTime(now);
+        }
+        timingTask.setLastExecuteTime(now);
+        timingTask.setExecuteCount(Optional.ofNullable(timingTask.getExecuteCount()).orElse(0) + 1);
+        taskService.save(timingTask);
 
         boolean success = distributedLock.lock(jobName);
         if (success) {
@@ -50,7 +56,7 @@ public class ScheduledRunnable implements Runnable {
             log.warn("获取分布式锁失败，任务【{}】此次不执行", jobName);
         }
 
-        task.setStatus(TimingTask.TaskStatus.WAITING.getValue());
-        taskService.save(task);
+        timingTask.setStatus(TimingTask.TaskStatus.WAITING.getValue());
+        taskService.save(timingTask);
     }
 }
