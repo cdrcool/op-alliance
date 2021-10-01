@@ -41,7 +41,8 @@ public interface JobDefinitionRepository {
 
     /**
      * 返回所有任务定义
+     *
      * @return 任务定义列表
      */
-    List<JobDefinition> listALl();
+    List<JobDefinition> listAll();
 }

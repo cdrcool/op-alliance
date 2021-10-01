@@ -14,13 +14,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import org.springframework.scheduling.config.CronTask;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.scheduling.support.CronTrigger;
-import org.springframework.scheduling.support.ScheduledMethodRunnable;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -54,7 +50,7 @@ public class ScheduleConfig implements SchedulingConfigurer {
         taskRegistrar.setScheduler(scheduler);*/
 
 
-        List<JobDefinition> definitions = jobDefinitionRepository.listALl();
+        List<JobDefinition> definitions = jobDefinitionRepository.listAll();
         definitions.forEach(definition -> {
             Runnable runnable = new ScheduledRunnable(definition, taskService, distributedLock);
             TimingTask timingTask = taskService.findByJobName(definition.getJobName());

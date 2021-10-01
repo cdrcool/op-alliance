@@ -111,33 +111,33 @@ public class TaskManagerImpl implements TaskManager {
 
     @Override
     public void updateTask(String jobName, String cronExpression, boolean interruptIfRunning, boolean executeOnce) {
-//        JobDefinition jobDefinition = getJobDefinition(jobName);
-//
-//        // 1. 取消之前的任务
-//        pauseTask(jobName, interruptIfRunning);
-//
-//        // 2. 调度新任务
-//        Runnable runnable = new ScheduledRunnable(jobDefinition, taskService, distributedLock);
-//        CronTrigger cronTrigger = new CronTrigger(cronExpression);
-//        ScheduledFuture<?> curScheduledFuture = threadPoolTaskScheduler.schedule(runnable, cronTrigger);
-//
-//        // 3. 更新任务的 scheduledFuture
-//        jobDefinition.setScheduledFuture(curScheduledFuture);
+        JobDefinition jobDefinition = getJobDefinition(jobName);
+
+        // 1. 取消之前的任务
+        pauseTask(jobName, interruptIfRunning);
+
+        // 2. 调度新任务
+        Runnable runnable = new ScheduledRunnable(jobDefinition, taskService, distributedLock);
+        CronTrigger cronTrigger = new CronTrigger(cronExpression);
+        ScheduledFuture<?> curScheduledFuture = threadPoolTaskScheduler.schedule(runnable, cronTrigger);
+
+        // 3. 更新任务的 scheduledFuture
+        jobDefinition.setScheduledFuture(curScheduledFuture);
 
         // 4. 更新任务
         TimingTask task = taskService.findByJobName(jobName);
         task.setCronExpression(cronExpression);
-//        Date nextExecuteTime = cronTrigger.nextExecutionTime(new SimpleTriggerContext());
-//        if (nextExecuteTime != null) {
-//            task.setNextExecuteTime(nextExecuteTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-//        }
+        Date nextExecuteTime = cronTrigger.nextExecutionTime(new SimpleTriggerContext());
+        if (nextExecuteTime != null) {
+            task.setNextExecuteTime(nextExecuteTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+        }
         task.setStatus(TimingTask.TaskStatus.WAITING.getValue());
         taskService.save(task);
 
         // 5. 如果 executeOnce 为 true，则立即执行一次任务
-//        if (executeOnce) {
-//            threadPoolTaskScheduler.execute(runnable);
-//        }
+        if (executeOnce) {
+            threadPoolTaskScheduler.execute(runnable);
+        }
     }
 
     @Override
@@ -169,15 +169,15 @@ public class TaskManagerImpl implements TaskManager {
 
         TimingTask task = taskService.findByJobName(jobName);
 
-        // 2. 调度任务
+        // 1. 调度任务
         Runnable runnable = new ScheduledRunnable(jobDefinition, taskService, distributedLock);
         CronTrigger cronTrigger = new CronTrigger(task.getCronExpression());
         ScheduledFuture<?> curScheduledFuture = threadPoolTaskScheduler.schedule(runnable, cronTrigger);
 
-        // 3. 更新任务的 scheduledFuture
+        // 2. 更新任务的 scheduledFuture
         jobDefinition.setScheduledFuture(curScheduledFuture);
 
-        // 4. 更新任务
+        // 3. 更新任务
         Date nextExecuteTime = cronTrigger.nextExecutionTime(new SimpleTriggerContext());
         if (nextExecuteTime != null) {
             task.setNextExecuteTime(nextExecuteTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
@@ -185,7 +185,7 @@ public class TaskManagerImpl implements TaskManager {
         task.setStatus(TimingTask.TaskStatus.WAITING.getValue());
         taskService.save(task);
 
-        // 5. 如果 executeOnce 为 true，则立即执行一次任务
+        // 4. 如果 executeOnce 为 true，则立即执行一次任务
         if (executeOnce) {
             threadPoolTaskScheduler.execute(runnable);
         }

@@ -8,6 +8,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
+ * 基于内存的任务定义 repository
+ *
  * @author chengdr01
  */
 @Component
@@ -35,7 +37,7 @@ public class GlobalJobDefinitionRepository implements JobDefinitionRepository {
     }
 
     @Override
-    public List<JobDefinition> listALl() {
+    public List<JobDefinition> listAll() {
         return new ArrayList<>(JOB_HANDLER_STORE.values());
     }
 }

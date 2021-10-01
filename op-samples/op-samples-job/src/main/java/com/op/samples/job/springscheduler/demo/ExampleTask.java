@@ -4,6 +4,7 @@ package com.op.samples.job.springscheduler.demo;
 import com.op.samples.job.springscheduler.core.DynamicScheduled;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +31,7 @@ public class ExampleTask {
         log.info("spring task1 end");
     }
 
+    @Async
     @DynamicScheduled("example")
     public void executeTask2() {
         log.info("spring task2 begin");
