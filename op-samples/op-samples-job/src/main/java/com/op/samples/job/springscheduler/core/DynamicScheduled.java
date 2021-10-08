@@ -18,7 +18,6 @@ public @interface DynamicScheduled {
      */
     String value();
 
-
     /**
      * @return 执行任务前的初始化方法名
      */
