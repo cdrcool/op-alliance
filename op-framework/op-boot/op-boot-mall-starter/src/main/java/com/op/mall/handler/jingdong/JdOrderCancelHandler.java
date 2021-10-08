@@ -5,7 +5,11 @@ import com.jd.open.api.sdk.response.vopdd.VopOrderCancelOrderResponse;
 import com.op.mall.client.jingdong.JdMallAuthentication;
 import com.op.mall.client.jingdong.JdMallClient;
 import com.op.mall.client.jingdong.JdMallRequest;
+import com.op.mall.constans.MallMethodConstants;
+import com.op.mall.constans.MallType;
+import com.op.mall.handler.MallRequestHandlerRegistry;
 import com.op.mall.request.MallRequest;
+import com.op.mall.request.MallRequestAction;
 import com.op.mall.request.OrderCancelRequest;
 import com.op.mall.response.MallResponse;
 import com.op.mall.response.OrderCancelResponse;
@@ -37,5 +41,10 @@ public class JdOrderCancelHandler extends JdMallRequestHandler {
         // 模拟京东电商请求响应解析
         OrderCancelResponse response = new OrderCancelResponse();
         return (R) response;
+    }
+
+    @Override
+    public void afterPropertiesSet() {
+        MallRequestHandlerRegistry.addHandler(new MallRequestAction(MallType.JINGDONG, MallMethodConstants.ORDER_CANCEL), this);
     }
 }

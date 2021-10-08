@@ -83,29 +83,30 @@ public class TreeUtils {
         if (comparator != null) {
             stream = stream.sorted(comparator);
         }
-        return stream.map(child -> {
-            V result = voFunction.apply(child);
+        return stream
+                .map(child -> {
+                    V result = voFunction.apply(child);
 
-            List<V> curChildren = buildTreeRecursion(
-                    descendantMap.get(false),
-                    pidFunction,
-                    idFunction,
-                    voFunction,
-                    childrenConsumer,
-                    idFunction.apply(child),
-                    predicate,
-                    comparator);
-            if (CollectionUtils.isNotEmpty(curChildren)) {
-                childrenConsumer.accept(result, curChildren);
-                return result;
-            }
+                    List<V> curChildren = buildTreeRecursion(
+                            descendantMap.get(false),
+                            pidFunction,
+                            idFunction,
+                            voFunction,
+                            childrenConsumer,
+                            idFunction.apply(child),
+                            predicate,
+                            comparator);
+                    if (CollectionUtils.isNotEmpty(curChildren)) {
+                        childrenConsumer.accept(result, curChildren);
+                        return result;
+                    }
 
-            if (filter.test(child)) {
-                return result;
-            }
+                    if (filter.test(child)) {
+                        return result;
+                    }
 
-            return null;
-        })
+                    return null;
+                })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }

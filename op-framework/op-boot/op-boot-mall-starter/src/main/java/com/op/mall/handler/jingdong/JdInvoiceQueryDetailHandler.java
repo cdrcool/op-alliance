@@ -14,9 +14,13 @@ import com.op.mall.constans.InvoiceType;
 import com.op.mall.client.jingdong.JdMallAuthentication;
 import com.op.mall.client.jingdong.JdMallClient;
 import com.op.mall.client.jingdong.JdMallRequest;
+import com.op.mall.constans.MallMethodConstants;
+import com.op.mall.constans.MallType;
 import com.op.mall.exception.JdMallException;
+import com.op.mall.handler.MallRequestHandlerRegistry;
 import com.op.mall.request.InvoiceQueryDetailRequest;
 import com.op.mall.request.MallRequest;
+import com.op.mall.request.MallRequestAction;
 import com.op.mall.request.jingdong.JdInvoiceQueryDetailRequest;
 import com.op.mall.response.InvoiceQueryDetailResponse;
 import com.op.mall.response.MallResponse;
@@ -187,5 +191,10 @@ public class JdInvoiceQueryDetailHandler extends JdMallRequestHandler {
             log.error(message);
             throw new JdMallException(message);
         }
+    }
+
+    @Override
+    public void afterPropertiesSet() {
+        MallRequestHandlerRegistry.addHandler(new MallRequestAction(MallType.JINGDONG, MallMethodConstants.INVOICE_QUERY_DETAIL), this);
     }
 }

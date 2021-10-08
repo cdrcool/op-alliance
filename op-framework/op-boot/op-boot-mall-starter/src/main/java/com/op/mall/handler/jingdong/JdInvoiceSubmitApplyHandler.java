@@ -5,8 +5,12 @@ import com.jd.open.api.sdk.response.vopfp.VopInvoiceSubmitInvoiceApplyResponse;
 import com.op.mall.client.jingdong.JdMallAuthentication;
 import com.op.mall.client.jingdong.JdMallClient;
 import com.op.mall.client.jingdong.JdMallRequest;
+import com.op.mall.constans.MallMethodConstants;
+import com.op.mall.constans.MallType;
+import com.op.mall.handler.MallRequestHandlerRegistry;
 import com.op.mall.request.InvoiceSubmitApplyRequest;
 import com.op.mall.request.MallRequest;
+import com.op.mall.request.MallRequestAction;
 import com.op.mall.response.InvoiceSubmitApplyResponse;
 import com.op.mall.response.MallResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -40,5 +44,10 @@ public class JdInvoiceSubmitApplyHandler extends JdMallRequestHandler {
         // 模拟京东电商请求响应解析
         InvoiceSubmitApplyResponse response = new InvoiceSubmitApplyResponse();
         return (R) response;
+    }
+
+    @Override
+    public void afterPropertiesSet() {
+        MallRequestHandlerRegistry.addHandler(new MallRequestAction(MallType.JINGDONG, MallMethodConstants.INVOICE_SUBMIT_APPLY), this);
     }
 }

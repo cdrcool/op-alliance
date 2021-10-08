@@ -2,13 +2,14 @@ package com.op.mall.handler;
 
 import com.op.mall.request.MallRequest;
 import com.op.mall.response.MallResponse;
+import org.springframework.beans.factory.InitializingBean;
 
 /**
  * 电商请求处理接口
  *
  * @author chengdr01
  */
-public interface MallRequestHandler {
+public interface MallRequestHandler extends InitializingBean {
 
     /**
      * 执行电商请求
