@@ -13,6 +13,7 @@ spring:
       pool:
         core-size: 13
         max-size: 300
+      thread-name-prefix: task-
 
 management:
   endpoints:
