@@ -48,10 +48,14 @@ public class ScheduledRunnable implements Runnable {
 
         boolean success = distributedLock.lock(jobName);
         if (success) {
-            log.info("任务【{}】开始执行", jobName);
-            jobDefinition.getConsumer().accept(null);
-            log.info("任务【{}】执行结束", jobName);
-            distributedLock.releaseLock(jobName);
+            try{
+                log.info("任务【{}】开始执行", jobName);
+                jobDefinition.getConsumer().accept(null);
+                log.info("任务【{}】执行结束", jobName);
+                distributedLock.releaseLock(jobName);
+            } finally {
+                distributedLock.releaseLock(jobName);
+            }
         } else {
             log.warn("获取分布式锁失败，任务【{}】此次不执行", jobName);
         }

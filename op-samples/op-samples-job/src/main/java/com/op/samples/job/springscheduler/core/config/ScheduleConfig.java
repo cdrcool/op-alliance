@@ -109,8 +109,8 @@ public class ScheduleConfig implements SchedulingConfigurer {
                 .customizers(taskScheduler -> {
                     // 设置线程池饱和策略：终止策略，抛出RejectedExecutionException
                     taskScheduler.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
-                    // 设置任务取消执行策略：立即移除该任务
-                    taskScheduler.setRemoveOnCancelPolicy(true);
+                    // 设置任务取消执行策略：执行完该任务之后移除
+                    taskScheduler.setRemoveOnCancelPolicy(false);
                 });
     }
 }
