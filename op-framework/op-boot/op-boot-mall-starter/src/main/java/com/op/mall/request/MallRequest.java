@@ -5,6 +5,7 @@ import com.op.mall.constans.MallType;
 import com.op.mall.response.MallResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
