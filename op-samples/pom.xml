@@ -19,6 +19,7 @@
         <module>op-samples-mybatis-geneator</module>
         <module>op-samples-rabbitmq</module>
         <module>op-samples-swagger</module>
+        <module>op-samples-report</module>
     </modules>
 
     <properties>
