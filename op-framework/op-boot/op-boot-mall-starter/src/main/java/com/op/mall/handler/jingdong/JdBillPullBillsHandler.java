@@ -10,7 +10,7 @@ import com.op.mall.request.BillPullBillsRequest;
 import com.op.mall.request.MallRequest;
 import com.op.mall.request.MallRequestAction;
 import com.op.mall.response.*;
-import com.op.mall.response.jd.*;
+import com.op.mall.response.jingdong.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;

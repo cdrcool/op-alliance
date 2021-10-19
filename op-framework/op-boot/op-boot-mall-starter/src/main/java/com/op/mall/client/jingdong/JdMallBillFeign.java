@@ -1,7 +1,7 @@
 package com.op.mall.client.jingdong;
 
-import com.op.mall.response.jd.JdBaseResponse;
-import com.op.mall.response.jd.JdBillResponse;
+import com.op.mall.response.jingdong.JdBaseResponse;
+import com.op.mall.response.jingdong.JdBillResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 

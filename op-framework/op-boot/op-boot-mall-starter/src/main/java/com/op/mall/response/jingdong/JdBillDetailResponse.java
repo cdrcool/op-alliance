@@ -1,4 +1,4 @@
-package com.op.mall.response.jd;
+package com.op.mall.response.jingdong;
 
 import lombok.Data;
 
