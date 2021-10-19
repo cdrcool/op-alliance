@@ -16,21 +16,22 @@ import java.io.Serializable;
  */
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public abstract class MallRequest<T extends MallResponse> implements Serializable {
     /**
      * 电商类型
      */
-    private final MallType mallType;
+    private MallType mallType;
 
     /**
      * 身份认证凭据
      */
-    private final MallAuthentication authentication;
+    private MallAuthentication authentication;
 
     /**
      * 请求参数对象
      */
-    private final Object requestObj;
+    private Object requestObj;
 
     /**
      * 返回请求方法

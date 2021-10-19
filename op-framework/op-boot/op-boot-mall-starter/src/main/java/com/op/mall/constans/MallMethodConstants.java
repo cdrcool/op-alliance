@@ -10,7 +10,7 @@ public class MallMethodConstants {
      * 订单提交
      */
     public static final String ORDER_SUBMIT = "order_submit";
-    
+
     /**
      * 订单取消
      */
@@ -27,7 +27,12 @@ public class MallMethodConstants {
     public static final String INVOICE_QUERY_DETAIL = "invoice_query_detail";
 
     /**
-     * 地址映射
+     * 地址查询下级地址
      */
-    public static final String AREA_MAPPING = "area_mapping";
+    public static final String AREA_QUERY_AREAS = "area_query_areas";
+
+    /**
+     * 账单拉取对账单
+     */
+    public static final String BILL_PULL_BILLS = "bill_pull_bills";
 }

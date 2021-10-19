@@ -12,14 +12,14 @@ import java.util.List;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class AreaLowerAreaResponse extends MallResponse {
+public class AreaQueryAreasResponse extends MallResponse {
     /**
      * 下级地址列表
      */
-    private List<AreaLowerAreaItem> areaItems;
+    private List<AreaQueryAreasItem> items;
 
     @Data
-    public static class AreaLowerAreaItem {
+    public static class AreaQueryAreasItem {
         /**
          * 地址编码
          */
