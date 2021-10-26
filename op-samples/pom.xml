@@ -20,6 +20,7 @@
         <module>op-samples-rabbitmq</module>
         <module>op-samples-swagger</module>
         <module>op-samples-report</module>
+        <module>op-samples-design-patterns</module>
     </modules>
 
     <properties>
