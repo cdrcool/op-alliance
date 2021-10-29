@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * 过滤器配置类
  *
- * @author chengdr01
+ * @author cdrcool
  */
 @Configuration
 public class FilterConfig {

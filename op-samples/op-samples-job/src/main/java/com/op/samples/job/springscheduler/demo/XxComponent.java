@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * xx component
- * @author chengdr01
+ * @author cdrcool
  */
 @Slf4j
 @Component

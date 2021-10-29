@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * 任务定义 repository
  *
- * @author chengdr01
+ * @author cdrcool
  */
 public interface JobDefinitionRepository {
     /**

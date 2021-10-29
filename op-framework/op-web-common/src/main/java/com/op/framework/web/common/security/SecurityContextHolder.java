@@ -3,7 +3,7 @@ package com.op.framework.web.common.security;
 /**
  * 安全上下文存放类
  *
- * @author chengdr01
+ * @author cdrcool
  */
 public class SecurityContextHolder {
     private static final ThreadLocal<SecurityContext> CONTEXT_HOLDER = new ThreadLocal<>();

@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 /**
  * 方法级任务处理实现类
  *
- * @author chengdr01
+ * @author cdrcool
  */
 @Slf4j
 public class MethodJobDefinition extends AbstractJobDefinition implements JobDefinition {

@@ -25,7 +25,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 /**
  * Quartz Job Service Impl
  *
- * @author chengdr01
+ * @author cdrcool
  */
 @Slf4j
 @Service

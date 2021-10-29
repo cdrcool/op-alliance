@@ -7,7 +7,7 @@ import java.util.concurrent.Callable;
 /**
  * 模拟任务2
  *
- * @author chengdr01
+ * @author cdrcool
  */
 @Slf4j
 public class Task2 implements Callable<String> {

@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * Xx Job
  *
- * @author chengdr01
+ * @author cdrcool
  */
 @Slf4j
 public class XxJob extends QuartzJobBean {

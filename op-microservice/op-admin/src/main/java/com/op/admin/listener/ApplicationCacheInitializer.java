@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 /**
  * 应用缓存初始化
  *
- * @author chengdr01
+ * @author cdrcool
  */
 @Component
 public class ApplicationCacheInitializer implements ApplicationListener<ApplicationReadyEvent> {

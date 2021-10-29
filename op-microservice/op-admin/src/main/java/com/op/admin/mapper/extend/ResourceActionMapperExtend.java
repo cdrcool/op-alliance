@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * 资源动作 Mapper Extend
  *
- * @author chengdr01
+ * @author cdrcool
  */
 @Mapper
 public interface ResourceActionMapperExtend extends ResourceActionMapper {

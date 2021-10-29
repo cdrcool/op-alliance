@@ -18,7 +18,7 @@ import java.util.Optional;
 /**
  * 身份认证过滤器
  *
- * @author chengdr01
+ * @author cdrcool
  */
 public class AuthenticationFilter extends OncePerRequestFilter {
     private final ObjectMapper objectMapper = new ObjectMapper();

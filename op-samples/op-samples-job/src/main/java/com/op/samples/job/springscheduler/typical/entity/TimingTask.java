@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 /**
  * 定时任务
  *
- * @author chengdr01
+ * @author cdrcool
  */
 @Data
 public class TimingTask {

@@ -42,7 +42,7 @@
         <swagger-annotations.version>1.6.2</swagger-annotations.version>
         <spring-boot-admin.version>2.4.3</spring-boot-admin.version>
         <itextpdf.version>5.5.13.2</itextpdf.version>
-        <itext-asian.version>>5.2.0</itext-asian.version>
+        <itext-asian.version>5.2.0</itext-asian.version>
 
         <spring-boot-maven-plugin.version>2.5.2</spring-boot-maven-plugin.version>
         <mybatis-generator-maven-plugin.version>1.4.0</mybatis-generator-maven-plugin.version>

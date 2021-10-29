@@ -14,7 +14,7 @@ import java.util.concurrent.Executor;
 /**
  * Web Mvc 配置类
  *
- * @author chengdr01
+ * @author cdrcool
  */
 @Configuration
 public class WebMvcConfig extends WebMvcConfigurationSupport {

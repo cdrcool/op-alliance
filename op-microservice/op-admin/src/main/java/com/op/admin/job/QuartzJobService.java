@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Quartz Job Service
  *
- * @author chengdr01
+ * @author cdrcool
  */
 public interface QuartzJobService {
 

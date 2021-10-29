@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * 定时任务 controller
  *
- * @author chengdr01
+ * @author cdrcool
  */
 @RequestMapping("task")
 @RestController

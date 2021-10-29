@@ -3,7 +3,7 @@ package com.op.samples.job.springscheduler.core.definition;
 import java.util.concurrent.ScheduledFuture;
 
 /**
- * @author chengdr01
+ * @author cdrcool
  */
 public abstract class AbstractJobDefinition implements JobDefinition {
     /**

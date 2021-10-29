@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 /**
  * 分布式锁接口
  *
- * @author chengdr01
+ * @author cdrcool
  */
 public interface DistributedLock {
     long EXPIRE = 30000L;

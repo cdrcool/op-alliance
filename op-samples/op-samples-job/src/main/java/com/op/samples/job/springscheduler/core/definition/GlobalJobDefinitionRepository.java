@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * 基于内存的任务定义 repository
  *
- * @author chengdr01
+ * @author cdrcool
  */
 @Component
 public class GlobalJobDefinitionRepository implements JobDefinitionRepository {

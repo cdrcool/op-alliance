@@ -14,7 +14,7 @@ import java.util.Optional;
 /**
  * 组织 Mapper Extend
  *
- * @author chengdr01
+ * @author cdrcool
  */
 @Mapper
 public interface OrganizationMapperExtend extends OrganizationMapper {

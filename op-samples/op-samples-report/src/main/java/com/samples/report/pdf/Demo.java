@@ -13,7 +13,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 /**
- * @author chengdr01
+ * @author cdrcool
  */
 public class Demo {
 

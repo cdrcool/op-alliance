@@ -7,7 +7,7 @@
 ///**
 // * Quartz 任务调度配置类
 // *
-// * @author chengdr01
+// * @author cdrcool
 // */
 //@Configuration
 //public class QuartzConfigOld {

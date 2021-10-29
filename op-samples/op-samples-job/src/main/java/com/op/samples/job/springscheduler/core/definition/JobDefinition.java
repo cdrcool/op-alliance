@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 /**
  * 任务定义接口
  *
- * @author chengdr01
+ * @author cdrcool
  */
 public interface JobDefinition {
 

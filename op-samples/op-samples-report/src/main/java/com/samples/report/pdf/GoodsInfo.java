@@ -3,7 +3,7 @@ package com.samples.report.pdf;
 import lombok.Data;
 
 /**
- * @author chengdr01
+ * @author cdrcool
  */
 @Data
 public class GoodsInfo {

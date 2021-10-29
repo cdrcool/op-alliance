@@ -5,7 +5,7 @@ import java.lang.annotation.*;
 /**
  * 动态任务调度注解
  *
- * @author chengdr01
+ * @author cdrcool
  */
 @Documented
 @Inherited
