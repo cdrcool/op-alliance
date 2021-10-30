@@ -1,4 +1,4 @@
-package com.op.samples.concurrent;
+package com.op.samples.asyncrequest;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

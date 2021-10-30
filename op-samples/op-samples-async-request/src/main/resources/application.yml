@@ -1,0 +1,11 @@
+spring:
+  task:
+    execution:
+      pool:
+        core-size: 13
+        max-size: 13
+      thread-name-prefix: async-request-task-
+
+logging:
+  level:
+    root: info

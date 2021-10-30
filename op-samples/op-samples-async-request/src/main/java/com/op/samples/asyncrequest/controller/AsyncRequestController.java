@@ -1,4 +1,4 @@
-package com.op.samples.concurrent.controller;
+package com.op.samples.asyncrequest.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
  * @author cdrcool
  */
 @Slf4j
-@RequestMapping(("asyncRequest"))
+@RequestMapping("asyncRequest")
 @RestController
 public class AsyncRequestController {
 
@@ -30,6 +30,7 @@ public class AsyncRequestController {
         log.info("Main thread name：{}", Thread.currentThread().getName());
 
         return () -> {
+            Thread.sleep(1000 * 3);
             log.info("Execution thread name：{}", Thread.currentThread().getName());
             return "Hello, World!";
         };
