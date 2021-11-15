@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>op-mybatis-geneator-samples</artifactId>
+    <artifactId>op-samples-mybatis-geneator</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
