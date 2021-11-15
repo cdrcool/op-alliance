@@ -58,14 +58,14 @@
             <artifactId>open-api-sdk</artifactId>
             <version>2.0</version>
             <scope>system</scope>
-            <systemPath>D:/Workspace/IdeaProjects/OnePiece/op-alliance/op-libaries/open-api-sdk-2.0-jdk1.8.jar</systemPath>
+            <systemPath>D:/IdeaProjects/OnePiece/op-alliance/op-libaries/open-api-sdk-2.0-jdk1.8.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.mall.sn</groupId>
             <artifactId>suning-sdk</artifactId>
             <version>1.0</version>
             <scope>system</scope>
-            <systemPath>D:/Workspace/IdeaProjects/OnePiece/op-alliance/op-libaries/suning-sdk-java-standard-1.0-jdk1.8.jar</systemPath>
+            <systemPath>D:/IdeaProjects/OnePiece/op-alliance/op-libaries/suning-sdk-java-standard-1.0-jdk1.8.jar</systemPath>
         </dependency>
     </dependencies>
 </project>
