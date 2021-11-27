@@ -21,6 +21,7 @@
         <module>op-samples-swagger</module>
         <module>op-samples-report</module>
         <module>op-samples-design-patterns</module>
+        <module>op-samples-multi-tenant</module>
     </modules>
 
     <properties>
