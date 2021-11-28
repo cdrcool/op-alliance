@@ -30,39 +30,46 @@ public class SlopOne {
 
         List<String> goodsIds = new ArrayList<>(goodsUserScoreMap.keySet());
         for (int i = 0; i < goodsIds.size() - 1; i++) {
-            String goodsId1 = goodsIds.get(i);
-            String goodsId2 = goodsIds.get(i + 1);
+            for (int j = i + 1; j < goodsIds.size(); j ++) {
+                String goodsId1 = goodsIds.get(i);
+                String goodsId2 = goodsIds.get(j);
 
-            List<GoodsUserScore> userScores1 = goodsUserScoreMap.get(goodsId1);
-            List<GoodsUserScore> userScores2 = goodsUserScoreMap.get(goodsId2);
+                List<GoodsUserScore> userScores1 = goodsUserScoreMap.get(goodsId1);
+                List<GoodsUserScore> userScores2 = goodsUserScoreMap.get(goodsId2);
 
-            Map<String, BigDecimal> userScoresMap1 = userScores1.stream()
-                    .collect(Collectors.toMap(GoodsUserScore::getUserId, GoodsUserScore::getScore));
-            Map<String, BigDecimal> userScoresMap2 = userScores2.stream()
-                    .collect(Collectors.toMap(GoodsUserScore::getUserId, GoodsUserScore::getScore));
+                Map<String, BigDecimal> userScoresMap1 = userScores1.stream()
+                        .collect(Collectors.toMap(GoodsUserScore::getUserId, GoodsUserScore::getScore));
+                Map<String, BigDecimal> userScoresMap2 = userScores2.stream()
+                        .collect(Collectors.toMap(GoodsUserScore::getUserId, GoodsUserScore::getScore));
 
-            Set<String> userIds1 = userScoresMap1.keySet();
-            Set<String> userIds2 = userScoresMap2.keySet();
-            Set<String> sameUserIds = userIds1.stream().filter(userIds2::contains).collect(Collectors.toSet());
+                Set<String> userIds1 = userScoresMap1.keySet();
+                Set<String> userIds2 = userScoresMap2.keySet();
+                Set<String> sameUserIds = userIds1.stream().filter(userIds2::contains).collect(Collectors.toSet());
 
-            Optional<BigDecimal> optional = sameUserIds.stream()
-                    .map(userId -> userScoresMap1.get(userId).subtract(userScoresMap2.get(userId)))
-                    .reduce(BigDecimal::add);
+                Optional<BigDecimal> optional = sameUserIds.stream()
+                        .map(userId -> userScoresMap1.get(userId).subtract(userScoresMap2.get(userId)))
+                        .reduce(BigDecimal::add);
 
-            optional.ifPresent(sum -> {
-                GoodsScoreDeviation deviation1 = new GoodsScoreDeviation();
-                deviation1.setGoodsId1(goodsId1);
-                deviation1.setGoodsId2(goodsId2);
-                deviation1.setValue(sum.divide(BigDecimal.valueOf(sameUserIds.size()), 2, RoundingMode.HALF_UP));
-                deviationList.add(deviation1);
+                optional.ifPresent(sum -> {
+                    GoodsScoreDeviation deviation1 = new GoodsScoreDeviation();
+                    deviation1.setGoodsId1(goodsId1);
+                    deviation1.setGoodsId2(goodsId2);
+                    deviation1.setValue(sum.divide(BigDecimal.valueOf(sameUserIds.size()), 2, RoundingMode.HALF_UP));
+                    deviation1.setCount(sameUserIds.size());
+                    deviationList.add(deviation1);
+                    log.info("goodsId1: {}, goodsId2: {}, value:{}, count:{}", goodsId1, goodsId2, deviation1.getValue(), sameUserIds.size());
 
-                GoodsScoreDeviation deviation2 = new GoodsScoreDeviation();
-                deviation2.setGoodsId1(goodsId2);
-                deviation2.setGoodsId2(goodsId1);
-                deviation2.setValue(deviation1.getValue().multiply(BigDecimal.valueOf(-1)));
-                deviationList.add(deviation2);
-            });
+                    GoodsScoreDeviation deviation2 = new GoodsScoreDeviation();
+                    deviation2.setGoodsId1(goodsId2);
+                    deviation2.setGoodsId2(goodsId1);
+                    deviation2.setValue(deviation1.getValue().multiply(BigDecimal.valueOf(-1)));
+                    deviation2.setCount(sameUserIds.size());
+                    deviationList.add(deviation2);
+                    log.info("goodsId2: {}, goodsId1: {}, value:{}, count:{}", goodsId2, goodsId1, deviation2.getValue(), sameUserIds.size());
+                });
+            }
         }
+
 
         return deviationList;
     }
@@ -107,5 +114,10 @@ public class SlopOne {
          * 评分偏差
          */
         private BigDecimal value;
+
+        /**
+         * 评分人数
+         */
+        private Integer count;
     }
 }

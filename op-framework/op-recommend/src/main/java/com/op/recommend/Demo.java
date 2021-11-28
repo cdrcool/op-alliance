@@ -1,13 +1,20 @@
 package com.op.recommend;
 
+import lombok.extern.slf4j.Slf4j;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Demo
  *
  * @author cdrcool
  */
+@Slf4j
 public class Demo {
 
     public static void main(String[] args) {
@@ -37,5 +44,155 @@ public class Demo {
         System.out.println("result14: " + CosineSimilarity.calc(user2, user3));
         System.out.println("result15: " + CosineSimilarity.calc(user2, user4));
         System.out.println("result16: " + CosineSimilarity.calc(user3, user4));
+
+        xx("D");
+    }
+
+    public static void xx(String userId) {
+        // 1. 查询所有物品
+        List<String> goodsIds = Arrays.asList("martrix", "titanic", "dieHard", "forrestGump", "wallE");
+
+        // 2. 查询所有物品-用户评分
+        List<SlopOne.GoodsUserScore> goodsUserScores = queryGoodsUserScores();
+        SlopOne.calcGoodsDeviations(goodsUserScores);
+
+        // 3. 计算所有物品-评分偏差
+        List<SlopOne.GoodsScoreDeviation> deviations = SlopOne.calcGoodsDeviations(goodsUserScores);
+
+        // 4. 找出用户评分/未评分的商品
+        List<SlopOne.GoodsUserScore> userScores = goodsUserScores.stream()
+                .filter(goodsUserScore -> goodsUserScore.getUserId().equals(userId))
+                .collect(Collectors.toList());
+        List<String> scoreGoodsIds = userScores.stream().map(SlopOne.GoodsUserScore::getGoodsId).collect(Collectors.toList());
+        List<String> unScoreGoodsIds = goodsIds.stream().filter(goodsId -> !scoreGoodsIds.contains(goodsId)).collect(Collectors.toList());
+
+        List<BigDecimal> xx = unScoreGoodsIds.stream().map(unScoreGoodsId -> {
+            log.info("unScoreGoodsId: {}", unScoreGoodsId);
+            BigDecimal aa = new BigDecimal("0");
+            BigDecimal vv = new BigDecimal("0");
+
+            for (SlopOne.GoodsUserScore userScore : userScores) {
+                SlopOne.GoodsScoreDeviation deviation = deviations.stream()
+                        .filter(item -> item.getGoodsId1().equals(userScore.getGoodsId()) && item.getGoodsId2().equals(unScoreGoodsId))
+                        .findAny().get();
+                aa = aa.add(BigDecimal.valueOf(deviation.getCount()).multiply(userScore.getScore().subtract(deviation.getValue())));
+                vv = vv.add(BigDecimal.valueOf(deviation.getCount()));
+            }
+
+            return aa.divide(vv, 2, RoundingMode.HALF_UP);
+        }).collect(Collectors.toList());
+
+    }
+
+    private static List<SlopOne.GoodsUserScore> queryGoodsUserScores() {
+        List<SlopOne.GoodsUserScore> goodsUserScores = new ArrayList<>();
+
+        SlopOne.GoodsUserScore martrixUserScoreA = new SlopOne.GoodsUserScore();
+        martrixUserScoreA.setGoodsId("martrix");
+        martrixUserScoreA.setUserId("A");
+        martrixUserScoreA.setScore(BigDecimal.valueOf(5));
+        goodsUserScores.add(martrixUserScoreA);
+
+        SlopOne.GoodsUserScore martrixUserScoreB = new SlopOne.GoodsUserScore();
+        martrixUserScoreB.setGoodsId("martrix");
+        martrixUserScoreB.setUserId("B");
+        martrixUserScoreB.setScore(BigDecimal.valueOf(1));
+        goodsUserScores.add(martrixUserScoreB);
+
+        SlopOne.GoodsUserScore martrixUserScoreC = new SlopOne.GoodsUserScore();
+        martrixUserScoreC.setGoodsId("martrix");
+        martrixUserScoreC.setUserId("C");
+        martrixUserScoreC.setScore(BigDecimal.valueOf(2));
+        goodsUserScores.add(martrixUserScoreC);
+
+        SlopOne.GoodsUserScore martrixUserScoreD = new SlopOne.GoodsUserScore();
+        martrixUserScoreD.setGoodsId("martrix");
+        martrixUserScoreD.setUserId("D");
+        martrixUserScoreD.setScore(BigDecimal.valueOf(4));
+        goodsUserScores.add(martrixUserScoreD);
+
+
+        SlopOne.GoodsUserScore titanicUserScoreA = new SlopOne.GoodsUserScore();
+        titanicUserScoreA.setGoodsId("titanic");
+        titanicUserScoreA.setUserId("A");
+        titanicUserScoreA.setScore(BigDecimal.valueOf(1));
+        goodsUserScores.add(titanicUserScoreA);
+
+        SlopOne.GoodsUserScore titanicUserScoreB = new SlopOne.GoodsUserScore();
+        titanicUserScoreB.setGoodsId("titanic");
+        titanicUserScoreB.setUserId("B");
+        titanicUserScoreB.setScore(BigDecimal.valueOf(5));
+        goodsUserScores.add(titanicUserScoreB);
+
+        SlopOne.GoodsUserScore titanicUserScoreD = new SlopOne.GoodsUserScore();
+        titanicUserScoreD.setGoodsId("titanic");
+        titanicUserScoreD.setUserId("D");
+        titanicUserScoreD.setScore(BigDecimal.valueOf(3));
+        goodsUserScores.add(titanicUserScoreD);
+
+
+        SlopOne.GoodsUserScore dieHardUserScoreB = new SlopOne.GoodsUserScore();
+        dieHardUserScoreB.setGoodsId("dieHard");
+        dieHardUserScoreB.setUserId("B");
+        dieHardUserScoreB.setScore(BigDecimal.valueOf(2));
+        goodsUserScores.add(dieHardUserScoreB);
+
+        SlopOne.GoodsUserScore dieHardUserScoreC = new SlopOne.GoodsUserScore();
+        dieHardUserScoreC.setGoodsId("dieHard");
+        dieHardUserScoreC.setUserId("C");
+        dieHardUserScoreC.setScore(BigDecimal.valueOf(3));
+        goodsUserScores.add(dieHardUserScoreC);
+
+        SlopOne.GoodsUserScore dieHardUserScoreD = new SlopOne.GoodsUserScore();
+        dieHardUserScoreD.setGoodsId("dieHard");
+        dieHardUserScoreD.setUserId("D");
+        dieHardUserScoreD.setScore(BigDecimal.valueOf(5));
+        goodsUserScores.add(dieHardUserScoreD);
+
+
+        SlopOne.GoodsUserScore forrestGumpUserScoreA = new SlopOne.GoodsUserScore();
+        forrestGumpUserScoreA.setGoodsId("forrestGump");
+        forrestGumpUserScoreA.setUserId("A");
+        forrestGumpUserScoreA.setScore(BigDecimal.valueOf(2));
+        goodsUserScores.add(forrestGumpUserScoreA);
+
+        SlopOne.GoodsUserScore forrestGumpUserScoreB = new SlopOne.GoodsUserScore();
+        forrestGumpUserScoreB.setGoodsId("forrestGump");
+        forrestGumpUserScoreB.setUserId("B");
+        forrestGumpUserScoreB.setScore(BigDecimal.valueOf(5));
+        goodsUserScores.add(forrestGumpUserScoreB);
+
+        SlopOne.GoodsUserScore forrestGumpUserScoreC = new SlopOne.GoodsUserScore();
+        forrestGumpUserScoreC.setGoodsId("forrestGump");
+        forrestGumpUserScoreC.setUserId("C");
+        forrestGumpUserScoreC.setScore(BigDecimal.valueOf(5));
+        goodsUserScores.add(forrestGumpUserScoreC);
+
+        SlopOne.GoodsUserScore forrestGumpUserScoreD = new SlopOne.GoodsUserScore();
+        forrestGumpUserScoreD.setGoodsId("forrestGump");
+        forrestGumpUserScoreD.setUserId("D");
+        forrestGumpUserScoreD.setScore(BigDecimal.valueOf(3));
+        goodsUserScores.add(forrestGumpUserScoreD);
+
+
+        SlopOne.GoodsUserScore wallEUserScoreA = new SlopOne.GoodsUserScore();
+        wallEUserScoreA.setGoodsId("wallE");
+        wallEUserScoreA.setUserId("A");
+        wallEUserScoreA.setScore(BigDecimal.valueOf(2));
+        goodsUserScores.add(wallEUserScoreA);
+
+        SlopOne.GoodsUserScore wallEUserScoreB = new SlopOne.GoodsUserScore();
+        wallEUserScoreB.setGoodsId("wallE");
+        wallEUserScoreB.setUserId("B");
+        wallEUserScoreB.setScore(BigDecimal.valueOf(5));
+        goodsUserScores.add(wallEUserScoreB);
+
+        SlopOne.GoodsUserScore wallEUserScoreC = new SlopOne.GoodsUserScore();
+        wallEUserScoreC.setGoodsId("wallE");
+        wallEUserScoreC.setUserId("C");
+        wallEUserScoreC.setScore(BigDecimal.valueOf(4));
+        goodsUserScores.add(wallEUserScoreC);
+
+        return goodsUserScores;
     }
 }
