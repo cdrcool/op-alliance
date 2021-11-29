@@ -7,12 +7,12 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * 基于价格召回候选物品
+ * 基于价格的候选物品召回类
  *
  * @author chengdr01
  */
 @Component
-public class PriceBasedItemsRetrieval implements CandidateItemsRetrieval {
+public class PriceBasedRetrieval implements CandidatesRetrieval {
 
     @Override
     public List<Item> decide(User user, Item item, List<Item> candidates) {

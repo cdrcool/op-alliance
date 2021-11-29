@@ -6,14 +6,14 @@ import com.op.recommend.core.User;
 import java.util.List;
 
 /**
- * 推荐系统召回层接口，支持多路召回
+ * 候选物品召回接口
  *
  * @author chengdr01
  */
-public interface CandidateItemsRetrieval {
+public interface CandidatesRetrieval {
 
     /**
-     * 处理召回动作
+     * 过滤候选物品集
      *
      * @param user       当前用户
      * @param item       当前物品
