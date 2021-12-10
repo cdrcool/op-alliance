@@ -1,6 +1,5 @@
 package com.op.boot.mall.request.invoice;
 
-import com.op.boot.mall.authentication.MallAuthentication;
 import com.op.boot.mall.constants.MallMethod;
 import com.op.boot.mall.constants.MallType;
 import com.op.boot.mall.request.MallRequest;
@@ -13,8 +12,8 @@ import com.op.boot.mall.response.invoice.InvoiceApplyCancelResponse;
  */
 public class InvoiceApplyCancelRequest<P> extends MallRequest<P, InvoiceApplyCancelResponse> {
 
-    public InvoiceApplyCancelRequest(MallType mallType, MallAuthentication authentication, P requestObj) {
-        super(mallType, authentication, requestObj);
+    public InvoiceApplyCancelRequest(MallType mallType, String accountName, P requestObj) {
+        super(mallType, accountName, requestObj);
     }
 
     @Override

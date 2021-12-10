@@ -12,7 +12,7 @@ public interface MallAuthenticationProvider {
     /**
      * 获取电商身份认证凭据
      *
-     * @param mallType 电商类型
+     * @param mallType    电商类型
      * @param accountName 账号名
      * @return 电商身份认证凭据
      */

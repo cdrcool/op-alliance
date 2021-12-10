@@ -1,6 +1,5 @@
 package com.op.boot.mall.request.invoice;
 
-import com.op.boot.mall.authentication.MallAuthentication;
 import com.op.boot.mall.constants.MallMethod;
 import com.op.boot.mall.constants.MallType;
 import com.op.boot.mall.request.MallRequest;
@@ -13,8 +12,8 @@ import com.op.boot.mall.response.invoice.InvoiceDetailQueryResponse;
  */
 public class InvoiceDetailQueryRequest<P> extends MallRequest<P, InvoiceDetailQueryResponse> {
 
-    public InvoiceDetailQueryRequest(MallType mallType, MallAuthentication authentication, P requestObj) {
-        super(mallType, authentication, requestObj);
+    public InvoiceDetailQueryRequest(MallType mallType, String accountName, P requestObj) {
+        super(mallType, accountName, requestObj);
     }
 
     @Override

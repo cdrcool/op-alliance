@@ -1,7 +1,7 @@
 package com.op.boot.mall.business.service;
 
 import com.op.boot.mall.business.dto.InvoiceApplySubmitDto;
-import com.op.boot.mall.business.requestsupplier.invoice.InvoiceApplySubmitRequestBuilder;
+import com.op.boot.mall.business.requestbuilder.invoice.InvoiceApplySubmitRequestBuilder;
 import com.op.boot.mall.invoker.MallCommandInvoker;
 import org.springframework.stereotype.Service;
 

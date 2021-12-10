@@ -3,8 +3,6 @@ package com.op.boot.mall.request;
 import com.op.boot.mall.authentication.MallAuthentication;
 import com.op.boot.mall.constants.MallType;
 import com.op.boot.mall.response.MallResponse;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 import java.io.Serializable;
 
@@ -13,8 +11,6 @@ import java.io.Serializable;
  *
  * @author chengdr01
  */
-@AllArgsConstructor
-@Getter
 public abstract class MallRequest<P, R extends MallResponse> implements Serializable {
     /**
      * 电商类型枚举
@@ -22,14 +18,45 @@ public abstract class MallRequest<P, R extends MallResponse> implements Serializ
     private final MallType mallType;
 
     /**
-     * 电商身份认证凭据
+     * 电商账号名
      */
-    private final MallAuthentication authentication;
+    private final String accountName;
 
     /**
-     * 请求参数对象
+     * 请求对象
      */
     private final P requestObj;
+
+    /**
+     * 电商账号名
+     */
+    private MallAuthentication authentication;
+
+    protected MallRequest(MallType mallType, String accountName, P requestObj) {
+        this.mallType = mallType;
+        this.accountName = accountName;
+        this.requestObj = requestObj;
+    }
+
+    public MallType getMallType() {
+        return mallType;
+    }
+
+    public String getAccountName() {
+        return accountName;
+    }
+
+    public P getRequestObj() {
+        return requestObj;
+    }
+
+    public MallAuthentication getAuthentication() {
+        return authentication;
+    }
+
+    public void setAuthentication(MallAuthentication authentication) {
+        this.authentication = authentication;
+    }
 
     /**
      * 返回电商方法

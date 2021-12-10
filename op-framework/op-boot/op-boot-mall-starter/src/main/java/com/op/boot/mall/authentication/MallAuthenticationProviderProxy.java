@@ -13,21 +13,21 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * 电商身份认证凭据代理类
+ * 电商身份认证凭据提供者代理类
  *
  * @author cdrcool
  */
 @Slf4j
 @Component
-public class MallAuthenticationProxy implements MallAuthenticationProvider {
+public class MallAuthenticationProviderProxy implements MallAuthenticationProvider {
     /**
-     * 电商身份认证凭据 本地缓存
+     * 电商身份认证凭据本地缓存
      */
     private static final Map<String, MallAuthentication> AUTHENTICATION_CACHE = new ConcurrentReferenceHashMap<>();
 
     private final List<MallAuthenticationProvider> providers;
 
-    public MallAuthenticationProxy(List<MallAuthenticationProvider> providers) {
+    public MallAuthenticationProviderProxy(List<MallAuthenticationProvider> providers) {
         this.providers = providers;
     }
 

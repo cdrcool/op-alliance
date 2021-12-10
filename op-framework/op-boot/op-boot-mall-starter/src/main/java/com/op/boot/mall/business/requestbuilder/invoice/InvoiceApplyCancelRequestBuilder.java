@@ -1,4 +1,4 @@
-package com.op.boot.mall.business.requestsupplier.invoice;
+package com.op.boot.mall.business.requestbuilder.invoice;
 
 import com.jd.open.api.sdk.request.vopfp.VopInvoiceCancelInvoiceApplyRequest;
 import com.op.boot.mall.authentication.MallAuthentication;
@@ -7,7 +7,6 @@ import com.op.boot.mall.constants.MallType;
 import com.op.boot.mall.exception.MallException;
 import com.op.boot.mall.request.invoice.InvoiceApplyCancelRequest;
 import com.suning.api.entity.govbus.InvoicebatchDeleteRequest;
-import lombok.Builder;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 

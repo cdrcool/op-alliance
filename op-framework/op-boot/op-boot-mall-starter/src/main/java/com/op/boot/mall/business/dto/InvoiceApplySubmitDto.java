@@ -18,6 +18,11 @@ public class InvoiceApplySubmitDto {
     private String mallType;
 
     /**
+     * 电商账号名
+     */
+    private String accountName;
+
+    /**
      * 订单
      */
     private Long orderId;

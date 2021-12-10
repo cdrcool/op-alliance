@@ -25,12 +25,12 @@ public abstract class AbstractMallAuthenticationProvider implements MallAuthenti
      * @param accountName 账号名
      * @return 电商身份认证凭据
      */
-    abstract MallAuthentication loadAuthentication(String accountName);
+    protected abstract MallAuthentication loadAuthentication(String accountName);
 
     /**
      * 设置电商类型
      *
      * @return 电商类型
      */
-    abstract MallType mallType();
+    protected abstract MallType mallType();
 }

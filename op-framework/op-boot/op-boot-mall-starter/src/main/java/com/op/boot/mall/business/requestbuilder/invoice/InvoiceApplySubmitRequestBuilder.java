@@ -1,13 +1,11 @@
-package com.op.boot.mall.business.requestsupplier.invoice;
+package com.op.boot.mall.business.requestbuilder.invoice;
 
 import com.jd.open.api.sdk.request.vopfp.VopInvoiceSubmitInvoiceApplyRequest;
-import com.op.boot.mall.authentication.MallAuthentication;
 import com.op.boot.mall.business.dto.InvoiceApplySubmitDto;
 import com.op.boot.mall.constants.MallType;
 import com.op.boot.mall.exception.MallException;
 import com.op.boot.mall.request.invoice.InvoiceApplySubmitRequest;
 import com.suning.api.entity.govbus.InvoicesupplementConfirmRequest;
-import lombok.Builder;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +23,6 @@ import java.util.function.Supplier;
 public class InvoiceApplySubmitRequestBuilder {
     private final Map<String, Supplier<InvoiceApplySubmitRequest<?>>> strategyMap = new ConcurrentHashMap<>();
 
-    private MallAuthentication authentication;
     private InvoiceApplySubmitDto invoiceApplySubmitDto;
 
     public InvoiceApplySubmitRequestBuilder() {
