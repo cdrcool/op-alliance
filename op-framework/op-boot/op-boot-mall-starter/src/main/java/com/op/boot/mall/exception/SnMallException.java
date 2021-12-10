@@ -1,18 +1,13 @@
 package com.op.boot.mall.exception;
 
 /**
- * 京东订单取消处理类
+ * 苏宁电商异常
  *
- * @author cdrcool
+ * @author chengdr01
  */
-public class SnMallException extends MallException{
+public class SnMallException extends MallException {
 
     public SnMallException() {
-    }
-
-    @Override
-    public String getCode() {
-        return super.getCode();
     }
 
     public SnMallException(String message) {

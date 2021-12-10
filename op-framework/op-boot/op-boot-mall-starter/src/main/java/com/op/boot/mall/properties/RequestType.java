@@ -5,7 +5,7 @@ import lombok.Getter;
 /**
  * 请求类型枚举
  *
- * @author cdrcool
+ * @author chengdr01
  */
 @Getter
 public enum RequestType {

@@ -33,7 +33,7 @@ public class TimeCostInterceptor implements Interceptor {
             long costTime = System.currentTimeMillis() - startTime;
             BoundSql boundSql = statementHandler.getBoundSql();
             String sql = boundSql.getSql();
-            log.info("执行 SQL：【{}】，耗时 【{}】 ms", sql, costTime);
+            log.info("执行 SQL【{}】，耗时 【{}】 ms", sql, costTime);
         }
     }
 

@@ -63,7 +63,7 @@ public class JdDESUtils {
         return cipher;
     }
 
-    public static String encodePassword(String password, String key){
+    public static String encodePassword(String password, String key) {
         if (StringUtils.isEmpty(password)) {
             return password;
         }
@@ -71,7 +71,6 @@ public class JdDESUtils {
 
         return password;
     }
-
 
 
 }

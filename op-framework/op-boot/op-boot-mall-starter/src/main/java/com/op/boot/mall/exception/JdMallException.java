@@ -3,15 +3,11 @@ package com.op.boot.mall.exception;
 /**
  * 京东电商异常
  *
- * @author cdrcool
+ * @author chengdr01
  */
 public class JdMallException extends MallException {
-    public JdMallException() {
-    }
 
-    @Override
-    public String getCode() {
-        return super.getCode();
+    public JdMallException() {
     }
 
     public JdMallException(String message) {

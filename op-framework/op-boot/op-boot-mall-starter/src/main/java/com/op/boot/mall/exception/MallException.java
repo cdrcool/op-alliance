@@ -5,10 +5,13 @@ import lombok.Getter;
 /**
  * 电商异常
  *
- * @author cdrcool
+ * @author chengdr01
  */
 @Getter
 public class MallException extends RuntimeException {
+    /**
+     * 异常编码
+     */
     private String code;
 
     public MallException() {
