@@ -24,8 +24,8 @@ public class MallCommandFactory {
         this.mallCommandMap = mallCommandMap;
     }
 
-    public <T extends MallRequest<P, R>, P, R extends MallResponse> MallCommand<T, P, R> getCommand(MallType mallType, String methodName) {
-        MallCommand<T, P, R> mallCommand = mallCommandMap.get(mallType.getValue() + SEPARATOR + methodName);
+    public <T extends MallRequest<?, R>, R extends MallResponse> MallCommand<T, R> getCommand(MallType mallType, String methodName) {
+        MallCommand<T, R> mallCommand = mallCommandMap.get(mallType.getValue() + SEPARATOR + methodName);
         if (mallCommand == null) {
             throw new MallException("不支持的电商命令，电商类型【" + mallType.getDesc() + "】，电商方法名【" + methodName + "】");
         }

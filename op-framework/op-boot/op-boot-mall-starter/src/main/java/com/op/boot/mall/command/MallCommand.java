@@ -8,7 +8,7 @@ import com.op.boot.mall.response.MallResponse;
  *
  * @author chengdr01
  */
-public interface MallCommand<T extends MallRequest<P, R>, P, R extends MallResponse> {
+public interface MallCommand<T extends MallRequest<?, R>, R extends MallResponse> {
 
     /**
      * 执行电商命令

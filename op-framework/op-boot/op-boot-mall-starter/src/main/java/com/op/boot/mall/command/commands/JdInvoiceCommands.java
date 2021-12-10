@@ -48,8 +48,7 @@ public class JdInvoiceCommands {
     }
 
     @Bean(MALL_JD + SEPARATOR + INVOICE_APPLY_SUBMIT)
-    public MallCommand<InvoiceApplySubmitRequest<VopInvoiceSubmitInvoiceApplyRequest>,
-            VopInvoiceSubmitInvoiceApplyRequest, InvoiceApplySubmitResponse> jdInvoiceApplySubmitCommand() {
+    public MallCommand<InvoiceApplySubmitRequest<VopInvoiceSubmitInvoiceApplyRequest>, InvoiceApplySubmitResponse> jdInvoiceApplySubmitCommand() {
         return (mallRequest -> {
             // 1. 获取京东身份认证凭据
             JdMallAuthentication authentication = (JdMallAuthentication) mallRequest.getAuthentication();
@@ -75,8 +74,7 @@ public class JdInvoiceCommands {
     }
 
     @Bean(MALL_JD + SEPARATOR + INVOICE_APPLY_CANCEL)
-    public MallCommand<InvoiceApplyCancelRequest<VopInvoiceCancelInvoiceApplyRequest>,
-            VopInvoiceCancelInvoiceApplyRequest, InvoiceApplyCancelResponse> jdInvoiceApplyCancelCommand() {
+    public MallCommand<InvoiceApplyCancelRequest<VopInvoiceCancelInvoiceApplyRequest>, InvoiceApplyCancelResponse> jdInvoiceApplyCancelCommand() {
         return (mallRequest -> {
             // 1. 获取京东请求凭证
             JdMallAuthentication authentication = (JdMallAuthentication) mallRequest.getAuthentication();
@@ -102,8 +100,7 @@ public class JdInvoiceCommands {
     }
 
     @Bean(MALL_JD + SEPARATOR + INVOICE_DETAIL_QUERY)
-    public MallCommand<InvoiceDetailQueryRequest<JdInvoiceDetailQueryRequest>,
-            JdInvoiceDetailQueryRequest, InvoiceDetailQueryResponse> jdInvoiceDetailQueryCommand() {
+    public MallCommand<InvoiceDetailQueryRequest<JdInvoiceDetailQueryRequest>, InvoiceDetailQueryResponse> jdInvoiceDetailQueryCommand() {
         return (mallRequest -> {
             // 1. 获取京东请求凭证
             JdMallAuthentication authentication = (JdMallAuthentication) mallRequest.getAuthentication();

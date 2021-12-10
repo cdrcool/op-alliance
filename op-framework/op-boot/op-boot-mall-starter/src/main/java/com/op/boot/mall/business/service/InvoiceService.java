@@ -3,6 +3,7 @@ package com.op.boot.mall.business.service;
 import com.op.boot.mall.business.dto.InvoiceApplySubmitDto;
 import com.op.boot.mall.business.requestbuilder.invoice.InvoiceApplySubmitRequestBuilder;
 import com.op.boot.mall.invoker.MallCommandInvoker;
+import com.op.boot.mall.response.invoice.InvoiceApplySubmitResponse;
 import org.springframework.stereotype.Service;
 
 /**
@@ -22,6 +23,6 @@ public class InvoiceService {
         InvoiceApplySubmitDto invoiceApplySubmitDto = new InvoiceApplySubmitDto();
         InvoiceApplySubmitRequestBuilder invoiceApplySubmitRequestBuilder = new InvoiceApplySubmitRequestBuilder();
         invoiceApplySubmitRequestBuilder.setInvoiceApplySubmitDto(invoiceApplySubmitDto);
-        mallCommandInvoker.invoke(invoiceApplySubmitRequestBuilder.buildRequest());
+        InvoiceApplySubmitResponse response = mallCommandInvoker.invoke(invoiceApplySubmitRequestBuilder.buildRequest());
     }
 }
