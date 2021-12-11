@@ -4,11 +4,9 @@ import com.op.boot.mall.constants.MallType;
 import com.op.boot.mall.exception.MallException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ConcurrentReferenceHashMap;
 
 import java.text.MessageFormat;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -20,11 +18,6 @@ import java.util.Optional;
 @Slf4j
 @Component
 public class MallAuthenticationProviderProxy implements MallAuthenticationProvider {
-    /**
-     * 电商身份认证凭据本地缓存
-     */
-    private static final Map<String, MallAuthentication> AUTHENTICATION_CACHE = new ConcurrentReferenceHashMap<>();
-
     private final List<MallAuthenticationProvider> providers;
 
     public MallAuthenticationProviderProxy(List<MallAuthenticationProvider> providers) {
@@ -40,17 +33,15 @@ public class MallAuthenticationProviderProxy implements MallAuthenticationProvid
      */
     @Override
     public MallAuthentication loadAuthentication(MallType mallType, String accountName) {
-        return AUTHENTICATION_CACHE.computeIfAbsent(mallType.getValue() + "-" + accountName, (key -> {
-            Optional<MallAuthentication> optional = providers.stream()
-                    .map(provider -> provider.loadAuthentication(mallType, accountName))
-                    .filter(Objects::nonNull)
-                    .findAny();
+        Optional<MallAuthentication> optional = providers.stream()
+                .map(provider -> provider.loadAuthentication(mallType, accountName))
+                .filter(Objects::nonNull)
+                .findAny();
 
-            if (optional.isPresent()) {
-                return optional.get();
-            }
+        if (optional.isPresent()) {
+            return optional.get();
+        }
 
-            throw new MallException(MessageFormat.format("未定义电商【{0}】身份认证凭据提供者", mallType.getDesc()));
-        }));
+        throw new MallException(MessageFormat.format("未定义电商【{0}】身份认证凭据提供者", mallType.getDesc()));
     }
 }

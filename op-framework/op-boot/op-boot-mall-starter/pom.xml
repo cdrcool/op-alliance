@@ -58,7 +58,7 @@
             <artifactId>open-api-sdk</artifactId>
             <version>2.0</version>
             <scope>system</scope>
-            <systemPath>D:/Workspace/IdeaProjects/onepiece/op-alliance/op-libaries/open-api-sdk-2.0-jdk1.8.jar
+            <systemPath>D:/IdeaProjects/onepiece/op-alliance/op-libaries/open-api-sdk-2.0-jdk1.8.jar
             </systemPath>
         </dependency>
         <dependency>
@@ -67,7 +67,7 @@
             <version>1.0</version>
             <scope>system</scope>
             <systemPath>
-                D:/Workspace/IdeaProjects/onepiece/op-alliance/op-libaries/suning-sdk-java-standard-1.0-jdk1.8.jar
+                D:/IdeaProjects/onepiece/op-alliance/op-libaries/suning-sdk-java-standard-1.0-jdk1.8.jar
             </systemPath>
         </dependency>
     </dependencies>
