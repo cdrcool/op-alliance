@@ -29,6 +29,7 @@ public class MallCommandFactory {
         if (mallCommand == null) {
             throw new MallException("不支持的电商命令，电商类型【" + mallType.getDesc() + "】，电商方法名【" + methodName + "】");
         }
+
         return mallCommand;
     }
 }
