@@ -22,6 +22,4 @@ public class JdMallBillAuthenticationProvider extends AbstractMallAuthentication
     protected MallType mallType() {
         return MallType.JD_BILL;
     }
-
-
 }
