@@ -1,5 +1,6 @@
 package com.op.boot.mall.authentication;
 
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -7,6 +8,7 @@ import lombok.Data;
  *
  * @author cdrcool
  */
+@Builder
 @Data
 public class SnMallAuthentication implements MallAuthentication {
     /**

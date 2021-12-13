@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 /**
  * 电商 Token Granter Chain
@@ -65,11 +64,9 @@ public class MallTokenGranterChain {
      *
      * @param mallType             电商类型
      * @param tokenCallbackRequest Token 回调请求
-     * @param responseConsumer     token 响应消费者
      */
-    public void callback(MallType mallType, TokenCallbackRequest tokenCallbackRequest,
-                         Consumer<MallTokenResponse> responseConsumer) {
-        getOauth2TokenGranter(mallType).callback(tokenCallbackRequest, responseConsumer);
+    public void callback(MallType mallType, TokenCallbackRequest tokenCallbackRequest) {
+        getOauth2TokenGranter(mallType).callback(tokenCallbackRequest);
     }
 
     /**

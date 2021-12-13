@@ -1,5 +1,6 @@
 package com.op.boot.mall.token.granter;
 
+import com.op.boot.mall.account.AccountManager;
 import com.op.boot.mall.constants.MallType;
 import com.op.boot.mall.response.JdMallBaseResponse;
 import com.op.boot.mall.token.feign.JdMallBillAuthFeign;
@@ -25,9 +26,11 @@ import java.util.Optional;
 @Component
 public class JdMallBillTokenGranter implements MallTokenGranter {
     private final JdMallBillAuthFeign jdMallBillAuthFeign;
+    private final AccountManager accountManager;
 
-    public JdMallBillTokenGranter(JdMallBillAuthFeign jdMallBillAuthFeign) {
+    public JdMallBillTokenGranter(JdMallBillAuthFeign jdMallBillAuthFeign, AccountManager accountManager) {
         this.jdMallBillAuthFeign = jdMallBillAuthFeign;
+        this.accountManager = accountManager;
     }
 
     @Override
@@ -59,16 +62,20 @@ public class JdMallBillTokenGranter implements MallTokenGranter {
 
     @Override
     public MallTokenResponse refreshToken(TokenRefreshRequest tokenRefreshRequest) {
-        JdMallTokenResponse tokenResponse = jdMallBillAuthFeign.refreshToken(tokenRefreshRequest.getRefreshToken(),
+        JdMallTokenResponse jdMallTokenResponse = jdMallBillAuthFeign.refreshToken(tokenRefreshRequest.getRefreshToken(),
                 tokenRefreshRequest.getAppKey(), tokenRefreshRequest.getAppSecret());
 
-        return MallTokenResponse.builder()
+        MallTokenResponse tokenResponse = MallTokenResponse.builder()
                 .mallType(MallType.JD_BILL)
                 .accountName(tokenRefreshRequest.getAccountName())
-                .accessToken(tokenResponse.getAccessToken())
-                .refreshToken(tokenResponse.getRefreshToken())
-                .accessTokenExpiresAt(tokenResponse.getTime() + tokenResponse.getExpiresIn() * 1000)
+                .accessToken(jdMallTokenResponse.getAccessToken())
+                .refreshToken(jdMallTokenResponse.getRefreshToken())
+                .accessTokenExpiresAt(jdMallTokenResponse.getTime() + jdMallTokenResponse.getExpiresIn() * 1000)
                 .build();
+
+        accountManager.updateTokenResponse(tokenResponse);
+
+        return tokenResponse;
     }
 
     @Override

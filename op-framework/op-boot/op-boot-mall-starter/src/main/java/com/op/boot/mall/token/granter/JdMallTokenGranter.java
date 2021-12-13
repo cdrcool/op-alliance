@@ -1,5 +1,6 @@
 package com.op.boot.mall.token.granter;
 
+import com.op.boot.mall.account.AccountManager;
 import com.op.boot.mall.constants.MallType;
 import com.op.boot.mall.exception.JdMallException;
 import com.op.boot.mall.token.feign.JdMallAuthFeign;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 /**
  * 京东电商 Token Granter
@@ -27,9 +27,11 @@ import java.util.function.Consumer;
 @Component
 public class JdMallTokenGranter implements MallOauth2TokenGranter {
     private final JdMallAuthFeign jdMallAuthFeign;
+    private final AccountManager accountManager;
 
-    public JdMallTokenGranter(JdMallAuthFeign jdMallAuthFeign) {
+    public JdMallTokenGranter(JdMallAuthFeign jdMallAuthFeign, AccountManager accountManager) {
         this.jdMallAuthFeign = jdMallAuthFeign;
+        this.accountManager = accountManager;
     }
 
     @Override
@@ -67,38 +69,42 @@ public class JdMallTokenGranter implements MallOauth2TokenGranter {
     }
 
     @Override
-    public void callback(TokenCallbackRequest tokenCallbackRequest, Consumer<MallTokenResponse> responseConsumer) {
-        JdMallTokenResponse tokenResponse = jdMallAuthFeign.accessToken(tokenCallbackRequest.getAppKey(),
+    public void callback(TokenCallbackRequest tokenCallbackRequest) {
+        JdMallTokenResponse jdMallTokenResponse = jdMallAuthFeign.accessToken(tokenCallbackRequest.getAppKey(),
                 tokenCallbackRequest.getAppSecret(),
                 tokenCallbackRequest.getCode(),
                 "authorization_code");
-        log.info("根据鉴权码【{}】获取到京东电商 Token 响应【{}】", tokenCallbackRequest.getCode(), tokenResponse);
+        log.info("根据鉴权码【{}】获取到京东电商 Token 响应【{}】", tokenCallbackRequest.getCode(), jdMallTokenResponse);
 
-        MallTokenResponse response = MallTokenResponse.builder()
+        MallTokenResponse tokenResponse = MallTokenResponse.builder()
                 .mallType(MallType.JD)
                 .accountName(tokenCallbackRequest.getAccountName())
-                .accessToken(tokenResponse.getAccessToken())
-                .refreshToken(tokenResponse.getRefreshToken())
-                .accessTokenExpiresAt(tokenResponse.getTime() + tokenResponse.getExpiresIn() * 1000)
+                .accessToken(jdMallTokenResponse.getAccessToken())
+                .refreshToken(jdMallTokenResponse.getRefreshToken())
+                .accessTokenExpiresAt(jdMallTokenResponse.getTime() + jdMallTokenResponse.getExpiresIn() * 1000)
                 .build();
 
-        responseConsumer.accept(response);
+        accountManager.updateTokenResponse(tokenResponse);
     }
 
     @Override
     public MallTokenResponse refreshToken(TokenRefreshRequest tokenRefreshRequest) {
-        JdMallTokenResponse tokenResponse = jdMallAuthFeign.refreshToken(tokenRefreshRequest.getAppKey(),
+        JdMallTokenResponse jdMallTokenResponse = jdMallAuthFeign.refreshToken(tokenRefreshRequest.getAppKey(),
                 tokenRefreshRequest.getAppSecret(),
                 "refresh_token",
                 tokenRefreshRequest.getRefreshToken());
 
-        return MallTokenResponse.builder()
+        MallTokenResponse tokenResponse = MallTokenResponse.builder()
                 .mallType(MallType.JD)
                 .accountName(tokenRefreshRequest.getAccountName())
-                .accessToken(tokenResponse.getAccessToken())
-                .refreshToken(tokenResponse.getRefreshToken())
-                .accessTokenExpiresAt(tokenResponse.getTime() + tokenResponse.getExpiresIn() * 1000)
+                .accessToken(jdMallTokenResponse.getAccessToken())
+                .refreshToken(jdMallTokenResponse.getRefreshToken())
+                .accessTokenExpiresAt(jdMallTokenResponse.getTime() + jdMallTokenResponse.getExpiresIn() * 1000)
                 .build();
+
+        accountManager.updateTokenResponse(tokenResponse);
+
+        return tokenResponse;
     }
 
     @Override
