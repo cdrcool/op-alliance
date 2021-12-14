@@ -34,11 +34,11 @@ public interface JdMallAuthFeign {
     @GetMapping("/authorizeForVOP")
     JdMallBaseResponse<Object> authorizeForVop(@RequestParam("app_key") String appKey,
                                                @RequestParam("redirect_uri") String redirectUri,
-                                               @RequestParam String username,
-                                               @RequestParam String password,
+                                               @RequestParam("username") String username,
+                                               @RequestParam("password") String password,
                                                @RequestParam("response_type") String responseType,
-                                               @RequestParam String scope,
-                                               @RequestParam String state);
+                                               @RequestParam("scope") String scope,
+                                               @RequestParam("state") String state);
 
     /**
      * 使用鉴权码获取 token
@@ -52,7 +52,7 @@ public interface JdMallAuthFeign {
     @GetMapping("/access_token")
     JdMallTokenResponse accessToken(@RequestParam("app_key") String appKey,
                                     @RequestParam("app_secret") String appSecret,
-                                    @RequestParam String code,
+                                    @RequestParam("code") String code,
                                     @RequestParam("grant_type") String grantType);
 
     /**

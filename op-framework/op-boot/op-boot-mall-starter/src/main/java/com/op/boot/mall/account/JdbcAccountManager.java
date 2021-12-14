@@ -14,7 +14,6 @@ import java.util.Optional;
  *
  * @author chengdr01
  */
-@ConditionalOnMissingBean(AccountManager.class)
 @Component
 public class JdbcAccountManager implements AccountManager {
     private final JdbcTemplate jdbcTemplate;

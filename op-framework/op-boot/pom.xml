@@ -14,6 +14,7 @@
     <modules>
         <module>op-boot-mall-starter</module>
         <module>op-boot-recommendation-stater</module>
+        <module>op-boot-web-demo</module>
     </modules>
 
     <properties>

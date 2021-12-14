@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.context.annotation.Bean;
+import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -131,12 +132,27 @@ public class JdMallFeignConfig {
      */
     @Bean
     public Decoder decoder() {
+        String errorField = "error_description";
         return (response, type) -> {
             JdRequestInfo jdRequestInfo = threadLocal.get();
             threadLocal.remove();
 
             String responseJson = Util.toString(response.body().asReader(StandardCharsets.UTF_8));
             log.info("请求京东接口【{}】，请求响应【{}】", jdRequestInfo.getMethod(), responseJson);
+
+            if (responseJson.contains(errorField)) {
+                Map<String, Object> map = JsonUtils.parse(responseJson, new TypeReference<Map<String, Object>>() {
+                    @Override
+                    public Type getType() {
+                        return super.getType();
+                    }
+                });
+                assert map != null;
+                String code = String.valueOf(map.getOrDefault(errorField, "-1"));
+                log.error("请求京东接口【{}】失败，错误码【{}】", response.request().url(), code);
+                throw new JdMallException(MessageFormat.format("请求京东接口【{0}】失败",
+                        response.request().url()), code);
+            }
 
             // 如果返回类型是字符串，直接返回
             String typeName = type.getTypeName();
@@ -157,7 +173,8 @@ public class JdMallFeignConfig {
             }
 
             // 如果返回类型是 JdMallBaseResponse
-            if (Objects.equals(type.getTypeName(), JdMallBaseResponse.class.getName())) {
+            if (type instanceof ParameterizedTypeImpl &&
+                    ((ParameterizedTypeImpl) type).getRawType().getName().equals(JdMallBaseResponse.class.getName())) {
                 JdMallBaseResponse<Object> baseResponse = JsonUtils.parse(responseJson,
                         new TypeReference<JdMallBaseResponse<Object>>() {
                             @Override
@@ -172,6 +189,7 @@ public class JdMallFeignConfig {
                     throw new JdMallException(MessageFormat.format("请求京东接口【{0}】失败，错误信息【{1}】",
                             response.request().url(), baseResponse.getResultMessage()), baseResponse.getResultCode());
                 }
+                return baseResponse;
             }
 
             // 最后，断言返回类型是 AbstractResponse
