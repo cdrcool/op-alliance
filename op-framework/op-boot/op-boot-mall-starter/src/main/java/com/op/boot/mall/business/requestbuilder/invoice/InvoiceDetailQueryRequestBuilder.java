@@ -1,15 +1,16 @@
 package com.op.boot.mall.business.requestbuilder.invoice;
 
-import com.jd.open.api.sdk.request.vopfp.VopInvoiceCancelInvoiceApplyRequest;
-import com.op.boot.mall.authentication.MallAuthentication;
-import com.op.boot.mall.business.dto.InvoiceApplySubmitDto;
+import com.op.boot.mall.constants.InvoiceType;
 import com.op.boot.mall.constants.MallType;
 import com.op.boot.mall.exception.MallException;
 import com.op.boot.mall.request.invoice.InvoiceDetailQueryRequest;
+import com.op.boot.mall.request.invoice.custom.JdInvoiceDetailQueryRequest;
 import com.suning.api.entity.govbus.InvoicebatchDeleteRequest;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
@@ -24,8 +25,30 @@ import java.util.function.Supplier;
 public class InvoiceDetailQueryRequestBuilder {
     private final Map<String, Supplier<InvoiceDetailQueryRequest<?>>> strategyMap = new ConcurrentHashMap<>();
 
-    private MallAuthentication authentication;
-    private InvoiceApplySubmitDto invoiceApplySubmitDto;
+    /**
+     * 电商类型
+     */
+    private String mallType;
+
+    /**
+     * 电商账号名
+     */
+    private String accountName;
+
+    /**
+     * 发票类型
+     */
+    private Integer invoiceType;
+
+    /**
+     * 申请单号
+     */
+    private String markId;
+
+    /**
+     * 订单号列表
+     */
+    private List<Long> orderIds;
 
     public InvoiceDetailQueryRequestBuilder() {
         this.strategyMap.put(MallType.JD.getValue(), this::buildJdRequest);
@@ -33,7 +56,6 @@ public class InvoiceDetailQueryRequestBuilder {
     }
 
     public InvoiceDetailQueryRequest<?> buildRequest() {
-        String mallType = invoiceApplySubmitDto.getMallType();
         Supplier<InvoiceDetailQueryRequest<?>> supplier = strategyMap.get(mallType);
 
         if (supplier == null) {
@@ -48,8 +70,11 @@ public class InvoiceDetailQueryRequestBuilder {
      *
      * @return 京东请求
      */
-    private InvoiceDetailQueryRequest<VopInvoiceCancelInvoiceApplyRequest> buildJdRequest() {
-        return null;
+    private InvoiceDetailQueryRequest<JdInvoiceDetailQueryRequest> buildJdRequest() {
+        JdInvoiceDetailQueryRequest jdRequest = new JdInvoiceDetailQueryRequest();
+        jdRequest.setInvoiceType(InvoiceType.ELECTRONIC_INVOICE.getValue());
+        jdRequest.setOrderIds(Collections.singletonList(149561215491L));
+        return new InvoiceDetailQueryRequest<>(MallType.JD, accountName, jdRequest);
     }
 
     /**
@@ -66,7 +91,7 @@ public class InvoiceDetailQueryRequestBuilder {
      *
      * @return 震坤行请求
      */
-    private InvoiceDetailQueryRequest<Object> buildZkhRequest() {
+    private InvoiceDetailQueryRequest<JdInvoiceDetailQueryRequest> buildZkhRequest() {
         return null;
     }
 }

@@ -39,7 +39,11 @@ public class JdbcAccountManager implements AccountManager {
 
     @Override
     public Optional<Account> findOne(String accountName, String accountType) {
-        return Optional.empty();
+        Account account = new Account();
+        account.setClientId("A7BEA9155DA7355D6B4B811742349630");
+        account.setClientSecret("f7ed5ed813124c72a91fef3d25167afc");
+        account.setAccessToken("6aeadd600e394c808ebf7c078ff2465flywr");
+        return Optional.of(account);
     }
 
     @Override

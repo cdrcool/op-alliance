@@ -22,7 +22,19 @@ public class MallTokenGranterTest {
     private MallTokenGranterChain mallTokenGranterChain;
 
     @Test
-    public void acquireToken() {
+    public void refreshJdToken() {
+        TokenRefreshRequest request = new TokenRefreshRequest();
+        request.setAccountName("保利总部VOP1");
+        request.setRefreshToken("cf01d0e7bf9e4cadbc2a1e9ee808aa63ztdi");
+        request.setAppKey("A7BEA9155DA7355D6B4B811742349630");
+        request.setAppSecret("f7ed5ed813124c72a91fef3d25167afc");
+        MallTokenResponse mallTokenResponse = mallTokenGranterChain.refreshToken(MallType.JD, request);
+
+        log.info("mallTokenResponse【{}】", mallTokenResponse);
+    }
+
+    @Test
+    public void acquireJdBillToken() {
         TokenAcquireRequest request = new TokenAcquireRequest();
         request.setAccountName("保利vop007");
         request.setPassword("jd123456");
@@ -33,7 +45,7 @@ public class MallTokenGranterTest {
     }
 
     @Test
-    public void refreshToken() {
+    public void refreshJdBillToken() {
         TokenRefreshRequest request = new TokenRefreshRequest();
         request.setAccountName("保利vop007");
         request.setRefreshToken("sse7XWEc1YN6EqiUnk601ZbOP5DxNq3A1GWtOGjfgv");
